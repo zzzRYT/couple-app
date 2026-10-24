@@ -19,8 +19,13 @@ for (const room of ['day', 'night']) for (const app of ['light', 'dark']) for (c
   const o = ctlOutline[room][mode === 'normal' ? 'normal' : 'highContrast'];
   for (const s of [R.wall, R.floor]) check(`${tag} toolbar outline/${s}`, o, s, 3);
   // system tab bar tints on the app-owned surface (iOS material approximated by the app surface)
+  // mascot edge (brown outline or cream rim, whichever is clearer) on the app surfaces and the room surfaces
+  const il = tokens.color.illustration, edge = s => ratio(il.outline, s) >= ratio(il.rim, s) ? il.outline : il.rim;
+  for (const [n, s] of [['bg', A.bg], ['surface', A.surface], ['surface2', A.surface2], ['room wall', R.wall], ['room floor', R.floor]]) check(`${tag} mascot edge/${n}`, edge(s), s, 3);
   check(`${tag} tab selected tint`, A.primary, A.surface, 4.5); check(`${tag} tab unselected tint`, A.text2, A.surface, 4.5);
 }
+// mascot face marks on the lightest..darkest body tone
+for (const t of tokens.color.mascot.sampledPalette.find(p => p.region === '몸통').harmonizedTones) check(`mascot face line on body ${t}`, tokens.color.mascot.sampledPalette.find(p => p.region === '얼굴 선').harmonizedTones[0], t, 4.5);
 for (const w of tokens.color.widgetPresets) check(`widget ${w.id}`, w.text, w.fill, 4.5);
 for (const room of ['day', 'night']) for (const s of [tokens.color.room[room].wall, tokens.color.room[room].floor]) {
   check(`illustration outline-or-rim/${room}`, ratio(tokens.color.illustration.outline, s) >= ratio(tokens.color.illustration.rim, s) ? tokens.color.illustration.outline : tokens.color.illustration.rim, s, 3);
