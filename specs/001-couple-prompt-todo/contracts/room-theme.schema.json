@@ -5,10 +5,11 @@
   "description": "Shared room day/night variants. Interface light/dark mode is a separate per-user preference.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "mode", "day", "night"],
+  "required": ["schemaVersion", "mode", "timeZone", "day", "night"],
   "properties": {
     "schemaVersion": { "const": 1 },
     "mode": { "type": "string", "enum": ["day", "night", "follow_time"], "default": "follow_time" },
+    "timeZone": { "type": "string", "minLength": 1, "maxLength": 64, "description": "Valid IANA timezone; initialized from the space creator and editable in room settings." },
     "day": { "$ref": "#/$defs/variant" },
     "night": { "$ref": "#/$defs/variant" }
   },
