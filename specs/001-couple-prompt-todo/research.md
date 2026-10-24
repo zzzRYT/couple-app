@@ -2,6 +2,14 @@
 
 조사 기준일: 2026-10-24. 제품 범위는 확정 명세에 한정했다. 아래에서 **사실**은 연결한 공식/1차 자료를 뜻하고, **제안**은 본 설계 판단이다. 가격은 USD이며 한국 세금·환율·초과 사용료를 포함하지 않는다.
 
+## 0. 다국어 구조
+
+**사실:** Expo의 공식 Localization 가이드는 `expo-localization`으로 기기 locale을 읽고 앱별 언어 선택을 설정할 수 있음을 설명하며, 날짜·숫자 등은 Hermes의 `Intl` API를 이용해 포맷할 수 있다고 안내한다. 가이드는 `i18n-js` 예시를 사용한다. `react-i18next`는 React 통합 API와 `changeLanguage` 흐름을 문서화한다.
+
+**제안:** 프로젝트 화면이 새 locale 추가에 무관하게 유지되도록 `i18next` + `react-i18next`의 key 기반 namespace 리소스를 둔다. Expo에서 locale 정보를 얻고, JS `Intl.DateTimeFormat`/`Intl.NumberFormat`으로 지역 형식에 맞춘 날짜·숫자를 표시한다. D-day 어휘와 복수형은 locale resource key로 관리한다. 번역 키 추가/누락 검사, 기계 번역 초안 후 사람 검수, pseudo-localization, 대상 폰트 문자 범위 확인을 언어 추가 워크플로에 포함한다. 한국어 우선 출시는 제품 가정이고 영어 리소스는 추가 언어를 위한 구조를 검증하는 제안이다. 두 번째 출시 언어와 전체 출시 언어는 캡틴이 선택해야 한다.
+
+출처(접근 2026-10-24): [Expo Localization guide](https://docs.expo.dev/guides/localization/), [Expo Localization API](https://docs.expo.dev/versions/latest/sdk/localization/), [i18next getting started](https://www.i18next.com/overview/getting-started), [react-i18next quick start](https://react.i18next.com/guides/quick-start).
+
 ## 1. 모바일 프레임워크·장면 렌더링
 
 **결정 — 고정 요구사항:** Expo / React Native. 작성일 기준 Expo SDK 58은 2026-10-15 공개되었고, React Native 0.88은 2026-10-19 안정 릴리스되어 SDK 58에서 지원된다. React Native Skia 최신 안정 릴리스는 3.7.4 (2026-10-23)다. Skia는 장식 씬 렌더링에만 사용한다. 최신 Skia와 Expo 네이티브 의존성 호환 여부는 구현 초기 spike에서 확인하고, 호환되지 않으면 SDK 58과 호환되는 안정 Skia 버전을 고정한다.

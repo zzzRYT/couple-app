@@ -21,12 +21,30 @@ Expo / React Native 모바일 앱에 메인 D-day 화면과 둘만의 자유 배
 - 어느 구성원이든 공간을 종료할 수 있다. 종료 후 30일간 복구 가능하게 보관하고 만료 시 삭제한다.
 - UI에는 AI 배지를 넣지 않는다. 내부 이력에 생성 출처를 기록한다. 법률상 고지·표시 의무는 출시 전 검토한다.
 - 캘린더, 할 일, 사진 업로드는 제외한다.
+- 모든 UI 문구는 번역 리소스 기반이며, locale은 기기 언어 기본값과 앱 내 재정의를 지원한다. 한국어 우선 출시는 가정이고 영어를 구조 검증용 두 번째 리소스로 권장한다. 출시 언어 집합은 캡틴 결정 사항이다.
+- 앱의 독창적인 마스코트는 카탈로그 오브젝트이며 새 방의 기본 요소와 메인 페이지 요소다. base design은 고정하고 착용 슬롯·색상·표정·포즈 상태만 제한적으로 선택한다.
+- 방 테마는 낮/밤 variant를 모두 저장하며 모드는 `day | night | follow_time`이다. 자동 모드 기본값은 가정이다. UI 다크 모드는 별도 사용자 설정이며 `system` 기본값에 수동 light/dark override를 제공한다.
 
 ## 기술 맥락
 
 **언어/버전**: TypeScript, Expo SDK 58 (2026-10-15), React Native 0.88 (2026-10-19; SDK 58 지원), React Native Skia 3.7.4 (2026-10-23). 출시 시점에 SDK/Skia 호환 행렬을 다시 고정한다.
 
-**주요 의존성**: Expo Router, `@shopify/react-native-skia`, Supabase React Native 클라이언트, 서버 Edge Functions, Claude Messages API 구조화 출력.
+**주요 의존성**: Expo Router, Expo Localization (`expo-localization`), `i18next` + `react-i18next` 제안, `@shopify/react-native-skia`, Supabase React Native 클라이언트, 서버 Edge Functions, Claude Messages API 구조화 출력.
+
+### 다국어 구조 제안
+
+- 화면 컴포넌트에는 표시 문자열을 직접 쓰지 않고 네임스페이스별 번역 키를 호출한다. 키는 `area.component.state` 형태(예: `room.prompt.submit`)로 관리하고 interpolation 변수와 plural 규칙을 번역 리소스에 정의한다.
+- `expo-localization`으로 선호 locale을 읽고, `i18next`와 `react-i18next`로 언어별 리소스를 연결한다. 앱 내 선택은 기기 언어보다 우선한다. 날짜·숫자는 Hermes `Intl.DateTimeFormat` / `Intl.NumberFormat`으로 포맷하고 D-day 문구는 locale별 plural/문구 리소스를 쓴다.
+- 언어 추가 절차: 키 manifest 갱신 → 번역 → 누락/미사용 키 확인 → 승인 폰트의 문자 범위 확인 → pseudo-localization으로 문자열 길이·자리표시자 점검 → 기기 언어/앱 내 언어 변경과 레이아웃 검수. 한국어 우선 출시 및 영어 리소스를 이용한 구조 검증을 가정하되 출시 언어는 캡틴이 결정한다.
+- AI 프롬프트는 지원 언어 어느 것으로나 허용한다. AI는 요청 언어를 유지하며 커플이 쓴 방 문구는 입력 원문 그대로 저장한다. 서버 오류는 `VERSION_CONFLICT` 같은 언어 중립 코드만 반환하고 UI가 현재 locale 리소스에서 메시지를 선택한다.
+- 소스 확인일(2026-10-24): Expo 공식 [Localization 가이드](https://docs.expo.dev/guides/localization/)는 `expo-localization`, 앱 언어 선택, `Intl` 포맷을 안내하고 [expo-localization API](https://docs.expo.dev/versions/latest/sdk/localization/)에서 locale 정보를 제공한다. Expo 예시의 `i18n-js` 대신 키 기반 namespace와 React 통합을 위해 공식 [i18next 시작 문서](https://www.i18next.com/overview/getting-started) 및 [react-i18next 시작 문서](https://react.i18next.com/guides/quick-start)를 적용 후보로 제안한다.
+
+### 마스코트와 방 테마
+
+- 고정된 `app_mascot` 카탈로그 base object는 앱 소유의 독창 디자인이다. 새 커플 방에 기본 1개 배치하고 메인 페이지에도 표시한다. 머리·얼굴·목·손의 고정 슬롯에 카탈로그 아이템을 착용하며, 승인 팔레트 색·앱 정의 표정/포즈 상태를 선택한다. 위치와 크기는 보통 씬 오브젝트 규칙을 따른다.
+- 24–36개 자산 범위는 마스코트 포즈와 착용 아이템을 포함한다. 초기 30개 가정 분할은 포즈 4, 착용 아이템 8, 일반 장식 18이다. 마스코트는 씬 최대 16개 제한에 포함된다.
+- `RoomThemeDocument`는 `day`와 `night` 모두의 배경/팔레트 토큰 및 catalog asset variant를 보유하고 `day | night | follow_time` 표시 모드를 가진다. 기본 `follow_time`과 커플 시간대 기준은 캡틴 확인 전 가정/미결정으로 둔다. 사용자별 UI 모드는 `system | light | dark`, 기본 `system`이다.
+- validator는 마스코트 기본 자산의 단일성, slot과 item 일치, 팔레트·표정·포즈 variant 허용 여부를 검증한다. 보호 영역, 대비, 글자 가독성은 day/night 방 변형과 light/dark UI의 네 조합에서 확인한다.
 
 **저장소**: 제안 — Supabase Postgres. 커플 공간·초대·동의·테마 버전은 관계형 행으로, 확정 테마 스냅샷은 버전이 붙은 JSONB로 저장한다. 로컬은 마지막 확정 스냅샷과 필요한 라이선스 에셋을 캐시한다.
 
@@ -73,10 +91,13 @@ Expo / React Native 모바일 앱에 메인 D-day 화면과 둘만의 자유 배
 1. Supabase 프로젝트/리전과 Firebase 대안 비교 결과 승인, 데이터 처리 위치 및 예산 상한.
 2. Anthropic 개발 API 키를 발급하고 개발 환경 및 서버 secret store에 전달하며, 캡틴이 제공할 API 크레딧 잔액·월 지출 상한을 결정한다. 키는 이 문서·저장소·로그·앱에 기록하지 않는다.
 3. 초대 코드 만료 시간, 동시 사용 차단, 재발급 시 기존 코드 폐기 규칙.
-5. 프롬프트 원문 보관 기간, 버전 상한과 공간 종료 시 연결 계정/동의 이력의 삭제 범위.
-6. 초대 받은 사용자가 기존 다른 공간의 구성원일 수 있는지와 로그인 연령/미성년자 제한.
-7. 대한민국 AI 표시·개인정보 국외 이전 동의 법률 검토와 두 앱 스토어의 신고/차단 운영 책임자.
-8. 개발자 계정 소유 주체(개인/법인), 앱 이름·번들 ID, 도메인, 연락처·개인정보 처리방침 URL.
+4. 프롬프트 원문 보관 기간, 버전 상한과 공간 종료 시 연결 계정/동의 이력의 삭제 범위.
+5. 초대 받은 사용자가 기존 다른 공간의 구성원일 수 있는지와 로그인 연령/미성년자 제한.
+6. 대한민국 AI 표시·개인정보 국외 이전 동의 법률 검토와 두 앱 스토어의 신고/차단 운영 책임자.
+7. 개발자 계정 소유 주체(개인/법인), 앱 이름·번들 ID, 도메인, 연락처·개인정보 처리방침 URL.
+8. 두 번째 언어와 출시 언어 집합; 한국어 우선과 영어를 이용한 구조 검증은 작업 가정이다.
+9. 시간대 자동 방 테마 기본값의 기준 시간대; `follow_time`은 권장 기본값이며 공유용 시간대 선택은 남아 있다.
+10. 마스코트와 24~36개 asset split, 낮/밤 variant의 구체 목록·라이선스; 4개 마스코트 모습/포즈, 8개 착용품, 18개 일반 오브젝트는 stage-2용 제안이다.
 
 ## 저장소 구조 제안
 

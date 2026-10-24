@@ -5,8 +5,8 @@
 ## 공통 응답 / 오류
 
 - JSON UTF-8. 성공은 2xx, 잘못된 입력은 `400`, 미인증은 `401`, 권한 없음은 정보 누설 없는 `403`, stale version은 `409`, 한도 초과는 `429`, 일시적 장애는 `503`.
-- 오류 형태: `{ "error": { "code": "VERSION_CONFLICT", "messageKey": "room.versionConflict", "retryable": true } }`.
-- 앱 로케일 문자열은 `messageKey`로 표시하고 원문 프롬프트를 오류에 되풀이하지 않는다.
+- 오류 형태: `{ "error": { "code": "VERSION_CONFLICT", "retryable": true } }`. `code`는 언어 중립 안정 코드이며 앱이 현재 locale의 번역 리소스에서 사용자 메시지를 찾는다.
+- 오류 응답에 사용자 표시용 자연어 문구나 locale별 메시지 키를 넣지 않고 원문 프롬프트를 되풀이하지 않는다. 화면·설정·오류 문구는 앱 번역 리소스에서 제공한다.
 - 모든 변경 요청은 `Idempotency-Key` UUID를 받아 중복 tap/retry로 이중 적용되지 않게 한다.
 
 ## Auth / 초대
@@ -41,15 +41,27 @@
 
 ## D-day 및 조회
 
+### `PATCH /profile/preferences`
+
+요청: `{ "locale": "ko-KR" | null, "uiTheme": "system" | "light" | "dark" }`.
+
+`locale: null`은 기기 언어 기본값을 뜻한다. `uiTheme` 기본값은 `system`이며 사용자별 설정이다. 지원 locale 목록은 앱 번역 리소스 manifest와 일치해야 한다.
+
 ### `GET /spaces/{spaceId}/snapshot`
 
-구성원만 접근 가능. 응답은 공간 요약, 현재 버전의 `sceneDocument`, `roomPresentation`, 버전 번호, 카탈로그 버전, 서버 시간으로 구성한다. 인증 사용자는 해당 공간 구성원이 아니면 존재 여부도 확인할 수 없다.
+구성원만 접근 가능. 응답은 공간 요약, 현재 버전의 `sceneDocument`, `roomPresentation`, `roomThemeDocument`(낮/밤 자산·색 variant와 모드), 버전 번호, 카탈로그 버전, 서버 시간으로 구성한다. 사용자별 `locale` 및 `system | light | dark` UI 테마 설정은 프로필 설정 API로 읽고 저장한다. 인증 사용자는 해당 공간 구성원이 아니면 공간 존재 여부도 확인할 수 없다.
 
 ### `PATCH /spaces/{spaceId}/anniversary`
 
 요청: `{ "anniversaryDate": "YYYY-MM-DD", "expectedUpdatedAt": "RFC3339" }`.
 
 D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에게 sync한다. 잘못된 날짜 또는 stale state는 거절한다.
+
+### `PATCH /spaces/{spaceId}/room-mode`
+
+요청: `{ "mode": "day" | "night" | "follow_time", "expectedUpdatedAt": "RFC3339" }`.
+
+방 모드는 커플 공유 설정이다. 기본값 `follow_time`은 제품 가정이며 캡틴 확인이 필요하다. 시간대 자동 모드에서 사용할 커플 시간대 기준은 미결정이다.
 
 ## 동의 및 AI 미리보기
 
@@ -71,7 +83,7 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 }
 ```
 
-서버가 구성원/활성공간/동의/일일 한도/현재 버전/프롬프트 길이를 확인한 뒤 Anthropic을 부른다. prompt 외 최소한의 현재 scene JSON, D-day 표현 허용 토큰, 장면 viewport profile, 카탈로그의 ID/설명만 보낸다. 날짜, 사용자 식별자, 초대 코드, 이메일, 기타 공간 데이터는 보내지 않는다.
+서버가 구성원/활성공간/동의/일일 한도/현재 버전/프롬프트 길이를 확인한 뒤 Anthropic을 부른다. 지원되는 어느 언어의 prompt든 허용하며 결과 문구도 요청 언어를 보존한다. prompt 외 최소한의 현재 scene JSON, 낮/밤 테마 허용 토큰, D-day 표현 허용 토큰, 장면 viewport profile, 카탈로그의 ID/설명만 보낸다. 날짜, 사용자 식별자, 초대 코드, 이메일, 기타 공간 데이터는 보내지 않는다.
 
 성공 201: `{ "previewId": "uuid", "baseVersion": 12, "sceneDocument": {}, "roomPresentation": {}, "expiresAt": "RFC3339", "validation": { "status": "passed", "warnings": [] } }`.
 
