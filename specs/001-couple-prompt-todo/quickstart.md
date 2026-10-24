@@ -20,8 +20,29 @@
 - 보안 실패: 임의 필드, URL, SVG/HTML, script, 이벤트 속성, 알 수 없는/은퇴된 asset ID.
 - 기하 사례: 회전 bounding box, 장면 가장자리 밖 노드, 상단·하단 시스템 안전 영역, 실제 네이티브 컨트롤과 D-day 뷰 침범.
 - 기기 사례: 좁은/넓은 휴대전화 비율, 큰 글자 접근성 설정, 한글 줄바꿈, 텍스트 대비 하한.
+- 언어별 사례: `ko-KR`, `en-US`, `ja-JP`에서 날짜와 숫자 표기, 각 언어의 D-day 문구, 실제 번역·pseudo-localization 텍스트 확장, 줄바꿈과 긴 라벨.
+- 마스코트 사례: 새 방에 기본 마스코트 1개, 마스코트 포함 오브젝트 16개 경계, 슬롯과 불일치한 착용 아이템, 미허용 색/표정/포즈, base character 교체 요청.
+- room theme 사례: `day`, `night`, `follow_time` 설정과 각 낮/밤 variant의 배경/팔레트/asset ID 검증.
 
 예상: 같은 scene fixture가 서버와 앱에서 같은 검증 결과를 낸다. 위험한 후보는 미리보기나 저장 전에 거부되고 기존 버전은 그대로다.
+
+### A2. 언어 전환과 줄바꿈
+
+- 기기 언어에서 시작하고 설정에서 `ko-KR`, `en-US`, `ja-JP`를 각각 선택해 모든 화면 문자열, 날짜·숫자와 D-day wording 전환을 확인한다.
+- 실제 일본어 번역 및 각 언어의 pseudo-localized 긴 문자열을 인증, 초대, 설정, 프롬프트, 오류, 확인 패널에 표시한다. 좁은 화면과 큰 글자에서도 text expansion이 clipping을 만들거나 고정 컨트롤을 가리지 않는지 확인한다.
+- 세 launch language 모두로 prompt를 각각 작성한다. AI 입력을 허용하고 커플 작성 문구가 저장 값에서 번역/변경되지 않는지 확인한다.
+- 언어별 폰트 문자 범위, 줄높이, 글리프 누락을 확인한다. 서버 오류는 locale에 무관한 코드로 응답되고 앱의 선택 언어가 문구를 결정하는지 확인한다.
+
+예상: 앱 언어 변경만으로 지원 화면 문자열이 갱신되고, 긴 문구는 줄바꿈/확장으로 완전히 읽힌다. 사용자 작성 방 문구는 그대로 보존된다.
+
+### A3. 방 day/night 및 UI light/dark
+
+- day, night, follow_time 방 설정과 system, light, dark UI 설정을 조합해 렌더한다.
+- 네 조합(day+light, day+dark, night+light, night+dark) 각각에서 본문/작은 글자 4.5:1, 큰 글자 3:1 대비를 검사한다.
+- 각 조합에서 장면 오브젝트, 마스코트, 텍스트, D-day, 입력 패널, 고정 버튼에 대한 보호 영역과 터치·접근성 가독성을 확인한다.
+- 새 공간에서 생성자 IANA timezone으로 `follow_time`이 기본 선택되는지 확인한다. 설정에서 timezone/mode 변경 및 시간대 경계 동작을 확인한다.
+
+예상: 네 조합 모두 보호 영역, 대비, 텍스트 가독성 규칙을 충족하고 방 모드 전환으로 인터페이스의 독립적인 light/dark 설정이 깨지지 않는다.
 
 ### B. AI 후보 / 동의 / quota
 
@@ -36,8 +57,12 @@
 ### C. 두 멤버 권한·초대·실시간 sync
 
 - A와 B는 같은 공간을 읽고, C는 공간 ID를 알아도 읽기/수정/채널 구독 불가.
-- 만료·재사용·위조 초대 코드는 거절, 두 명을 채운 뒤 제3 멤버 수락 거절.
-- 두 기기가 같은 버전을 기반으로 동시에 confirm: 하나는 적용, 하나는 409로 최신 버전을 다시 읽는다.
+- 24시간 만료·재사용·위조 초대 코드는 거절, 두 명을 채운 뒤 제3 멤버 수락 거절; 재발급 시 기존 미사용 코드를 무효화.
+- A가 prompt-session을 점유 중이면 B는 공유 conversation/preview를 실시간 확인하지만 input, submit, apply는 사용할 수 없다. owner indicator와 composing/working 상태를 본다.
+- A/B 동시 acquire 중 하나만 성공하고 다른 한 명은 `SESSION_OCCUPIED` 및 owner/expiry를 본다.
+- A가 입력/생성하는 동안 heartbeat가 lease를 연장한다. A가 앱을 닫거나 3분 idle이 지나면 만료되고, B takeover 후 같은 대화와 preview를 이어서 본다.
+- cancel, confirm, undo에 성공하면 session이 해제되어 상대가 다음 acquire를 할 수 있다.
+- 서버에서 session owner를 우회해 두 기기가 동시에 confirm/apply하도록 race를 발생시켜도 하나만 성공하고 version/idempotency guard가 중복 적용을 막는다.
 - confirm/restore/undo 후 양쪽 화면이 동일한 version으로 sync된다.
 
 예상: 어느 API 경로와 Realtime 채널에서도 제3자 공간 데이터가 노출되지 않는다.
@@ -47,7 +72,8 @@
 - preview 직후 app 강제 종료/취소 후 current version이 바뀌지 않음.
 - confirm 이후 버전 스냅샷이 하나 추가되며 두 구성원이 같은 결과를 봄.
 - undo는 직전 상태를 새 스냅샷으로 재현하고, history 원본 버전은 불변.
-- 오래된 preview confirm은 자동 적용하지 않고 버전 충돌 UI로 돌아감.
+- Occupier만 preview를 적용할 수 있고, 성공한 confirm은 새 immutable snapshot 저장과 session release가 함께 처리됨.
+- 두 simultaneous apply를 서버에 직접 보내면 stale/idempotent guard로 하나만 저장되며, 일반 UX는 active lease가 request를 serialize.
 
 ### E. 오프라인 / 공간 종료
 

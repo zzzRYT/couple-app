@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://couple-app.invalid/contracts/room-prompt-session-v1.schema.json",
+  "title": "Room Prompt Session v1",
+  "description": "Shared room editing lease. Only one space member can occupy it at a time.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "sessionId", "ownerUserId", "status", "acquiredAt", "lastActivityAt", "expiresAt"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "sessionId": { "type": "string", "format": "uuid" },
+    "ownerUserId": { "type": "string", "format": "uuid" },
+    "status": { "type": "string", "enum": ["occupied", "released", "expired"] },
+    "acquiredAt": { "type": "string", "format": "date-time" },
+    "lastActivityAt": { "type": "string", "format": "date-time" },
+    "heartbeatAt": { "type": ["string", "null"], "format": "date-time" },
+    "expiresAt": { "type": "string", "format": "date-time" },
+    "releasedAt": { "type": ["string", "null"], "format": "date-time" },
+    "releaseReason": { "type": ["string", "null"], "enum": ["confirm", "cancel", "undo", "expired", null] },
+    "takeoverCount": { "type": "integer", "minimum": 0 }
+  }
+}

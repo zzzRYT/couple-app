@@ -2,6 +2,24 @@
 
 조사 기준일: 2026-10-24. 제품 범위는 확정 명세에 한정했다. 아래에서 **사실**은 연결한 공식/1차 자료를 뜻하고, **제안**은 본 설계 판단이다. 가격은 USD이며 한국 세금·환율·초과 사용료를 포함하지 않는다.
 
+## 0. 다국어 구조
+
+**사실:** Expo의 공식 Localization 가이드는 `expo-localization`으로 기기 locale을 읽고 앱별 언어 선택을 설정할 수 있음을 설명하며, 날짜·숫자 등은 Hermes의 `Intl` API를 이용해 포맷할 수 있다고 안내한다. 가이드는 `i18n-js` 예시를 사용한다. `react-i18next`는 React 통합 API와 `changeLanguage` 흐름을 문서화한다.
+
+**제안:** `i18next` + `react-i18next`의 key 기반 namespace 리소스, Expo locale 감지, JS `Intl.DateTimeFormat`/`Intl.NumberFormat` 포맷을 쓴다. D-day 어휘와 복수형은 locale resource key로 관리한다. 언어별 날짜 표기·숫자 grouping·plural 규칙을 확인한다: 한국어는 한국 관례, 영어는 `en-US`를 기본 변형으로 권장, 일본어는 일본어 D-day 문구/연월일 순서와 현지 숫자 관례를 사용한다. 한국어·영어·일본어가 출시 언어다. 언어별 번역 키 추가/누락 검사, 사람 검수, pseudo-localization, 텍스트 확장과 폰트 glyph 확인을 워크플로에 포함한다.
+
+출처(접근 2026-10-24): [Expo Localization guide](https://docs.expo.dev/guides/localization/), [Expo Localization API](https://docs.expo.dev/versions/latest/sdk/localization/), [i18next getting started](https://www.i18next.com/overview/getting-started), [react-i18next quick start](https://react.i18next.com/guides/quick-start).
+
+### 글꼴 계획과 배포 크기
+
+**제안 family set:** 앱에 `Inter` (Latin/Latin-ext, 영어 및 혼합 숫자)와 locale별 `Noto Sans KR` 및 `Noto Sans JP`를 각각 번들한다. Noto KR glyph로 일본어를, Noto JP glyph로 한글을 대신한다고 가정하지 않는다. 한국어 화면은 Noto Sans KR, 일본어 화면은 Noto Sans JP, 영어 화면은 Inter를 우선하고 혼합 문자는 Inter/locale font fallback 순서를 확인한다. 각 언어의 본문·버튼·긴 날짜·이모지 대체 glyph를 기기에서 검수한다.
+
+**라이선스:** Google Fonts 메타데이터는 Inter를 SIL Open Font License(OFL)로 표시한다. Noto CJK Sans의 공식 license는 OFL 1.1이며 폰트 배포 시 license/copyright notice를 동봉해야 한다. 실제 적용 전에는 각 사용 파일 및 version의 license, reserved font name 조건과 third-party notices를 manifest에 기록한다.
+
+**크기 영향:** 공식 Noto CJK repository의 subset variable TTF 파일 metadata는 `NotoSansKR-VF.ttf` 약 9.93 MB, `NotoSansJP-VF.ttf` 약 9.15 MB로 표시한다(합계 약 19.1 MB, 원본 파일 기준, Inter family 추가 전). 전체 CJK font/전 weight 세트 대신 필요한 KR/JP variant만 고른다. Expo 문서는 폰트를 포함한 정적 에셋이 앱 용량을 늘리며 실제 배포 크기는 빌드 아티팩트에서 분석해야 한다고 권한다. 이 수치는 다운로드/압축 후 앱 크기가 아니다. EAS release artifact에서 iOS/Android별 실제 용량을 측정하고 stage 2/구현에서 weight subset 여부를 확정한다.
+
+출처(접근 2026-10-24): [Inter official font metadata/license](https://github.com/google/fonts/blob/main/ofl/inter/METADATA.pb), [Noto Sans CJK format and regional variants](https://github.com/notofonts/noto-cjk/blob/main/Sans/README.md), [Noto Sans CJK OFL 1.1 license](https://github.com/notofonts/noto-cjk/blob/main/Sans/LICENSE), [Noto Sans KR subset variable TTF (9.93 MB)](https://github.com/notofonts/noto-cjk/blob/main/Sans/Variable/TTF/Subset/NotoSansKR-VF.ttf), [Noto Sans JP subset variable TTF (9.15 MB)](https://github.com/notofonts/noto-cjk/blob/main/Sans/Variable/TTF/Subset/NotoSansJP-VF.ttf), [Expo bundled font guidance](https://docs.expo.dev/develop/user-interface/fonts/), [Expo app-size guidance](https://docs.expo.dev/distribution/app-size/).
+
 ## 1. 모바일 프레임워크·장면 렌더링
 
 **결정 — 고정 요구사항:** Expo / React Native. 작성일 기준 Expo SDK 58은 2026-10-15 공개되었고, React Native 0.88은 2026-10-19 안정 릴리스되어 SDK 58에서 지원된다. React Native Skia 최신 안정 릴리스는 3.7.4 (2026-10-23)다. Skia는 장식 씬 렌더링에만 사용한다. 최신 Skia와 Expo 네이티브 의존성 호환 여부는 구현 초기 spike에서 확인하고, 호환되지 않으면 SDK 58과 호환되는 안정 Skia 버전을 고정한다.
@@ -30,6 +48,10 @@ Firestore 모바일 SDK의 오프라인 캐시와 실시간 리스너는 강점�
 
 출처(접근 2026-10-24): [Supabase 요금/포함량](https://supabase.com/docs/guides/platform/billing-on-supabase), [Supabase RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [Supabase Realtime](https://supabase.com/docs/guides/realtime), [Realtime Authorization](https://supabase.com/docs/guides/realtime/authorization), [Supabase Edge Function 제한](https://supabase.com/docs/guides/functions/limits), [Supabase Kakao OAuth](https://supabase.com/docs/guides/auth/social-login/auth-kakao), [Firebase 가격](https://firebase.google.com/pricing), [Firestore 과금](https://firebase.google.com/docs/firestore/pricing), [Firebase Functions 과금](https://firebase.google.com/docs/functions/faq-and-troubleshooting).
 
+**결정 — 캡틴 승인:** backend는 Supabase. primary DB/Auth/Storage region은 대한민국 사용자를 위한 Seoul `ap-northeast-2`를 권장 기본값으로 한다. Supabase 공식 region 목록에 Seoul이 있다. region 선택은 DB/Auth/Storage의 위치를 고르는 것이며 규제 준수 보장을 뜻하지 않는다. Supabase는 운영 telemetry/일부 metadata가 선택 region 밖에서 처리될 수 있다고 설명하므로 국외 이전 동의/법률 검토는 계속 필요하다.
+
+출처(접근 2026-10-24): [Supabase available regions](https://supabase.com/docs/guides/platform/regions), [Supabase regional Edge Function invocations](https://supabase.com/docs/guides/functions/regional-invocation), [Supabase Data Residency and Transfers FAQ (2026-10-06)](https://supabase.com/legal/privacy-resources/data-residency-and-transfers-faq).
+
 ## 3. 장면, 테마 버전, 서버·클라이언트 검증
 
 **결정 — 고정 요구사항:** 장면 문서는 카탈로그 2D 오브젝트와 짧은 텍스트로 제한한다. 생성 이미지, SVG 문자열, URL, 컴포넌트 트리, 스크립트, 이벤트 핸들러를 허용하지 않는다. D-day는 별도 의미 뷰 모델로 저장·표시되며 장면 캔버스에 포함하지 않는다.
@@ -38,7 +60,9 @@ Firestore 모바일 SDK의 오프라인 캐시와 실시간 리스너는 강점�
 
 서버는 Claude 응답을 JSON Schema로 구조화 출력하고, 이후 독립 검증기로 스키마·카탈로그·씬 수량·좌표·보호영역·겹침·텍스트 규칙을 확인한다. 실패 시 한 번만 제한된 repair prompt로 다시 요청하되, 실패가 반복되면 미리보기를 만들지 않고 현재 테마를 보존한다. 고정 규칙 검증이 모델의 자기 평가보다 권위가 있다. 클라이언트도 동일한 스키마/기하 규칙을 검증하고, 서버가 저장한 승인 후보의 해시/버전을 표시 직전에 확인한다.
 
-적용은 현재 버전 번호를 조건으로 한 트랜잭션이다. 승인 시 새 `ThemeVersion` 전체 스냅샷을 추가하고 current pointer를 이동한다. undo는 이전 승인 버전을 새 현재 버전으로 가리키는 복원 스냅샷을 추가한다. history는 읽기 전용이며 restore 전 확인을 요구한다. 미리보기/취소는 현재 버전을 변경하지 않는다. 동시 확인 시 최초 적용 후 stale preview는 `409 VERSION_CONFLICT`로 거절하고 최신 버전에서 다시 미리보기하도록 한다.
+적용은 prompt-session owner, 현재 버전 번호, idempotency key를 조건으로 한 transaction이다. confirm 시 새 `ThemeVersion` 전체 스냅샷을 추가하고 current pointer 이동 및 lease release를 함께 처리한다. undo는 이전 승인 버전을 새 복원 스냅샷으로 저장한다. history는 구성원 읽기 전용이며 restore 전 확인을 요구한다. preview/cancel은 현재 테마를 변경하지 않는다. occupancy가 정상 prompt 편집을 직렬화하고 server version guard는 예외 동시 apply/늦은 retry를 `409`로 차단한다.
+
+두 구성원이 같은 방을 동시에 편집하는 문제는 per-space lease로 직렬화한다. active lease owner만 입력·제출·적용하고, 상대는 shared transcript/preview를 Realtime으로 읽기 전용 구독한다. owner 활동이 멈추면 3분(가정) 후 lease가 만료되며 상대는 takeover할 수 있다. 서버는 session owner check와 expected version compare를 같은 transaction에서 수행해 드물게 도착한 동시 apply를 막는다. 일반 stale preview를 사용자 흐름의 기본 해결책으로 삼는 대신 독점 점유가 정상 경로를 직렬화하고, `409`는 만료/네트워크 지연 등 예외 경합의 최종 안전장치로 남긴다.
 
 기존 조사들은 모델의 공간 관계·타이포그래피 실패를 보고하므로 실제 기기 비율과 dynamic type에서 결정론적 검사를 실행해야 한다. 보호 영역은 고정 좌표가 아니라 런타임 네이티브 뷰 측정으로 만든다. 보호 박스와 장면 오브젝트/문구가 겹치면 우선 규칙 기반 재배치를 한 번 수행하고, 불가능하면 후보를 거부한다.
 
@@ -46,11 +70,11 @@ Firestore 모바일 SDK의 오프라인 캐시와 실시간 리스너는 강점�
 
 ## 4. AI 호출 흐름, 모델, 비용
 
-**흐름 제안:** 사용자가 프롬프트 입력 → 서버 함수가 인증된 구성원/공간 상태와 유효한 해외 처리 동의/일일 10회 한도 검사 → 현재 확정 장면의 허용 필드와 새 프롬프트만 최소 전달 → Anthropic 구조화 출력 호출 → JSON Schema, 정책·텍스트 moderation, 카탈로그 ID, 좌표/보호 영역 검사 → 실패 시 1회 repair 또는 안전한 오류 → 승인 대기 preview ID와 현재 버전 기준값 반환 → 클라이언트의 미리보기 → 사용자가 명시적으로 적용 → 서버가 버전 충돌/권한 재확인 후 새 스냅샷 저장 및 상대에게 Realtime 업데이트.
+**흐름 제안:** 구성원이 prompt-session lease acquire → 서버가 한 명의 owner만 허용하고 상대에게 owner/expiry presence 전달 → owner가 prompt 입력 → 서버가 권한·동의·하루 10회 한도 검사 후 AI 구조화 출력 요청 → JSON Schema·정책·카탈로그·좌표/보호영역 검사 → shared conversation에 prompt/preview를 저장하고 둘에게 ID 기반 Realtime 이벤트 전달 → 상대는 live read-only로 대화/preview 확인, owner만 confirm/cancel/undo → 서버가 session owner + expected version + idempotency를 transaction에서 검사, 적용 시 snapshot 저장과 lease release를 원자화. 활성 활동 heartbeat를 3분 idle 만료로 제한해 앱 종료 시 takeover가 가능하게 한다.
 
 모델에는 날짜 원본, 이메일, 카카오 식별자, 초대 코드, 계정 세부를 보내지 않는다. 프롬프트 속 지시를 시스템 명령으로 승격하지 않고, 모델에는 도구·네트워크·DB 권한을 주지 않는다. 입력/출력 문자열을 로그에 남기지 않으며 키나 원문이 포함되지 않도록 로그 필드를 allowlist로 정한다. 동의는 사용자별로 기록하되 두 사람 모두 자신의 동의를 해야 AI가 호출되게 하는 방식을 권장한다(캡틴 확인). 동의 철회는 이후 요청을 차단한다.
 
-**권장 모델:** Haiku 5.5 기본값, 실패/품질 낮은 요청만 Sonnet 5.5 승급. 두 모델은 공식 가격표에서 각 $0.10/$0.50 및 $2/$10 per MTok(입력/출력, Haiku ≤100K 입력)이다. 예산 예시: 신규 입력 1,500 토큰 + 캐시 읽기 3,000 토큰 + 출력 1,000 토큰이면 Haiku 약 **$0.00068/요청**, Sonnet 약 **$0.0133/요청**이다. 커플당 하루 10회 전부 사용 시 약 $0.0068 / $0.133 per couple-day다. retry 1회, 캐시 쓰기, 세금, 저장소/전송, Anthropic 크레딧 조건은 제외했다. 실제 프롬프트 30개와 앱 렌더 결과로 성공률·수정률·지연·실비용을 재서 최종 선택한다. 비용은 사용자가 결제하는 상품이 아니다.
+**결정 — 캡틴 승인:** Anthropic Haiku 5.5를 기본으로 하고, 품질 실패 사례에 한해 Sonnet 5.5로 제한 승급한다. 개발은 제공된 개발 credit을 사용한다. 두 모델은 공식 가격표에서 각 $0.10/$0.50 및 $2/$10 per MTok(입력/출력, Haiku ≤100K 입력)이다. 예산 예시: 신규 입력 1,500 토큰 + 캐시 읽기 3,000 토큰 + 출력 1,000 토큰이면 Haiku 약 **$0.00068/요청**, Sonnet 약 **$0.0133/요청**이다. 커플당 하루 10회 전부 사용 시 약 $0.0068 / $0.133 per couple-day다. retry 1회, 캐시 쓰기, 세금, 저장소/전송, Anthropic 크레딧 조건은 제외했다. 실제 프롬프트 30개와 앱 렌더 결과로 승급 기준·지연·실비용을 측정한다. 비용은 사용자가 결제하는 상품이 아니다.
 
 **안전:** OWASP LLM Prompt Injection 대응으로 출력 형식 강제, 최소 권한, 신뢰 불가 입력 분리, 모델 바깥 검증과 사람 확인을 사용한다. 단어 필터만으로 인젝션/위해 콘텐츠 차단이 보장된다고 보지 않는다. 위협 사례를 시스템/사용자 메시지 경계, 상대가 만든 장면 텍스트, 브랜드/실존 인물 요청, 자해·성적·폭력 요청 등으로 나눠 차단 규칙을 정한다. V1은 이미지 생성/공개 갤러리가 없지만 공유 UGC인 짧은 문구와 신고/차단 요구는 남는다. Apple 1.2의 필터·신고·대응·차단·연락처 요구와 Google Play UGC·AI 콘텐츠 정책의 출시 시점 문구를 재검토한다.
 
@@ -62,7 +86,7 @@ Firestore 모바일 SDK의 오프라인 캐시와 실시간 리스너는 강점�
 
 종료 요청은 즉시 `recovery_pending` 상태로 바꾸고 초대·편집·AI 요청을 차단한다. 종료 이벤트, 종료자, 만료 시각을 저장한다. 30일 내 어느 기존 멤버든 명확히 복구를 요청할 수 있다는 계약을 권장하되, 상대가 명시적 이의/차단을 한 경우 복구를 허용할지 캡틴 결정이 필요하다. 만료 후 사용자 프롬프트·장면·버전·초대·동의 이력을 포함한 복구 대상 데이터를 제거하고 삭제 결과를 감사한다. 법정 보존이 필요한 최소 거래/보안 기록 범위는 법률 검토한다.
 
-초대 만료 기간, 프롬프트 원문 보관, 회원 탈퇴와 공간 복구 충돌 정책은 명세 미확정 사항이다. 추천 초대 만료는 48시간이며, 재발급은 이전 미사용 코드도 무효화한다.
+초대 코드는 24시간에 만료되고 재발급 시 기존 미사용 코드를 무효화한다. 공간의 초대 수락은 DB transaction에서 한 번만 소비한다. 취소/만료 후보는 24시간 뒤 삭제하고, 적용된 prompt 원문과 대화 메시지는 30일 뒤 삭제하며, 종료된 공간은 30일 복구 기간 뒤 복구 대상 데이터를 삭제한다. 계정/동의 이력의 법적 삭제 범위와 공간 복구 경계는 법률 검토 후 세부화한다.
 
 ## 6. 오프라인, 캐시, 에셋 권리
 

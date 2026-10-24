@@ -13,8 +13,8 @@
     "y": { "type": "number", "minimum": 0, "maximum": 1 },
     "width": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
     "height": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
-    "styleToken": { "type": "string", "enum": ["day.default", "day.card", "day.minimal", "day.accent"] },
+    "styleToken": { "type": "string", "enum": ["day.default", "day.card", "day.minimal", "day.accent", "night.default", "night.card", "night.minimal", "night.accent"] },
     "textScale": { "type": "number", "minimum": 1, "maximum": 1.5 },
-    "surfaceToken": { "type": "string", "enum": ["surface.paper", "surface.soft", "surface.accent"] }
+    "surfaceToken": { "type": "string", "enum": ["surface.paper", "surface.soft", "surface.accent", "surface.night", "surface.nightSoft", "surface.nightAccent"] }
   }
 }
