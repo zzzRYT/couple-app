@@ -1,0 +1,100 @@
+# 설계 조사: 커플 D-day와 프롬프트 방
+
+조사 기준일: 2026-10-24. 제품 범위는 확정 명세에 한정했다. 아래에서 **사실**은 연결한 공식/1차 자료를 뜻하고, **제안**은 본 설계 판단이다. 가격은 USD이며 한국 세금·환율·초과 사용료를 포함하지 않는다.
+
+## 1. 모바일 프레임워크·장면 렌더링
+
+**결정 — 고정 요구사항:** Expo / React Native. 작성일 기준 Expo SDK 58은 2026-10-15 공개되었고, React Native 0.88은 2026-10-19 안정 릴리스되어 SDK 58에서 지원된다. React Native Skia 최신 안정 릴리스는 3.7.4 (2026-10-23)다. Skia는 장식 씬 렌더링에만 사용한다. 최신 Skia와 Expo 네이티브 의존성 호환 여부는 구현 초기 spike에서 확인하고, 호환되지 않으면 SDK 58과 호환되는 안정 Skia 버전을 고정한다.
+
+**제안:** Skia는 장식 그래프 전용 캔버스로 쓰고, 장면 밖에 네이티브 D-day 위젯/컨트롤을 쌓는다. 실제 화면 크기·안전 영역·접근성 글자 확대에서 계산한 보호 사각형과 오브젝트 경계 상자를 비교한다. 좌표는 정규화된 기준 캔버스에 저장하되 기기별 배율은 렌더 시 계산한다. 회전 오브젝트는 회전 경계 상자로 보수적으로 검사한다. 장식끼리의 겹침은 가능하지만 D-day·컨트롤·읽기 쉬워야 하는 텍스트 영역에는 겹치지 못한다.
+
+**대안:** 모든 요소를 RN View로 만들면 네이티브 접근성과 터치 처리가 단순하지만 회전·레이어·다수 노드의 일관된 프레임 성능을 확인해야 한다. Flutter는 맞춤 캔버스가 강하지만 확정된 Expo/React Native 방향을 다시 뒤집으므로 채택하지 않는다.
+
+출처(접근 2026-10-24): [Expo SDK 58 릴리스](https://expo.dev/changelog/sdk-58), [React Native 0.88 릴리스(2026-10-19)](https://reactnative.dev/blog/2026/10/19/react-native-0.88), [React Native 지원 버전](https://reactnative.dev/releases/), [React Native Skia 릴리스 목록(3.7.4, 2026-10-23)](https://github.com/Shopify/react-native-skia/releases).
+
+## 2. 서버·데이터베이스 선택
+
+### 권장: Supabase
+
+Postgres의 외래 키·고유 제약·트랜잭션으로 공간에 구성원 2명 제한, 초대 코드 일회성 소비, 버전 포인터 갱신을 DB에서 원자화할 수 있다. RLS를 `space_id` 및 인증된 구성원 기준으로 모든 공유 테이블에 적용한다. Realtime은 `room_theme_versions` 또는 현재 테마 갱신 이벤트를 커플 구성원에게만 보낸다. 서버 함수는 동의·권한·일일 한도·스키마를 확인하고 Anthropic을 호출한다. 클라이언트에는 service-role 키나 Anthropic 키를 배포하지 않는다.
+
+Supabase 공식 문서상 Free는 프로젝트 2개, 500MB DB/프로젝트, 월 50,000 MAU, 500,000 Edge Function 호출, 2M Realtime 메시지다. Pro는 월 $25부터이며 DB 8GB, 100,000 MAU, 2M Edge Function 호출, 5M Realtime 메시지가 포함된다. 운영 데이터에 장기 보관과 백업이 필요하면 출시 전 유료 플랜을 예산에 반영한다. Kakao Auth를 별도 문서화해 OAuth 설정 비용이 있다.
+
+### 비교: Firebase
+
+Firestore 모바일 SDK의 오프라인 캐시와 실시간 리스너는 강점이고, Spark 무료 한도는 일일 읽기 50,000회/쓰기 20,000회/저장 1GiB다. Blaze는 사용량 결제이며 Functions 호출 2M/월, 400K GB-sec, 200K CPU-sec, 5GB egress의 무료 한도가 있다. 하지만 계층형 문서 권한, 커플과 버전 연결, 복합 데이터 무결성은 Security Rules/Cloud Functions 설계에 더 의존한다. Kakao OAuth를 위해 custom token 교량이 필요할 수 있다. Supabase보다 SQL 제약과 내보내기 질의가 덜 직접적이다.
+
+### 비교 판단
+
+두 명만의 공유 데이터, 원자적 버전 확정, 임의의 장면 JSON 검증 이력을 위해 Supabase를 우선 제안한다. 팀이 Firebase 운영 경험을 갖고 있거나 오프라인 편집을 요구사항으로 확장하면 Firebase 재평가가 합리적이다. 장면 편집은 V1에서 온라인 전용이므로 Firestore의 오프라인 쓰기 강점은 필수 요건이 아니다.
+
+출처(접근 2026-10-24): [Supabase 요금/포함량](https://supabase.com/docs/guides/platform/billing-on-supabase), [Supabase RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [Supabase Realtime](https://supabase.com/docs/guides/realtime), [Realtime Authorization](https://supabase.com/docs/guides/realtime/authorization), [Supabase Edge Function 제한](https://supabase.com/docs/guides/functions/limits), [Supabase Kakao OAuth](https://supabase.com/docs/guides/auth/social-login/auth-kakao), [Firebase 가격](https://firebase.google.com/pricing), [Firestore 과금](https://firebase.google.com/docs/firestore/pricing), [Firebase Functions 과금](https://firebase.google.com/docs/functions/faq-and-troubleshooting).
+
+## 3. 장면, 테마 버전, 서버·클라이언트 검증
+
+**결정 — 고정 요구사항:** 장면 문서는 카탈로그 2D 오브젝트와 짧은 텍스트로 제한한다. 생성 이미지, SVG 문자열, URL, 컴포넌트 트리, 스크립트, 이벤트 핸들러를 허용하지 않는다. D-day는 별도 의미 뷰 모델로 저장·표시되며 장면 캔버스에 포함하지 않는다.
+
+**제안:** 문서는 `schemaVersion`, `canvasProfile`, `objects[]`, `texts[]`를 갖는다. 노드는 `assetId`, 정규화 중심점/크기, 회전, 순서, 투명도만 허용한다. `assetId`는 서버 관리 카탈로그와 정확히 일치해야 한다. 텍스트는 UTF-8 유효성, 길이, 줄 수, 금칙 제어 문자, 대비와 최소 글자 크기 정책을 검사한다. D-day 표현은 `RoomPresentation`에 위치·크기·허용 팔레트·스타일 preset·표시 여부만 담고, 날짜 값은 `CoupleSpace.anniversaryDate`에서 계산한다.
+
+서버는 Claude 응답을 JSON Schema로 구조화 출력하고, 이후 독립 검증기로 스키마·카탈로그·씬 수량·좌표·보호영역·겹침·텍스트 규칙을 확인한다. 실패 시 한 번만 제한된 repair prompt로 다시 요청하되, 실패가 반복되면 미리보기를 만들지 않고 현재 테마를 보존한다. 고정 규칙 검증이 모델의 자기 평가보다 권위가 있다. 클라이언트도 동일한 스키마/기하 규칙을 검증하고, 서버가 저장한 승인 후보의 해시/버전을 표시 직전에 확인한다.
+
+적용은 현재 버전 번호를 조건으로 한 트랜잭션이다. 승인 시 새 `ThemeVersion` 전체 스냅샷을 추가하고 current pointer를 이동한다. undo는 이전 승인 버전을 새 현재 버전으로 가리키는 복원 스냅샷을 추가한다. history는 읽기 전용이며 restore 전 확인을 요구한다. 미리보기/취소는 현재 버전을 변경하지 않는다. 동시 확인 시 최초 적용 후 stale preview는 `409 VERSION_CONFLICT`로 거절하고 최신 버전에서 다시 미리보기하도록 한다.
+
+기존 조사들은 모델의 공간 관계·타이포그래피 실패를 보고하므로 실제 기기 비율과 dynamic type에서 결정론적 검사를 실행해야 한다. 보호 영역은 고정 좌표가 아니라 런타임 네이티브 뷰 측정으로 만든다. 보호 박스와 장면 오브젝트/문구가 겹치면 우선 규칙 기반 재배치를 한 번 수행하고, 불가능하면 후보를 거부한다.
+
+출처(접근 2026-10-24): [FloorplanQA, ICML 2026](https://proceedings.mlr.press/v306/rodionov26a.html), [GraphicDesignBench](https://arxiv.org/abs/2604.04192), [GraphicBench](https://arxiv.org/abs/2504.11571), [Anthropic Structured Outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs), [Anthropic Models](https://platform.claude.com/docs/en/about-claude/models/overview).
+
+## 4. AI 호출 흐름, 모델, 비용
+
+**흐름 제안:** 사용자가 프롬프트 입력 → 서버 함수가 인증된 구성원/공간 상태와 유효한 해외 처리 동의/일일 10회 한도 검사 → 현재 확정 장면의 허용 필드와 새 프롬프트만 최소 전달 → Anthropic 구조화 출력 호출 → JSON Schema, 정책·텍스트 moderation, 카탈로그 ID, 좌표/보호 영역 검사 → 실패 시 1회 repair 또는 안전한 오류 → 승인 대기 preview ID와 현재 버전 기준값 반환 → 클라이언트의 미리보기 → 사용자가 명시적으로 적용 → 서버가 버전 충돌/권한 재확인 후 새 스냅샷 저장 및 상대에게 Realtime 업데이트.
+
+모델에는 날짜 원본, 이메일, 카카오 식별자, 초대 코드, 계정 세부를 보내지 않는다. 프롬프트 속 지시를 시스템 명령으로 승격하지 않고, 모델에는 도구·네트워크·DB 권한을 주지 않는다. 입력/출력 문자열을 로그에 남기지 않으며 키나 원문이 포함되지 않도록 로그 필드를 allowlist로 정한다. 동의는 사용자별로 기록하되 두 사람 모두 자신의 동의를 해야 AI가 호출되게 하는 방식을 권장한다(캡틴 확인). 동의 철회는 이후 요청을 차단한다.
+
+**권장 모델:** Haiku 5.5 기본값, 실패/품질 낮은 요청만 Sonnet 5.5 승급. 두 모델은 공식 가격표에서 각 $0.10/$0.50 및 $2/$10 per MTok(입력/출력, Haiku ≤100K 입력)이다. 예산 예시: 신규 입력 1,500 토큰 + 캐시 읽기 3,000 토큰 + 출력 1,000 토큰이면 Haiku 약 **$0.00068/요청**, Sonnet 약 **$0.0133/요청**이다. 커플당 하루 10회 전부 사용 시 약 $0.0068 / $0.133 per couple-day다. retry 1회, 캐시 쓰기, 세금, 저장소/전송, Anthropic 크레딧 조건은 제외했다. 실제 프롬프트 30개와 앱 렌더 결과로 성공률·수정률·지연·실비용을 재서 최종 선택한다. 비용은 사용자가 결제하는 상품이 아니다.
+
+**안전:** OWASP LLM Prompt Injection 대응으로 출력 형식 강제, 최소 권한, 신뢰 불가 입력 분리, 모델 바깥 검증과 사람 확인을 사용한다. 단어 필터만으로 인젝션/위해 콘텐츠 차단이 보장된다고 보지 않는다. 위협 사례를 시스템/사용자 메시지 경계, 상대가 만든 장면 텍스트, 브랜드/실존 인물 요청, 자해·성적·폭력 요청 등으로 나눠 차단 규칙을 정한다. V1은 이미지 생성/공개 갤러리가 없지만 공유 UGC인 짧은 문구와 신고/차단 요구는 남는다. Apple 1.2의 필터·신고·대응·차단·연락처 요구와 Google Play UGC·AI 콘텐츠 정책의 출시 시점 문구를 재검토한다.
+
+출처(접근 2026-10-24): [Haiku 5.5 모델/가격/출시일(2026-10-07)](https://platform.claude.com/docs/en/models/haiku-5-5/overview), [Sonnet 5.5 모델](https://platform.claude.com/docs/en/models/sonnet-5-5/overview), [Anthropic 가격표](https://platform.claude.com/docs/en/about-claude/pricing), [Anthropic 구조화 출력](https://platform.claude.com/docs/en/build-with-claude/structured-outputs), [Anthropic 데이터 보관 정책](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention), [OWASP LLM01](https://genai.owasp.org/llmrisk/llm01-prompt-injection/), [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/), [Google Play UGC](https://support.google.com/googleplay/android-developer/answer/18258653?hl=en), [Google Play AI-generated content](https://support.google.com/googleplay/android-developer/answer/13985936?hl=en).
+
+## 5. 로그인, 초대, 공간 종료
+
+카카오/Apple OAuth와 이메일 로그인은 Supabase Auth 제안과 맞는다. 소셜 callback은 Expo universal link/deep link로 처리한다. 이메일은 짧은 수명의 링크/OTP 정책과 재전송 제한을 둔다. 초대 코드는 무작위 고엔트로피 값의 해시만 저장하며 원문은 발급 순간에 한 번만 보여 준다. 만료 시각과 consumed_at을 DB에서 원자적으로 검사한다. 공유 공간은 정확히 두 사용자만 허용하는 고유 제약과 RLS를 갖는다. 초대 수락으로 다른 사람의 기존 공간에 몰래 연결되는 것을 막고, 가입/수락 전 공간 구성원을 보여 주며 확인을 받는다.
+
+종료 요청은 즉시 `recovery_pending` 상태로 바꾸고 초대·편집·AI 요청을 차단한다. 종료 이벤트, 종료자, 만료 시각을 저장한다. 30일 내 어느 기존 멤버든 명확히 복구를 요청할 수 있다는 계약을 권장하되, 상대가 명시적 이의/차단을 한 경우 복구를 허용할지 캡틴 결정이 필요하다. 만료 후 사용자 프롬프트·장면·버전·초대·동의 이력을 포함한 복구 대상 데이터를 제거하고 삭제 결과를 감사한다. 법정 보존이 필요한 최소 거래/보안 기록 범위는 법률 검토한다.
+
+초대 만료 기간, 프롬프트 원문 보관, 회원 탈퇴와 공간 복구 충돌 정책은 명세 미확정 사항이다. 추천 초대 만료는 48시간이며, 재발급은 이전 미사용 코드도 무효화한다.
+
+## 6. 오프라인, 캐시, 에셋 권리
+
+오프라인에서는 마지막 서버 확정 장면/표현과 D-day를 읽기 전용으로 보여 준다. 확인되지 않은 preview는 앱 재시작 후 폐기하고, 복구 작업은 서버 연결과 최신 버전 확인이 필요하다. 프롬프트·confirm·invite·end/recover는 온라인 전용이다. 카탈로그는 버전 있는 manifest와 checksum을 갖고 앱 번들에 기본 세트를 포함해 첫 실행도 오프라인 렌더가 가능하도록 한다. 이후 manifest 갱신은 앱 검증 경로를 거치고 임의 URL을 문서가 직접 참조하지 않는다. 캐시는 LRU/용량 제한을 두며 장면 참조가 남은 에셋을 먼저 제거하지 않는다.
+
+초기 24~36개 2D 오브젝트는 직접 의뢰한 그림 또는 CC0/상업 사용을 허용하는 명시적 라이선스를 우선한다. 계약서에는 앱 번들·캐시 전달·수정·홍보 이미지 사용권을 쓴다. CC BY는 앱 내 크레딧을 포함하고, share-alike·비상업·재배포 제한 스톡은 별도 법률 승인 전 채택하지 않는다. 각 에셋 레코드에 ID, 제작자, 원본 URL/계약, 라이선스 버전, 저작권/출처 표시, 포함 앱 버전, 파일 checksum, 크기, 포맷, 폐기 상태를 둔다.
+
+출처: 제공된 시각 에셋·권리 조사(2026-10-24), [Kenney 라이선스](https://kenney.nl/support), [Creative Commons CC0](https://creativecommons.org/publicdomain/zero/1.0/), [Apple App Review Guidelines 2.5.2 / 1.2](https://developer.apple.com/app-store/review/guidelines/). URL은 접근 2026-10-24.
+
+## 7. 빌드, 스토어 심사, 검증
+
+EAS Build/Submit에서 iOS/Android 내부 QA 빌드를 만든 뒤 TestFlight 및 Play internal testing으로 심사 전 시험한다. EAS 무료 계획은 월 Android 15 + iOS 15 빌드와 Workflows 60분을 제공하고, Starter는 $19/월에 $45 빌드 크레딧을 제공한다(공식 가격, 2026-10-24). 조직은 Apple Developer Program($99/년) 및 Play Console($25 1회) 계정을 준비한다.
+
+리뷰 제출은 스토어가 요구하는 신고·차단·연락처·부적절 콘텐츠 대응 동작을 설명하고, 검토자가 즉시 로그인할 수 있는 리뷰 계정과 **사전 고정 샘플 방**을 제공한다. 리뷰 메모에는 화면 데이터가 서버에서 내려와도 앱에 미리 컴파일된 고정 렌더러가 허용된 데이터만 표시하며 새 코드·스크립트·기능을 다운로드하지 않는다고 설명한다. Apple/Google의 정책상 1:1 비공개 공간이 예외라고 가정하지 않는다. 앱 설명 및 첫 AI 호출 전에 해외 제3자 처리 동의 UI를 보여 준다. 국내 AI 기본법 표시 요건과 AI 사용 고지 위치는 법률 검토 후 정한다. 내부 provenance 기록은 UI 배지 요구의 대체로 법적 준수를 보장하지 않는다.
+
+검증 전략: JSON Schema 자체와 알 수 없는 필드 거부, 16/3 수량 경계, 정규화 좌표 경계, 허용 ID/폐기 ID, 회전 경계 상자, 2개 이상의 종횡비 및 동적 글자 크기 보호 영역, 최소 글자 대비/줄 수를 단위 테스트한다. 서버/클라이언트 공통 fixture로 검증 결과 동일성을 보장한다. 통합 테스트는 RLS에서 본인 공간/상대 공간/제3자 시도, 초대 만료·재사용, 두 confirm race, API timeout/유효하지 않은 모델 출력, 동의 철회, 10회 초과, 30일 보관/삭제를 다룬다. 테스트/스냅샷에 실제 키나 실제 사용자 프롬프트를 넣지 않는다.
+
+출처(접근 2026-10-24): [EAS 가격](https://expo.dev/pricing), [EAS 계획](https://docs.expo.dev/billing/plans/), [Apple Developer Program](https://developer.apple.com/programs), [Google Play Console 등록](https://support.google.com/googleplay/android-developer/answer/6112435?hl=en), [Google Play 앱 콘텐츠 등급](https://support.google.com/googleplay/android-developer/answer/9859655?hl=en), [한국 AI 기본법 제31조](https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1031810715), [AI 기본법 시행령 제23조](https://www.law.go.kr/LSW/lsSideInfoP.do?docCls=jo&joBrNo=00&joNo=0023&lsiSeq=288781&urlMode=lsScJoRltInfoR).
+
+## 8. 캡틴 준비물과 대략 비용
+
+| 준비 항목 | 캡틴이 만들거나 정할 것 | 대략 비용 / 기준 |
+|---|---|---|
+| Apple Developer | 개인/조직 계정, 법인 선택, 앱 판매자명 | $99/년; 적격 단체는 면제 가능 |
+| Google Play Console | 게시자 계정, 신원/연락처 인증 | $25 1회 |
+| Expo/EAS | Expo 조직과 프로젝트, 빌드 비밀 변수 보관 담당 | 무료부터(15 iOS + 15 Android builds/월); Starter $19/월 |
+| Anthropic | API 조직/개발 키를 개인 개발 환경에서 발급, 서버 secret store에 별도 입력, dev/prod 비용 상한 및 잔액 확인 | 키 생성 자체는 무료; 토큰 사용료 발생. 위 요청 모델 기준 Haiku 약 $0.00068, Sonnet 약 $0.0133/요청의 가정 예시 |
+| Backend | Supabase 계정/한국 리전 가용성 확인/프로젝트, 조직 소유자 및 결제자 지정 | 프로토타입 Free; 운영 Pro $25/월 + 필요 추가 컴퓨트/사용량 제안 |
+| 도메인·법률 페이지 | 도메인 이름과 DNS, 개인정보 처리방침/약관/AI 해외 처리 문서 공개 위치 | 일반 `.com` 연 $10–20 대략값(등록기관/세금/갱신에 따라 다름); 법률 작성 비용 별도 견적 |
+| 카카오 로그인 | 카카오 디벨로퍼 앱, 사업자/개인 정책 검토, Redirect URI 및 동의항목 | 카카오 정책에 따라 확인; 계정과 앱을 캡틴이 생성 |
+| Apple 로그인 | Services ID/앱 ID, redirect domain | Apple 계정과 개발자 프로그램 소유자 필요 |
+| 에셋 제작 | 24–36개 권리 확정 원본과 제작 계약 | 범위·작가 견적 필요(현재 산정 불가) |
+| 스토어 정책 운영 | 신고 접수 연락처, block/report 대응 운영자, 연령/UGC 분류·법률 검토 | 운영 인력/법률 비용 산정 필요 |
+
+가격은 접근일 기준 공식 페이지 또는 일반 도메인 범위의 참고치며, 실제 결제 전 캡틴이 지역 통화·세금·사업자 조건을 확인해야 한다. [Squarespace 도메인 가격 안내](https://domains.squarespace.com/blog/how-much-does-a-domain-name-cost) (접근 2026-10-24)에서는 `.com` 일반 범위가 연 $10–20이라고 제시한다.
