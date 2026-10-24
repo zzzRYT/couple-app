@@ -1,0 +1,351 @@
+{
+  "v": 3,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-10-24T12:00:00Z"
+  },
+  "title": "커플 앱 시각 설계 · 최종 방향 A",
+  "launch": {
+    "view": "focused",
+    "file": "Main.dc.html"
+  },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1380,
+      "h": 3900,
+      "title": "0. 최종 방향 A · 개요(1단계 기록 포함)",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "A.dc.html": {
+      "x": 1460,
+      "y": 0,
+      "w": 1380,
+      "h": 4800,
+      "title": "A. 손그림 따뜻함 · 최종 방향(1단계 시안)",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "B.dc.html": {
+      "x": 2920,
+      "y": 0,
+      "w": 1380,
+      "h": 4800,
+      "title": "B. 평면 도형 · 대체됨(참고용 시안)",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "S00-overview.dc.html": {
+      "x": 0,
+      "y": 5300,
+      "w": 1760,
+      "h": 1973,
+      "title": "S00 단계 2 개요",
+      "expand": "fill"
+    },
+    "S01-onboarding.dc.html": {
+      "x": 1840,
+      "y": 5300,
+      "w": 1760,
+      "h": 4470,
+      "title": "S01 온보딩 · 시작",
+      "expand": "fill"
+    },
+    "S02-login.dc.html": {
+      "x": 3680,
+      "y": 5300,
+      "w": 1760,
+      "h": 9158,
+      "title": "S02 로그인 · 인증",
+      "expand": "fill"
+    },
+    "S03-couple-space.dc.html": {
+      "x": 5520,
+      "y": 5300,
+      "w": 1760,
+      "h": 6361,
+      "title": "S03 커플 공간 생성",
+      "expand": "fill"
+    },
+    "S04-invite-create.dc.html": {
+      "x": 0,
+      "y": 14898,
+      "w": 1760,
+      "h": 10063,
+      "title": "S04 초대 코드 생성 · 공유",
+      "expand": "fill"
+    },
+    "S05-invite-enter.dc.html": {
+      "x": 1840,
+      "y": 14898,
+      "w": 1760,
+      "h": 10063,
+      "title": "S05 초대 코드 입력 · 수락",
+      "expand": "fill"
+    },
+    "S06-main-dday.dc.html": {
+      "x": 3680,
+      "y": 14898,
+      "w": 1760,
+      "h": 10090,
+      "title": "S06 메인 D-day",
+      "expand": "fill"
+    },
+    "S07-room.dc.html": {
+      "x": 5520,
+      "y": 14898,
+      "w": 1760,
+      "h": 15437,
+      "title": "S07 방 페이지",
+      "expand": "fill"
+    },
+    "S08-prompt-session.dc.html": {
+      "x": 0,
+      "y": 30775,
+      "w": 1760,
+      "h": 13855,
+      "title": "S08 공유 프롬프트 세션",
+      "expand": "fill"
+    },
+    "S09-preview-confirm.dc.html": {
+      "x": 1840,
+      "y": 30775,
+      "w": 1760,
+      "h": 9158,
+      "title": "S09 미리 보기 · 적용 확인",
+      "expand": "fill"
+    },
+    "S10-undo.dc.html": {
+      "x": 3680,
+      "y": 30775,
+      "w": 1760,
+      "h": 7294,
+      "title": "S10 되돌리기 확인",
+      "expand": "fill"
+    },
+    "S11-history.dc.html": {
+      "x": 5520,
+      "y": 30775,
+      "w": 1760,
+      "h": 9158,
+      "title": "S11 버전 기록 · 복구",
+      "expand": "fill"
+    },
+    "S12-ai-consent.dc.html": {
+      "x": 0,
+      "y": 45070,
+      "w": 1760,
+      "h": 7294,
+      "title": "S12 해외 AI 처리 동의",
+      "expand": "fill"
+    },
+    "S13-settings.dc.html": {
+      "x": 1840,
+      "y": 45070,
+      "w": 1760,
+      "h": 10090,
+      "title": "S13 설정",
+      "expand": "fill"
+    },
+    "S14-end-space.dc.html": {
+      "x": 3680,
+      "y": 45070,
+      "w": 1760,
+      "h": 10090,
+      "title": "S14 공간 종료 · 복구",
+      "expand": "fill"
+    },
+    "S15-report-block.dc.html": {
+      "x": 5520,
+      "y": 45070,
+      "w": 1760,
+      "h": 8199,
+      "title": "S15 신고 · 차단",
+      "expand": "fill"
+    },
+    "S16-system-states.dc.html": {
+      "x": 0,
+      "y": 55600,
+      "w": 1760,
+      "h": 9158,
+      "title": "S16 공통 오류·빈·로딩·오프라인",
+      "expand": "fill"
+    },
+    "S17-mascot.dc.html": {
+      "x": 1840,
+      "y": 55600,
+      "w": 1760,
+      "h": 7176,
+      "title": "S17 마스코트",
+      "expand": "fill"
+    },
+    "S18-assets.dc.html": {
+      "x": 3680,
+      "y": 55600,
+      "w": 1760,
+      "h": 6024,
+      "title": "S18 에셋 카탈로그 · 사양",
+      "expand": "fill"
+    },
+    "S19-type-tokens.dc.html": {
+      "x": 5520,
+      "y": 55600,
+      "w": 1760,
+      "h": 5459,
+      "title": "S19 글꼴 · 토큰",
+      "expand": "fill"
+    },
+    "S20-accessibility.dc.html": {
+      "x": 0,
+      "y": 65198,
+      "w": 1760,
+      "h": 6674,
+      "title": "S20 접근성 · 대비",
+      "expand": "fill"
+    },
+    "S21-long-text.dc.html": {
+      "x": 1840,
+      "y": 65198,
+      "w": 1760,
+      "h": 9112,
+      "title": "S21 긴 문구 · 3개 언어",
+      "expand": "fill"
+    },
+    "S22-components.dc.html": {
+      "x": 3680,
+      "y": 65198,
+      "w": 1760,
+      "h": 7694,
+      "title": "S22 컴포넌트",
+      "expand": "fill"
+    },
+    "S23-tab-home.dc.html": {
+      "x": 5520,
+      "y": 65198,
+      "w": 1760,
+      "h": 10090,
+      "title": "S23 홈 탭",
+      "expand": "fill"
+    },
+    "S24-tab-room.dc.html": {
+      "x": 0,
+      "y": 75728,
+      "w": 1760,
+      "h": 10090,
+      "title": "S24 방 탭",
+      "expand": "fill"
+    },
+    "S25-tab-history.dc.html": {
+      "x": 1840,
+      "y": 75728,
+      "w": 1760,
+      "h": 8226,
+      "title": "S25 기록 탭",
+      "expand": "fill"
+    },
+    "S26-tab-settings.dc.html": {
+      "x": 3680,
+      "y": 75728,
+      "w": 1760,
+      "h": 10063,
+      "title": "S26 설정 탭",
+      "expand": "fill"
+    },
+    "S27-navigation.dc.html": {
+      "x": 5520,
+      "y": 75728,
+      "w": 1760,
+      "h": 2194,
+      "title": "S27 탭 구조 · 이동",
+      "expand": "fill"
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "A.dc.html",
+    "B.dc.html",
+    "S00-overview.dc.html",
+    "S01-onboarding.dc.html",
+    "S02-login.dc.html",
+    "S03-couple-space.dc.html",
+    "S04-invite-create.dc.html",
+    "S05-invite-enter.dc.html",
+    "S06-main-dday.dc.html",
+    "S07-room.dc.html",
+    "S08-prompt-session.dc.html",
+    "S09-preview-confirm.dc.html",
+    "S10-undo.dc.html",
+    "S11-history.dc.html",
+    "S12-ai-consent.dc.html",
+    "S13-settings.dc.html",
+    "S14-end-space.dc.html",
+    "S15-report-block.dc.html",
+    "S16-system-states.dc.html",
+    "S17-mascot.dc.html",
+    "S18-assets.dc.html",
+    "S19-type-tokens.dc.html",
+    "S20-accessibility.dc.html",
+    "S21-long-text.dc.html",
+    "S22-components.dc.html",
+    "S23-tab-home.dc.html",
+    "S24-tab-room.dc.html",
+    "S25-tab-history.dc.html",
+    "S26-tab-settings.dc.html",
+    "S27-navigation.dc.html"
+  ],
+  "notes": {
+    "row0": {
+      "x": 0,
+      "y": 5000,
+      "text": "단계 2 · 방향 A · S00–S03",
+      "kind": "title1",
+      "maxW": 7280
+    },
+    "row1": {
+      "x": 0,
+      "y": 14598,
+      "text": "단계 2 · 방향 A · S04–S07",
+      "kind": "title1",
+      "maxW": 7280
+    },
+    "row2": {
+      "x": 0,
+      "y": 30475,
+      "text": "단계 2 · 방향 A · S08–S11",
+      "kind": "title1",
+      "maxW": 7280
+    },
+    "row3": {
+      "x": 0,
+      "y": 44770,
+      "text": "단계 2 · 방향 A · S12–S15",
+      "kind": "title1",
+      "maxW": 7280
+    },
+    "row4": {
+      "x": 0,
+      "y": 55300,
+      "text": "단계 2 · 방향 A · S16–S19",
+      "kind": "title1",
+      "maxW": 7280
+    },
+    "row5": {
+      "x": 0,
+      "y": 64898,
+      "text": "단계 2 · 방향 A · S20–S23",
+      "kind": "title1",
+      "maxW": 7280
+    },
+    "row6": {
+      "x": 0,
+      "y": 75428,
+      "text": "단계 2 · 방향 A · S24–S27",
+      "kind": "title1",
+      "maxW": 7280
+    }
+  },
+  "designSystems": []
+}
