@@ -77,7 +77,7 @@
 | `onb.p2.title` | 프롬프트로 우리 방을 꾸며요 | Decorate your room with a prompt | プロンプトでふたりの部屋を飾ろう |
 | `onb.p2.body` | 원하는 분위기를 글로 적으면 미리 보기가 나와요. 마음에 들 때만 적용해요. | Describe the mood you want and see a preview. Apply it only when you like it. | 好きな雰囲気を書くとプレビューが出ます。気に入ったときだけ反映できます。 |
 | `onb.p3.title` | 방에는 마스코트가 함께 있어요 | A mascot lives in your room | 部屋にはマスコットがいます |
-| `onb.p3.body` | 모자나 목도리를 씌워 주며 꾸밀 수도 있어요. | You can dress it up with a hat or a scarf. | 帽子やマフラーで着せ替えもできます。 |
+| `onb.p3.body` | 방 한쪽에서 두 사람을 반겨 줘요. | It greets the two of you from a corner of the room. | 部屋の一角で、ふたりを迎えてくれます。 |
 | `onb.start` | 시작하기 | Get started | はじめる |
 | `onb.hasAccount` | 이미 계정이 있어요 | I already have an account | アカウントをお持ちの方 |
 | `onb.legal.lead` | 계속하면 아래 내용에 동의하는 것으로 봐요. | By continuing, you agree to the following. | 続けると、以下に同意したものとみなされます。 |
@@ -575,10 +575,17 @@
 | `a11y.countdown` | {s}초 뒤에 꾸미기가 풀려요 | Decorating releases in {s} seconds | あと{s}秒で飾る権限が解除されます |
 | `a11y.decor` | 장식 소품, 읽지 않아도 돼요 | Decorative item | 装飾の小物（読み上げ不要） |
 | `a11y.version` | 버전 {n}, {by}, {time} | Version {n}, by {by}, {time} | バージョン{n}、{by}、{time} |
-| `a11y.pose.idle` | 서 있어요 | standing | 立っています |
-| `a11y.pose.wave` | 손을 흔들어요 | waving | 手を振っています |
-| `a11y.pose.sit` | 앉아 있어요 | sitting | 座っています |
+| `a11y.pose.wave_main` | 인사하고 있어요 | waving | 手を振っています |
+| `a11y.pose.cheer` | 신나 있어요 | cheering | はしゃいでいます |
+| `a11y.pose.lookup` | 올려다보고 있어요 | looking up | 見上げています |
+| `a11y.pose.walk` | 걷고 있어요 | walking | 歩いています |
+| `a11y.pose.lie` | 쉬고 있어요 | resting | 休んでいます |
 | `a11y.pose.sleep` | 자고 있어요 | sleeping | 眠っています |
+| `a11y.pose.back` | 뒤돌아 있어요 | seen from behind | 後ろを向いています |
+| `a11y.pose.star_sit` | 별을 안고 있어요 | holding a star | 星を抱いています |
+| `a11y.pose.box` | 상자에서 내다보고 있어요 | peeking out of a box | 箱からのぞいています |
+| `a11y.pose.heart` | 하트를 안고 있어요 | holding a heart | ハートを抱えています |
+| `a11y.pose.phone` | 폰을 보고 있어요 | looking at a phone | スマホを見ています |
 | `a11y.dateField` | 함께한 날짜 입력 | Enter the date you got together | 一緒になった日を入力 |
 | `a11y.progress` | 진행 중 | In progress | 処理中 |
 | `a11y.tabbar` | 탭 막대 | Tab bar | タブバー |
@@ -609,37 +616,22 @@
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
 | `mascot.name` | [캐릭터 이름] | [Mascot name] | [キャラクター名] |
-| `mascot.title` | [캐릭터 이름] 꾸미기 | Style [Mascot name] | [キャラクター名]を飾る |
-| `mascot.slot.head` | 머리 | Head | 頭 |
-| `mascot.slot.face` | 얼굴 | Face | 顔 |
-| `mascot.slot.neck` | 목 | Neck | 首 |
-| `mascot.slot.hand` | 손 | Hand | 手 |
-| `mascot.none` | 없음 | None | なし |
-| `mascot.color` | 색 | Color | カラー |
-| `mascot.cw.default` | 기본 | Default | ベーシック |
-| `mascot.cw.forest` | 숲 | Forest | 森 |
-| `mascot.cw.sunset` | 노을 | Sunset | 夕焼け |
-| `mascot.cw.ocean` | 바다 | Ocean | 海 |
-| `mascot.pose` | 포즈 | Pose | ポーズ |
-| `mascot.pose.idle` | 서기 | Stand | 立つ |
-| `mascot.pose.wave` | 인사 | Wave | あいさつ |
-| `mascot.pose.sit` | 앉기 | Sit | 座る |
-| `mascot.pose.sleep` | 잠자기 | Sleep | 眠る |
-| `mascot.preview.wear` | 입혀 보기 · {item} | Trying on: {item} | 試着中：{item} |
-| `mascot.preview.remove` | 벗기기 · {item} | Removing: {item} | 外す：{item} |
-| `mascot.preview.pose` | 포즈 바꾸기 · {item} | Changing pose: {item} | ポーズ変更：{item} |
-| `mascot.hand.disabled` | 잠자기 포즈에서는 손 아이템을 쓸 수 없어요 | Hand items aren't available in the sleeping pose | 眠るポーズでは手のアイテムは使えません |
-| `mascot.rule` | 모양은 바꿀 수 없고, 정해진 아이템·색·포즈만 고를 수 있어요. | The shape can't be changed. You can only pick set items, colors and poses. | 形は変えられず、決められたアイテム・色・ポーズだけ選べます。 |
-| `mascot.size.note` | 크기와 위치는 방에서 다른 소품처럼 바꿀 수 있어요. | Size and position work like any other room item. | 大きさと位置は、ほかの小物と同じように部屋で変えられます。 |
 
-## 에셋 이름(30종)
+## 에셋 이름(마스코트 11 · 오브젝트 18 · 대체된 착용 8)
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
-| `asset.mascot_pose_idle` | 서 있기 | Standing | 立ちポーズ |
-| `asset.mascot_pose_wave` | 손 흔들기 | Waving | 手を振る |
-| `asset.mascot_pose_sit` | 앉기 | Sitting | 座りポーズ |
-| `asset.mascot_pose_sleep` | 잠자기 | Sleeping | おやすみポーズ |
+| `asset.mascot_wave_main` | 서서 손 흔들기 | Standing, waving | 立って手を振る |
+| `asset.mascot_cheer` | 신나게 인사 | Cheering | はしゃいで挨拶 |
+| `asset.mascot_lookup` | 올려다보기 | Looking up | 見上げる |
+| `asset.mascot_walk` | 걷기 | Walking | 歩く |
+| `asset.mascot_lie` | 엎드려 쉬기 | Lying down | ごろんと休む |
+| `asset.mascot_sleep` | 잠자기 | Sleeping | おやすみ |
+| `asset.mascot_back` | 뒷모습 | Back view | 後ろ姿 |
+| `asset.mascot_star_sit` | 별 안고 앉기 | Sitting with a star | 星を抱いて座る |
+| `asset.mascot_box` | 상자에서 빼꼼 | Peeking out of a box | 箱からひょっこり |
+| `asset.mascot_heart` | 하트 들기 | Holding a heart | ハートを持つ |
+| `asset.mascot_phone` | 폰 보기 | Looking at a phone | スマホを見る |
 | `asset.wear_head_beanie` | 니트 모자 | Beanie | ニット帽 |
 | `asset.wear_head_sprout` | 새싹 | Sprout | 新芽 |
 | `asset.wear_face_glasses` | 동그란 안경 | Round glasses | 丸いメガネ |
@@ -666,10 +658,17 @@
 | `asset.obj_shape_sparkle` | 반짝임 | Sparkle | きらめき |
 | `asset.obj_shape_dots` | 점 무늬 | Dots | ドット |
 | `asset.obj_shape_squiggle` | 물결선 | Squiggle | 波線 |
-| `asset.alt.mascot_pose_idle` | 마스코트가 서 있어요 | Mascot standing | マスコットが立っています |
-| `asset.alt.mascot_pose_wave` | 마스코트가 손을 흔들어요 | Mascot waving | マスコットが手を振っています |
-| `asset.alt.mascot_pose_sit` | 마스코트가 앉아 있어요 | Mascot sitting | マスコットが座っています |
-| `asset.alt.mascot_pose_sleep` | 마스코트가 자고 있어요 | Mascot sleeping | マスコットが眠っています |
+| `asset.alt.mascot_wave_main` | 마스코트가 한 손을 들고 인사해요 | Mascot standing and waving | マスコットが手を振っています |
+| `asset.alt.mascot_cheer` | 마스코트가 신나서 손을 흔들어요 | Mascot cheering happily | マスコットがはしゃいで手を振っています |
+| `asset.alt.mascot_lookup` | 마스코트가 위를 올려다봐요 | Mascot looking up | マスコットが見上げています |
+| `asset.alt.mascot_walk` | 마스코트가 걸어가요 | Mascot walking | マスコットが歩いています |
+| `asset.alt.mascot_lie` | 마스코트가 엎드려 쉬어요 | Mascot lying down | マスコットがごろんと休んでいます |
+| `asset.alt.mascot_sleep` | 마스코트가 자고 있어요 | Mascot sleeping | マスコットが眠っています |
+| `asset.alt.mascot_back` | 마스코트의 뒷모습 | Back view of the mascot | マスコットの後ろ姿 |
+| `asset.alt.mascot_star_sit` | 마스코트가 별을 안고 앉아 있어요 | Mascot sitting with a star | マスコットが星を抱いて座っています |
+| `asset.alt.mascot_box` | 마스코트가 상자에서 빼꼼 내다봐요 | Mascot peeking out of a box | マスコットが箱からのぞいています |
+| `asset.alt.mascot_heart` | 마스코트가 하트를 안고 윙크해요 | Mascot holding a heart and winking | マスコットがハートを抱えてウインクしています |
+| `asset.alt.mascot_phone` | 마스코트가 폰을 보고 있어요 | Mascot looking at a phone | マスコットがスマホを見ています |
 | `asset.alt.wear_head_beanie` | 노란 니트 모자 | Yellow beanie | 黄色いニット帽 |
 | `asset.alt.wear_head_sprout` | 머리 위 새싹 | Sprout on the head | 頭の上の新芽 |
 | `asset.alt.wear_face_glasses` | 동그란 안경 | Round glasses | 丸いメガネ |
@@ -684,6 +683,7 @@
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
 | `assetcat.mascot` | 마스코트 포즈 | Mascot poses | マスコットのポーズ |
+| `assetcat.illus` | 마스코트 일러스트 | Mascot illustrations | マスコットのイラスト |
 | `assetcat.wear` | 착용 아이템 | Wearables | 着用アイテム |
 | `assetcat.plant` | 식물·화분 | Plants | 植物・鉢 |
 | `assetcat.decor` | 방 소품 | Room decor | ルームの小物 |

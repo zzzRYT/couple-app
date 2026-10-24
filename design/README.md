@@ -14,13 +14,15 @@
 | [`screens.md`](screens.md) | 화면 16개 + 탭 단위 보기: 목적, 이동, 상태, 사용하는 번역 키, 긴 문구 사례 | 구현·QA |
 | [`i18n-copy.md`](i18n-copy.md) | 화면에 보이는 모든 문구의 키와 한국어·English·日本語 | 구현·번역 |
 | [`interaction-notes.md`](interaction-notes.md) | 내비게이션(탭 4개), 키보드·공유 시트, 미리 보기·확인·취소·되돌리기·복구, 점유와 이어받기 시간, 오프라인·오류, 동기화 | 구현 |
-| [`contrast-report.md`](contrast-report.md) | WCAG 2.2 대비 424쌍(방 2 × 앱 2 × 보통/고대비 2 조합), 고친 이력, 에셋과 방 면 | 구현·QA |
-| [`assets-spec.md`](assets-spec.md) | 에셋 30종 사양(크기·@2x/@3x·변형·여백), **방향 A 스타일 가이드(일러스트레이터용)**, 착용 기준점, 권리·교체 절차, 납품 체크리스트 | 일러스트레이터·구현 |
-| [`assets-manifest.csv`](assets-manifest.csv) | 에셋 파일 43개의 매니페스트 템플릿(권리·출처·체크섬·검수 열 포함) | 권리 관리 |
-| [`assets-sketch/`](assets-sketch/) | 에셋 **자리표시 스케치** SVG 43개(최종 그림이 아니에요) | 일러스트레이터 |
+| [`contrast-report.md`](contrast-report.md) | WCAG 2.2 대비 464쌍(방 2 × 앱 2 × 보통/고대비 2 조합), 고친 이력, 에셋과 방 면 | 구현·QA |
+| [`assets-spec.md`](assets-spec.md) | 에셋 사양(카탈로그 24종 + 방 밖 일러스트 5종), **방향 A 스타일 가이드(일러스트레이터용)**, 마스코트 출처·권리(§8.1), 교체 절차, 납품 체크리스트 | 일러스트레이터·구현 |
+| [`assets-manifest.csv`](assets-manifest.csv) | 에셋 파일 매니페스트(마스코트 원본·가공 파일의 체크섬·도구 버전·출처, 스케치 SVG, 권리·검수 열) | 권리 관리 |
+| [`mascot/`](mascot/README.md) | **마스코트**: 소유자가 제공한 캐릭터 시트 원본, 포즈별 컷아웃, 방향 A 가공본(@1x·@2x·@3x), 비교 시트, 가공 보고서 | 모두 |
+| [`assets-sketch/`](assets-sketch/) | 일반 오브젝트 **자리표시 스케치** SVG 19개 + 대체된 착용 스케치 8개(최종 그림이 아니에요) | 일러스트레이터 |
 | [`canvas/`](canvas/README.md) | Claude Design 캔버스 원본 파일(`project/*.dc.html`, `canvas.json`). 보드 S00~S27 | 디자인 |
 | [`exports/`](exports/) | 주요 화면 PNG(@2x) 28장 | 모두 |
 | [`tools/contrast-check.mjs`](tools/contrast-check.mjs) | 토큰의 핵심 대비 쌍을 다시 확인하는 의존성 없는 스크립트 | 구현 |
+| [`tools/`](tools/) `cutout-mascot.py` `harmonize-mascot.py` `mascot-sheets.py` | 마스코트 시트 → 컷아웃 → 방향 A 가공 → 비교 시트를 다시 만드는 파이프라인(Python, 매개변수·사용법은 파일 머리말) | 디자인·구현 |
 
 ## 화면 번호
 
@@ -37,5 +39,5 @@
 
 - **하단 탭 바는 시스템 컴포넌트**예요(iOS UITabBar · Android Material 3). 직접 그리지 말고 틴트·라벨·아이콘만 정해요. 방 화면의 **방 도구 막대**(되돌리기·꾸미기·기록)는 방 화면 자신의 막대예요.
 - 캔버스 그림은 **헤드리스 Chrome으로 렌더해 확인**했어요. 실기기·스크린 리더·시스템 탭 바의 실제 모습은 아직 확인하지 못했어요(`handoff.md` §8).
-- 에셋 그림, 앱 이름 `[앱 이름]`, 마스코트 이름 `[캐릭터 이름]`, 지원 이메일 `[지원 이메일]`은 **자리표시**예요.
+- 일반 오브젝트 그림, 앱 이름 `[앱 이름]`, 마스코트 이름 `[캐릭터 이름]`, 지원 이메일 `[지원 이메일]`은 **자리표시**예요. **마스코트 그림은 소유자가 제공한 캐릭터를 가공한 것으로, 최종 그림은 확정 전이고 권리 확인이 필요해요**(`handoff.md` §10). 마스코트 꾸미기(착용 슬롯)는 생성 변형 방식으로 대체돼 후속 설계 예정이에요(§11).
 - 글꼴은 미리 보기에서만 Google Fonts를 불러와요. 실제 앱은 파일을 번들하고 원격 글꼴을 쓰지 않아요(라이선스 표기는 `tokens.json`의 `typography.fonts`와 캔버스 S19).
