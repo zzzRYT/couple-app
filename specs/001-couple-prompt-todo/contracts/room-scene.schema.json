@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://couple-app.invalid/contracts/room-scene-v1.schema.json",
+  "title": "Couple Room Scene v1",
+  "description": "Serializable decoration data rendered by the fixed application. D-day and app controls are native views outside this canvas document.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "canvasProfile", "objects", "texts"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "canvasProfile": { "const": "room-portrait-v1" },
+    "objects": {
+      "type": "array",
+      "maxItems": 16,
+      "items": { "$ref": "#/$defs/object" }
+    },
+    "texts": {
+      "type": "array",
+      "maxItems": 3,
+      "items": { "$ref": "#/$defs/text" }
+    }
+  },
+  "$defs": {
+    "unitCoordinate": { "type": "number", "minimum": 0, "maximum": 1 },
+    "unitSize": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+    "object": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assetId", "x", "y", "width", "height", "rotationDeg", "zIndex", "opacity"],
+      "properties": {
+        "assetId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" },
+        "x": { "$ref": "#/$defs/unitCoordinate" },
+        "y": { "$ref": "#/$defs/unitCoordinate" },
+        "width": { "$ref": "#/$defs/unitSize" },
+        "height": { "$ref": "#/$defs/unitSize" },
+        "rotationDeg": { "type": "number", "minimum": -180, "maximum": 180 },
+        "zIndex": { "type": "integer", "minimum": 0, "maximum": 31 },
+        "opacity": { "type": "number", "minimum": 0.2, "maximum": 1 }
+      }
+    },
+    "text": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "x", "y", "width", "height", "rotationDeg", "zIndex", "styleToken"],
+      "properties": {
+        "text": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "x": { "$ref": "#/$defs/unitCoordinate" },
+        "y": { "$ref": "#/$defs/unitCoordinate" },
+        "width": { "$ref": "#/$defs/unitSize" },
+        "height": { "$ref": "#/$defs/unitSize" },
+        "rotationDeg": { "type": "number", "minimum": -15, "maximum": 15 },
+        "zIndex": { "type": "integer", "minimum": 0, "maximum": 31 },
+        "styleToken": { "type": "string", "enum": ["text.primary", "text.accent", "text.soft"] }
+      }
+    }
+  }
+}
