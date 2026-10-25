@@ -31,5 +31,11 @@ for (const room of ['day', 'night']) for (const s of [tokens.color.room[room].wa
   check(`illustration outline-or-rim/${room}`, ratio(tokens.color.illustration.outline, s) >= ratio(tokens.color.illustration.rim, s) ? tokens.color.illustration.outline : tokens.color.illustration.rim, s, 3);
   check(`widget outline-or-rim/${room}`, ratio(tokens.color.widgetOutline.ink, s) >= ratio(tokens.color.widgetOutline.rim, s) ? tokens.color.widgetOutline.ink : tokens.color.widgetOutline.rim, s, 3);
 }
+// home cover: white text on the dark scrim over the lightest photo, dark status text on the cream veil over the darkest photo
+const mix = (over, a, under) => '#' + hex(over).map((v, i) => Math.round(v * a + hex(under)[i] * (1 - a)).toString(16).padStart(2, '0')).join('').toUpperCase();
+const hc = tokens.color.homeCover;
+check('home cover text on scrim over white photo', hc.text.color, mix(hc.scrim.color, hc.scrim.alpha, '#FFFFFF'), 4.5);
+check('home cover text on scrim over gray photo', hc.text.color, mix(hc.scrim.color, hc.scrim.alpha, '#808080'), 4.5);
+check('home cover status text on veil over black photo', '#000000', mix(hc.veil.color, hc.veil.alpha, '#000000'), 4.5);
 console.log(`${checked} pairs checked, ${fails} failures`);
 process.exit(fails ? 1 : 0);

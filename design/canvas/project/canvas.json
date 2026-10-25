@@ -1,298 +1,364 @@
 {
   "v": 3,
-  "createdOnFiles": {
-    "v": 1,
-    "at": "2026-10-24T12:00:00Z"
-  },
-  "title": "커플 앱 시각 설계 · 최종 방향 A",
-  "launch": {
-    "view": "focused",
-    "file": "Main.dc.html"
-  },
-  "pages": [],
+  "attachments": {},
   "boards": {
-    "Main.dc.html": {
-      "x": 0,
-      "y": 0,
-      "w": 1380,
-      "h": 3900,
-      "title": "0. 최종 방향 A · 개요(1단계 기록 포함)",
-      "expand": "fill",
-      "is_interactive": true
-    },
     "A.dc.html": {
-      "x": 1460,
-      "y": 0,
-      "w": 1380,
-      "h": 4800,
-      "title": "A. 손그림 따뜻함 · 최종 방향(1단계 시안)",
       "expand": "fill",
-      "is_interactive": true
+      "h": 4800,
+      "is_interactive": true,
+      "title": "A. 손그림 따뜻함 · 최종 방향(1단계 시안)",
+      "w": 1380,
+      "x": 1460,
+      "y": 0
     },
     "B.dc.html": {
-      "x": 2920,
-      "y": 0,
-      "w": 1380,
-      "h": 4800,
-      "title": "B. 평면 도형 · 대체됨(참고용 시안)",
       "expand": "fill",
-      "is_interactive": true
-    },
-    "S00-overview.dc.html": {
-      "x": 0,
-      "y": 5300,
-      "w": 1760,
-      "h": 1998,
-      "title": "S00 단계 2 개요",
-      "expand": "fill"
+      "h": 4800,
+      "is_interactive": true,
+      "title": "B. 평면 도형 · 대체됨(참고용 시안)",
+      "w": 1380,
+      "x": 2920,
+      "y": 0
     },
     "C01-character-overview.dc.html": {
-      "x": 1840,
-      "y": 5300,
-      "w": 1760,
-      "h": 2402,
+      "expand": "fill",
+      "h": 2422,
       "title": "C01 캐릭터 개요",
-      "expand": "fill"
+      "w": 1760,
+      "x": 1840,
+      "y": 5300
     },
     "C02-gesture-sheet.dc.html": {
-      "x": 3680,
-      "y": 5300,
-      "w": 1760,
+      "expand": "fill",
       "h": 4275,
       "title": "C02 제스처 시트",
-      "expand": "fill"
+      "w": 1760,
+      "x": 3680,
+      "y": 5300
     },
     "C03-palette-anatomy-rules.dc.html": {
-      "x": 5520,
-      "y": 5300,
-      "w": 1760,
+      "expand": "fill",
       "h": 2313,
       "title": "C03 팔레트 · 해부 · 규칙",
-      "expand": "fill"
+      "w": 1760,
+      "x": 5520,
+      "y": 5300
     },
     "C04-backgrounds-sizes.dc.html": {
-      "x": 0,
-      "y": 10015,
-      "w": 1760,
+      "expand": "fill",
       "h": 2987,
       "title": "C04 배경 · 크기",
-      "expand": "fill"
+      "w": 1760,
+      "x": 0,
+      "y": 10015
     },
     "C05-harmonized-vs-supplied.dc.html": {
-      "x": 1840,
-      "y": 10015,
-      "w": 1760,
+      "expand": "fill",
       "h": 4666,
       "title": "C05 하모나이즈 vs 원본",
-      "expand": "fill"
+      "w": 1760,
+      "x": 1840,
+      "y": 10015
+    },
+    "Main.dc.html": {
+      "expand": "fill",
+      "h": 3900,
+      "is_interactive": true,
+      "title": "0. 최종 방향 A · 개요(1단계 기록 포함)",
+      "w": 1380,
+      "x": 0,
+      "y": 0
+    },
+    "S00-overview.dc.html": {
+      "expand": "fill",
+      "h": 1998,
+      "title": "S00 단계 2 개요",
+      "w": 1760,
+      "x": 0,
+      "y": 5300
     },
     "S01-onboarding.dc.html": {
-      "x": 3680,
-      "y": 10015,
-      "w": 1760,
+      "expand": "fill",
       "h": 4497,
       "title": "S01 온보딩 · 시작",
-      "expand": "fill"
+      "w": 1760,
+      "x": 3680,
+      "y": 10015
     },
     "S02-login.dc.html": {
-      "x": 5520,
-      "y": 10015,
-      "w": 1760,
-      "h": 9158,
+      "expand": "fill",
+      "h": 8000,
       "title": "S02 로그인 · 인증",
-      "expand": "fill"
+      "w": 1760,
+      "x": 5520,
+      "y": 10015
     },
     "S03-couple-space.dc.html": {
-      "x": 0,
-      "y": 19613,
-      "w": 1760,
+      "expand": "fill",
       "h": 6361,
       "title": "S03 커플 공간 생성",
-      "expand": "fill"
+      "w": 1760,
+      "x": 0,
+      "y": 19613
     },
     "S04-invite-create.dc.html": {
-      "x": 1840,
-      "y": 19613,
-      "w": 1760,
-      "h": 10063,
+      "expand": "fill",
+      "h": 8000,
       "title": "S04 초대 코드 생성 · 공유",
-      "expand": "fill"
+      "w": 1760,
+      "x": 1840,
+      "y": 19613
     },
     "S05-invite-enter.dc.html": {
-      "x": 3680,
-      "y": 19613,
-      "w": 1760,
-      "h": 10063,
+      "expand": "fill",
+      "h": 8000,
       "title": "S05 초대 코드 입력 · 수락",
-      "expand": "fill"
+      "w": 1760,
+      "x": 3680,
+      "y": 19613
     },
     "S06-main-dday.dc.html": {
-      "x": 5520,
-      "y": 19613,
-      "w": 1760,
-      "h": 10090,
+      "expand": "fill",
+      "h": 8000,
       "title": "S06 메인 D-day",
-      "expand": "fill"
+      "w": 1760,
+      "x": 5520,
+      "y": 19613
     },
     "S07-room.dc.html": {
-      "x": 0,
-      "y": 30143,
-      "w": 1760,
-      "h": 15437,
+      "expand": "fill",
+      "h": 8000,
       "title": "S07 방 페이지",
-      "expand": "fill"
+      "w": 1760,
+      "x": 0,
+      "y": 30143
     },
     "S08-prompt-session.dc.html": {
-      "x": 1840,
-      "y": 30143,
-      "w": 1760,
-      "h": 13855,
+      "expand": "fill",
+      "h": 8000,
       "title": "S08 공유 프롬프트 세션",
-      "expand": "fill"
+      "w": 1760,
+      "x": 1840,
+      "y": 30143
     },
     "S09-preview-confirm.dc.html": {
-      "x": 3680,
-      "y": 30143,
-      "w": 1760,
-      "h": 9158,
+      "expand": "fill",
+      "h": 8000,
       "title": "S09 미리 보기 · 적용 확인",
-      "expand": "fill"
+      "w": 1760,
+      "x": 3680,
+      "y": 30143
     },
     "S10-undo.dc.html": {
-      "x": 5520,
-      "y": 30143,
-      "w": 1760,
+      "expand": "fill",
       "h": 7294,
       "title": "S10 되돌리기 확인",
-      "expand": "fill"
+      "w": 1760,
+      "x": 5520,
+      "y": 30143
     },
     "S11-history.dc.html": {
-      "x": 0,
-      "y": 46020,
-      "w": 1760,
-      "h": 9158,
+      "expand": "fill",
+      "h": 8000,
       "title": "S11 버전 기록 · 복구",
-      "expand": "fill"
+      "w": 1760,
+      "x": 0,
+      "y": 46020
     },
     "S12-ai-consent.dc.html": {
-      "x": 1840,
-      "y": 46020,
-      "w": 1760,
+      "expand": "fill",
       "h": 7294,
       "title": "S12 해외 AI 처리 동의",
-      "expand": "fill"
+      "w": 1760,
+      "x": 1840,
+      "y": 46020
     },
     "S13-settings.dc.html": {
-      "x": 3680,
-      "y": 46020,
-      "w": 1760,
-      "h": 10090,
+      "expand": "fill",
+      "h": 8000,
       "title": "S13 설정",
-      "expand": "fill"
+      "w": 1760,
+      "x": 3680,
+      "y": 46020
     },
     "S14-end-space.dc.html": {
-      "x": 5520,
-      "y": 46020,
-      "w": 1760,
-      "h": 10090,
+      "expand": "fill",
+      "h": 8000,
       "title": "S14 공간 종료 · 복구",
-      "expand": "fill"
+      "w": 1760,
+      "x": 5520,
+      "y": 46020
     },
     "S15-report-block.dc.html": {
-      "x": 0,
-      "y": 56550,
-      "w": 1760,
-      "h": 8199,
+      "expand": "fill",
+      "h": 8000,
       "title": "S15 신고 · 차단",
-      "expand": "fill"
+      "w": 1760,
+      "x": 0,
+      "y": 56550
     },
     "S16-system-states.dc.html": {
-      "x": 1840,
-      "y": 56550,
-      "w": 1760,
-      "h": 9158,
+      "expand": "fill",
+      "h": 8000,
       "title": "S16 공통 오류·빈·로딩·오프라인",
-      "expand": "fill"
+      "w": 1760,
+      "x": 1840,
+      "y": 56550
     },
     "S18-assets.dc.html": {
-      "x": 3680,
-      "y": 56550,
-      "w": 1760,
+      "expand": "fill",
       "h": 5871,
       "title": "S18 에셋 카탈로그 · 사양",
-      "expand": "fill"
+      "w": 1760,
+      "x": 3680,
+      "y": 56550
     },
     "S19-type-tokens.dc.html": {
-      "x": 5520,
-      "y": 56550,
-      "w": 1760,
+      "expand": "fill",
       "h": 5459,
       "title": "S19 글꼴 · 토큰",
-      "expand": "fill"
+      "w": 1760,
+      "x": 5520,
+      "y": 56550
     },
     "S20-accessibility.dc.html": {
-      "x": 0,
-      "y": 66148,
-      "w": 1760,
+      "expand": "fill",
       "h": 6835,
       "title": "S20 접근성 · 대비",
-      "expand": "fill"
+      "w": 1760,
+      "x": 0,
+      "y": 66148
     },
     "S21-long-text.dc.html": {
-      "x": 1840,
-      "y": 66148,
-      "w": 1760,
-      "h": 9112,
+      "expand": "fill",
+      "h": 8000,
       "title": "S21 긴 문구 · 3개 언어",
-      "expand": "fill"
+      "w": 1760,
+      "x": 1840,
+      "y": 66148
     },
     "S22-components.dc.html": {
-      "x": 3680,
-      "y": 66148,
-      "w": 1760,
+      "expand": "fill",
       "h": 7661,
       "title": "S22 컴포넌트",
-      "expand": "fill"
+      "w": 1760,
+      "x": 3680,
+      "y": 66148
     },
     "S23-tab-home.dc.html": {
-      "x": 5520,
-      "y": 66148,
-      "w": 1760,
-      "h": 10090,
+      "expand": "fill",
+      "h": 8000,
       "title": "S23 홈 탭",
-      "expand": "fill"
+      "w": 1760,
+      "x": 5520,
+      "y": 66148
     },
     "S24-tab-room.dc.html": {
-      "x": 0,
-      "y": 76678,
-      "w": 1760,
-      "h": 10090,
+      "expand": "fill",
+      "h": 8000,
       "title": "S24 방 탭",
-      "expand": "fill"
+      "w": 1760,
+      "x": 0,
+      "y": 76678
     },
     "S25-tab-history.dc.html": {
-      "x": 1840,
-      "y": 76678,
-      "w": 1760,
-      "h": 8226,
+      "expand": "fill",
+      "h": 8000,
       "title": "S25 기록 탭",
-      "expand": "fill"
+      "w": 1760,
+      "x": 1840,
+      "y": 76678
     },
     "S26-tab-settings.dc.html": {
-      "x": 3680,
-      "y": 76678,
-      "w": 1760,
-      "h": 10063,
+      "expand": "fill",
+      "h": 8000,
       "title": "S26 설정 탭",
-      "expand": "fill"
+      "w": 1760,
+      "x": 3680,
+      "y": 76678
     },
     "S27-navigation.dc.html": {
-      "x": 5520,
-      "y": 76678,
-      "w": 1760,
+      "expand": "fill",
       "h": 2194,
       "title": "S27 탭 구조 · 이동",
-      "expand": "fill"
+      "w": 1760,
+      "x": 5520,
+      "y": 76678
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-24T12:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "file": "Main.dc.html",
+    "view": "focused"
+  },
+  "notes": {
+    "row0": {
+      "kind": "title1",
+      "maxW": 7280,
+      "text": "단계 2 · 방향 A · S00–C03  (캐릭터 섹션 C01–C05 포함)",
+      "w": 240,
+      "x": 0,
+      "y": 5000
+    },
+    "row1": {
+      "kind": "title1",
+      "maxW": 7280,
+      "text": "단계 2 · 방향 A · C04–S02  (캐릭터 섹션 C01–C05 포함)",
+      "w": 240,
+      "x": 0,
+      "y": 9715
+    },
+    "row2": {
+      "kind": "title1",
+      "maxW": 7280,
+      "text": "단계 2 · 방향 A · S03–S06",
+      "w": 240,
+      "x": 0,
+      "y": 19313
+    },
+    "row3": {
+      "kind": "title1",
+      "maxW": 7280,
+      "text": "단계 2 · 방향 A · S07–S10",
+      "w": 240,
+      "x": 0,
+      "y": 29843
+    },
+    "row4": {
+      "kind": "title1",
+      "maxW": 7280,
+      "text": "단계 2 · 방향 A · S11–S14",
+      "w": 240,
+      "x": 0,
+      "y": 45720
+    },
+    "row5": {
+      "kind": "title1",
+      "maxW": 7280,
+      "text": "단계 2 · 방향 A · S15–S19",
+      "w": 240,
+      "x": 0,
+      "y": 56250
+    },
+    "row6": {
+      "kind": "title1",
+      "maxW": 7280,
+      "text": "단계 2 · 방향 A · S20–S23",
+      "w": 240,
+      "x": 0,
+      "y": 65848
+    },
+    "row7": {
+      "kind": "title1",
+      "maxW": 7280,
+      "text": "단계 2 · 방향 A · S24–S27",
+      "w": 240,
+      "x": 0,
+      "y": 76378
     }
   },
   "order": [
@@ -332,63 +398,6 @@
     "S26-tab-settings.dc.html",
     "S27-navigation.dc.html"
   ],
-  "notes": {
-    "row0": {
-      "x": 0,
-      "y": 5000,
-      "text": "단계 2 · 방향 A · S00–C03  (캐릭터 섹션 C01–C05 포함)",
-      "kind": "title1",
-      "maxW": 7280
-    },
-    "row1": {
-      "x": 0,
-      "y": 9715,
-      "text": "단계 2 · 방향 A · C04–S02  (캐릭터 섹션 C01–C05 포함)",
-      "kind": "title1",
-      "maxW": 7280
-    },
-    "row2": {
-      "x": 0,
-      "y": 19313,
-      "text": "단계 2 · 방향 A · S03–S06",
-      "kind": "title1",
-      "maxW": 7280
-    },
-    "row3": {
-      "x": 0,
-      "y": 29843,
-      "text": "단계 2 · 방향 A · S07–S10",
-      "kind": "title1",
-      "maxW": 7280
-    },
-    "row4": {
-      "x": 0,
-      "y": 45720,
-      "text": "단계 2 · 방향 A · S11–S14",
-      "kind": "title1",
-      "maxW": 7280
-    },
-    "row5": {
-      "x": 0,
-      "y": 56250,
-      "text": "단계 2 · 방향 A · S15–S19",
-      "kind": "title1",
-      "maxW": 7280
-    },
-    "row6": {
-      "x": 0,
-      "y": 65848,
-      "text": "단계 2 · 방향 A · S20–S23",
-      "kind": "title1",
-      "maxW": 7280
-    },
-    "row7": {
-      "x": 0,
-      "y": 76378,
-      "text": "단계 2 · 방향 A · S24–S27",
-      "kind": "title1",
-      "maxW": 7280
-    }
-  },
-  "designSystems": []
+  "pages": [],
+  "title": "커플 앱 시각 설계 · 최종 방향 A"
 }

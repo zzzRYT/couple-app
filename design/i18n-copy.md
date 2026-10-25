@@ -2,7 +2,7 @@
 
 > 이 문서는 디자인 원본에서 자동으로 만든 표예요. 구현은 **키만 코드에 쓰고** 텍스트는 번역 리소스(`ko-KR`, `en-US`, `ja-JP`)로 둬요. `{name}` 형태는 보간 변수예요. 달력·할 일·사진·가격·알림을 떠올리게 하는 표현은 쓰지 않았어요. 일본어·영어 문구는 디자이너가 쓴 초안이라 **원어민 검수**가 필요해요(handoff.md).
 
-- 총 키 수: **563**
+- 총 키 수: **587**
 - 사용자가 입력한 방 문구와 프롬프트는 번역하지 않고 입력한 그대로 저장·표시해요.
 - 서버 오류는 언어 중립 코드(`VERSION_CONFLICT` 등)만 오고, 앱이 아래 키로 문구를 골라요: `VERSION_CONFLICT`→`preview.conflict.*`·`undo.conflict.*`, `QUOTA_REACHED`→`prompt.quota.*`, `CONSENT_REQUIRED`→`prompt.consent.need`, `SESSION_OCCUPIED`→`prompt.partner`, `SESSION_EXPIRED`→`prompt.idle.me.*`, `INVITE_EXPIRED`→`join.expired.*`, `INVITE_USED`→`join.used.*`, `SPACE_FULL`→`join.full.*`, `ALREADY_IN_SPACE`→`join.hasSpace.*`, `UNSUPPORTED_REQUEST`→`prompt.unsupported.*`, `BRAND_REQUEST`→`prompt.brand.*`, `AUTH_EXPIRED`→`sys.login.*`. (코드 이름은 계약 문서 `contracts/api.md`의 이름을 확인해서 맞춰야 해요.)
 
@@ -459,6 +459,9 @@
 | `set.name.value` | 지우 | Jiu | ジウ |
 | `set.offline.title` | 오프라인이에요 | You're offline | オフラインです |
 | `set.offline.body` | 방 낮·밤과 시간대는 연결된 뒤에 바꿀 수 있어요. 이 기기의 화면 설정은 지금도 바꿀 수 있어요. | Room day/night and time zone can be changed once you're back online. This device's display settings still work. | 部屋の昼夜とタイムゾーンは、接続が戻ってから変更できます。この端末の表示設定は今でも変更できます。 |
+| `set.cover` | 홈 배경 사진 | Home background photo | ホームの背景写真 |
+| `set.cover.on` | 설정됨 | Set | 設定済み |
+| `set.cover.off` | 없음 | None | なし |
 
 ## S14 공간 종료·복구
 
@@ -593,6 +596,10 @@
 | `a11y.tab.sel` | , 선택됨 | , selected | 、選択中 |
 | `a11y.toolbar` | 방 도구 막대 | Room toolbar | 部屋のツールバー |
 | `a11y.coach` | 안내: {text} | Tip: {text} | ヒント：{text} |
+| `a11y.cover.add` | 홈 배경 사진 추가 | Add a home background photo | ホームの背景写真を追加 |
+| `a11y.cover.change` | 홈 배경 사진 바꾸기 | Change the home background photo | ホームの背景写真を変更 |
+| `a11y.cover.photo` | 우리가 올린 배경 사진 | Background photo you shared | ふたりで設定した背景写真 |
+| `a11y.cover.crop` | 사진 자르기 영역 | Photo crop area | 写真の切り抜き範囲 |
 
 ## 탭 이름(시스템 탭 바)
 
@@ -703,4 +710,26 @@
 | `lic.notojp` | Noto Sans JP · Noto 프로젝트 | Noto Sans JP · The Noto Project | Noto Sans JP · Noto プロジェクト |
 | `lic.view` | 전문 보기 | View full text | 全文を見る |
 | `lic.note` | 이 앱의 글꼴은 위 라이선스에 따라 앱에 포함되어 있어요. | The fonts in this app are bundled under the licenses above. | このアプリのフォントは、上記のライセンスに基づいてアプリに同梱されています。 |
+
+## cover
+
+| 키 | 한국어 | English | 日本語 |
+|---|---|---|---|
+| `cover.add` | 사진 추가 | Add photo | 写真を追加 |
+| `cover.sheet.title` | 홈 배경 사진 | Home background photo | ホームの背景写真 |
+| `cover.sheet.pick` | 앨범에서 고르기 | Choose from your photos | アルバムから選ぶ |
+| `cover.sheet.remove` | 사진 없애기 | Remove photo | 写真を外す |
+| `cover.sheet.note` | 두 사람이 같은 사진을 봐요. 어느 쪽이든 바꾸거나 없앨 수 있어요. | You both see the same photo. Either of you can change or remove it. | ふたりに同じ写真が表示されます。どちらでも変更・削除できます。 |
+| `cover.crop.title` | 보여 줄 부분을 맞춰 주세요 | Choose the part to show | 表示する部分を合わせてください |
+| `cover.crop.hint` | 끌어서 옮기고, 두 손가락으로 크기를 바꿔요. | Drag to move, pinch to resize. | ドラッグで移動、2本指で大きさを変えます。 |
+| `cover.crop.done` | 완료 | Done | 完了 |
+| `cover.up.title` | 사진을 올리고 있어요 | Uploading your photo | 写真をアップロード中 |
+| `cover.err.title` | 사진을 올리지 못했어요 | Couldn't upload the photo | 写真をアップロードできませんでした |
+| `cover.err.body` | 인터넷 연결을 확인하고 다시 시도해 주세요. 지금 사진은 그대로예요. | Check your connection and try again. Your current photo is unchanged. | インターネット接続を確認して、もう一度お試しください。今の写真はそのままです。 |
+| `cover.rej.title` | 이 사진은 쓸 수 없어요 | This photo can't be used | この写真は使えません |
+| `cover.rej.body` | JPG·PNG·HEIC 사진만 올릴 수 있어요. 20MB 이하로 골라 주세요. | Only JPG, PNG or HEIC photos up to 20 MB can be used. | JPG・PNG・HEICの20MB以下の写真のみ使えます。 |
+| `cover.load.err` | 사진을 불러오지 못했어요 | Couldn't load the photo | 写真を読み込めませんでした |
+| `cover.removed` | 배경 사진을 없앴어요 | Background photo removed | 背景写真を外しました |
+| `cover.updated` | 배경 사진을 바꿨어요 | Background photo updated | 背景写真を変更しました |
+| `cover.loading` | 사진을 불러오는 중 | Loading photo | 写真を読み込み中 |
 
