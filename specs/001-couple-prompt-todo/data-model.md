@@ -87,7 +87,7 @@
 - `id`, `space_id`, `owner_user_id`, `status`: `occupied | released | expired`
 - `acquired_at`, `last_activity_at`, `expires_at`, `heartbeat_at?`, `released_at?`, `release_reason?`, `takeover_count`
 - 점유권은 공간 단위로 하나만 active할 수 있다. acquire와 takeover는 DB 원자 연산으로 owner를 한 명으로 제한한다.
-- 초기 유휴 lease는 3분 가정이며 캡틴이 조정할 수 있다. 의미 있는 사용자 입력/AI 생성 중 heartbeat로 갱신하고 background/닫힌 앱은 heartbeat를 보내지 않아 만료된다. 다른 구성원은 expected owner 및 expiry 검사 후 같은 shared session/preview를 takeover한다.
+- 유휴 lease는 3분(만료 30초 전 경고)이며 서버 설정값이다. 의미 있는 사용자 입력/AI 생성 중 heartbeat로 갱신하고 background/닫힌 앱은 heartbeat를 보내지 않아 만료된다. 다른 구성원은 expected owner 및 expiry 검사 후 같은 shared session/preview를 takeover한다.
 - confirm/cancel은 데이터 변경과 함께 점유를 해제한다. 열린 대화 안의 되돌리기는 점유를 풀지 않는다. 현재 점유자만 입력·제출·적용할 수 있고 비점유자는 공유 대화와 preview를 읽기 전용으로 본다.
 
 ### PromptMessage
@@ -122,7 +122,7 @@
 - `milestone_date` (방 시간대 기준 달력 날짜. 일수 마일스톤 = 함께한 날짜 + `milestone_days` − 1, 주년 = 함께한 날짜 + N년의 같은 달·일. 2월 29일 시작의 평년 주년은 2월 28일), `priority` (`anniversary` > `day`; 같은 날짜가 겹치면 하나만 만들고 우선순위가 높은 쪽), `status`: `active | passed`
 - `preset_applied_version_id?` (기념 제안이 적용되어 새 방 버전이 만들어졌을 때), `created_at`
 - 유일: `(space_id, milestone_key)` — 커플당 한 번. 서버가 `GET /milestones/current`에서 필요할 때 만든다(별도 스케줄러 없음).
-- 보이는 기간: `milestone_date`부터 7일(제안값 N) 이내. 그 뒤에는 `passed`로 바꾸고 보이지 않는다.
+- 보이는 기간: `milestone_date`부터 7일 이내(결정). 그 뒤에는 `passed`로 바꾸고 보이지 않는다.
 - 두 구성원이 모두 참여한 활성 공간에서만 만든다. 공간 종료(복구 대기) 중에는 만들지도 보이지도 않고, 복구하면 기록이 그대로 돌아온다. 공간이 삭제되면 함께 지운다.
 
 ### MilestoneSeen
@@ -131,10 +131,16 @@
 - 구성원이 카드나 말풍선을 닫으면 한 행. 상대에게 영향 없음. 같은 요청을 다시 보내도 그대로(멱등). 오프라인에서 닫은 기록은 연결 후 전달한다.
 - 읽기: 본인 행과 "상대가 봤는지"는 필요 없으므로 상대 행은 읽지 않는다(RLS로 본인 행만).
 
+### Report (신고)
+
+- `id`, `space_id`, `reporter_user_id`, `target`: `partner | shared_text | room_scene` (홈 커버 사진은 대상이 아니다), `reason`: `harass | inappropriate | privacy | other`, `detail?`, `message_id?`, `created_at`, `status`: `received | reviewed`
+- 연결 끊기와 별개다. 신고는 운영자가 읽는 접수 기록이고 이용자에게 처리 결과를 앱에서 따로 알리지 않는다. 보관 기간은 개인정보 검토 후 정한다.
+
 ### SpaceLifecycleEvent
 
-- `id`, `space_id`, `event_type`: `ended | recovered | deletion_started | deletion_completed | cover_changed | cover_removed | milestone_preset_previewed | milestone_preset_applied` (마일스톤 두 종류는 정형 속성만: `milestone_key`)
+- `id`, `space_id`, `event_type`: `ended | disconnected | recovered | deletion_started | deletion_completed | cover_changed | cover_removed | milestone_preset_previewed | milestone_preset_applied` (마일스톤 두 종류는 정형 속성만: `milestone_key`)
 - `actor_user_id`, `occurred_at`, `metadata` (개인 내용을 넣지 않는 정형 속성)
+- `disconnected`는 "연결 끊기"(API `block`)로 공간이 종료된 경우이고 `ended`와 같은 상태 전이를 만든다(`ended_reason: disconnect`).
 - 공간 복구 및 만료 삭제를 감사한다. 최소 이벤트 보관기간/법적 예외는 개인정보 검토 후 결정한다.
 
 ## 상태 전이
@@ -168,7 +174,8 @@ queued/generated --invalid result/provider failure--> rejected/failed
 
 - 공간 구성원 수 ≤ 2; 초대 수락은 단일 DB 트랜잭션.
 - 요청 시 공간 활성, 사용자 구성원, 필요한 동의가 모두 유효해야 한다. 권장 정책은 두 명 모두 유효 동의가 있어야 외부 AI 호출 가능.
-- 서버 일일 요청 계수는 `space_id` 기준의 시간대 정의(권장 UTC 날짜)로 atomic increment한다. 초과 응답은 `429 DAILY_LIMIT_REACHED`.
+- 서버 일일 요청 계수는 `space_id` 기준으로 **방 시간대의 날짜**(자정 초기화)를 키로 atomic increment한다. 한도는 커플당 **5회**이고 초과 응답은 `429 DAILY_LIMIT_REACHED`. 마일스톤 제안(AI 호출 없음)은 계수하지 않는다.
+- 한 사용자(`user_id`)는 활성 또는 복구 대기 상태 공간의 `SpaceMember`를 하나만 가진다(부분 고유 인덱스, FR-057). 초대 수락과 공간 생성은 같은 트랜잭션에서 이를 확인한다.
 - 후보/confirm은 `base_version_number`를 검사한다. 오래된 제안은 적용하지 않고 최신 테마로 재요청을 요구한다.
 - scene document의 `objects.length ≤ 16`, `texts.length ≤ 3`; 각 노드는 스키마의 범위 제한을 만족해야 한다.
 - `PromptSession`은 공간당 하나만 `occupied` 상태일 수 있다. heartbeat는 최근 사용자 활동이 있을 때만 `expires_at`을 갱신한다. 세션 만료 후 takeover는 만료된 session ID와 예상 owner를 조건으로 원자적으로 새 owner에게 양도한다.

@@ -4,18 +4,18 @@
 
 ## 공통 응답 / 오류
 
-- JSON UTF-8. 성공은 2xx, 잘못된 입력은 `400`, 미인증은 `401`, 권한 없음은 정보 누설 없는 `403`, stale version은 `409`, 한도 초과는 `429`, 일시적 장애는 `503`.
+- JSON UTF-8. 성공은 2xx, 잘못된 입력은 `400`, 미인증은 `401`, 권한 없음은 정보 누설 없는 `403`, stale version은 `409`, 한도 초과는 `429`, 일시적 장애는 `503`. 이미 다른 공간에 속한 사용자의 가입·생성 시도는 `409 ALREADY_IN_SPACE`.
 - 오류 형태: `{ "error": { "code": "VERSION_CONFLICT", "retryable": true } }`. `code`는 언어 중립 안정 코드이며 앱이 현재 locale의 번역 리소스에서 사용자 메시지를 찾는다.
 - 오류 응답에 사용자 표시용 자연어 문구나 locale별 메시지 키를 넣지 않고 원문 프롬프트를 되풀이하지 않는다. 화면·설정·오류 문구는 앱 번역 리소스에서 제공한다.
 - 모든 변경 요청은 `Idempotency-Key` UUID를 받아 중복 tap/retry로 이중 적용되지 않게 한다.
 
 ## Auth / 초대
 
-인증 방식은 카카오·Apple OAuth 및 이메일 OTP/magic link로 Supabase Auth에 위임한다. OAuth redirect는 Expo universal link로 복귀한다.
+인증 방식은 카카오·Apple OAuth 및 이메일 OTP(6자리 코드가 기본)/magic link(허용)로 Supabase Auth에 위임한다. 최소 연령 만 14세는 가입 시작 화면의 확인 문구로 알리고 서버는 생년월일을 받지 않는다(FR-058, 가정). OAuth redirect는 Expo universal link로 복귀한다.
 
 ### `POST /spaces`
 
-공간 및 첫 구성원을 하나의 트랜잭션으로 만든다.
+공간 및 첫 구성원을 하나의 트랜잭션으로 만든다. **한 사용자는 한 번에 하나의 공간에만 속한다(FR-057)**: 이미 활성 또는 복구 대기 공간의 구성원이면 `409 ALREADY_IN_SPACE`로 거절한다(복구 대기 공간도 구성원으로 센다. 종료 후 30일이 지나 삭제되면 새 공간을 만들 수 있다).
 
 요청: `{ "anniversaryDate": "YYYY-MM-DD" }`
 
@@ -35,7 +35,7 @@
 
 요청: `{ "code": "one-time-secret" }`
 
-서버는 해시 대조, 미만료·미사용, 대상 공간 활성·멤버 1명 조건을 원자적으로 확인하고 가입 후 코드를 즉시 소비한다.
+서버는 해시 대조, 미만료·미사용, 대상 공간 활성·멤버 1명 조건과 **호출한 사용자가 다른 공간의 구성원이 아님**을 원자적으로 확인하고 가입 후 코드를 즉시 소비한다. 사용자가 이미 다른 공간에 있으면 `409 ALREADY_IN_SPACE`로 거절하고 **코드는 소모하지 않는다**(공간에서 나온 뒤 같은 코드로 다시 시도할 수 있다). 코드 형식은 8자(4-4 표시), 혼동 문자(0/O, 1/I) 제외.
 
 응답 200: `{ "spaceId": "uuid", "status": "active", "memberCount": 2 }`.
 
@@ -70,7 +70,7 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 ### `GET /spaces/{spaceId}/milestones/current`
 
 응답 200: `{ "dayCount": 100, "timezone": "Asia/Seoul", "celebration": null | { "id": "uuid", "key": "d100", "kind": "day|anniversary", "days": 100, "anniversaryN": null, "milestoneDate": "YYYY-MM-DD", "daysAgo": 0, "seenByMe": false, "presetAvailable": true, "presetId": "milestone-day" }, "upcoming": [ { "key": "d200", "kind": "day", "milestoneDate": "YYYY-MM-DD" } ] }`.
-- 방 시간대 기준 오늘이 마일스톤 당일부터 7일(제안값) 안인 가장 최근 하나만 준다. 없으면 `celebration: null`. 필요하면 `MilestoneCelebration` 행을 이 호출에서 만든다(멱등).
+- 방 시간대 기준 오늘이 마일스톤 당일부터 7일 안인 가장 최근 하나만 준다. 없으면 `celebration: null`. 필요하면 `MilestoneCelebration` 행을 이 호출에서 만든다(멱등).
 - `upcoming`은 아직 오지 않은 마일스톤을 날짜순으로 최대 3개 준다. 기기는 이 목록으로 **오전 9시(방 시간대)** 로컬 알림을 예약하고 키를 알림 식별자로 쓴다. 날짜·시간대가 바뀌면 다시 받아 재예약한다. 알림을 켜지 않은 기기도 호출은 같다(예약만 하지 않는다).
 - 구성원이 둘이고 공간이 활성일 때만 값이 있다. `seenByMe`가 참이면 카드·말풍선은 보이지 않고, `presetAvailable`(적용 전, 보이는 기간 안)이 참인 동안 방의 제안 입구는 남는다.
 
@@ -197,7 +197,17 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 
 ### `POST /spaces/{spaceId}/recover`
 
-30일 이내 공간 구성원이 호출한다. `{ "confirm": true }`. 공간과 저장 데이터를 다시 활성화한다. 캡틴은 복구 시 상대 동의가 필요한지 결정해야 한다.
+30일 이내 공간 구성원이 호출한다. `{ "confirm": true }`. 공간과 저장 데이터를 다시 활성화한다. 복구 시 상대 동의가 필요한지는 아직 정하지 않았다(구현 전 확인).
+
+## 신고와 연결 끊기 (FR-059)
+
+### `POST /spaces/{spaceId}/reports`
+
+구성원이 호출한다. `{ "target": "partner" | "shared_text" | "room_scene", "reason": "harass" | "inappropriate" | "privacy" | "other", "detail?": "string", "messageId?": "uuid" }`. 응답 201. 홈 커버 사진은 신고 대상이 아니다. 신고 접수·처리는 운영 연락처(공개 지원 이메일, 아직 없음)로 이어진다.
+
+### `POST /spaces/{spaceId}/block`
+
+**화면 이름은 "연결 끊기"(예전 "차단")이고 엔드포인트 이름은 `block`을 유지한다**(계약 이름을 불필요하게 바꾸지 않기 위해). 구성원이 호출한다. `{ "confirm": true }`. 상대의 접근을 끊고 공간을 `recovery_pending`으로 전환한다(`POST /end`와 같은 종료·30일 복구, 종료 이유 `disconnect`). 복구는 30일 안에 가능하다. 이 호출은 신고와 별개이고 신고를 만들지 않는다. 응답은 `/end`와 같다(`deleteAfter` 포함)이며 앱은 확인 창에서 이 결과를 미리 알린다.
 
 ## 실시간 업데이트
 

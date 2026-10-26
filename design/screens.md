@@ -13,7 +13,7 @@
 - **캔버스 보드**: `S01-onboarding`
 - **목적**: 제품 소개 3장(함께한 날 세기 · 프롬프트로 방 꾸미기 · 마스코트 — 3번째 장이 앱 전체에서 유일한 캐릭터 히어로), 로그인 시작, 약관·개인정보·연령 문구, 재실행 상태.
 - **이동**: 앱 첫 실행 → 소개 1~3 → 시작하기 → S02. 이미 계정이 있어요 → S02. 재실행(로그아웃 후) → 최근 사용한 방법 강조된 로그인.
-- 연령 문구("만 14세 이상")는 plan.md 구현 전 결정 4(연령 제한)가 정해지기 전의 **제안 문구**예요.
+- 연령: 가입 시작 화면의 약관 줄이 "계속하면 만 14세 이상이며 아래 내용에 동의하는 것으로 봐요"라고 해요(최소 연령 14세는 결정, 정확한 문구는 법무 검토 필요). 연령은 이 문구로만 확인하고 생년월일을 묻지 않아요(가정).
 - 스토어 정책 문구 자리는 약관 링크 아래 한 줄이에요(법무 확정 후 교체).
 - 소개 1장 맨 위에 앱 이름(모피루)과 슬로건("Our little world, together.")을 보여 줘요(`brand.tagline`, 영어 원문만 결정이라 세 언어 모두 영어). 글자 크기 130% 이상에서는 이 묶음을 숨겨요.
 - 소개 3의 캐릭터 이름은 모피예요(일본어 표기까지 소유자 승인).
@@ -100,7 +100,7 @@
 - **캔버스 보드**: `S05-invite-enter`
 - **목적**: 코드 입력, 확인, 초대 상대·공간 확인 후 수락, 만료·사용됨·유효하지 않음·인원 초과·이미 다른 공간 소속.
 - **이동**: S02(공간 없음) → "초대 코드가 있어요" → S05 → 참여 → 홈.
-- 이미 다른 공간에 있는 사용자는 "한 번에 하나의 공간만"으로 안내해요(plan.md 구현 전 결정 4 제안 답).
+- 이미 다른 공간에 있는 사용자는 "한 번에 하나의 공간만" 안내를 받고 코드가 소모되지 않아요(결정: 사용자당 한 공간). 지금 공간에서 먼저 나오려면(설정의 공간 종료) 한 뒤 다시 입력해요.
 - 붙여넣기를 제공해요.
 - **긴 문구·언어 사례**: 오류 문구가 영어·일본어에서 길어져도 카드 안에서 줄바꿈돼요.
 
@@ -189,7 +189,7 @@
 ## S08 공유 프롬프트 대화 / 입력
 
 - **캔버스 보드**: `S08-prompt-session`
-- **목적**: 공유 대화와 미리 보기, 점유 상태 6가지(비어 있음 / 내가 점유 / 상대가 점유(쓰는 중·만드는 중) / 내 점유 만료 임박 / 내 점유 만료 / 상대 만료 후 이어받기), 이어받기 경합, 동의 필요, 하루 10회 소진, 오프라인, 미지원 요청, 브랜드 요청 거절, 실패·재시도, 키보드.
+- **목적**: 공유 대화와 미리 보기, 점유 상태 6가지(비어 있음 / 내가 점유 / 상대가 점유(쓰는 중·만드는 중) / 내 점유 만료 임박 / 내 점유 만료 / 상대 만료 후 이어받기), 이어받기 경합, 동의 필요, 하루 5회 소진, 오프라인, 미지원 요청, 브랜드 요청 거절, 실패·재시도, 키보드.
 - **이동**: 방 탭의 꾸미기 → 모달 시트. 비어 있을 때 "내가 꾸밀게요"로 점유. 닫기 → 방.
 - 점유는 자동이 아니라 "내가 꾸밀게요"로 시작해요(상대가 의도치 않게 막히는 것 방지). 3분(가정) 입력이 없으면 풀리고 쓰던 글은 남아요.
 - 상대는 대화·미리 보기를 실시간 읽기 전용으로 봐요. 입력칸은 잠금 아이콘과 이유를 보여요.
@@ -211,7 +211,7 @@
 | `S08-takeover` | 상대 유휴 만료 · 이어받기 (이전 미리 보기 유지) | `preview.badge` `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.msg.status.preview` `sample.partner` `prompt.takeover.title` `prompt.takeover.body` `prompt.takeover.action` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.free` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
 | `S08-takeover-lost` | 이어받기 경합 · 상대가 먼저 | `preview.badge` `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.msg.status.preview` `sample.partner` `prompt.input.partner` `a11y.input.ro` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.partner` `a11y.presence` `prompt.takeover.lost` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
 | `S08-consent` | 동의 필요 · 입력 막힘 | `prompt.consent.need` `prompt.consent.action` `a11y.input` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
-| `S08-quota` | 하루 10회 소진 | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.quota.title` `prompt.quota.body` `a11y.input` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-quota` | 하루 5회 소진 | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.quota.title` `prompt.quota.body` `a11y.input` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
 | `S08-offline` | 오프라인 · 온라인 전용 | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `main.offline.title` `prompt.offline` `a11y.input` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
 | `S08-unsupported` | 지원하지 않는 요청 | `prompt.unsupported.title` `prompt.unsupported.body` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
 | `S08-brand` | 기존 캐릭터·브랜드 요청 거절 | `prompt.brand.refuse` `prompt.brand.action` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
@@ -333,13 +333,13 @@
 | `S14-expired` | 30일 만료 · 삭제 완료 | `end.expired.title` `end.expired.body` `end.expired.action` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
 | `S14-error` | 종료 실패 | `end.date` `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` `end.err.title` `end.err.body` `common.retry` `common.close` | iOS·밝게·ko, Android·어둡게·ko |
 
-## S15 신고 / 차단
+## S15 신고 / 연결 끊기
 
 - **캔버스 보드**: `S15-report-block`
-- **목적**: 대상(상대·공유 문구·방 장면) 선택, 사유, 자세한 내용(선택), 제출 성공·실패, 차단 확인과 결과, 지원 연락처.
+- **목적**: 대상(상대·공유 문구·방 장면) 선택, 사유, 자세한 내용(선택), 제출 성공·실패, 연결 끊기 확인과 결과, 지원 연락처.
 - **이동**: 설정 > 문의·신고(푸시), 대화 메시지의 ⋯ > 이 메시지 신고(시트).
 - 지원 연락처는 `[지원 이메일]` 자리표시예요.
-- 차단은 "상대는 방·대화를 볼 수 없고 공간이 종료(30일 복구)"로 제안했어요(열린 질문).
+- **연결 끊기**(예전 이름 "차단")는 "상대는 방·대화를 볼 수 없고 이 공간이 종료돼요. 30일 안에는 복구할 수 있어요"라고 분명히 말해요(결정). 신고와는 별개의 기능이에요. 구현의 문구 키·API 이름은 `report.block*`·`block` 그대로예요(계약 이름을 바꾸지 않으려고).
 - **긴 문구·언어 사례**: 사유 문구가 길어져도 한 줄에 라디오와 함께 줄바꿈돼요.
 
 | 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
@@ -351,8 +351,8 @@
 | `S15-sending` | 제출 중 | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `report.why` `report.reason.harass` `report.reason.inappropriate` `report.reason.privacy` `report.reason.other` `report.sending` | iOS·밝게·ko, Android·어둡게·ko |
 | `S15-done` | 제출 성공 · 지원 연락처 | `report.done.title` `report.done.body` `report.contact` `common.done` | iOS·밝게·ko, Android·어둡게·ko |
 | `S15-fail` | 제출 실패 (입력 유지) | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `report.why` `report.reason.harass` `report.reason.inappropriate` `report.reason.privacy` `report.reason.other` `report.fail.title` `report.fail.body` `common.retry` `report.submit` | iOS·밝게·ko, Android·어둡게·ko |
-| `S15-block` | 차단 확인 · 결과 설명 | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `sample.partner` `report.block` `report.block.title` `end.date` `report.block.body` `report.block.confirm` `common.cancel` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
-| `S15-blocked` | 차단 후 결과 (공간 종료 상태) | `end.done.title` `end.date` `end.done.body` `end.left` `end.restore` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-block` | 연결 끊기 확인 · 결과 설명 | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `sample.partner` `report.block` `report.block.title` `end.date` `report.block.body` `report.block.confirm` `common.cancel` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S15-blocked` | 연결을 끊은 뒤 결과 (공간 종료 상태) | `end.done.title` `end.date` `end.done.body` `end.left` `end.restore` | iOS·밝게·ko, Android·어둡게·ko |
 
 ## S16 공통 오류 · 빈 · 로딩 · 오프라인
 
@@ -369,7 +369,7 @@
 | `S16-login` | 로그인 만료 | `sys.login.title` `sys.login.body` `sys.login.action` | iOS·밝게·ko, Android·어둡게·ko |
 | `S16-denied` | 접근 거부 (구성원 아님·종료) | `sys.denied.title` `sys.denied.body` `join.haveCode` `join.createSpace` | iOS·밝게·ko, Android·어둡게·ko |
 | `S16-offline` | 인터넷 끊김 · 메인 마지막 상태 | `main.offline.title` `main.offline.body` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
-| `S16-quota` | 요청 한도 (하루 10회) | `sys.quota.title` `prompt.quota.body` `prompt.quota.title` `a11y.input` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S16-quota` | 요청 한도 (하루 5회) | `sys.quota.title` `prompt.quota.body` `prompt.quota.title` `a11y.input` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
 | `S16-old-scene` | 구버전 장면 (읽을 수 있는 부분만) | `sys.old.title` `sys.old.body` `sys.old.action` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
 | `S16-asset` | 삭제된·누락된 에셋 (빈 자리 유지) | `sys.asset.title` `sys.asset.body` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
 | `S16-pending` | 데이터 동기화 대기 | `sys.pending.title` `sys.pending.body` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
@@ -383,7 +383,7 @@
 - **이동**: 앱 열기(또는 알림을 눌러 열기) → 홈 카드(닫기 / 기념 방 꾸미기 보기) → 첫 카드를 닫은 뒤 알림 사전 안내 시트(알림 켜기 / 다음에) → OS 권한 창 · 방 탭 말풍선(닫기) + 하단 제안 입구 → 점유 시작 → 미리 보기(S09, "{라벨} 제안" 뱃지) → 적용 확인("적용한 뒤에는 되돌릴 수 없어요") → 적용. 상대가 점유 중이면 입구가 막히고 이유를 알려요.
 - 마일스톤 목록·규칙(7일 안에 처음 열면 늦은 축하, 커플당 한 번, 구성원마다 한 번씩, 날짜 수정 규칙)은 보드 아래쪽 표에 있어요. 모두 **제안값**이고 결정권자가 조정할 수 있어요.
 - 마스코트 포즈는 기존 `cheer`(신나게 인사)만 써요. 통통 뛰기(2.4초)와 반짝임(1.4초)은 앱 고정 동작이고 동작 줄이기에서는 정지해요.
-- 제안은 AI를 쓰지 않는 앱 프리셋(케이크·풍선·리본·반짝이 + 기념 문구, 주년은 선물 추가)이라 해외 AI 동의·하루 10회 한도와 무관해요. 새 카탈로그 오브젝트는 0개(24종 그대로).
+- 제안은 AI를 쓰지 않는 앱 프리셋(케이크·풍선·리본·반짝이 + 기념 문구, 주년은 선물 추가)이라 해외 AI 동의·하루 5회 한도와 무관해요. 새 카탈로그 오브젝트는 0개(24종 그대로).
 - 카드는 앱 면 위에 놓여서 홈 배경 사진과 상관없이 같은 대비예요. 글자 130% 이상에서는 카드가 세로로 쌓이고, 방의 입구는 글자 크기를 160%로 제한해요.
 - **알림은 옵트인 기기 예약 알림만**이에요: 오전 9시(방 시간대), 이름·날짜 없는 문구, 서버 푸시·토큰 저장 없음, 탭 바 배지 없음. 규칙은 보드 아래 표, 설정 행은 S13·S26.
 - **긴 문구·언어 사례**: 일본어 제목은 {n}日目です / {n}周年です로 줄여서 한 줄에 들어가고, 영어 "Your 1-year anniversary"는 두 줄로 줄바꿈돼요.

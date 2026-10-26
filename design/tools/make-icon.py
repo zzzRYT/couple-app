@@ -11,7 +11,7 @@ What it does (and does not do)
     made from the art's own dark pixels (Android monochrome) and flat colour grounds; no text in any icon
   * all store icons are opaque RGB PNGs (no alpha channel, no pre-rounded corners)
 
-Requires: Python 3, Pillow, NumPy.   Usage: python3 make-icon.py [--rec B]
+Requires: Python 3, Pillow, NumPy.   Usage: python3 make-icon.py [--rec A]   (A = the selected production icon; B and C stay only as rejected candidates)
 """
 import argparse, json, os, sys
 import numpy as np
@@ -188,7 +188,7 @@ def wallpaper(w, h, dark):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--rec', default='B', help='recommended candidate id (A/B/C)')
+    ap.add_argument('--rec', default='A', help='selected (production) candidate id (A/B/C); A was chosen by the owner')
     args = ap.parse_args()
     rec = args.rec
     arts = {}
@@ -205,7 +205,7 @@ def main():
         report['candidates'][cid] = dict(name=cfg['name'], ground=cfg['ground'], scale=cfg['k'], legibility=lg,
                                          verdict={str(s): verdict(lg[s], s) for s in lg})
 
-    # 2) recommended set
+    # 2) selected (production) set
     cfg = CANDIDATES[rec]
     art = arts[cfg['art']]
     light = cand[rec]
@@ -309,6 +309,7 @@ def main():
 
     # report
     report['recommended'] = rec
+    report['selected'] = rec
     report['android'] = dict(layer_px=1024, layer_dp=108, safe_zone_dp=66, safe_zone_px=round(1024 * 66 / 108),
                              requested_safe_zone_px=676, foreground_scale=k_fg)
     with open(os.path.join(OUT, 'legibility-report.json'), 'w', encoding='utf-8') as f:

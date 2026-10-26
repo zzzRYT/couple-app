@@ -155,7 +155,8 @@
       }
     }
   },
-  "recommended": "B",
+  "recommended": "A",
+  "selected": "A",
   "android": {
     "layer_px": 1024,
     "layer_dp": 108,

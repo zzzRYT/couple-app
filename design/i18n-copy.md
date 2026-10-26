@@ -78,7 +78,7 @@
 | `onb.p3.body` | 방 한쪽에서 두 사람을 반겨 줘요. | It greets the two of you from a corner of the room. | 部屋の一角で、ふたりを迎えてくれます。 |
 | `onb.start` | 시작하기 | Get started | はじめる |
 | `onb.hasAccount` | 이미 계정이 있어요 | I already have an account | アカウントをお持ちの方 |
-| `onb.legal.lead` | 계속하면 아래 내용에 동의하는 것으로 봐요. | By continuing, you agree to the following. | 続けると、以下に同意したものとみなされます。 |
+| `onb.legal.lead` | 계속하면 만 14세 이상이며 아래 내용에 동의하는 것으로 봐요. | By continuing, you confirm you are 14 or older and agree to the following. | 続けると、14歳以上であり、以下に同意したものとみなされます。 |
 | `onb.legal.links` | 이용약관 · 개인정보 처리방침 | Terms of Use · Privacy Policy | 利用規約 · プライバシーポリシー |
 | `onb.age` | 만 14세 이상만 사용할 수 있어요. | You must be 14 or older to use Mopiru. | ご利用は14歳以上の方に限ります。 |
 | `onb.back.title` | 다시 만나서 반가워요 | Welcome back | おかえりなさい |
@@ -196,7 +196,7 @@
 | `join.full.title` | 이미 두 사람이 있는 공간이에요 | This space already has two people | すでに2人いるスペースです |
 | `join.full.body` | 이 공간에는 더 참여할 수 없어요. 상대에게 확인해 주세요. | You can't join this space. Check with your partner. | このスペースには参加できません。パートナーに確認してください。 |
 | `join.hasSpace.title` | 이미 다른 공간에 있어요 | You're already in another space | すでに別のスペースにいます |
-| `join.hasSpace.body` | 한 번에 하나의 공간만 쓸 수 있어요. 지금 공간을 종료한 뒤 코드를 다시 입력해 주세요. | You can only be in one space at a time. End your current space, then enter the code again. | 同時に使えるスペースは1つだけです。今のスペースを終了してから、もう一度コードを入力してください。 |
+| `join.hasSpace.body` | 한 번에 하나의 공간만 쓸 수 있어요. 지금 공간에서 먼저 나온 뒤(설정의 공간 종료) 코드를 다시 입력해 주세요. | You can only be in one space at a time. Leave your current space first (Settings › End space), then enter the code again. | 同時に使えるスペースは1つだけです。まず今のスペースから抜けて（設定の「スペースを終了」）、もう一度コードを入力してください。 |
 | `join.hasSpace.action` | 지금 공간 보기 | View current space | 今のスペースを見る |
 | `join.ok.title` | 참여했어요 | You're in | 参加しました |
 | `join.ok.body` | {name}님과 함께하는 공간이 열렸어요. | Your space with {name} is open. | {name}さんとのスペースが開きました。 |
@@ -255,7 +255,7 @@
 | `prompt.sending` | 만드는 중이에요 | Working on it | 作成中です |
 | `prompt.left` | 오늘 {n}번 더 꾸밀 수 있어요 | {n} more tries today | 今日はあと{n}回試せます |
 | `prompt.quota.title` | 오늘 꾸미기를 모두 썼어요 | You've used all of today's tries | 今日の回数を使い切りました |
-| `prompt.quota.body` | 하루 10번까지 쓸 수 있어요. 내일 다시 이어서 꾸밀 수 있고, 지금 방은 그대로예요. | You can decorate up to 10 times a day. Pick it up again tomorrow — the room stays as it is. | 1日10回まで使えます。明日また続けられます。今の部屋はそのままです。 |
+| `prompt.quota.body` | 하루 5번까지 쓸 수 있어요. 내일 다시 이어서 꾸밀 수 있고, 지금 방은 그대로예요. | You can decorate up to 5 times a day. Pick it up again tomorrow — the room stays as it is. | 1日5回まで使えます。明日また続けられます。今の部屋はそのままです。 |
 | `prompt.consent.need` | 꾸미려면 해외 AI 처리에 동의해야 해요 | To decorate, you need to agree to overseas AI processing | 飾るには、海外でのAI処理への同意が必要です |
 | `prompt.consent.action` | 안내 보기 | View details | 詳細を見る |
 | `prompt.offline` | 인터넷에 연결되어야 꾸밀 수 있어요 | You need an internet connection to decorate | 飾るにはインターネット接続が必要です |
@@ -457,11 +457,11 @@
 | `end.err.title` | 종료하지 못했어요 | Couldn't end the space | 終了できませんでした |
 | `end.err.body` | 공간은 그대로예요. 다시 시도해 주세요. | The space is unchanged. Please try again. | スペースはそのままです。もう一度お試しください。 |
 
-## S15 신고·차단
+## S15 신고·연결 끊기
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
-| `report.title` | 신고 · 차단 | Report and block | 通報・ブロック |
+| `report.title` | 신고 · 연결 끊기 | Report or disconnect | 通報・つながりを終了 |
 | `report.what` | 무엇을 신고할까요? | What do you want to report? | 何を通報しますか？ |
 | `report.target.partner` | 상대 | My partner | パートナー |
 | `report.target.text` | 공유된 문구 | Shared text | 共有された文言 |
@@ -480,11 +480,11 @@
 | `report.fail.title` | 신고를 보내지 못했어요 | Couldn't send the report | 通報を送信できませんでした |
 | `report.fail.body` | 쓴 내용은 그대로 남아 있어요. 다시 시도해 주세요. | What you wrote is still here. Please try again. | 入力した内容は残っています。もう一度お試しください。 |
 | `report.contact` | 문의: [지원 이메일] | Contact: [support email] | お問い合わせ：[サポートメール] |
-| `report.block` | {name}님 차단하기 | Block {name} | {name}さんをブロック |
-| `report.block.title` | {name}님을 차단할까요? | Block {name}? | {name}さんをブロックしますか？ |
-| `report.block.body` | 차단하면 {name}님은 이 공간의 방과 대화를 볼 수 없고, 공간이 종료돼요. {date}까지는 복구할 수 있어요. | If you block {name}, they can no longer see this space's room or conversation, and the space ends. You can restore it until {date}. | ブロックすると、{name}さんはこのスペースの部屋と会話を見られなくなり、スペースは終了します。{date}までは復元できます。 |
-| `report.block.confirm` | 차단하기 | Block | ブロックする |
-| `report.block.done` | 차단했어요 | Blocked | ブロックしました |
+| `report.block` | {name}님과 연결 끊기 | Disconnect from {name} | {name}さんとのつながりを終了 |
+| `report.block.title` | {name}님과 연결을 끊을까요? | Disconnect from {name}? | {name}さんとのつながりを終了しますか？ |
+| `report.block.body` | 연결을 끊으면 {name}님은 이 공간의 방과 대화를 볼 수 없고, 이 공간이 종료돼요. 30일 안({date}까지)에는 복구할 수 있어요. | If you disconnect, {name} can no longer see this space's room or conversation, and the space ends. You have 30 days (until {date}) to restore it. | つながりを終了すると、{name}さんはこのスペースの部屋と会話を見られなくなり、スペースは終了します。30日以内（{date}まで）は復元できます。 |
+| `report.block.confirm` | 연결 끊기 | Disconnect | つながりを終了する |
+| `report.block.done` | 연결을 끊었어요 | Disconnected | つながりを終了しました |
 | `report.msg.menu` | 이 메시지 신고 | Report this message | このメッセージを通報 |
 | `report.msg.menu.cancel` | 닫기 | Close | 閉じる |
 

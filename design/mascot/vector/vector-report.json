@@ -323,7 +323,21 @@
   }
  },
  "icon": {
-  "face": {
+  "face_A": {
+   "anchors": 3069,
+   "window": [
+    326,
+    -152,
+    1707,
+    1707
+   ],
+   "viewBox": "0 0 1707 1707",
+   "paths": 45,
+   "colors": 13,
+   "bytes": 153106,
+   "problems": []
+  },
+  "face_B": {
    "anchors": 2854,
    "window": [
     403,
@@ -334,15 +348,32 @@
    "viewBox": "0 0 1552 1552",
    "paths": 47,
    "colors": 13,
-   "bytes": 140809,
+   "bytes": 140839,
    "problems": []
   },
-  "icon": {
+  "icon_A": {
+   "viewBox": "0 0 1024 1024",
+   "paths": 45,
+   "colors": 13,
+   "bytes": 153238,
+   "problems": [],
+   "vs_icon_png": {
+    "iou": 1.0,
+    "mean_abs_diff": 1.15,
+    "pct_pixels_off_by_more_than_48": 0.7
+   }
+  },
+  "icon_B": {
    "viewBox": "0 0 1024 1024",
    "paths": 47,
    "colors": 13,
-   "bytes": 140920,
-   "problems": []
+   "bytes": 140989,
+   "problems": [],
+   "vs_icon_png": {
+    "iou": 1.0,
+    "mean_abs_diff": 0.94,
+    "pct_pixels_off_by_more_than_48": 0.54
+   }
   }
  },
  "pdf": {
@@ -351,13 +382,13 @@
    "header": "%PDF-",
    "embedded_images": 0
   },
-  "icon_face.pdf": {
-   "bytes": 159038,
+  "icon_face_A.pdf": {
+   "bytes": 167119,
    "header": "%PDF-",
    "embedded_images": 0
   },
-  "icon_B_1024.pdf": {
-   "bytes": 232856,
+  "icon_A_1024.pdf": {
+   "bytes": 246060,
    "header": "%PDF-",
    "embedded_images": 0
   },
@@ -366,8 +397,8 @@
    "header": "%PDF-",
    "embedded_images": 0
   },
-  "icon_B_1024.ai": {
-   "bytes": 233378,
+  "icon_A_1024.ai": {
+   "bytes": 246539,
    "header": "%PDF-",
    "embedded_images": 0
   }

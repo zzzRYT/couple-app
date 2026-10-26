@@ -3,7 +3,7 @@
 vectorize-mascot.py — auto-trace Mopi's harmonized raster poses into SVG (and PDF) with the VectorCraft command-line tool.
 
 Input : design/mascot/harmonized/mascot_{pose}@3x.png   (the 11 poses, direction-A look of the supplied AI-generated master)
-Output: design/mascot/vector/**  (SVG per pose, the app-icon face crop, PDFs, vector-report.json, preview/vector-vs-raster.png)
+Output: design/mascot/vector/**  (SVG per pose, the app-icon faces (A selected, B rejected), PDFs, vector-report.json, preview/vector-vs-raster.png)
 
 What it does (and does not do)
   * runs `vectorcraft-cli run --in <png> --cmd select.all --cmd imageTrace.makeAndExpand --params {"preset": ...} --export <svg>`
@@ -12,7 +12,7 @@ What it does (and does not do)
     grouped as `<role>-<hex>` (e.g. outline-4a3426). Path data and fills are not touched, z-order is unchanged
   * checks every SVG (viewBox, no embedded raster, no scripts / external references, fills inside the mascot token palette),
     renders it with an independent renderer (resvg) and measures it against the raster
-  * exports a PDF of the main pose, the icon face crop and the icon, and a PDF-compatible .ai of the main pose and the icon
+  * exports a PDF of the main pose, the icon face crop and the icon, and a PDF-compatible .ai of the main pose and the selected icon A
     (through the same CLI, so they are vector too)
 
 Requires: Python 3.9+, Pillow, NumPy, resvg-py (`pip install pillow numpy resvg-py`; use MASCOT_LIBS=/path/to/site-packages if not on
@@ -42,13 +42,19 @@ PRESET = '16 Colors'            # chosen by overlay comparison, see design/masco
 EXPECT_VERSION = '0.17.0'
 NS = 'http://www.w3.org/2000/svg'
 PAPER = (0xFB, 0xF1, 0xE3)
-ACCENT = '#B24A24'              # same ground as the recommended icon (design/icon, candidate B)
+ICONS = {  # window geometry of design/tools/make-icon.py: place(art, k, head centre x=hx, eye line y=fy) on a flat ground
+    'A': dict(k=0.60, hx=512, fy=480, ground='#FBF1E3', status='selected (production)'),     # chosen by the owner
+    'B': dict(k=0.66, hx=512, fy=490, ground='#B24A24', status='rejected candidate (kept for reference)'),
+}
+GROUNDS = {v['ground'].lower() for v in ICONS.values()}
 
-# icon B = place(art, k=0.66, head centre x=512, eye line y=490) in design/tools/make-icon.py; this is the same window as a crop
-HEAD_CX, EYE_MID_Y, K, HX, FY = 1179, 648.5, 0.66, 512, 490
-ICON_SIDE = round(1024 / K)                                  # 1552 px of the source art
-ICON_X0 = round(HEAD_CX - HX / K)                            # 403
-ICON_Y0 = round(EYE_MID_Y - FY / K)                          # -94 (the window starts above the art: transparent)
+HEAD_CX, EYE_MID_Y = 1179, 648.5
+
+
+def icon_window(k, hx, fy):
+    """the same window as the icon PNG, as a crop of the main pose (it may start above the art: transparent)"""
+    return round(HEAD_CX - hx / k), round(EYE_MID_Y - fy / k), round(1024 / k)
+
 
 REGION_ROLE = {'몸통': 'body', '볼': 'cheek', '어깨띠': 'sash', '별 핀·별': 'star', '하트': 'heart', '상자': 'box', '휴대폰': 'phone'}
 
@@ -153,7 +159,7 @@ def check_svg(path, roles):
     if [u for u in urls if u != NS]:
         problems.append('external URL: ' + ', '.join(u for u in urls if u != NS))
     fills = {e.get('fill').lower() for e in root.iter('{%s}path' % NS)}
-    off = sorted(f for f in fills if f != ACCENT.lower() and f not in roles)
+    off = sorted(f for f in fills if f not in GROUNDS and f not in roles)
     if off:
         problems.append('fills outside the token palette: ' + ' '.join(off))
     npaths = len(list(root.iter('{%s}path' % NS)))
@@ -261,8 +267,8 @@ def sheet(out_dir, report, icon_files):
     img.paste(vs.resize((vs.width * 6, vs.height * 6), Image.NEAREST), (x2 + rs.width * 6 + 12, ys))
     # icon face tile
     yi = ys + vs.height * 6 + 24
-    d.text((x2, yi), 'App-icon face (vector, on the icon B ground)', fill=INK, font=font(17))
-    ic = over(render(os.path.join(out_dir, icon_files['icon']), 360, 360))
+    d.text((x2, yi), 'App icon A (vector, selected)', fill=INK, font=font(17))
+    ic = over(render(os.path.join(out_dir, icon_files['icon_A']), 360, 360))
     img.paste(ic, (x2, yi + 28))
     img.save(os.path.join(out_dir, 'preview', 'vector-vs-raster.png'), optimize=True)
 
@@ -286,7 +292,7 @@ def main():
     desc = ('Auto-traced from design/mascot/harmonized (raster) with VectorCraft ' + version + ' preset "' + a.preset + '". '
             'Not redrawn. Derived from the AI-generated mascot master; same rights status as the mascot.')
     report = dict(tool='vectorize-mascot.py', vectorcraft_cli=version, preset=a.preset, poses={}, icon={}, pdf={}, problems=[])
-    icon_files = dict(face='icon_face.svg', icon='icon_B_1024.svg')
+    icon_files = {f'{k}_{i}': (f'icon_face_{i}.svg' if k == 'face' else f'icon_{i}_1024.svg') for i in ICONS for k in ('face', 'icon')}
 
     tmp = tempfile.mkdtemp(prefix='mopi-vec-')
     try:
@@ -297,27 +303,26 @@ def main():
                 text = tidy(open(raw, encoding='utf-8').read(), f'mopi-{p}', f'Mopi - {p} (traced vector)', desc, roles)
                 open(os.path.join(out, f'mascot_{p}.svg'), 'w', encoding='utf-8').write(text)
                 report['poses'][p] = dict(anchors=info['anchors'], trace_warnings=info.get('warnings', []))
-            # icon face crop (the same window as icon B, built from the main pose; the window starts above the art)
             src = Image.open(os.path.join(ART, 'mascot_wave_main@3x.png')).convert('RGBA')
-            crop = src.crop((ICON_X0, ICON_Y0, ICON_X0 + ICON_SIDE, ICON_Y0 + ICON_SIDE))
-            cpng = os.path.join(tmp, 'icon_face.png')
-            crop.save(cpng)
-            raw = os.path.join(tmp, 'icon_face.svg')
-            info = trace(a.cli, cpng, raw, a.preset)
-            face = tidy(open(raw, encoding='utf-8').read(), 'mopi-icon-face', 'Mopi - app icon face (traced vector)', desc, roles)
-            open(os.path.join(out, icon_files['face']), 'w', encoding='utf-8').write(face)
-            report['icon']['face'] = dict(anchors=info['anchors'], window=[ICON_X0, ICON_Y0, ICON_SIDE, ICON_SIDE])
-            # icon B: ground colour + the face, 1024 x 1024, no rounded corners, no alpha needed
-            s = 1024 / ICON_SIDE
-            icon = ('<?xml version="1.0" encoding="UTF-8"?>\n'
-                    '<svg xmlns="%s" width="1024" height="1024" viewBox="0 0 1024 1024">\n'
-                    '  <title>Mopi - app icon B (traced vector)</title>\n  <desc>%s</desc>\n'
-                    '  <rect id="ground" width="1024" height="1024" fill="%s"/>\n'
-                    '  <g id="face" transform="scale(%.6f)">\n%s\n  </g>\n</svg>\n') % (NS, desc, ACCENT, s, inner(face))
-            open(os.path.join(out, icon_files['icon']), 'w', encoding='utf-8').write(icon)
-            # PDF and PDF-compatible .ai through the same CLI (vector, no embedded image)
-            for name, dst in (('mascot_wave_main.svg', 'mascot_wave_main.pdf'), (icon_files['face'], 'icon_face.pdf'), (icon_files['icon'], 'icon_B_1024.pdf'),
-                              ('mascot_wave_main.svg', 'mascot_wave_main.ai'), (icon_files['icon'], 'icon_B_1024.ai')):
+            for iid, ic in ICONS.items():
+                x0, y0, side = icon_window(ic['k'], ic['hx'], ic['fy'])
+                cpng = os.path.join(tmp, f'icon_face_{iid}.png')
+                src.crop((x0, y0, x0 + side, y0 + side)).save(cpng)
+                raw = os.path.join(tmp, f'icon_face_{iid}.svg')
+                info = trace(a.cli, cpng, raw, a.preset)
+                face = tidy(open(raw, encoding='utf-8').read(), f'mopi-icon-face-{iid}', f'Mopi - app icon face {iid} (traced vector)', desc, roles)
+                open(os.path.join(out, icon_files[f'face_{iid}']), 'w', encoding='utf-8').write(face)
+                report['icon'][f'face_{iid}'] = dict(anchors=info['anchors'], window=[x0, y0, side, side])
+                # ground colour + the face, 1024 x 1024, no rounded corners, no alpha needed
+                icon = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+                        '<svg xmlns="%s" width="1024" height="1024" viewBox="0 0 1024 1024">\n'
+                        '  <title>Mopi - app icon %s, %s (traced vector)</title>\n  <desc>%s</desc>\n'
+                        '  <rect id="ground" width="1024" height="1024" fill="%s"/>\n'
+                        '  <g id="face" transform="scale(%.6f)">\n%s\n  </g>\n</svg>\n') % (NS, iid, ic['status'], desc, ic['ground'], 1024 / side, inner(face))
+                open(os.path.join(out, icon_files[f'icon_{iid}']), 'w', encoding='utf-8').write(icon)
+            # PDF and PDF-compatible .ai through the same CLI (vector, no embedded image); only the selected icon A gets them
+            for name, dst in (('mascot_wave_main.svg', 'mascot_wave_main.pdf'), (icon_files['face_A'], 'icon_face_A.pdf'), (icon_files['icon_A'], 'icon_A_1024.pdf'),
+                              ('mascot_wave_main.svg', 'mascot_wave_main.ai'), (icon_files['icon_A'], 'icon_A_1024.ai')):
                 convert(a.cli, os.path.join(out, name), os.path.join(out, dst))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
@@ -348,9 +353,13 @@ def main():
         c = check_svg(path, roles)
         c.pop('fills')
         report['icon'].setdefault(key, {}).update(c)
+        if have_resvg and key.startswith('icon_'):
+            png = Image.open(os.path.join(DES, 'icon', 'candidates', f'icon-candidate-{key[-1]}-1024.png')).convert('RGBA')
+            m, _, _ = measure(path, png)
+            report['icon'][key]['vs_icon_png'] = m
         for pr in c['problems']:
             report['problems'].append(f'{name}: {pr}')
-    for name in ('mascot_wave_main.pdf', 'icon_face.pdf', 'icon_B_1024.pdf', 'mascot_wave_main.ai', 'icon_B_1024.ai'):   # .ai = PDF-compatible Illustrator file
+    for name in ('mascot_wave_main.pdf', 'icon_face_A.pdf', 'icon_A_1024.pdf', 'mascot_wave_main.ai', 'icon_A_1024.ai'):   # .ai = PDF-compatible Illustrator file
         path = os.path.join(out, name)
         entry = dict(bytes=os.path.getsize(path), header=open(path, 'rb').read(5).decode('latin1'))
         if shutil.which('pdfimages'):

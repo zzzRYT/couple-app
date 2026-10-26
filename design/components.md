@@ -36,8 +36,8 @@
 |---|---|---|
 | primary | 한 화면의 주된 행동 | `primary` / `onPrimary` / `line` |
 | secondary | 보조 행동 | `surface` / `text` / `line` |
-| danger | 되돌릴 수 없는 확정(공간 종료·차단) | `danger` / `onDanger` / `line` |
-| dangerOutline | 위험하지만 덜 강조(동의 철회, 차단 진입) | `surface` / `danger` / `danger` |
+| danger | 되돌릴 수 없는 확정(공간 종료·연결 끊기) | `danger` / `onDanger` / `line` |
+| dangerOutline | 위험하지만 덜 강조(동의 철회, 연결 끊기 진입) | `surface` / `danger` / `danger` |
 | ghost | 텍스트 버튼(다시 시도, 나중에, 새 코드 만들기) | 투명 / `primary` |
 
 상태: 기본 · 눌림(밝기 −10%, 1px 아래) · 포커스(3px 링 + 3px 간격) · 비활성(점선 윤곽선, `surface2` 면, `text2` 글자) · 로딩(스피너 + 라벨 유지). 높이 52(최소 48), 알약. 글자는 **굵은 글씨 글꼴**(16px, 손글씨 아님). 접근성: 라벨이 이름, 로딩 중 `a11y.progress`("진행 중")를 상태로.

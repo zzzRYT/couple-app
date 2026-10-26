@@ -48,7 +48,7 @@ Firestore 모바일 SDK의 오프라인 캐시와 실시간 리스너는 강점�
 
 출처(접근 2026-10-24): [Supabase 요금/포함량](https://supabase.com/docs/guides/platform/billing-on-supabase), [Supabase RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [Supabase Realtime](https://supabase.com/docs/guides/realtime), [Realtime Authorization](https://supabase.com/docs/guides/realtime/authorization), [Supabase Edge Function 제한](https://supabase.com/docs/guides/functions/limits), [Supabase Kakao OAuth](https://supabase.com/docs/guides/auth/social-login/auth-kakao), [Firebase 가격](https://firebase.google.com/pricing), [Firestore 과금](https://firebase.google.com/docs/firestore/pricing), [Firebase Functions 과금](https://firebase.google.com/docs/functions/faq-and-troubleshooting).
 
-**결정 — 캡틴 승인:** backend는 Supabase. primary DB/Auth/Storage region은 대한민국 사용자를 위한 Seoul `ap-northeast-2`를 권장 기본값으로 한다. Supabase 공식 region 목록에 Seoul이 있다. region 선택은 DB/Auth/Storage의 위치를 고르는 것이며 규제 준수 보장을 뜻하지 않는다. Supabase는 운영 telemetry/일부 metadata가 선택 region 밖에서 처리될 수 있다고 설명하므로 국외 이전 동의/법률 검토는 계속 필요하다.
+**결정 — 소유자 승인:** backend는 Supabase. primary DB/Auth/Storage region은 대한민국 사용자를 위한 Seoul `ap-northeast-2`를 권장 기본값으로 한다. Supabase 공식 region 목록에 Seoul이 있다. region 선택은 DB/Auth/Storage의 위치를 고르는 것이며 규제 준수 보장을 뜻하지 않는다. Supabase는 운영 telemetry/일부 metadata가 선택 region 밖에서 처리될 수 있다고 설명하므로 국외 이전 동의/법률 검토는 계속 필요하다.
 
 출처(접근 2026-10-24): [Supabase available regions](https://supabase.com/docs/guides/platform/regions), [Supabase regional Edge Function invocations](https://supabase.com/docs/guides/functions/regional-invocation), [Supabase Data Residency and Transfers FAQ (2026-10-06)](https://supabase.com/legal/privacy-resources/data-residency-and-transfers-faq).
 
@@ -62,7 +62,7 @@ Firestore 모바일 SDK의 오프라인 캐시와 실시간 리스너는 강점�
 
 적용은 prompt-session owner, 현재 버전 번호, idempotency key를 조건으로 한 transaction이다. confirm 시 새 `ThemeVersion` 전체 스냅샷을 추가하고 current pointer 이동 및 lease release를 함께 처리한다. 적용한 변경은 되돌릴 수 없다(적용 후 undo, 이용자용 버전 목록·선택 복구는 V1에 없고 스냅샷은 감사·충돌 검사용이다). 열린 대화 안에서는 마지막 미리 보기를 이전 후보로 되돌릴 수 있다(방은 바뀌지 않음). preview/cancel은 현재 테마를 변경하지 않는다. occupancy가 정상 prompt 편집을 직렬화하고 server version guard는 예외 동시 apply/늦은 retry를 `409`로 차단한다.
 
-두 구성원이 같은 방을 동시에 편집하는 문제는 per-space lease로 직렬화한다. active lease owner만 입력·제출·적용하고, 상대는 shared transcript/preview를 Realtime으로 읽기 전용 구독한다. owner 활동이 멈추면 3분(가정) 후 lease가 만료되며 상대는 takeover할 수 있다. 서버는 session owner check와 expected version compare를 같은 transaction에서 수행해 드물게 도착한 동시 apply를 막는다. 일반 stale preview를 사용자 흐름의 기본 해결책으로 삼는 대신 독점 점유가 정상 경로를 직렬화하고, `409`는 만료/네트워크 지연 등 예외 경합의 최종 안전장치로 남긴다.
+두 구성원이 같은 방을 동시에 편집하는 문제는 per-space lease로 직렬화한다. active lease owner만 입력·제출·적용하고, 상대는 shared transcript/preview를 Realtime으로 읽기 전용 구독한다. owner 활동이 멈추면 3분(결정) 후 lease가 만료되며 상대는 takeover할 수 있다. 서버는 session owner check와 expected version compare를 같은 transaction에서 수행해 드물게 도착한 동시 apply를 막는다. 일반 stale preview를 사용자 흐름의 기본 해결책으로 삼는 대신 독점 점유가 정상 경로를 직렬화하고, `409`는 만료/네트워크 지연 등 예외 경합의 최종 안전장치로 남긴다.
 
 기존 조사들은 모델의 공간 관계·타이포그래피 실패를 보고하므로 실제 기기 비율과 dynamic type에서 결정론적 검사를 실행해야 한다. 보호 영역은 고정 좌표가 아니라 런타임 네이티브 뷰 측정으로 만든다. 보호 박스와 장면 오브젝트/문구가 겹치면 우선 규칙 기반 재배치를 한 번 수행하고, 불가능하면 후보를 거부한다.
 
@@ -70,11 +70,11 @@ Firestore 모바일 SDK의 오프라인 캐시와 실시간 리스너는 강점�
 
 ## 4. AI 호출 흐름, 모델, 비용
 
-**흐름 제안:** 구성원이 prompt-session lease acquire → 서버가 한 명의 owner만 허용하고 상대에게 owner/expiry presence 전달 → owner가 prompt 입력 → 서버가 권한·동의·하루 10회 한도 검사 후 AI 구조화 출력 요청 → JSON Schema·정책·카탈로그·좌표/보호영역 검사 → shared conversation에 prompt/preview를 저장하고 둘에게 ID 기반 Realtime 이벤트 전달 → 상대는 live read-only로 대화/preview 확인, owner만 confirm/cancel/(열린 대화 안) undo → 서버가 session owner + expected version + idempotency를 transaction에서 검사, 적용 시 snapshot 저장과 lease release를 원자화. 활성 활동 heartbeat를 3분 idle 만료로 제한해 앱 종료 시 takeover가 가능하게 한다.
+**흐름 제안:** 구성원이 prompt-session lease acquire → 서버가 한 명의 owner만 허용하고 상대에게 owner/expiry presence 전달 → owner가 prompt 입력 → 서버가 권한·동의·하루 5회 한도 검사 후 AI 구조화 출력 요청 → JSON Schema·정책·카탈로그·좌표/보호영역 검사 → shared conversation에 prompt/preview를 저장하고 둘에게 ID 기반 Realtime 이벤트 전달 → 상대는 live read-only로 대화/preview 확인, owner만 confirm/cancel/(열린 대화 안) undo → 서버가 session owner + expected version + idempotency를 transaction에서 검사, 적용 시 snapshot 저장과 lease release를 원자화. 활성 활동 heartbeat를 3분 idle 만료로 제한해 앱 종료 시 takeover가 가능하게 한다.
 
 모델에는 날짜 원본, 이메일, 카카오 식별자, 초대 코드, 계정 세부를 보내지 않는다. 프롬프트 속 지시를 시스템 명령으로 승격하지 않고, 모델에는 도구·네트워크·DB 권한을 주지 않는다. 입력/출력 문자열을 로그에 남기지 않으며 키나 원문이 포함되지 않도록 로그 필드를 allowlist로 정한다. 동의는 사용자별로 기록하되 두 사람 모두 자신의 동의를 해야 AI가 호출되게 하는 방식을 권장한다(캡틴 확인). 동의 철회는 이후 요청을 차단한다.
 
-**결정 — 캡틴 승인:** Anthropic Haiku 5.5를 기본으로 하고, 품질 실패 사례에 한해 Sonnet 5.5로 제한 승급한다. 개발은 제공된 개발 credit을 사용한다. 두 모델은 공식 가격표에서 각 $0.10/$0.50 및 $2/$10 per MTok(입력/출력, Haiku ≤100K 입력)이다. 예산 예시: 신규 입력 1,500 토큰 + 캐시 읽기 3,000 토큰 + 출력 1,000 토큰이면 Haiku 약 **$0.00068/요청**, Sonnet 약 **$0.0133/요청**이다. 커플당 하루 10회 전부 사용 시 약 $0.0068 / $0.133 per couple-day다. retry 1회, 캐시 쓰기, 세금, 저장소/전송, Anthropic 크레딧 조건은 제외했다. 실제 프롬프트 30개와 앱 렌더 결과로 승급 기준·지연·실비용을 측정한다. 비용은 사용자가 결제하는 상품이 아니다.
+**결정 — 소유자 승인:** Anthropic Haiku 5.5를 기본으로 하고, 품질 실패 사례에 한해 Sonnet 5.5로 제한 승급한다. 개발·PoC는 소유자의 Claude Max 요금제에 포함된 월 API 크레딧을 서버의 Console API 키로 쓴다(8장). 두 모델은 공식 가격표에서 각 $0.10/$0.50 및 $2/$10 per MTok(입력/출력, Haiku ≤100K 입력)이다. 예산 예시: 신규 입력 1,500 토큰 + 캐시 읽기 3,000 토큰 + 출력 1,000 토큰이면 Haiku 약 **$0.00068/요청**, Sonnet 약 **$0.0133/요청**이다. 커플당 하루 10회 전부 사용 시 약 $0.0068 / $0.133 per couple-day다. retry 1회, 캐시 쓰기, 세금, 저장소/전송, Anthropic 크레딧 조건은 제외했다. 실제 프롬프트 30개와 앱 렌더 결과로 승급 기준·지연·실비용을 측정한다. 비용은 사용자가 결제하는 상품이 아니다.
 
 **안전:** OWASP LLM Prompt Injection 대응으로 출력 형식 강제, 최소 권한, 신뢰 불가 입력 분리, 모델 바깥 검증과 사람 확인을 사용한다. 단어 필터만으로 인젝션/위해 콘텐츠 차단이 보장된다고 보지 않는다. 위협 사례를 시스템/사용자 메시지 경계, 상대가 만든 장면 텍스트, 브랜드/실존 인물 요청, 자해·성적·폭력 요청 등으로 나눠 차단 규칙을 정한다. V1은 이미지 생성/공개 갤러리가 없지만 공유 UGC인 짧은 문구와 신고/차단 요구는 남는다. Apple 1.2의 필터·신고·대응·차단·연락처 요구와 Google Play UGC·AI 콘텐츠 정책의 출시 시점 문구를 재검토한다.
 
@@ -84,7 +84,7 @@ Firestore 모바일 SDK의 오프라인 캐시와 실시간 리스너는 강점�
 
 카카오/Apple OAuth와 이메일 로그인은 Supabase Auth 제안과 맞는다. 소셜 callback은 Expo universal link/deep link로 처리한다. 이메일은 짧은 수명의 링크/OTP 정책과 재전송 제한을 둔다. 초대 코드는 무작위 고엔트로피 값의 해시만 저장하며 원문은 발급 순간에 한 번만 보여 준다. 만료 시각과 consumed_at을 DB에서 원자적으로 검사한다. 공유 공간은 정확히 두 사용자만 허용하는 고유 제약과 RLS를 갖는다. 초대 수락으로 다른 사람의 기존 공간에 몰래 연결되는 것을 막고, 가입/수락 전 공간 구성원을 보여 주며 확인을 받는다.
 
-종료 요청은 즉시 `recovery_pending` 상태로 바꾸고 초대·편집·AI 요청을 차단한다. 종료 이벤트, 종료자, 만료 시각을 저장한다. 30일 내 어느 기존 멤버든 명확히 복구를 요청할 수 있다는 계약을 권장하되, 상대가 명시적 이의/차단을 한 경우 복구를 허용할지 캡틴 결정이 필요하다. 만료 후 사용자 프롬프트·장면·버전·초대·동의 이력을 포함한 복구 대상 데이터를 제거하고 삭제 결과를 감사한다. 법정 보존이 필요한 최소 거래/보안 기록 범위는 법률 검토한다.
+종료 요청은 즉시 `recovery_pending` 상태로 바꾸고 초대·편집·AI 요청을 차단한다. 종료 이벤트, 종료자, 만료 시각을 저장한다. 30일 내 어느 기존 멤버든 명확히 복구를 요청할 수 있다는 계약을 권장하되, 상대가 명시적 이의/차단을 한 경우 복구를 허용할지 소유자 결정이 필요하다. 만료 후 사용자 프롬프트·장면·버전·초대·동의 이력을 포함한 복구 대상 데이터를 제거하고 삭제 결과를 감사한다. 법정 보존이 필요한 최소 거래/보안 기록 범위는 법률 검토한다.
 
 초대 코드는 24시간에 만료되고 재발급 시 기존 미사용 코드를 무효화한다. 공간의 초대 수락은 DB transaction에서 한 번만 소비한다. 취소/만료 후보는 24시간 뒤 삭제하고, 적용된 prompt 원문과 대화 메시지는 30일 뒤 삭제하며, 종료된 공간은 30일 복구 기간 뒤 복구 대상 데이터를 삭제한다. 계정/동의 이력의 법적 삭제 범위와 공간 복구 경계는 법률 검토 후 세부화한다.
 
@@ -137,19 +137,19 @@ EAS Build/Submit에서 iOS/Android 내부 QA 빌드를 만든 뒤 TestFlight 및
 
 iOS는 대기 중인 로컬 알림을 앱당 64개로 제한한다고 알려져 있어 기기당 3개만 예약하는 계획은 문제 없다. 스토어 심사에는 알림이 사용자가 켠 기념일 알림이고 마케팅이 아니라는 점, 서버에 토큰을 저장하지 않는다는 점을 적는다.
 
-## 8. 캡틴 준비물과 대략 비용## 8. 캡틴 준비물과 대략 비용
+## 8. 소유자 준비물과 대략 비용
 
-| 준비 항목 | 캡틴이 만들거나 정할 것 | 대략 비용 / 기준 |
+| 준비 항목 | 소유자가 만들거나 정할 것 | 대략 비용 / 기준 |
 |---|---|---|
-| Apple Developer | 개인/조직 계정, 법인 선택, 앱 판매자명 | $99/년; 적격 단체는 면제 가능 |
-| Google Play Console | 게시자 계정, 신원/연락처 인증 | $25 1회 |
+| Apple Developer | **개인 계정으로 시작(결정)**. 스토어에 보이는 판매자 이름이 개인 이름이 되고, 나중에 법인으로 옮길 수 있지만 절차가 필요하다 | $99/년; 적격 단체는 면제 가능 |
+| Google Play Console | **개인 계정으로 시작(결정)**, 신원/연락처 인증 | $25 1회 |
 | Expo/EAS | Expo 조직과 프로젝트, 빌드 비밀 변수 보관 담당 | 무료부터(15 iOS + 15 Android builds/월); Starter $19/월 |
-| Anthropic | API 조직/개발 키를 개인 개발 환경에서 발급, 서버 secret store에 별도 입력, dev/prod 비용 상한 및 잔액 확인 | 키 생성 자체는 무료; 토큰 사용료 발생. 위 요청 모델 기준 Haiku 약 $0.00068, Sonnet 약 $0.0133/요청의 가정 예시 |
-| Backend | Supabase 계정/한국 리전 가용성 확인/프로젝트, 조직 소유자 및 결제자 지정 | 프로토타입 Free; 운영 Pro $25/월 + 필요 추가 컴퓨트/사용량 제안 |
-| 도메인·법률 페이지 | 도메인 이름과 DNS, 개인정보 처리방침/약관/AI 해외 처리 문서 공개 위치 | 일반 `.com` 연 $10–20 대략값(등록기관/세금/갱신에 따라 다름); 법률 작성 비용 별도 견적 |
-| 카카오 로그인 | 카카오 디벨로퍼 앱, 사업자/개인 정책 검토, Redirect URI 및 동의항목 | 카카오 정책에 따라 확인; 계정과 앱을 캡틴이 생성 |
+| Anthropic | 소유자의 **Claude Max 요금제에 포함된 월 $100 API 크레딧**(Max 5x; 요금제에 Console 조직을 연결해 받음)을 개발·PoC 비용으로 쓴다. 이 프로젝트 전용 Console workspace에 지출 한도를 두고, Console **API 키**를 서버 secret store(Supabase Edge Function secret)에만 둔다. 크레딧은 결제 주기마다 지급되고 남은 것은 주기 끝에 **소멸**(이월 없음), 잔액이 0이면 다음 지급 때까지 요청이 멈추며(요금제에 청구되지 않음), 같은 조직의 모든 키·workspace가 한 잔액을 쓴다. 조직 연결은 소유자가 직접 바꿀 수 없다(지원팀 문의) — 프로젝트가 쓸 조직을 연결해야 한다. 채팅 로그인·Claude Code 한도·OAuth 토큰은 쓰지 않는다. **PoC 범위(테스트 사용자 몇 명)**; 소유자는 포함 크레딧이 상업 서비스용이 아니라고 이해하고 있다(Anthropic 공개 크레딧 페이지에서는 확인되지 않음 — 공개 출시 전 상업 약관·크레딧 약관 확인, 유료 API 크레딧 구매/결제 설정으로 전환). 출처: [API credits for Max and Team plans](https://platform.claude.com/docs/en/about-claude/api-credits-for-subscribers), [credit terms](https://www.anthropic.com/legal/credit-terms) (접근 2026-10-26) | 키 생성 자체는 무료; 토큰 사용료 발생. 위 요청 모델 기준 Haiku 약 $0.00068, Sonnet 약 $0.0133/요청의 가정 예시 |
+| Backend | Supabase 개인 계정, 서울 리전 프로젝트 | **개발은 무료 플랜**(무료 프로젝트는 비활동 시 일시 정지됨, 배포 전 확인). 운영 Pro $25/월 + 필요 추가 컴퓨트/사용량은 출시 때 결정 |
+| 도메인·법률 페이지 | 소유자의 개인 도메인 `jinjinstar.com`을 쓴다(결정). 제안 주소 `mopiru.jinjinstar.com`(지원·개인정보 처리방침 페이지; 소유자가 만들어야 함)과 DNS, 개인정보 처리방침/약관/AI 해외 처리 문서 공개 위치 | 일반 `.com` 연 $10–20 대략값(등록기관/세금/갱신에 따라 다름); 법률 작성 비용 별도 견적 |
+| 카카오 로그인 | 카카오 디벨로퍼 앱, 사업자/개인 정책 검토, Redirect URI 및 동의항목 | 카카오 정책에 따라 확인; 계정과 앱을 소유자가 생성 |
 | Apple 로그인 | Services ID/앱 ID, redirect domain | Apple 계정과 개발자 프로그램 소유자 필요 |
 | 에셋 제작 | 24–36개(현재 디자인은 24개: 방 안 마스코트 6 + 오브젝트 18) 권리 확정 원본과 제작 계약. 마스코트는 AI 생성 원본(그대로 사용, 닮음 검사·법률 검토는 출시 전 권장)과 일러스트레이터 재작업 | 범위·작가 견적 필요(현재 산정 불가) |
-| 스토어 정책 운영 | 신고 접수 연락처, block/report 대응 운영자, 연령/UGC 분류·법률 검토 | 운영 인력/법률 비용 산정 필요 |
+| 스토어 정책 운영 | 신고 접수 **공개 지원 이메일(아직 없음)**, 연결 끊기·신고 대응 운영자, 연령 등급(만 14세)/UGC 분류·법률 검토 | 운영 인력/법률 비용 산정 필요 |
 
-가격은 접근일 기준 공식 페이지 또는 일반 도메인 범위의 참고치며, 실제 결제 전 캡틴이 지역 통화·세금·사업자 조건을 확인해야 한다. [Squarespace 도메인 가격 안내](https://domains.squarespace.com/blog/how-much-does-a-domain-name-cost) (접근 2026-10-24)에서는 `.com` 일반 범위가 연 $10–20이라고 제시한다.
+가격은 접근일 기준 공식 페이지 또는 일반 도메인 범위의 참고치며, 실제 결제 전 소유자가 지역 통화·세금·사업자 조건을 확인해야 한다. [Squarespace 도메인 가격 안내](https://domains.squarespace.com/blog/how-much-does-a-domain-name-cost) (접근 2026-10-24)에서는 `.com` 일반 범위가 연 $10–20이라고 제시한다.

@@ -53,12 +53,14 @@ vectorcraft-cli run --in design/mascot/harmonized/mascot_{pose}@3x.png \
 |---|---|
 | `mascot_wave_main.svg` `mascot_cheer.svg` `mascot_lookup.svg` `mascot_walk.svg` `mascot_lie.svg` `mascot_sleep.svg` | **방 안 사용 제안 6포즈** |
 | `mascot_star_sit.svg` `mascot_box.svg` `mascot_heart.svg` `mascot_phone.svg` `mascot_back.svg` | 방 밖 일러스트 5포즈 |
-| `icon_face.svg` | **앱 아이콘 얼굴**: 앱 아이콘 B(`../../icon/`)와 같은 창(원본 x 403, y −94, 1552×1552)을 잘라 트레이스. 투명 배경 |
-| `icon_B_1024.svg` | 위 얼굴 + 브랜드 강조색 `#B24A24` 바탕, 1024×1024, 모서리를 자르지 않음. 아이콘 PNG(`../../icon/candidates/icon-candidate-B-1024.png`)와 겹치면 평균 색 차이 0.94 |
-| `mascot_wave_main.pdf` `icon_face.pdf` `icon_B_1024.pdf` | 같은 CLI로 SVG에서 내보낸 PDF(벡터, 이미지 없음) |
-| `mascot_wave_main.ai` `icon_B_1024.ai` | 같은 CLI로 내보낸 **PDF 호환 Illustrator 파일**. **Illustrator에서 열어 보지는 못했어요**(CLI 자체로 다시 읽기와 poppler 렌더만 확인) |
+| `icon_face_A.svg` | **앱 아이콘 A(선택)의 얼굴**: 앱 아이콘 A(`../../icon/`)와 같은 창(원본 x 326, y −152, 1707×1707)을 잘라 트레이스. 투명 배경 |
+| `icon_face_B.svg` | 탈락한 후보 B의 얼굴(같은 창 x 403, y −94, 1552×1552). 참고용 |
+| `icon_A_1024.svg` | **선택안**: 위 얼굴 + 종이색 `#FBF1E3` 바탕, 1024×1024, 모서리를 자르지 않음. 아이콘 PNG(`../../icon/expo/icon.png`)와 겹치면 평균 색 차이 1.15 |
+| `icon_B_1024.svg` | 탈락한 후보 B(강조색 `#B24A24` 바탕). 참고용, 제작에 쓰지 않아요 |
+| `mascot_wave_main.pdf` `icon_face_A.pdf` `icon_A_1024.pdf` | 같은 CLI로 SVG에서 내보낸 PDF(벡터, 이미지 없음) |
+| `mascot_wave_main.ai` `icon_A_1024.ai` | 같은 CLI로 내보낸 **PDF 호환 Illustrator 파일**. **Illustrator에서 열어 보지는 못했어요**(CLI 자체로 다시 읽기와 poppler 렌더만 확인) |
 | `vector-report.json` | 포즈별 패스·앵커·색·크기·래스터와의 차이·점검 결과, 도구 버전·프리셋 |
-| `preview/vector-vs-raster.png` | 11포즈 래스터 vs 벡터 나란히, 얼굴 2배 확대, 벡터를 1024px와 29px로 그린 것, 아이콘 얼굴 |
+| `preview/vector-vs-raster.png` | 11포즈 래스터 vs 벡터 나란히, 얼굴 2배 확대, 벡터를 1024px와 29px로 그린 것, 아이콘 A |
 
 크기·변환: 모든 SVG는 `width`·`height`·`viewBox`가 같은 값(래스터의 @3x 픽셀 크기, 예: 2173×1913)이라 비율을 지켜 얼마든지 키우고 줄일 수 있어요. 좌표 값은 소수점 셋째 자리까지예요.
 
@@ -67,7 +69,7 @@ vectorcraft-cli run --in design/mascot/harmonized/mascot_{pose}@3x.png \
 `design/tools/vectorize-mascot.py`가 자동으로 확인하고, 아래는 따로 확인한 값이에요.
 
 - **SVG가 진짜 벡터인가**: 13개 SVG 모두 `<image>`·`<script>`·`<style>`·`<use>`·`<filter>`·`<mask>`·`<clipPath>`·`<pattern>`이 없고, `href`·`url(`·`data:`·이벤트 속성·외부 주소가 없어요(네임스페이스 선언만). 패스만 있고 `viewBox`가 있어요. PDF 3개와 .ai 2개는 `pdfimages`로 삽입된 이미지가 0개임을 확인했어요.
-- **다른 렌더러로 그려 봤나**: SVG를 **resvg**(Rust, 다른 코드베이스)와 **Google Chrome(헤드리스)** 으로, PDF를 **poppler**로 그려서 래스터와 겹쳤어요. 세 렌더러 모두 비어 있지 않게 그려지고 래스터와 일치해요(주 포즈 평균 색 차이: resvg 0.47(종이색 바탕) · Chrome 0.69 · PDF/poppler 0.62(둘은 흰 바탕), 나머지 10포즈의 Chrome은 1.7~2.1). 아이콘 B는 Chrome 0.94 · PDF 0.91로 아이콘 PNG와 겹쳐요.
+- **다른 렌더러로 그려 봤나**: SVG를 **resvg**(Rust, 다른 코드베이스)와 **Google Chrome(헤드리스)** 으로, PDF를 **poppler**로 그려서 래스터와 겹쳤어요. 세 렌더러 모두 비어 있지 않게 그려지고 래스터와 일치해요(주 포즈 평균 색 차이: resvg 0.47(종이색 바탕) · Chrome 0.69 · PDF/poppler 0.62(둘은 흰 바탕), 나머지 10포즈의 Chrome은 1.7~2.1). 아이콘 B(탈락 후보)는 Chrome 0.94 · PDF 0.91로 아이콘 PNG와 겹쳤고, 선택안 A는 resvg로 1.15였어요(Chrome·PDF 렌더는 B만 따로 재 봤어요).
 - **색**: 모든 SVG의 채우기 색이 `tokens.json` 마스코트 팔레트(`sampledPalette`의 가공 톤 + 윤곽 `#4A3426`·림 `#FFF4DF`) 안에 있어요. **새로 생긴 색은 0개**예요. 래스터에 있던 색 중 사라진 것은 `cheer`의 `#f0a650`(전체의 0.001%, 몇 픽셀)과 `phone`의 `#7081dc`(0.005%)뿐이에요.
 - **실루엣**: 래스터와 SVG 윤곽의 겹침(IoU) 0.9988~0.9996.
 
