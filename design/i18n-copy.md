@@ -1,8 +1,8 @@
 # i18n-copy.md — 모든 화면 문구와 번역 (한국어 · English · 日本語)
 
-> 이 문서는 디자인 원본에서 자동으로 만든 표예요. 구현은 **키만 코드에 쓰고** 텍스트는 번역 리소스(`ko-KR`, `en-US`, `ja-JP`)로 둬요. `{name}` 형태는 보간 변수예요. 달력·할 일·가격·알림을 떠올리게 하는 표현과(홈 배경 사진 한 장 말고는) 사진 기능 표현은 쓰지 않았어요. 일본어·영어 문구는 디자이너가 쓴 초안이라 **원어민 검수**가 필요해요(handoff.md).
+> 이 문서는 디자인 원본에서 자동으로 만든 표예요. 구현은 **키만 코드에 쓰고** 텍스트는 번역 리소스(`ko-KR`, `en-US`, `ja-JP`)로 둬요. `{name}` 형태는 보간 변수예요. 달력·할 일·가격을 떠올리게 하는 표현과(마일스톤 알림 문구는 예외)(홈 배경 사진 한 장 말고는) 사진 기능 표현은 쓰지 않았어요. 일본어·영어 문구는 디자이너가 쓴 초안이라 **원어민 검수**가 필요해요(handoff.md).
 
-- 총 키 수: **564**
+- 총 키 수: **581**
 - 사용자가 입력한 방 문구와 프롬프트는 번역하지 않고 입력한 그대로 저장·표시해요.
 - 서버 오류는 언어 중립 코드(`VERSION_CONFLICT` 등)만 오고, 앱이 아래 키로 문구를 골라요: `VERSION_CONFLICT`→`preview.conflict.*`·`undo.conflict.*`, `QUOTA_REACHED`→`prompt.quota.*`, `CONSENT_REQUIRED`→`prompt.consent.need`, `SESSION_OCCUPIED`→`prompt.partner`, `SESSION_EXPIRED`→`prompt.idle.me.*`, `INVITE_EXPIRED`→`join.expired.*`, `INVITE_USED`→`join.used.*`, `SPACE_FULL`→`join.full.*`, `ALREADY_IN_SPACE`→`join.hasSpace.*`, `UNSUPPORTED_REQUEST`→`prompt.unsupported.*`, `BRAND_REQUEST`→`prompt.brand.*`, `AUTH_EXPIRED`→`sys.login.*`. (코드 이름은 계약 문서 `contracts/api.md`의 이름을 확인해서 맞춰야 해요.)
 
@@ -684,7 +684,7 @@
 
 ## 마일스톤 축하 (S28)
 
-앱을 열었을 때 앱 안에서만 보이는 고정 문구예요(AI 호출 없음, 알림 아님). `{label}`은 `milestone.label.day` / `milestone.label.anniv` 결과, `{date}`는 로케일 날짜(10월 24일 / Oct 24 / 10月24日)예요.
+앱을 열었을 때 앱 안에서 보이는 고정 문구예요(AI 호출 없음). 알림 본문은 아래 `notif.body`예요. `{label}`은 `milestone.label.day` / `milestone.label.anniv` 결과, `{date}`는 로케일 날짜(10월 24일 / Oct 24 / 10月24日)예요.
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
@@ -712,15 +712,39 @@
 | `a11y.milestone.close` | 축하 카드 닫기 | Close the celebration card | お祝いカードを閉じる |
 | `a11y.milestone.bubble` | 모피의 말풍선: {text} | Mopi's speech bubble: {text} | モピの吹き出し：{text} |
 
+## 마일스톤 알림 · 마스코트 되살림
+
+옵트인 기기 예약 로컬 알림의 문구(알림 본문은 잠금 화면에 보이므로 이름·날짜·일수가 없는 한 문장)와 설정 행, 방의 "모피 다시 부르기" 컨트롤이에요. 알림 제목은 `main.appName`을 써요.
+
+| 키 | 한국어 | English | 日本語 |
+|---|---|---|---|
+| `notif.body` | 모피가 축하할 일이 생겼어요. | Mopi has something to celebrate. | モピからお祝いのお知らせです。 |
+| `notif.prompt.title` | 기념일에 모피가 알려 줄까요? | Want Mopi to remind you on milestones? | 記念日にモピがお知らせしましょうか？ |
+| `notif.prompt.body` | 50일, 100일, 1주년 같은 날 오전 9시(방 시간대)에 이 기기로 알려 줘요. 알림에는 이름이나 날짜를 담지 않고, 설정에서 언제든 끌 수 있어요. | On days like 50, 100 or your anniversary, this device will notify you at 9:00 am (room time zone). The notification has no names or dates, and you can turn it off anytime in Settings. | 50日・100日・1周年などの日の午前9時（部屋のタイムゾーン）に、この端末でお知らせします。通知に名前や日付は入れず、設定でいつでもオフにできます。 |
+| `notif.prompt.allow` | 알림 켜기 | Turn on | オンにする |
+| `notif.prompt.later` | 다음에 | Not now | あとで |
+| `notif.prompt.note` | 다음 화면에서 기기가 알림 권한을 물어봐요. | Your device will ask for notification permission next. | 次の画面で端末が通知の許可を確認します。 |
+| `set.sec.notif` | 알림 | Notifications | 通知 |
+| `set.notif` | 마일스톤 알림 | Milestone notifications | 記念日の通知 |
+| `set.notif.sub.off` | 꺼짐 · 이 기기에만 적용돼요 | Off · applies to this device only | オフ · この端末のみ |
+| `set.notif.sub.on` | 켜짐 · 기념일 오전 9시 | On · 9:00 am on milestone days | オン · 記念日の午前9時 |
+| `set.notif.sub.denied` | 기기에서 알림이 꺼져 있어요 | Notifications are off on this device | 端末で通知がオフです |
+| `set.notif.help` | 다가오는 기념일을 이 기기에 예약해 두고 오전 9시에 알려 줘요. 상대 기기는 따로 정해요. | Upcoming milestones are scheduled on this device and delivered at 9:00 am. Your partner's device is set separately. | 近づく記念日をこの端末に予約し、午前9時にお知らせします。パートナーの端末は別に設定します。 |
+| `set.notif.denied.title` | 알림이 꺼져 있어요 | Notifications are turned off | 通知がオフです |
+| `set.notif.denied.body` | 기기 설정에서 모피루 알림을 켜면 기념일에 받을 수 있어요. | Turn on Mopiru notifications in your device settings to receive them on milestone days. | 端末の設定でモピルの通知をオンにすると、記念日に受け取れます。 |
+| `set.notif.denied.action` | 기기 설정 열기 | Open device settings | 端末の設定を開く |
+| `room.mascot.recall` | 모피 다시 부르기 | Call Mopi back | モピを呼び戻す |
+| `room.mascot.missing` | 방에 모피가 없어요. 누르면 기본 자리로 돌아와요. | Mopi isn't in the room. Tap to bring Mopi back to the default spot. | 部屋にモピがいません。タップすると元の位置に戻ります。 |
+
 ## 앱 이름 · 캐릭터 이름 · 슬로건 (결정 반영)
 
 | 항목 | 한국어 | English | 日本語 | 상태 |
 |---|---|---|---|---|
-| 앱 이름 (`main.appName`) | 모피루 | Mopiru | モピル | 한국어·영어 결정됨. **일본어 표기(カタカナ)는 디자이너 제안**이고 확정이 아니에요 |
-| 캐릭터 이름 (`mascot.name`) | 모피 | Mopi | モピ | 한국어·영어 결정됨. **일본어 표기는 제안**이에요 |
-| 슬로건 (`brand.tagline`) | Our little world, together. | Our little world, together. | Our little world, together. | **영어 원문만 결정**됐어요. 한국어·일본어 문구가 정해지기 전까지 모든 언어에서 영어 그대로 보여 줘요 |
+| 앱 이름 (`main.appName`) | 모피루 | Mopiru | モピル | 소유자 승인(일본어 표기 포함). 이름 사용 가능 여부는 **확인 전** |
+| 캐릭터 이름 (`mascot.name`) | 모피 | Mopi | モピ | 소유자 승인(일본어 표기 포함) |
+| 슬로건 (`brand.tagline`) | Our little world, together. | Our little world, together. | Our little world, together. | 영어 원문 결정. 한국어·일본어 초안은 승인됐지만 화면에는 아직 영어를 써요(번역을 넣을 때 이 칸만 바꿔요) |
 
-**한국어·일본어 슬로건 번역 초안 (제안 · 확정 아님, 화면에는 쓰지 않았어요)**
+**한국어·일본어 슬로건 번역 초안 (소유자 승인 · 초안, 화면에는 아직 쓰지 않았어요)**
 
 | 언어 | 초안 | 메모 |
 |---|---|---|

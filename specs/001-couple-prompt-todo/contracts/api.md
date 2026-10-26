@@ -65,12 +65,13 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 
 ## 마일스톤 축하
 
-앱 안 축하만 다룬다(푸시·로컬 알림 없음). 문구는 서버가 보내지 않고 클라이언트의 번역 템플릿을 쓴다.
+앱 안 축하와 기기 로컬 알림 예약에 필요한 목록을 다룬다. **서버 푸시와 푸시 토큰 API는 없다.** 문구는 서버가 보내지 않고 클라이언트의 번역 템플릿을 쓴다.
 
 ### `GET /spaces/{spaceId}/milestones/current`
 
-응답 200: `{ "dayCount": 100, "timezone": "Asia/Seoul", "celebration": null | { "id": "uuid", "key": "d100", "kind": "day|anniversary", "days": 100, "anniversaryN": null, "milestoneDate": "YYYY-MM-DD", "daysAgo": 0, "seenByMe": false, "presetAvailable": true, "presetId": "milestone-day" } }`.
+응답 200: `{ "dayCount": 100, "timezone": "Asia/Seoul", "celebration": null | { "id": "uuid", "key": "d100", "kind": "day|anniversary", "days": 100, "anniversaryN": null, "milestoneDate": "YYYY-MM-DD", "daysAgo": 0, "seenByMe": false, "presetAvailable": true, "presetId": "milestone-day" }, "upcoming": [ { "key": "d200", "kind": "day", "milestoneDate": "YYYY-MM-DD" } ] }`.
 - 방 시간대 기준 오늘이 마일스톤 당일부터 7일(제안값) 안인 가장 최근 하나만 준다. 없으면 `celebration: null`. 필요하면 `MilestoneCelebration` 행을 이 호출에서 만든다(멱등).
+- `upcoming`은 아직 오지 않은 마일스톤을 날짜순으로 최대 3개 준다. 기기는 이 목록으로 **오전 9시(방 시간대)** 로컬 알림을 예약하고 키를 알림 식별자로 쓴다. 날짜·시간대가 바뀌면 다시 받아 재예약한다. 알림을 켜지 않은 기기도 호출은 같다(예약만 하지 않는다).
 - 구성원이 둘이고 공간이 활성일 때만 값이 있다. `seenByMe`가 참이면 카드·말풍선은 보이지 않고, `presetAvailable`(적용 전, 보이는 기간 안)이 참인 동안 방의 제안 입구는 남는다.
 
 ### `POST /spaces/{spaceId}/milestones/{celebrationId}/seen`
@@ -82,6 +83,12 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 요청: `{ "celebrationId": "uuid", "idempotencyKey": "uuid" }`. 먼저 기존 `acquire`로 점유를 얻어야 한다. 응답은 `POST decoration-previews`의 성공 응답과 같은 모양(`previewId`, `baseVersionNumber`, 후보 장면)에 `placed`·`requested`(놓은 소품 수/원래 5~6개)를 더한다. AI를 호출하지 않고 동의·일일 한도도 확인하지 않는다.
 - 오류: `409 SESSION_OCCUPIED`(상대가 점유 중이거나 내가 점유자가 아님), `410 MILESTONE_PASSED`(보이는 기간이 지남), `422 ROOM_FULL`(자리가 전혀 없음), `409 VERSION_CONFLICT`.
 - 적용은 기존 `POST decoration-previews/{previewId}/confirm`을 그대로 쓴다. 자동 적용은 없다. 적용되면 `preset_applied_version_id`가 기록된다.
+
+## 마스코트 되살림
+
+### `POST /spaces/{spaceId}/room/mascot-recall`
+
+요청: `{ "expectedVersion": 12, "idempotencyKey": "uuid" }`. 현재 장면에 마스코트가 없을 때만 기본 자리에 하나 추가한 새 방 버전(`source: mascot_recall`)을 만든다. AI·점유·미리 보기 없이 동작하지만, 점유 세션이 활성이면 `409 SESSION_OCCUPIED`로 막는다. 이미 있으면 200으로 현재 버전을 돌려주고(멱등), 16개 한도가 가득이면 `422 ROOM_FULL`. 오래된 `expectedVersion`은 `409 VERSION_CONFLICT`.
 
 ## 홈 커버 사진
 

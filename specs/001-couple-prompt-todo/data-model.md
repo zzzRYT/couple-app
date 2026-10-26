@@ -62,11 +62,11 @@
 - `schema_version`, `scene_document` (JSONB: 카탈로그 오브젝트 + 텍스트만)
 - `room_presentation` (JSONB: D-day 별도 네이티브 뷰 표현/표시 여부)
 - `room_theme_document` (JSONB: 방 모드 `day | night | follow_time`, IANA `timeZone`, 낮/밤별 배경색·팔레트 및 카탈로그 에셋 variant)
-- `source`: `initial | prompt | manual_migration` (적용 후 되돌리기 `undo`와 목록에서 고르는 `restore`는 V1에 없다)
+- `source`: `initial | prompt | manual_migration | mascot_recall | milestone_preset` (적용 후 되돌리기 `undo`와 목록에서 고르는 `restore`는 V1에 없다)
 - `provenance`: `model_provider?`, `model_id?`, `model_snapshot?`, `request_id?`, `created_at`, `created_by_user_id`
 - `content_hash`
 - 확정 후 불변. AI 출처는 내부 감사용이며 캔버스에 배지를 렌더링하지 않는다.
-- 마스코트는 `asset_id=app_mascot`인 카탈로그 오브젝트로 표현하며 방 초기 문서에 정확히 하나 포함한다. 사용자가 이후 방에서 제거할 수 있는지는 spec Open Decisions 2에서 정한다. 기본 디자인을 교체하거나 그려 넣을 수는 없다.
+- 마스코트는 `asset_id=app_mascot`인 카탈로그 오브젝트로 표현하며 방 초기 문서에 정확히 하나 포함한다. 사용자는 프롬프트로 위치·크기를 정하거나 방에서 제거할 수 있고(결정), 제거되어도 방에는 항상 하나가 있어야 하므로 되살림 규칙(FR-018c)을 따른다: 장면에 없으면 `POST /spaces/{spaceId}/room/mascot-recall`(또는 방을 다시 열 때의 자동 호출)이 기본 자리에 하나를 추가한 새 방 버전(`source: mascot_recall`)을 만든다. 기본 디자인을 교체하거나 그려 넣을 수는 없다.
 - 마스코트의 **이용자 설정 상태는 저장하지 않는다**. 이전 문서에 있던 `mascot_state`(슬롯 아이템·팔레트 색·표정·포즈 ID)는 없앴다. 마스코트가 어떤 포즈를 보일지는 앱이 시각·화면·누름 반응에 따라 정하는 클라이언트 동작이며 서버 데이터가 아니다. 크기와 위치는 일반 오브젝트의 좌표 필드를 사용한다.
 - UI theme preference는 사용자 설정 `system | light | dark`이며 기본값은 `system`이다. room theme document의 기본 `mode`는 `follow_time`, 기본 `timeZone`은 공간 생성자의 시간대이며 설정에서 둘 다 변경 가능하다.
 - 이용자에게 보여 주는 버전 목록(기록)과 적용 후 되돌리기는 V1에 없다. 버전 스냅샷은 **감사 기록(AI 출처·작성자·시각)과 충돌 검사**를 위해서만 서버에 append-only로 저장하고 이용자에게 보이지 않는다. 현재 버전만 방에 쓰인다. 보관 상한과 정리 기간은 이용자 기능이 걸려 있지 않아 감사·남용 조사에 필요한 만큼으로 정하면 되며(plan.md 결정 3), 공간 종료 후 30일 복구 범위에 있는 버전은 보존하고 공간 삭제 때 함께 삭제한다.
@@ -109,7 +109,7 @@
 - `pending_delete[]` (교체·삭제로 남은 이전 객체 경로와 삭제 예정 시각; 새 사진 저장 확인 후 24시간 뒤 삭제, plan.md)
 - 주소(URL)는 저장하지 않는다. 앱은 RLS로 권한을 확인한 짧은 수명의 서명된 URL만 요청해 쓴다.
 - 읽기: 활성 또는 복구 대기 공간의 구성원. 쓰기·교체·삭제: 활성 공간 구성원(점유 세션 불필요). 공간이 `recovery_pending`이면 새 업로드를 막는다.
-- 허용 형식·크기(가정): JPG·PNG·HEIC, 원본 20MB 이하. 저장본은 EXIF/XMP를 제거한 재인코딩 사본이다.
+- 허용 형식·크기(승인): JPG·PNG·HEIC, 원본 20MB 이하. 저장본은 EXIF/XMP를 제거한 재인코딩 사본이다.
 - 상태 전이: `none --upload ok--> ready`, `ready --replace ok--> ready (version+1)`, `ready --remove--> none`, `none/ready --upload fail--> (이전 상태 유지, 실패는 클라이언트 표시)`. 새 사진 저장이 끝나기 전에는 기존 사진을 바꾸지 않는다.
 - 삭제(결정): 공간이 삭제될 때(복구 기간 30일 뒤) 객체와 행을 함께 지운다. 복구 대기 중에는 사진을 유지하고 복구하면 그대로 돌아온다.
 - `SpaceLifecycleEvent`와 달리 사진 변경은 감사 이벤트에 개인 내용(경로, 파일명)을 넣지 않고 `cover_changed`/`cover_removed` 종류만 남긴다(정형 속성).
@@ -118,8 +118,8 @@
 
 마일스톤마다 한 번 만드는 기록. 장면 문서와 AI 문맥과 분리된 별도 행이다.
 
-- `id`, `space_id`, `milestone_key` (`d50 | d100 | d200 | d300 | y1 | d500 | y2 | d1000 | y3 | y4 …`), `kind`: `day | anniversary`, `milestone_days` (50, 100, … 365×N), `anniversary_n?`
-- `milestone_date` (방 시간대 기준 달력 날짜 = 함께한 날짜 + `milestone_days` − 1), `status`: `active | passed`
+- `id`, `space_id`, `milestone_key` (`d50 | d100 | d200 | d300 | d500 | d1000 | y1 | y2 | y3 …`), `kind`: `day | anniversary`, `milestone_days?` (일수 마일스톤만: 50, 100, 200, 300, 500, 1000), `anniversary_n?` (주년만: 1, 2, 3 …)
+- `milestone_date` (방 시간대 기준 달력 날짜. 일수 마일스톤 = 함께한 날짜 + `milestone_days` − 1, 주년 = 함께한 날짜 + N년의 같은 달·일. 2월 29일 시작의 평년 주년은 2월 28일), `priority` (`anniversary` > `day`; 같은 날짜가 겹치면 하나만 만들고 우선순위가 높은 쪽), `status`: `active | passed`
 - `preset_applied_version_id?` (기념 제안이 적용되어 새 방 버전이 만들어졌을 때), `created_at`
 - 유일: `(space_id, milestone_key)` — 커플당 한 번. 서버가 `GET /milestones/current`에서 필요할 때 만든다(별도 스케줄러 없음).
 - 보이는 기간: `milestone_date`부터 7일(제안값 N) 이내. 그 뒤에는 `passed`로 바꾸고 보이지 않는다.
@@ -156,12 +156,14 @@ applied --(되돌리기 없음)
 MilestoneCelebration: (없음) --처음 조회한 날 milestone_date부터 7일 이내--> active --7일 경과--> passed
 active --함께한 날짜 변경으로 milestone_date가 미래가 됨--> (삭제, 새 날짜에 다시 생성)
 MilestoneSeen: (없음) --구성원이 닫음--> seen (되돌리지 않음)
+알림 예약(기기 안, 서버 저장 없음): (없음) --알림 켜고 권한 허용--> scheduled(다가오는 마일스톤 몇 개) --날짜/시간대 변경·업데이트--> rescheduled --공간 종료·로그아웃·알림 끄기--> cancelled
 queued/generated --invalid result/provider failure--> rejected/failed
 ```
 
 ## 검증 및 동시성 규칙
 
 - 마일스톤: 일수는 방 시간대의 오늘 날짜와 `anniversary_date`로 서버에서 계산한다(기기 시계 불사용). 함께한 날짜 변경 시 기록된 `milestone_key`는 유지하되 새 `milestone_date`가 오늘보다 뒤이면 행과 `MilestoneSeen`을 지운다. 그 밖의 기록은 그대로 둔다.
+- 마일스톤 알림: **서버에 저장하는 것이 없다**. 알림 켜짐 여부와 예약 목록은 기기 로컬 저장소에만 두고(구성원 기기마다), 서버는 `GET /milestones/current`의 `upcoming`(다가오는 마일스톤 목록)만 계산해서 준다. 푸시 토큰은 만들지도 저장하지도 않는다.
 - 마일스톤 제안 미리 보기: 점유 세션 owner만, 현재 방 버전 기준(`base_version_number` 검사), 방 오브젝트 16개·문구 3개 한도 내에서만 만든다. confirm은 기존 경로와 같다.
 
 - 공간 구성원 수 ≤ 2; 초대 수락은 단일 DB 트랜잭션.
@@ -171,7 +173,7 @@ queued/generated --invalid result/provider failure--> rejected/failed
 - scene document의 `objects.length ≤ 16`, `texts.length ≤ 3`; 각 노드는 스키마의 범위 제한을 만족해야 한다.
 - `PromptSession`은 공간당 하나만 `occupied` 상태일 수 있다. heartbeat는 최근 사용자 활동이 있을 때만 `expires_at`을 갱신한다. 세션 만료 후 takeover는 만료된 session ID와 예상 owner를 조건으로 원자적으로 새 owner에게 양도한다.
 - prompt, preview, confirm, cancel, 세션 안 undo endpoint는 유효한 session owner를 확인한다. confirm의 owner/session/expected version 검사, idempotency key 처리, 새 version 저장, lease release를 한 DB transaction에서 수행한다.
-- 새 방의 초기 scene은 유효한 마스코트 오브젝트를 정확히 하나 포함한다. 이후 scene에서는 마스코트가 없거나 하나일 수 있으며(제거 가능 여부는 Open Decisions 2), 중복은 거부한다. 마스코트가 있을 때 전체 16개 오브젝트 한도에 포함된다. validator는 본체 asset ID의 단일성을 검사하고 마스코트에 붙은 상태 필드(`mascotState` 등), 교체 본체, 사용자 이미지, 기존 캐릭터/브랜드 복제 요청을 거부한다.
+- 새 방의 초기 scene은 유효한 마스코트 오브젝트를 정확히 하나 포함한다. 이후 scene에서는 마스코트가 없거나 하나일 수 있으며(사용자가 제거한 상태, 되살림 대상), 중복은 거부한다. 마스코트가 있을 때 전체 16개 오브젝트 한도에 포함된다. validator는 본체 asset ID의 단일성을 검사하고 마스코트에 붙은 상태 필드(`mascotState` 등), 교체 본체, 사용자 이미지, 기존 캐릭터/브랜드 복제 요청을 거부한다.
 - 홈 커버 사진은 scene 문서·room theme 문서·프롬프트 문맥 어디에도 참조되지 않는다. 사진 파일 참조나 URL이 scene에 들어오면 거부한다.
 - 홈 커버 사진 업로드는 서버가 구성원·공간 `active` 상태·형식·크기·이미지 헤더를 검사한 뒤 재인코딩한 사본만 저장하고, 새 객체가 저장되기 전에는 `current_object_path`를 바꾸지 않는다. 같은 공간의 동시 교체는 `409`로 막지 않고 **마지막으로 확정된 하나만 남기며**(마지막 변경 우선, 결정) 먼저 확정된 쪽의 객체는 삭제 대기 목록에 넣는다.
 - 보호 영역과 대비 validator는 day/night 방 모드와 light/dark 인터페이스의 네 조합 각각에서 가림과 글자 가독성을 검사한다. 색은 허용 토큰으로 제한하고 모든 조합에서 대비 기준을 충족해야 한다.
