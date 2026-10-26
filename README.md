@@ -18,6 +18,7 @@
 - `contracts/`: API 및 방 장면·표현 스키마
 - `quickstart.md`: 설계 검증을 위한 빠른 확인 절차
 - `design-brief.md`: Claude Design 입력 및 산출물 안내
+- `design/`: 완성된 시각·상호작용 설계와 구현 인계 자료(캔버스 원본, 토큰, 화면·컴포넌트·문구 문서, 에셋 사양)
 
 ## 작업 방식
 

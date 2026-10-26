@@ -1,8 +1,8 @@
 # i18n-copy.md — 모든 화면 문구와 번역 (한국어 · English · 日本語)
 
-> 이 문서는 디자인 원본에서 자동으로 만든 표예요. 구현은 **키만 코드에 쓰고** 텍스트는 번역 리소스(`ko-KR`, `en-US`, `ja-JP`)로 둬요. `{name}` 형태는 보간 변수예요. 달력·할 일·사진·가격·알림을 떠올리게 하는 표현은 쓰지 않았어요. 일본어·영어 문구는 디자이너가 쓴 초안이라 **원어민 검수**가 필요해요(handoff.md).
+> 이 문서는 디자인 원본에서 자동으로 만든 표예요. 구현은 **키만 코드에 쓰고** 텍스트는 번역 리소스(`ko-KR`, `en-US`, `ja-JP`)로 둬요. `{name}` 형태는 보간 변수예요. 달력·할 일·가격·알림을 떠올리게 하는 표현과(홈 배경 사진 한 장 말고는) 사진 기능 표현은 쓰지 않았어요. 일본어·영어 문구는 디자이너가 쓴 초안이라 **원어민 검수**가 필요해요(handoff.md).
 
-- 총 키 수: **587**
+- 총 키 수: **570**
 - 사용자가 입력한 방 문구와 프롬프트는 번역하지 않고 입력한 그대로 저장·표시해요.
 - 서버 오류는 언어 중립 코드(`VERSION_CONFLICT` 등)만 오고, 앱이 아래 키로 문구를 골라요: `VERSION_CONFLICT`→`preview.conflict.*`·`undo.conflict.*`, `QUOTA_REACHED`→`prompt.quota.*`, `CONSENT_REQUIRED`→`prompt.consent.need`, `SESSION_OCCUPIED`→`prompt.partner`, `SESSION_EXPIRED`→`prompt.idle.me.*`, `INVITE_EXPIRED`→`join.expired.*`, `INVITE_USED`→`join.used.*`, `SPACE_FULL`→`join.full.*`, `ALREADY_IN_SPACE`→`join.hasSpace.*`, `UNSUPPORTED_REQUEST`→`prompt.unsupported.*`, `BRAND_REQUEST`→`prompt.brand.*`, `AUTH_EXPIRED`→`sys.login.*`. (코드 이름은 계약 문서 `contracts/api.md`의 이름을 확인해서 맞춰야 해요.)
 
@@ -618,13 +618,13 @@
 | `coach.room` | 꾸미기를 눌러 첫 방을 꾸며 보세요 | Tap Decorate to style your first room | 「飾る」をタップして最初の部屋を飾りましょう |
 | `coach.ok` | 알겠어요 | Got it | わかりました |
 
-## 마스코트 꾸미기(S17)
+## 마스코트 이름
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
 | `mascot.name` | [캐릭터 이름] | [Mascot name] | [キャラクター名] |
 
-## 에셋 이름(마스코트 11 · 오브젝트 18 · 대체된 착용 8)
+## 에셋 이름(마스코트 11 · 오브젝트 18)
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
@@ -639,14 +639,6 @@
 | `asset.mascot_box` | 상자에서 빼꼼 | Peeking out of a box | 箱からひょっこり |
 | `asset.mascot_heart` | 하트 들기 | Holding a heart | ハートを持つ |
 | `asset.mascot_phone` | 폰 보기 | Looking at a phone | スマホを見る |
-| `asset.wear_head_beanie` | 니트 모자 | Beanie | ニット帽 |
-| `asset.wear_head_sprout` | 새싹 | Sprout | 新芽 |
-| `asset.wear_face_glasses` | 동그란 안경 | Round glasses | 丸いメガネ |
-| `asset.wear_face_shades` | 선글라스 | Sunglasses | サングラス |
-| `asset.wear_neck_scarf` | 목도리 | Scarf | マフラー |
-| `asset.wear_neck_bowtie` | 나비넥타이 | Bow tie | 蝶ネクタイ |
-| `asset.wear_hand_flower` | 꽃 한 송이 | Single flower | 一輪の花 |
-| `asset.wear_hand_flag` | 작은 깃발 | Small flag | 小さな旗 |
 | `asset.obj_plant_potted` | 화분 식물 | Potted plant | 鉢植え |
 | `asset.obj_plant_flowerpot` | 꽃 화분 | Flower pot | 花の鉢 |
 | `asset.obj_decor_lamp` | 조명 | Lamp | ランプ |
@@ -676,14 +668,6 @@
 | `asset.alt.mascot_box` | 마스코트가 상자에서 빼꼼 내다봐요 | Mascot peeking out of a box | マスコットが箱からのぞいています |
 | `asset.alt.mascot_heart` | 마스코트가 하트를 안고 윙크해요 | Mascot holding a heart and winking | マスコットがハートを抱えてウインクしています |
 | `asset.alt.mascot_phone` | 마스코트가 폰을 보고 있어요 | Mascot looking at a phone | マスコットがスマホを見ています |
-| `asset.alt.wear_head_beanie` | 노란 니트 모자 | Yellow beanie | 黄色いニット帽 |
-| `asset.alt.wear_head_sprout` | 머리 위 새싹 | Sprout on the head | 頭の上の新芽 |
-| `asset.alt.wear_face_glasses` | 동그란 안경 | Round glasses | 丸いメガネ |
-| `asset.alt.wear_face_shades` | 선글라스 | Sunglasses | サングラス |
-| `asset.alt.wear_neck_scarf` | 하늘색 목도리 | Sky-blue scarf | 空色のマフラー |
-| `asset.alt.wear_neck_bowtie` | 나비넥타이 | Bow tie | 蝶ネクタイ |
-| `asset.alt.wear_hand_flower` | 손에 든 꽃 | Flower in hand | 手に持った花 |
-| `asset.alt.wear_hand_flag` | 손에 든 작은 깃발 | Small flag in hand | 手に持った小さな旗 |
 
 ## 에셋 분류
 
@@ -691,7 +675,6 @@
 |---|---|---|---|
 | `assetcat.mascot` | 마스코트 포즈 | Mascot poses | マスコットのポーズ |
 | `assetcat.illus` | 마스코트 일러스트 | Mascot illustrations | マスコットのイラスト |
-| `assetcat.wear` | 착용 아이템 | Wearables | 着用アイテム |
 | `assetcat.plant` | 식물·화분 | Plants | 植物・鉢 |
 | `assetcat.decor` | 방 소품 | Room decor | ルームの小物 |
 | `assetcat.keepsake` | 작은 수집품 | Keepsakes | 小さなコレクション |

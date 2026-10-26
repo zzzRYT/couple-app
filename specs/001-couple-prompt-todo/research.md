@@ -106,6 +106,20 @@ EAS Build/Submit에서 iOS/Android 내부 QA 빌드를 만든 뒤 TestFlight 및
 
 출처(접근 2026-10-24): [EAS 가격](https://expo.dev/pricing), [EAS 계획](https://docs.expo.dev/billing/plans/), [Apple Developer Program](https://developer.apple.com/programs), [Google Play Console 등록](https://support.google.com/googleplay/android-developer/answer/6112435?hl=en), [Google Play 앱 콘텐츠 등급](https://support.google.com/googleplay/android-developer/answer/9859655?hl=en), [한국 AI 기본법 제31조](https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1031810715), [AI 기본법 시행령 제23조](https://www.law.go.kr/LSW/lsSideInfoP.do?docCls=jo&joBrNo=00&joNo=0023&lsiSeq=288781&urlMode=lsScJoRltInfoR).
 
+## 7.1 홈 커버 사진 저장 (제안)
+
+홈 상단에 커플이 올린 사진 한 장을 쓰기로 해서(spec FR-032) 사진 업로드가 처음 생긴다. 아래는 조사 결과가 아니라 **제안**이며, 링크의 세부(제한, 변환 기능, 가격)는 구현 시작 때 공식 문서로 다시 확인해야 한다(이 문서를 쓴 시점에는 확인하지 않았다).
+
+- **저장**: 이미 쓰는 Supabase의 Storage 비공개 버킷에 두고 RLS로 구성원만 읽게 한다. 앱에는 짧은 수명의 서명된 URL만 준다. 공개 버킷과 난수 URL은 URL이 유출되면 막을 수 없어 쓰지 않는다.
+- **업로드**: 시스템 사진 선택기(iOS PHPicker, Android Photo Picker)를 쓰면 사진 보관함 전체 권한이 필요 없다. 서버 함수가 구성원·공간 상태를 검사하고 업로드 주소를 발급하며, 서버가 이미지 헤더·형식·크기를 다시 검사해 재인코딩한 사본만 저장한다.
+- **EXIF**: 휴대폰 사진에는 촬영 위치(GPS)가 들어 있을 수 있어서 저장본에서 EXIF/XMP를 제거한다. 앱의 재인코딩만 믿지 않고 서버에서 한 번 더 제거한다.
+- **HEIC**: iOS 기본 사진 형식이다. 업로드 전에 앱에서 JPG로 바꿀지, 서버에서 바꿀지는 구현 단계에서 정한다.
+- **검수·신고**: 이용자가 올리는 콘텐츠라 Apple App Review Guidelines 1.2와 Google Play UGC 정책의 신고·차단·삭제 요구가 적용될 수 있다. 1:1 비공개 공간이 예외라고 가정하지 않는다(7장과 같은 원칙). 자동 검수 도구를 쓸지는 정해지지 않았다.
+- **AI와 분리**: 사진은 AI 제공자에게 보내지 않는다. 방 꾸미기 프롬프트에 사진 정보를 넣지 않는다(spec FR-034).
+- **개인정보**: 얼굴·장소가 담길 수 있어 처리방침 문구와 국외 처리(Supabase 운영 telemetry/일부 metadata) 범위를 법률 검토에 포함한다.
+
+참고 문서(접근 미확인, 구현 때 재확인): [Supabase Storage](https://supabase.com/docs/guides/storage), [Storage access control](https://supabase.com/docs/guides/storage/security/access-control), [Apple App Review Guidelines 1.2](https://developer.apple.com/app-store/review/guidelines/), [Google Play UGC](https://support.google.com/googleplay/android-developer/answer/18258653?hl=en).
+
 ## 8. 캡틴 준비물과 대략 비용
 
 | 준비 항목 | 캡틴이 만들거나 정할 것 | 대략 비용 / 기준 |
@@ -118,7 +132,7 @@ EAS Build/Submit에서 iOS/Android 내부 QA 빌드를 만든 뒤 TestFlight 및
 | 도메인·법률 페이지 | 도메인 이름과 DNS, 개인정보 처리방침/약관/AI 해외 처리 문서 공개 위치 | 일반 `.com` 연 $10–20 대략값(등록기관/세금/갱신에 따라 다름); 법률 작성 비용 별도 견적 |
 | 카카오 로그인 | 카카오 디벨로퍼 앱, 사업자/개인 정책 검토, Redirect URI 및 동의항목 | 카카오 정책에 따라 확인; 계정과 앱을 캡틴이 생성 |
 | Apple 로그인 | Services ID/앱 ID, redirect domain | Apple 계정과 개발자 프로그램 소유자 필요 |
-| 에셋 제작 | 24–36개 권리 확정 원본과 제작 계약 | 범위·작가 견적 필요(현재 산정 불가) |
+| 에셋 제작 | 24–36개(현재 디자인은 24개: 방 안 마스코트 6 + 오브젝트 18) 권리 확정 원본과 제작 계약. 마스코트는 소유자 제공 그림의 저작자·권리 확인과 일러스트레이터 재작업 | 범위·작가 견적 필요(현재 산정 불가) |
 | 스토어 정책 운영 | 신고 접수 연락처, block/report 대응 운영자, 연령/UGC 분류·법률 검토 | 운영 인력/법률 비용 산정 필요 |
 
 가격은 접근일 기준 공식 페이지 또는 일반 도메인 범위의 참고치며, 실제 결제 전 캡틴이 지역 통화·세금·사업자 조건을 확인해야 한다. [Squarespace 도메인 가격 안내](https://domains.squarespace.com/blog/how-much-does-a-domain-name-cost) (접근 2026-10-24)에서는 `.com` 일반 범위가 연 $10–20이라고 제시한다.

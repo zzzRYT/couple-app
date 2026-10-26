@@ -49,7 +49,7 @@
 
 ### `GET /spaces/{spaceId}/snapshot`
 
-구성원만 접근 가능. 응답은 공간 요약, 현재 버전의 `sceneDocument`, `roomPresentation`, `roomThemeDocument`(낮/밤 자산·색 variant, 모드와 시간대), 현재 `promptSession` owner/expiry 상태, 버전 번호, 카탈로그 버전, 서버 시간으로 구성한다. 사용자별 `locale` 및 `system | light | dark` UI 테마 설정은 프로필 설정 API로 읽고 저장한다. 인증 사용자는 해당 공간 구성원이 아니면 공간 존재 여부도 확인할 수 없다.
+구성원만 접근 가능. 응답은 공간 요약, 홈 커버 사진 요약(`homeCover`: `status`, `version`, `uploadedBy`, `updatedAt`; 주소는 별도 요청), 현재 버전의 `sceneDocument`, `roomPresentation`, `roomThemeDocument`(낮/밤 자산·색 variant, 모드와 시간대), 현재 `promptSession` owner/expiry 상태, 버전 번호, 카탈로그 버전, 서버 시간으로 구성한다. 사용자별 `locale` 및 `system | light | dark` UI 테마 설정은 프로필 설정 API로 읽고 저장한다. 인증 사용자는 해당 공간 구성원이 아니면 공간 존재 여부도 확인할 수 없다.
 
 ### `PATCH /spaces/{spaceId}/anniversary`
 
@@ -62,6 +62,28 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 요청: `{ "mode": "day" | "night" | "follow_time", "timeZone": "Asia/Seoul", "expectedCurrentVersion": 13, "idempotencyKey": "uuid" }`.
 
 방 모드는 커플 공유 설정이며 새 공간 기본은 `follow_time`과 공간 생성자의 저장된 IANA 시간대다. 구성원은 설정에서 모드와 시간대를 변경할 수 있고 변경은 새 version으로 저장된다.
+
+## 홈 커버 사진
+
+공간당 최대 한 장. 점유 세션이 필요 없다. 사진은 `sceneDocument`, 프롬프트, AI 요청에 포함되지 않는다. 값(형식·크기·주소 수명)은 가정이며 구현 때 조정한다.
+
+### `POST /spaces/{spaceId}/home-cover/upload-url`
+
+활성 공간 구성원만. 요청: `{ "contentType": "image/jpeg" | "image/png" | "image/heic", "byteSize": 1234567 }`. 허용 형식·크기(20MB 이하) 위반은 `400 COVER_FORMAT_UNSUPPORTED` / `400 COVER_TOO_LARGE`. 응답 201: `{ "uploadId": "uuid", "uploadUrl": "signed-url", "expiresAt": "RFC3339" }` (일회용, 짧은 수명). 공간이 `recovery_pending`이면 `403`.
+
+### `PUT /spaces/{spaceId}/home-cover`
+
+업로드 완료 확정. 요청: `{ "uploadId": "uuid", "crop": { "x": 0.0, "y": 0.1, "width": 1.0, "height": 0.6 }, "expectedVersion": 3 }` + `Idempotency-Key`. 서버가 실제 이미지 헤더·크기·형식을 검사하고 EXIF/XMP를 제거한 사본으로 재인코딩해 저장한 뒤 `version`을 올린다. 응답 200: `{ "status": "ready", "version": 4, "updatedAt": "RFC3339" }`. 검사·변환 실패는 `422 COVER_INVALID_IMAGE`, 오래된 `expectedVersion`은 `409 VERSION_CONFLICT`(마지막 반영 우선 정책 확정 전 가정). 실패해도 기존 사진은 그대로다.
+
+### `GET /spaces/{spaceId}/home-cover`
+
+구성원만. 응답 200: `{ "status": "ready" | "none", "version": 4, "signedUrl": "short-lived-url", "signedUrlExpiresAt": "RFC3339", "crop": {…}, "uploadedBy": "uuid", "updatedAt": "RFC3339" }`. `none`이면 기본 바탕이다. 서명된 URL은 로그에 남기지 않는다.
+
+### `DELETE /spaces/{spaceId}/home-cover?expectedVersion=4`
+
+사진을 없앤다(`status: none`). 응답 204. 이전 객체는 삭제 대기 목록에 들어간다. 공간 삭제 때 객체도 함께 지운다.
+
+오류 코드는 언어 중립이며 앱 번역 리소스가 문구를 고른다(`i18n-copy.md`의 `cover.*`).
 
 ## 공유 프롬프트 세션 및 AI 미리보기
 
@@ -160,4 +182,4 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 
 ## 실시간 업데이트
 
-채널은 인증 주체가 구성원인 `space_id`만 구독 가능하다. 이벤트 payload에는 현재 테마 버전 ID/번호, 변경 종류, 변경자, 시각, session owner/expiry, message/preview ID만 둔다. prompt/AI 출력 본문과 개인 식별자는 broadcast에 넣지 않는다. 두 구성원은 권한검사된 conversation API로 shared text/preview를 읽는다. 탈퇴/종료/삭제/토큰 만료 시 구독을 끊는다.
+채널은 인증 주체가 구성원인 `space_id`만 구독 가능하다. 홈 커버 변경은 `cover_version`과 변경 종류(`changed | removed`)만 알리고 상대가 서명된 URL을 다시 요청한다. 이벤트 payload에는 현재 테마 버전 ID/번호, 변경 종류, 변경자, 시각, session owner/expiry, message/preview ID만 둔다. prompt/AI 출력 본문과 개인 식별자는 broadcast에 넣지 않는다. 두 구성원은 권한검사된 conversation API로 shared text/preview를 읽는다. 탈퇴/종료/삭제/토큰 만료 시 구독을 끊는다.
