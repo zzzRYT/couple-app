@@ -65,7 +65,7 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 
 ## 홈 커버 사진
 
-공간당 최대 한 장. 점유 세션이 필요 없다. 사진은 `sceneDocument`, 프롬프트, AI 요청에 포함되지 않는다. 값(형식·크기·주소 수명)은 가정이며 구현 때 조정한다.
+공간당 최대 한 장. 점유 세션이 필요 없다. 사진은 `sceneDocument`, 프롬프트, AI 요청에 포함되지 않는다. **마지막으로 바꾼 사용자의 사진이 반영**되고(마지막 변경 우선) 홈에는 누가 바꿨는지를 보여 준다. 검수·신고 API는 없다. 형식·크기·주소 수명 값은 제안이며 구현 때 조정한다.
 
 ### `POST /spaces/{spaceId}/home-cover/upload-url`
 
@@ -73,15 +73,15 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 
 ### `PUT /spaces/{spaceId}/home-cover`
 
-업로드 완료 확정. 요청: `{ "uploadId": "uuid", "crop": { "x": 0.0, "y": 0.1, "width": 1.0, "height": 0.6 }, "expectedVersion": 3 }` + `Idempotency-Key`. 서버가 실제 이미지 헤더·크기·형식을 검사하고 EXIF/XMP를 제거한 사본으로 재인코딩해 저장한 뒤 `version`을 올린다. 응답 200: `{ "status": "ready", "version": 4, "updatedAt": "RFC3339" }`. 검사·변환 실패는 `422 COVER_INVALID_IMAGE`, 오래된 `expectedVersion`은 `409 VERSION_CONFLICT`(마지막 반영 우선 정책 확정 전 가정). 실패해도 기존 사진은 그대로다.
+업로드 완료 확정. 요청: `{ "uploadId": "uuid", "crop": { "x": 0.0, "y": 0.1, "width": 1.0, "height": 0.6 } }` + `Idempotency-Key`. 서버가 실제 이미지 헤더·크기·형식을 검사하고 EXIF/XMP를 제거한 사본으로 재인코딩해 저장한 뒤 `version`을 올린다. 응답 200: `{ "status": "ready", "version": 4, "uploadedBy": "uuid", "updatedAt": "RFC3339" }`. 검사·변환 실패는 `422 COVER_INVALID_IMAGE`. **마지막 변경 우선**이라 동시에 올려도 `409`로 막지 않고 나중에 확정된 쪽이 반영되며 `version`이 올라간다(먼저 올린 쪽은 다음 동기화 때 바뀐 사진과 변경자를 본다). 실패해도 기존 사진은 그대로다.
 
 ### `GET /spaces/{spaceId}/home-cover`
 
-구성원만. 응답 200: `{ "status": "ready" | "none", "version": 4, "signedUrl": "short-lived-url", "signedUrlExpiresAt": "RFC3339", "crop": {…}, "uploadedBy": "uuid", "updatedAt": "RFC3339" }`. `none`이면 기본 바탕이다. 서명된 URL은 로그에 남기지 않는다.
+구성원만. 응답 200: `{ "status": "ready" | "none", "version": 4, "signedUrl": "short-lived-url", "signedUrlExpiresAt": "RFC3339", "crop": {…}, "uploadedBy": "uuid", "updatedAt": "RFC3339" }`(`uploadedBy`는 마지막으로 바꾸거나 없앤 사용자). `none`이면 기본 바탕이다. 서명된 URL은 로그에 남기지 않는다.
 
-### `DELETE /spaces/{spaceId}/home-cover?expectedVersion=4`
+### `DELETE /spaces/{spaceId}/home-cover`
 
-사진을 없앤다(`status: none`). 응답 204. 이전 객체는 삭제 대기 목록에 들어간다. 공간 삭제 때 객체도 함께 지운다.
+사진을 없앤다(`status: none`, 없앤 사용자를 `uploadedBy`에 기록). 응답 204. 이전 객체는 삭제 대기 목록에 들어가 24시간 뒤 삭제된다. 공간 삭제(30일 복구 기간 종료) 때 객체도 함께 지운다.
 
 오류 코드는 언어 중립이며 앱 번역 리소스가 문구를 고른다(`i18n-copy.md`의 `cover.*`).
 
@@ -111,7 +111,7 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 
 ### `POST /spaces/{spaceId}/prompt-session/{sessionId}/release`
 
-현재 owner만 cancel 사유로 호출한다. `{ "reason": "cancel" }`. 응답 204. confirm 및 undo endpoint는 성공한 저장과 함께 같은 transaction에서 session을 해제한다.
+현재 owner만 cancel 사유로 호출한다. `{ "reason": "cancel" }`. 응답 204. confirm endpoint는 성공한 저장과 함께 같은 transaction에서 session을 해제한다. 열린 대화 안의 되돌리기(undo)는 session을 해제하지 않는다.
 
 ## 동의 및 AI 미리보기
 
@@ -152,15 +152,15 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 
 현재 점유자만 취소할 수 있다. cancel 요청은 후보를 공유 장면에 적용하지 않고 session을 release한다. 다른 구성원은 취소/적용 컨트롤이 없는 읽기 전용 preview를 본다.
 
-## 되돌리기
+## 되돌리기 (열린 대화 안에서만)
 
-버전 목록 조회(`GET theme-versions`)와 지정 버전 복구(`POST theme-versions/{versionId}/restore`)는 기록 기능과 함께 V1에서 뺐다. 서버는 undo와 감사를 위해 버전 스냅샷을 계속 저장하지만 이용자용 목록 API는 두지 않는다. 연속 되돌리기 깊이와 다시 적용(redo) 여부는 정해지지 않았다(spec.md Open Decisions 8).
+되돌리기는 지금 열린 프롬프트 대화(점유 세션) 안에서 **아직 적용하지 않은 변경**을 바로 앞 미리 보기로 돌리는 것뿐이다. 적용한 변경은 되돌릴 수 없고 다시 적용(redo)도 없다. 이전 설계의 방 버전 되돌리기(`POST theme-versions/undo`)와 버전 목록 조회·지정 버전 복구(`GET theme-versions`, `POST theme-versions/{versionId}/restore`)는 V1에 없다. 서버는 감사 기록으로 버전 스냅샷을 계속 저장하지만 이를 읽거나 되돌리는 API는 두지 않는다.
 
-### `POST /spaces/{spaceId}/theme-versions/undo`
+### `POST /spaces/{spaceId}/prompt-session/{sessionId}/undo`
 
-요청: `{ "expectedCurrentVersion": 13, "sessionId": "uuid", "idempotencyKey": "uuid" }`.
+요청: `{ "expectedPreviewId": "uuid", "idempotencyKey": "uuid" }`.
 
-현재 점유자가 직전 적용 전 상태를 새 복원 스냅샷으로 저장한다. 저장 성공과 session release는 원자적이다. undo 가능한 전 버전이 없으면 `409 NOTHING_TO_UNDO`.
+현재 owner만 호출한다. 열린 대화의 최신 미리 보기(`expectedPreviewId`)를 `reverted`로 바꾸고 바로 앞 미리 보기를 현재 후보로 돌려준다. 앞 후보가 없으면 `previewId: null`(현재 방 보기)이다. 방 버전은 바뀌지 않고 점유도 풀지 않는다. 응답 200: `{ "previewId": "uuid" | null }`. 되돌릴 후보가 없으면 `409 NOTHING_TO_UNDO`, 이미 되돌려졌거나 미리 보기가 바뀌었으면 `409 PREVIEW_CHANGED`(최신 미리 보기를 응답에 담지 않고 대화를 다시 읽게 한다). 두 구성원은 같은 미리 보기를 Realtime으로 본다. 적용된(`applied`) 요청에는 호출할 수 없다(`409 ALREADY_APPLIED`).
 
 ## 공간 종료 / 복구
 

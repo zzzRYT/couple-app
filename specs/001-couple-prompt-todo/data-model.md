@@ -62,20 +62,20 @@
 - `schema_version`, `scene_document` (JSONB: 카탈로그 오브젝트 + 텍스트만)
 - `room_presentation` (JSONB: D-day 별도 네이티브 뷰 표현/표시 여부)
 - `room_theme_document` (JSONB: 방 모드 `day | night | follow_time`, IANA `timeZone`, 낮/밤별 배경색·팔레트 및 카탈로그 에셋 variant)
-- `source`: `initial | prompt | undo | manual_migration` (이용자가 버전 목록에서 골라 복구하는 `restore`는 기록 화면과 함께 V1에서 뺐다)
+- `source`: `initial | prompt | manual_migration` (적용 후 되돌리기 `undo`와 목록에서 고르는 `restore`는 V1에 없다)
 - `provenance`: `model_provider?`, `model_id?`, `model_snapshot?`, `request_id?`, `created_at`, `created_by_user_id`
-- `restores_version_id?` (undo가 되돌린 대상 버전), `content_hash`
+- `content_hash`
 - 확정 후 불변. AI 출처는 내부 감사용이며 캔버스에 배지를 렌더링하지 않는다.
-- 마스코트는 `asset_id=app_mascot`인 카탈로그 오브젝트로 표현하며 방 초기 문서에 정확히 하나 포함한다. 사용자가 이후 방에서 제거할 수 있는지는 spec Open Decisions 5에서 정한다. 기본 디자인을 교체하거나 그려 넣을 수는 없다.
+- 마스코트는 `asset_id=app_mascot`인 카탈로그 오브젝트로 표현하며 방 초기 문서에 정확히 하나 포함한다. 사용자가 이후 방에서 제거할 수 있는지는 spec Open Decisions 2에서 정한다. 기본 디자인을 교체하거나 그려 넣을 수는 없다.
 - 마스코트의 **이용자 설정 상태는 저장하지 않는다**. 이전 문서에 있던 `mascot_state`(슬롯 아이템·팔레트 색·표정·포즈 ID)는 없앴다. 마스코트가 어떤 포즈를 보일지는 앱이 시각·화면·누름 반응에 따라 정하는 클라이언트 동작이며 서버 데이터가 아니다. 크기와 위치는 일반 오브젝트의 좌표 필드를 사용한다.
 - UI theme preference는 사용자 설정 `system | light | dark`이며 기본값은 `system`이다. room theme document의 기본 `mode`는 `follow_time`, 기본 `timeZone`은 공간 생성자의 시간대이며 설정에서 둘 다 변경 가능하다.
-- 이용자에게 보여 주는 버전 목록(기록)은 V1에 없다. 버전 스냅샷은 직전 적용 되돌리기(undo)와 감사·충돌 검사를 위해서만 서버에 저장한다. 버전 수 상한과 정리 기간은 정하지 않았다(spec Open Decisions 8: 되돌리기 깊이에 따라 달라진다). 공간 종료 복구 범위에 있는 버전은 보존한다.
+- 이용자에게 보여 주는 버전 목록(기록)과 적용 후 되돌리기는 V1에 없다. 버전 스냅샷은 **감사 기록(AI 출처·작성자·시각)과 충돌 검사**를 위해서만 서버에 append-only로 저장하고 이용자에게 보이지 않는다. 현재 버전만 방에 쓰인다. 보관 상한과 정리 기간은 이용자 기능이 걸려 있지 않아 감사·남용 조사에 필요한 만큼으로 정하면 되며(plan.md 결정 3), 공간 종료 후 30일 복구 범위에 있는 버전은 보존하고 공간 삭제 때 함께 삭제한다.
 
 ### DecorationRequest
 
 - `id`, `space_id`, `session_id`, `requested_by_user_id`, `base_version_id`, `base_version_number`
 - `prompt_text` (두 구성원이 보는 공유 대화; 전송 전 동의 확인, 데이터 최소화; 암호화/보관 기간 필요)
-- `state`: `queued | generated | rejected | previewed | applied | cancelled | expired | failed`
+- `state`: `queued | generated | rejected | previewed | reverted | applied | cancelled | expired | failed` (`reverted`: 열린 대화 안에서 점유자가 이전 미리 보기로 되돌려 더 이상 보이지 않는 후보. 적용된 요청은 되돌릴 수 없다)
 - `result_candidate` (스키마 검증된 후보; 원문 모델 출력은 별도 저장하지 않음)
 - `failure_code?`, `repair_count` (최대 1), `created_at`, `expires_at`, `applied_version_id?`
 - 후보와 대화 메시지는 두 구성원에게 공유되지만, 현재 session owner만 후보를 적용할 수 있다. 다른 구성원은 같은 후보를 읽기 전용으로 본다.
@@ -87,7 +87,7 @@
 - `acquired_at`, `last_activity_at`, `expires_at`, `heartbeat_at?`, `released_at?`, `release_reason?`, `takeover_count`
 - 점유권은 공간 단위로 하나만 active할 수 있다. acquire와 takeover는 DB 원자 연산으로 owner를 한 명으로 제한한다.
 - 초기 유휴 lease는 3분 가정이며 캡틴이 조정할 수 있다. 의미 있는 사용자 입력/AI 생성 중 heartbeat로 갱신하고 background/닫힌 앱은 heartbeat를 보내지 않아 만료된다. 다른 구성원은 expected owner 및 expiry 검사 후 같은 shared session/preview를 takeover한다.
-- confirm/cancel/undo는 데이터 변경과 함께 점유를 해제한다. 현재 점유자만 입력·제출·적용할 수 있고 비점유자는 공유 대화와 preview를 읽기 전용으로 본다.
+- confirm/cancel은 데이터 변경과 함께 점유를 해제한다. 열린 대화 안의 되돌리기는 점유를 풀지 않는다. 현재 점유자만 입력·제출·적용할 수 있고 비점유자는 공유 대화와 preview를 읽기 전용으로 본다.
 
 ### PromptMessage
 
@@ -104,13 +104,13 @@
 - `status`: `none | uploading | ready | failed`. `none`은 행 없음과 같으며 기본 바탕을 보여 준다.
 - `current_object_path?` (Storage 비공개 버킷 `home-covers` 안의 경로, 서버 재인코딩 결과), `content_type`, `byte_size`, `width_px`, `height_px`, `sha256`
 - `crop?` (자르기 영역: 정규화 `x`, `y`, `width`, `height`; 커버 비율은 앱이 고정)
-- `version` (바뀔 때마다 증가, 마지막 변경 우선 판단), `uploaded_by_user_id`, `uploaded_at`, `updated_at`
-- `pending_delete[]` (교체·삭제로 남은 이전 객체 경로와 삭제 예정 시각; 보관 기간은 spec Open Decisions 2)
+- `version` (바뀔 때마다 증가, 마지막 변경 우선 판단), `uploaded_by_user_id`(홈에서 **누가 마지막으로 바꿨는지** 보여 줌, 사진을 없앤 사람도 같은 필드에 기록), `uploaded_at`, `updated_at`
+- `pending_delete[]` (교체·삭제로 남은 이전 객체 경로와 삭제 예정 시각; 새 사진 저장 확인 후 24시간 뒤 삭제, plan.md)
 - 주소(URL)는 저장하지 않는다. 앱은 RLS로 권한을 확인한 짧은 수명의 서명된 URL만 요청해 쓴다.
 - 읽기: 활성 또는 복구 대기 공간의 구성원. 쓰기·교체·삭제: 활성 공간 구성원(점유 세션 불필요). 공간이 `recovery_pending`이면 새 업로드를 막는다.
 - 허용 형식·크기(가정): JPG·PNG·HEIC, 원본 20MB 이하. 저장본은 EXIF/XMP를 제거한 재인코딩 사본이다.
 - 상태 전이: `none --upload ok--> ready`, `ready --replace ok--> ready (version+1)`, `ready --remove--> none`, `none/ready --upload fail--> (이전 상태 유지, 실패는 클라이언트 표시)`. 새 사진 저장이 끝나기 전에는 기존 사진을 바꾸지 않는다.
-- 삭제: 공간이 삭제될 때(복구 기간 30일 뒤) 객체와 행을 함께 지운다. 종료 직후 복구 대기 중 사진을 숨길지는 spec Open Decisions 2.
+- 삭제(결정): 공간이 삭제될 때(복구 기간 30일 뒤) 객체와 행을 함께 지운다. 복구 대기 중에는 사진을 유지하고 복구하면 그대로 돌아온다.
 - `SpaceLifecycleEvent`와 달리 사진 변경은 감사 이벤트에 개인 내용(경로, 파일명)을 넣지 않고 `cover_changed`/`cover_removed` 종류만 남긴다(정형 속성).
 
 ### SpaceLifecycleEvent
@@ -133,6 +133,8 @@ active --reissue/revoke--> revoked
 DecorationRequest: queued --valid candidate--> generated --> previewed
 previewed --confirm at matching base version--> applied
 previewed --cancel/expiry--> cancelled/expired
+previewed --undo within the open session--> reverted (이전 후보 또는 현재 방 보기로, 점유 유지)
+applied --(되돌리기 없음)
 queued/generated --invalid result/provider failure--> rejected/failed
 ```
 
@@ -144,10 +146,10 @@ queued/generated --invalid result/provider failure--> rejected/failed
 - 후보/confirm은 `base_version_number`를 검사한다. 오래된 제안은 적용하지 않고 최신 테마로 재요청을 요구한다.
 - scene document의 `objects.length ≤ 16`, `texts.length ≤ 3`; 각 노드는 스키마의 범위 제한을 만족해야 한다.
 - `PromptSession`은 공간당 하나만 `occupied` 상태일 수 있다. heartbeat는 최근 사용자 활동이 있을 때만 `expires_at`을 갱신한다. 세션 만료 후 takeover는 만료된 session ID와 예상 owner를 조건으로 원자적으로 새 owner에게 양도한다.
-- prompt, preview, confirm, cancel, undo endpoint는 유효한 session owner를 확인한다. confirm의 owner/session/expected version 검사, idempotency key 처리, 새 version 저장, lease release를 한 DB transaction에서 수행한다.
-- 새 방의 초기 scene은 유효한 마스코트 오브젝트를 정확히 하나 포함한다. 이후 scene에서는 마스코트가 없거나 하나일 수 있으며(제거 가능 여부는 Open Decisions 5), 중복은 거부한다. 마스코트가 있을 때 전체 16개 오브젝트 한도에 포함된다. validator는 본체 asset ID의 단일성을 검사하고 마스코트에 붙은 상태 필드(`mascotState` 등), 교체 본체, 사용자 이미지, 기존 캐릭터/브랜드 복제 요청을 거부한다.
+- prompt, preview, confirm, cancel, 세션 안 undo endpoint는 유효한 session owner를 확인한다. confirm의 owner/session/expected version 검사, idempotency key 처리, 새 version 저장, lease release를 한 DB transaction에서 수행한다.
+- 새 방의 초기 scene은 유효한 마스코트 오브젝트를 정확히 하나 포함한다. 이후 scene에서는 마스코트가 없거나 하나일 수 있으며(제거 가능 여부는 Open Decisions 2), 중복은 거부한다. 마스코트가 있을 때 전체 16개 오브젝트 한도에 포함된다. validator는 본체 asset ID의 단일성을 검사하고 마스코트에 붙은 상태 필드(`mascotState` 등), 교체 본체, 사용자 이미지, 기존 캐릭터/브랜드 복제 요청을 거부한다.
 - 홈 커버 사진은 scene 문서·room theme 문서·프롬프트 문맥 어디에도 참조되지 않는다. 사진 파일 참조나 URL이 scene에 들어오면 거부한다.
-- 홈 커버 사진 업로드는 서버가 구성원·공간 `active` 상태·형식·크기·이미지 헤더를 검사한 뒤 재인코딩한 사본만 저장하고, 새 객체가 저장되기 전에는 `current_object_path`를 바꾸지 않는다. 같은 공간의 동시 교체는 `version` 비교로 마지막 반영 하나만 남기고(가정) 실패한 쪽은 객체를 정리한다.
+- 홈 커버 사진 업로드는 서버가 구성원·공간 `active` 상태·형식·크기·이미지 헤더를 검사한 뒤 재인코딩한 사본만 저장하고, 새 객체가 저장되기 전에는 `current_object_path`를 바꾸지 않는다. 같은 공간의 동시 교체는 `409`로 막지 않고 **마지막으로 확정된 하나만 남기며**(마지막 변경 우선, 결정) 먼저 확정된 쪽의 객체는 삭제 대기 목록에 넣는다.
 - 보호 영역과 대비 validator는 day/night 방 모드와 light/dark 인터페이스의 네 조합 각각에서 가림과 글자 가독성을 검사한다. 색은 허용 토큰으로 제한하고 모든 조합에서 대비 기준을 충족해야 한다.
 - 장면 오브젝트의 ID는 현재/레거시 허용 목록과 일치해야 한다. 외부 URL 및 임의 필드는 거부한다.
 - D-day의 날짜는 `anniversary_date`로부터 앱 규칙에 따라 계산한다. AI/장면 입력은 숫자·날짜 원본을 덮어쓸 수 없다.

@@ -2,7 +2,7 @@
 
 > 이 문서는 디자인 원본에서 자동으로 만든 표예요. 구현은 **키만 코드에 쓰고** 텍스트는 번역 리소스(`ko-KR`, `en-US`, `ja-JP`)로 둬요. `{name}` 형태는 보간 변수예요. 달력·할 일·가격·알림을 떠올리게 하는 표현과(홈 배경 사진 한 장 말고는) 사진 기능 표현은 쓰지 않았어요. 일본어·영어 문구는 디자이너가 쓴 초안이라 **원어민 검수**가 필요해요(handoff.md).
 
-- 총 키 수: **536**
+- 총 키 수: **542**
 - 사용자가 입력한 방 문구와 프롬프트는 번역하지 않고 입력한 그대로 저장·표시해요.
 - 서버 오류는 언어 중립 코드(`VERSION_CONFLICT` 등)만 오고, 앱이 아래 키로 문구를 골라요: `VERSION_CONFLICT`→`preview.conflict.*`·`undo.conflict.*`, `QUOTA_REACHED`→`prompt.quota.*`, `CONSENT_REQUIRED`→`prompt.consent.need`, `SESSION_OCCUPIED`→`prompt.partner`, `SESSION_EXPIRED`→`prompt.idle.me.*`, `INVITE_EXPIRED`→`join.expired.*`, `INVITE_USED`→`join.used.*`, `SPACE_FULL`→`join.full.*`, `ALREADY_IN_SPACE`→`join.hasSpace.*`, `UNSUPPORTED_REQUEST`→`prompt.unsupported.*`, `BRAND_REQUEST`→`prompt.brand.*`, `AUTH_EXPIRED`→`sys.login.*`. (코드 이름은 계약 문서 `contracts/api.md`의 이름을 확인해서 맞춰야 해요.)
 
@@ -32,7 +32,6 @@
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
 | `room.ctl.settings` | 설정 | Settings | 設定 |
-| `room.ctl.undo` | 되돌리기 | Undo | 元に戻す |
 | `room.ctl.decorate` | 꾸미기 | Decorate | 飾る |
 | `room.loading` | 방을 불러오는 중이에요 | Loading your room | 部屋を読み込んでいます |
 | `room.offline` | 인터넷이 끊겨서 보기만 할 수 있어요 | You're offline, so the room is view-only | オフラインのため、表示のみ可能です |
@@ -300,11 +299,14 @@
 | `preview.applying` | 적용하는 중이에요 | Applying | 反映しています |
 | `preview.cancel` | 취소 | Cancel | キャンセル |
 | `preview.cancel.toast` | 취소했어요. 우리 방은 그대로예요. | Canceled. Your room stays the same. | キャンセルしました。部屋はそのままです。 |
-| `preview.applyHint` | 적용하면 두 사람의 방이 바뀌어요. | Applying changes the room for both of you. | 反映すると、ふたりの部屋が変わります。 |
+| `preview.applyHint` | 적용하면 두 사람의 방이 바뀌고, 적용한 뒤에는 되돌릴 수 없어요. | Applying changes the room for both of you, and it can't be undone once applied. | 反映するとふたりの部屋が変わり、反映した後は元に戻せません。 |
+| `preview.undo` | 이전 미리 보기로 되돌리기 | Go back to the previous preview | 前のプレビューに戻す |
+| `preview.confirm.title` | 적용할까요? | Apply it? | 反映しますか？ |
+| `preview.confirm.body` | 두 사람의 방이 바뀌어요. 적용한 뒤에는 되돌릴 수 없어요. 적용하기 전에 미리 보기를 한 번 더 확인해 주세요. | Your shared room will change for both of you. It can't be undone once applied, so take one more look at the preview first. | ふたりの部屋が変わります。反映した後は元に戻せません。反映する前に、もう一度プレビューを確認してください。 |
 | `preview.partner.wait` | {name}님이 적용할지 정하고 있어요 | {name} is deciding whether to apply it | {name}さんが反映するか決めています |
 | `preview.partner.readonly` | 지금은 보기만 할 수 있어요 | You can only watch for now | 今は見ることだけできます |
 | `preview.applied.title` | 적용했어요 | Applied | 反映しました |
-| `preview.applied.body` | 상대 화면에는 동기화되면 바로 바뀌어요. | Your partner's screen updates as soon as it syncs. | パートナーの画面は、同期され次第すぐに変わります。 |
+| `preview.applied.body` | 적용한 변경은 되돌릴 수 없어요. 상대 화면에는 동기화되면 바로 바뀌어요. | Applied changes can't be undone. Your partner's screen updates as soon as it syncs. | 反映した変更は元に戻せません。パートナーの画面は、同期され次第すぐに変わります。 |
 | `preview.warn.limit` | 소품이 많아서 일부는 빼고 보여 드려요. | There are too many items, so a few are left out. | 小物が多いため、一部を除いて表示しています。 |
 | `preview.warn.protected` | 버튼이나 날짜 위젯을 가리는 소품은 위치를 자동으로 옮겼어요. | Items that covered the buttons or the day counter were moved automatically. | ボタンや日数ウィジェットを隠す小物は、自動で位置を動かしました。 |
 | `preview.suggest` | 이렇게 줄여서 만들어 봤어요 | Here's a trimmed version | こう減らして作ってみました |
@@ -321,20 +323,20 @@
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
-| `undo.title` | 방금 꾸민 걸 되돌릴까요? | Undo your last change? | 直前の変更を元に戻しますか？ |
-| `undo.body` | 방이 적용하기 전 모습으로 돌아가요. 상대 화면에도 같이 반영돼요. | The room goes back to how it looked before you applied it. Your partner's screen follows. | 部屋は反映する前の状態に戻ります。パートナーの画面にも反映されます。 |
+| `undo.title` | 이전 미리 보기로 되돌릴까요? | Go back to the previous preview? | 前のプレビューに戻しますか？ |
+| `undo.body` | 이 대화에서 방금 만든 변경을 취소하고 바로 앞 미리 보기로 돌아가요. 방은 아직 바뀌지 않았어요. 적용한 방은 되돌릴 수 없어요. | This drops the change you just made in this conversation and goes back to the preview before it. The room hasn't changed. A room you already applied can't be undone. | この会話で作ったばかりの変更を取り消し、ひとつ前のプレビューに戻ります。部屋はまだ変わっていません。反映した部屋は元に戻せません。 |
 | `undo.confirm` | 되돌리기 | Undo | 元に戻す |
 | `undo.progress` | 되돌리는 중이에요 | Undoing | 元に戻しています |
 | `undo.done.title` | 되돌렸어요 | Undone | 元に戻しました |
-| `undo.done.body` | 방이 이전 모습이에요. | The room is back to how it was. | 部屋は以前の状態です。 |
-| `undo.none.title` | 되돌릴 수 있는 변경이 없어요 | Nothing to undo | 元に戻せる変更がありません |
-| `undo.none.body` | 처음 상태의 방이라 되돌릴 변경이 없어요. | This is the original room, so there is nothing to undo. | 最初の状態の部屋なので、元に戻せる変更はありません。 |
+| `undo.done.body` | 바로 앞 미리 보기예요. | This is the preview before it. | ひとつ前のプレビューです。 |
+| `undo.none.title` | 되돌릴 변경이 없어요 | Nothing to undo | 元に戻せる変更がありません |
+| `undo.none.body` | 이 대화에서 만든 변경이 아직 없어요. 이미 적용한 방은 되돌릴 수 없어요. | There are no changes from this conversation yet. A room you already applied can't be undone. | この会話で作った変更はまだありません。すでに反映した部屋は元に戻せません。 |
 | `undo.busy.title` | {name}님이 꾸미는 중이에요 | {name} is decorating | {name}さんが飾っています |
-| `undo.busy.body` | {name}님이 끝나거나 자리를 비우면 되돌릴 수 있어요. | You can undo once {name} finishes or steps away. | {name}さんが終えるか席を外すと、元に戻せます。 |
-| `undo.conflict.title` | 이미 되돌려졌거나 방이 바뀌었어요 | It was already undone, or the room changed | すでに元に戻されたか、部屋が変更されました |
-| `undo.conflict.body` | 최신 방을 불러왔어요. 필요하면 다시 되돌려 주세요. | We loaded the latest room. Undo again if you still need to. | 最新の部屋を読み込みました。必要であればもう一度元に戻してください。 |
+| `undo.busy.body` | {name}님만 이 미리 보기를 되돌릴 수 있어요. | Only {name} can undo this preview. | このプレビューを元に戻せるのは{name}さんだけです。 |
+| `undo.conflict.title` | 이미 되돌려졌거나 미리 보기가 바뀌었어요 | It was already undone, or the preview changed | すでに元に戻されたか、プレビューが変更されました |
+| `undo.conflict.body` | 최신 미리 보기를 불러왔어요. 필요하면 다시 되돌려 주세요. | We loaded the latest preview. Undo again if you still need to. | 最新のプレビューを読み込みました。必要であればもう一度元に戻してください。 |
 | `undo.err.title` | 되돌리지 못했어요 | Couldn't undo | 元に戻せませんでした |
-| `undo.err.body` | 방은 그대로예요. 다시 시도해 주세요. | The room is unchanged. Please try again. | 部屋はそのままです。もう一度お試しください。 |
+| `undo.err.body` | 미리 보기는 그대로예요. 다시 시도해 주세요. | The preview is unchanged. Please try again. | プレビューはそのままです。もう一度お試しください。 |
 
 ## S12 해외 AI 처리 동의
 
@@ -522,7 +524,7 @@
 | `a11y.home` | 메인 화면으로 이동 | Go to the home screen | メイン画面へ移動 |
 | `a11y.settings` | 설정 열기 | Open settings | 設定を開く |
 | `a11y.decorate` | 방 꾸미기 열기 | Open room decorating | 部屋の飾り付けを開く |
-| `a11y.undo` | 방금 적용한 꾸밈 되돌리기 | Undo the last applied change | 直前に反映した変更を元に戻す |
+| `a11y.undo` | 이전 미리 보기로 되돌리기 | Go back to the previous preview | 前のプレビューに戻す |
 | `a11y.mascot` | 마스코트, {pose} | Mascot, {pose} | マスコット、{pose} |
 | `a11y.send` | 요청 보내기 | Send request | リクエストを送信 |
 | `a11y.input` | 꾸미기 요청 입력칸 | Decorating request field | 飾り付けリクエストの入力欄 |
@@ -663,7 +665,9 @@
 | `cover.sheet.title` | 홈 배경 사진 | Home background photo | ホームの背景写真 |
 | `cover.sheet.pick` | 앨범에서 고르기 | Choose from your photos | アルバムから選ぶ |
 | `cover.sheet.remove` | 사진 없애기 | Remove photo | 写真を外す |
-| `cover.sheet.note` | 두 사람이 같은 사진을 봐요. 어느 쪽이든 바꾸거나 없앨 수 있어요. | You both see the same photo. Either of you can change or remove it. | ふたりに同じ写真が表示されます。どちらでも変更・削除できます。 |
+| `cover.sheet.note` | 두 사람이 같은 사진을 봐요. 어느 쪽이든 바꾸거나 없앨 수 있고, 마지막에 바꾼 사진이 보여요. | You both see the same photo. Either of you can change or remove it, and the last change is the one shown. | ふたりに同じ写真が表示されます。どちらでも変更・削除でき、最後に変更した写真が表示されます。 |
+| `cover.by` | 마지막으로 {name}님이 바꿨어요 · {time} | Last changed by {name} · {time} | 最後に{name}さんが変更しました · {time} |
+| `cover.by.time` | 오늘 오후 9:14 | Today, 9:14 PM | 今日 21:14 |
 | `cover.crop.title` | 보여 줄 부분을 맞춰 주세요 | Choose the part to show | 表示する部分を合わせてください |
 | `cover.crop.hint` | 끌어서 옮기고, 두 손가락으로 크기를 바꿔요. | Drag to move, pinch to resize. | ドラッグで移動、2本指で大きさを変えます。 |
 | `cover.crop.done` | 완료 | Done | 完了 |
@@ -675,5 +679,7 @@
 | `cover.load.err` | 사진을 불러오지 못했어요 | Couldn't load the photo | 写真を読み込めませんでした |
 | `cover.removed` | 배경 사진을 없앴어요 | Background photo removed | 背景写真を外しました |
 | `cover.updated` | 배경 사진을 바꿨어요 | Background photo updated | 背景写真を変更しました |
+| `cover.partner.changed` | {name}님이 배경 사진을 바꿨어요 | {name} changed the background photo | {name}さんが背景写真を変更しました |
+| `cover.partner.removed` | {name}님이 배경 사진을 없앴어요 | {name} removed the background photo | {name}さんが背景写真を外しました |
 | `cover.loading` | 사진을 불러오는 중 | Loading photo | 写真を読み込み中 |
 

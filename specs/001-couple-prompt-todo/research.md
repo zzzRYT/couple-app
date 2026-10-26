@@ -60,7 +60,7 @@ Firestore 모바일 SDK의 오프라인 캐시와 실시간 리스너는 강점�
 
 서버는 Claude 응답을 JSON Schema로 구조화 출력하고, 이후 독립 검증기로 스키마·카탈로그·씬 수량·좌표·보호영역·겹침·텍스트 규칙을 확인한다. 실패 시 한 번만 제한된 repair prompt로 다시 요청하되, 실패가 반복되면 미리보기를 만들지 않고 현재 테마를 보존한다. 고정 규칙 검증이 모델의 자기 평가보다 권위가 있다. 클라이언트도 동일한 스키마/기하 규칙을 검증하고, 서버가 저장한 승인 후보의 해시/버전을 표시 직전에 확인한다.
 
-적용은 prompt-session owner, 현재 버전 번호, idempotency key를 조건으로 한 transaction이다. confirm 시 새 `ThemeVersion` 전체 스냅샷을 추가하고 current pointer 이동 및 lease release를 함께 처리한다. undo는 이전 승인 버전을 새 복원 스냅샷으로 저장한다(이용자용 버전 목록·선택 복구는 V1에서 뺐고 스냅샷은 undo와 감사를 위해서만 저장한다). preview/cancel은 현재 테마를 변경하지 않는다. occupancy가 정상 prompt 편집을 직렬화하고 server version guard는 예외 동시 apply/늦은 retry를 `409`로 차단한다.
+적용은 prompt-session owner, 현재 버전 번호, idempotency key를 조건으로 한 transaction이다. confirm 시 새 `ThemeVersion` 전체 스냅샷을 추가하고 current pointer 이동 및 lease release를 함께 처리한다. 적용한 변경은 되돌릴 수 없다(적용 후 undo, 이용자용 버전 목록·선택 복구는 V1에 없고 스냅샷은 감사·충돌 검사용이다). 열린 대화 안에서는 마지막 미리 보기를 이전 후보로 되돌릴 수 있다(방은 바뀌지 않음). preview/cancel은 현재 테마를 변경하지 않는다. occupancy가 정상 prompt 편집을 직렬화하고 server version guard는 예외 동시 apply/늦은 retry를 `409`로 차단한다.
 
 두 구성원이 같은 방을 동시에 편집하는 문제는 per-space lease로 직렬화한다. active lease owner만 입력·제출·적용하고, 상대는 shared transcript/preview를 Realtime으로 읽기 전용 구독한다. owner 활동이 멈추면 3분(가정) 후 lease가 만료되며 상대는 takeover할 수 있다. 서버는 session owner check와 expected version compare를 같은 transaction에서 수행해 드물게 도착한 동시 apply를 막는다. 일반 stale preview를 사용자 흐름의 기본 해결책으로 삼는 대신 독점 점유가 정상 경로를 직렬화하고, `409`는 만료/네트워크 지연 등 예외 경합의 최종 안전장치로 남긴다.
 
@@ -70,7 +70,7 @@ Firestore 모바일 SDK의 오프라인 캐시와 실시간 리스너는 강점�
 
 ## 4. AI 호출 흐름, 모델, 비용
 
-**흐름 제안:** 구성원이 prompt-session lease acquire → 서버가 한 명의 owner만 허용하고 상대에게 owner/expiry presence 전달 → owner가 prompt 입력 → 서버가 권한·동의·하루 10회 한도 검사 후 AI 구조화 출력 요청 → JSON Schema·정책·카탈로그·좌표/보호영역 검사 → shared conversation에 prompt/preview를 저장하고 둘에게 ID 기반 Realtime 이벤트 전달 → 상대는 live read-only로 대화/preview 확인, owner만 confirm/cancel/undo → 서버가 session owner + expected version + idempotency를 transaction에서 검사, 적용 시 snapshot 저장과 lease release를 원자화. 활성 활동 heartbeat를 3분 idle 만료로 제한해 앱 종료 시 takeover가 가능하게 한다.
+**흐름 제안:** 구성원이 prompt-session lease acquire → 서버가 한 명의 owner만 허용하고 상대에게 owner/expiry presence 전달 → owner가 prompt 입력 → 서버가 권한·동의·하루 10회 한도 검사 후 AI 구조화 출력 요청 → JSON Schema·정책·카탈로그·좌표/보호영역 검사 → shared conversation에 prompt/preview를 저장하고 둘에게 ID 기반 Realtime 이벤트 전달 → 상대는 live read-only로 대화/preview 확인, owner만 confirm/cancel/(열린 대화 안) undo → 서버가 session owner + expected version + idempotency를 transaction에서 검사, 적용 시 snapshot 저장과 lease release를 원자화. 활성 활동 heartbeat를 3분 idle 만료로 제한해 앱 종료 시 takeover가 가능하게 한다.
 
 모델에는 날짜 원본, 이메일, 카카오 식별자, 초대 코드, 계정 세부를 보내지 않는다. 프롬프트 속 지시를 시스템 명령으로 승격하지 않고, 모델에는 도구·네트워크·DB 권한을 주지 않는다. 입력/출력 문자열을 로그에 남기지 않으며 키나 원문이 포함되지 않도록 로그 필드를 allowlist로 정한다. 동의는 사용자별로 기록하되 두 사람 모두 자신의 동의를 해야 AI가 호출되게 하는 방식을 권장한다(캡틴 확인). 동의 철회는 이후 요청을 차단한다.
 
@@ -114,7 +114,7 @@ EAS Build/Submit에서 iOS/Android 내부 QA 빌드를 만든 뒤 TestFlight 및
 - **업로드**: 시스템 사진 선택기(iOS PHPicker, Android Photo Picker)를 쓰면 사진 보관함 전체 권한이 필요 없다. 서버 함수가 구성원·공간 상태를 검사하고 업로드 주소를 발급하며, 서버가 이미지 헤더·형식·크기를 다시 검사해 재인코딩한 사본만 저장한다.
 - **EXIF**: 휴대폰 사진에는 촬영 위치(GPS)가 들어 있을 수 있어서 저장본에서 EXIF/XMP를 제거한다. 앱의 재인코딩만 믿지 않고 서버에서 한 번 더 제거한다.
 - **HEIC**: iOS 기본 사진 형식이다. 업로드 전에 앱에서 JPG로 바꿀지, 서버에서 바꿀지는 구현 단계에서 정한다.
-- **검수·신고**: 이용자가 올리는 콘텐츠라 Apple App Review Guidelines 1.2와 Google Play UGC 정책의 신고·차단·삭제 요구가 적용될 수 있다. 1:1 비공개 공간이 예외라고 가정하지 않는다(7장과 같은 원칙). 자동 검수 도구를 쓸지는 정해지지 않았다.
+- **검수·신고 없음(결정)**: 홈 사진에는 검수 단계와 사진 신고를 두지 않기로 했다. 다만 이용자가 올리는 콘텐츠라 Apple App Review Guidelines 1.2와 Google Play UGC 정책의 신고·차단·삭제 요구가 비공개 두 사람 공간의 사진에도 적용되는지는 별도 확인이 필요하다(1:1 비공개 공간이 예외라고 가정하지 않는다, 7장과 같은 원칙). 법률 검토 때 확인한다.
 - **AI와 분리**: 사진은 AI 제공자에게 보내지 않는다. 방 꾸미기 프롬프트에 사진 정보를 넣지 않는다(spec FR-034).
 - **개인정보**: 얼굴·장소가 담길 수 있어 처리방침 문구와 국외 처리(Supabase 운영 telemetry/일부 metadata) 범위를 법률 검토에 포함한다.
 
