@@ -316,6 +316,14 @@
       "w": 1760,
       "x": 7360,
       "y": 5300
+    },
+    "C07-vector-version.dc.html": {
+      "expand": "fill",
+      "h": 4300,
+      "title": "C07 벡터 버전 (모피)",
+      "w": 1760,
+      "x": 9200,
+      "y": 5300
     }
   },
   "createdOnFiles": {
@@ -412,6 +420,7 @@
     "C04-backgrounds-sizes.dc.html",
     "C05-harmonized-vs-supplied.dc.html",
     "C06-app-icon.dc.html",
+    "C07-vector-version.dc.html",
     "S01-onboarding.dc.html",
     "S02-login.dc.html",
     "S03-couple-space.dc.html",

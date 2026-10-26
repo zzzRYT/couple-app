@@ -3,7 +3,7 @@
 각 화면의 목적, 이동, 상태, 사용하는 번역 키, 긴 문구 사례예요. 상태 ID는 캔버스 프레임 캡션과 같아요(예: `S07-decorated`). 모든 화면은 iOS와 Android, 한국어·영어·일본어, 밝은/어두운 앱, 방의 낮/밤(방 화면), 고대비, 글자 200%에서 그렸어요(어느 프레임이 어느 조합인지는 캔버스 캡션 두 번째 줄). 탭 3개(홈·방·설정)의 루트 화면은 S06·S07·S13이고, 탭 단위로 상태를 모은 보드가 S23·S24·S26, 이동 규칙은 S27 / `interaction-notes.md`예요.
 
 공통 규칙
-- **화면 번호**는 `specs/001-couple-prompt-todo/design-brief.md`의 1~16번과 같아요(S01~S16). S11(기록)은 첫 버전에서 뺐어요(후속 버전). 마일스톤 축하는 새 화면 **S28**(브리프 17번)이에요. S17은 비어 있어요(마스코트는 **캐릭터 섹션 C01~C05**로 옮겼어요), S18 에셋, S19 글꼴·토큰, S20 접근성, S21 긴 문구, S22 컴포넌트, S23·S24·S26 탭 단위(S25는 기록 탭이라 뺐어요), S27 탭 구조.
+- **화면 번호**는 `specs/001-couple-prompt-todo/design-brief.md`의 1~16번과 같아요(S01~S16). S11(기록)은 첫 버전에서 뺐어요(후속 버전). 마일스톤 축하는 새 화면 **S28**(브리프 17번)이에요. S17은 비어 있어요(마스코트는 **캐릭터 섹션 C01~C07**로 옮겼어요), S18 에셋, S19 글꼴·토큰, S20 접근성, S21 긴 문구, S22 컴포넌트, S23·S24·S26 탭 단위(S25는 기록 탭이라 뺐어요), S27 탭 구조.
 - **탭 바가 보이는 화면**: 홈·방·설정 루트(및 그 루트의 시트). 나머지 푸시 화면과 작업 흐름, 탭 바 앞의 흐름(S01~S05)에서는 숨겨요.
 - **글자 확대**: 200%까지 설계. 줄이지 않고 줄바꿈·스크롤. 방 도구 막대 라벨은 160%에서 멈추고 2단으로 바뀌어요.
 - 한국어 문구는 존댓말 해요체, 달력·할 일·가격(마일스톤 알림 문구는 예외), 그리고 홈 배경 사진 말고 다른 사진 기능을 암시하는 표현을 쓰지 않아요.
@@ -456,9 +456,9 @@
 | `S26-sheet-tz` | 설정 → 시간대(시트) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `set.room.tz.pick` `set.room.tz.search` `set.room.tz.tokyo` `set.room.tz.la` `set.room.tz.ny` `set.room.tz.london` |
 | `S26-push-end` | 설정 → 공간 종료 확인(푸시 · 탭 바 숨김) | `end.date` `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` |
 
-## 캐릭터 섹션 (C01~C06)
+## 캐릭터 섹션 (C01~C07)
 
-마스코트(소유자가 생성형 AI 도구로 만든 원본을 가공한 캐릭터)는 화면 안에 퍼뜨리지 않고 **독립 보드 6장**에 모았어요: C01 캐릭터 개요 · C02 제스처 시트(11개 제스처를 원본/가공본으로 1:1) · C03 팔레트·해부·규칙 · C04 배경·크기 · C05 하모나이즈 vs 원본 · **C06 앱 아이콘**(모피 얼굴 아이콘 후보 3개와 추천안 세트, 파일은 `icon/`). 파일은 `mascot/`.
+마스코트(소유자가 생성형 AI 도구로 만든 원본을 가공한 캐릭터)는 화면 안에 퍼뜨리지 않고 **독립 보드 7장**에 모았어요: C01 캐릭터 개요 · C02 제스처 시트(11개 제스처를 원본/가공본으로 1:1) · C03 팔레트·해부·규칙 · C04 배경·크기 · C05 하모나이즈 vs 원본 · **C06 앱 아이콘**(모피 얼굴 아이콘 후보 3개와 추천안 세트, 파일은 `icon/`) · **C07 벡터 버전**(자동 트레이스한 SVG 11포즈와 아이콘 얼굴, 파일은 `mascot/vector/`). 파일은 `mascot/`.
 
 **캐릭터가 나오는 화면(현재 두 곳)**
 
@@ -473,4 +473,4 @@
 
 ## 설명 없는 보드
 
-- **C01~C06 캐릭터 섹션**, **S18 에셋**, **S19 글꼴·토큰**, **S20 접근성**, **S21 긴 문구**, **S22 컴포넌트**, **S27 탭 구조**는 화면이 아니라 참고 보드예요: 각각 `assets-spec.md`, `tokens.json`, `contrast-report.md`, 이 문서, `components.md`, `interaction-notes.md`와 대응해요.
+- **C01~C07 캐릭터 섹션**, **S18 에셋**, **S19 글꼴·토큰**, **S20 접근성**, **S21 긴 문구**, **S22 컴포넌트**, **S27 탭 구조**는 화면이 아니라 참고 보드예요: 각각 `assets-spec.md`, `tokens.json`, `contrast-report.md`, 이 문서, `components.md`, `interaction-notes.md`와 대응해요.

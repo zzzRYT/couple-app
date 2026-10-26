@@ -177,6 +177,10 @@
 
 앱 아이콘은 같은 마스터에서 파생한 가공본을 크게 자르고 바탕색을 얹은 것이라 **권리 상태가 마스코트와 같아요**. 파일과 규칙은 `icon/README.md`, 도구는 `tools/make-icon.py`예요(새 그림 없음).
 
+### 8.1b 벡터 버전
+
+`mascot/vector/`의 SVG·PDF·.ai는 같은 마스터에서 파생한 가공본을 자동 트레이스한 것이라 **권리 상태가 마스코트와 같아요**(새로 그린 창작이 아님). 도구(VectorCraft CLI 0.17.0, MIT 또는 Apache-2.0)와 설정은 `mascot/vector/README.md`, 다시 만들기는 `tools/vectorize-mascot.py`예요. 일러스트레이터에게는 밑그림으로 줘요.
+
 ### 8.2 마일스톤 기념 제안이 쓰는 에셋과 예산
 
 - 프리셋은 **카탈로그 기존 오브젝트만** 써요: `obj_party_cake` 1 · `obj_party_balloon` 1 · `obj_party_ribbon` 1 · `obj_shape_sparkle` 2 (주년은 `obj_keep_gift` 1 추가) = 소품 5~6개 + 기념 문구 1개. 마스코트(`cheer` 포즈)와 반짝이는 화면 연출이고 방 장면 오브젝트가 아니에요.

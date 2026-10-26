@@ -5,6 +5,7 @@
 
 | 폴더/파일 | 내용 |
 |---|---|
+| `vector/` | **벡터 버전**: 가공본 11포즈를 VectorCraft 이미지 트레이스로 자동 변환한 SVG, 앱 아이콘 얼굴, PDF, 점검 리포트, 미리 보기(자동 트레이스, 다시 그린 것 아님. 권리 상태는 마스코트와 같아요) — `vector/README.md`, 다시 만들기 `../tools/vectorize-mascot.py` |
 | (앱 아이콘은 `../icon/`) | 이 폴더의 가공본에서 파생한 앱 아이콘 후보와 세트 |
 | `source/mascot-source.png` | 제공된 캐릭터 시트 원본(1536×1024). 출처 증빙으로 그대로 보존 |
 | `cutouts/` | 포즈 11개의 투명 컷아웃(원본 해상도, 가공 없음) + `cutout-report.json`(체크섬) |
@@ -13,7 +14,7 @@
 | `contact-sheet.png` | 11포즈 원본 vs 가공본(낮·밤 배경) |
 | `before-after.png` | 주 포즈 + 작은 포즈 3개를 높이 200·96·48px로, 낮 벽·밤 벽·어두운 앱 면 위에서 비교 |
 
-캔버스의 **캐릭터 섹션**(C01 개요 · C02 제스처 시트 · C03 팔레트·해부·규칙 · C04 배경·크기 · C05 하모나이즈 vs 원본)이 이 폴더의 파일을 보여 줘요. 화면에서는 방 장면의 기본 오브젝트와 온보딩 히어로 1개에만 써요(`../handoff.md` §10.5).
+캔버스의 **캐릭터 섹션**(C01 개요 · C02 제스처 시트 · C03 팔레트·해부·규칙 · C04 배경·크기 · C05 하모나이즈 vs 원본 · C06 앱 아이콘 · C07 벡터 버전)이 이 폴더의 파일을 보여 줘요. 화면에서는 방 장면의 기본 오브젝트와 온보딩 히어로 1개에만 써요(`../handoff.md` §10.5).
 
 포즈 id: `wave_main`(서서 손 흔들기) `cheer` `lookup` `walk` `lie` `sleep` — 방 안 사용 제안 6종 / `star_sit` `box` `heart` `phone` `back` — 방 밖 일러스트 5종.
 
@@ -23,6 +24,7 @@
 python3 design/tools/cutout-mascot.py --sheet design/mascot/source/mascot-source.png --out design/mascot
 python3 design/tools/harmonize-mascot.py --in design/mascot/cutouts --out design/mascot/harmonized
 python3 design/tools/mascot-sheets.py --mascot design/mascot
+python3 design/tools/vectorize-mascot.py --cli /path/to/vectorcraft-cli    # 벡터 버전 (vector/README.md)
 ```
 
 필요한 것: Python 3.9+, numpy, scipy, Pillow, opencv-python(-headless). 라이브러리가 기본 위치에 없으면 `MASCOT_LIBS=/path/to/site-packages`.
