@@ -152,17 +152,9 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 
 현재 점유자만 취소할 수 있다. cancel 요청은 후보를 공유 장면에 적용하지 않고 session을 release한다. 다른 구성원은 취소/적용 컨트롤이 없는 읽기 전용 preview를 본다.
 
-## 기록 및 되돌리기
+## 되돌리기
 
-### `GET /spaces/{spaceId}/theme-versions?limit=20&before={cursor}`
-
-구성원만 version 메타데이터/복원 관계를 읽는다. 프롬프트 원문은 기록 응답에 포함하지 않는다.
-
-### `POST /spaces/{spaceId}/theme-versions/{versionId}/restore`
-
-요청: `{ "expectedCurrentVersion": 13, "idempotencyKey": "uuid" }`.
-
-지정 버전의 scene/presentation을 새 복원 스냅샷으로 복사한다. 원본 이력은 덮어쓰지 않는다. 충돌 시 409. 성공한 변경은 같은 RLS Realtime 채널로 전달한다.
+버전 목록 조회(`GET theme-versions`)와 지정 버전 복구(`POST theme-versions/{versionId}/restore`)는 기록 기능과 함께 V1에서 뺐다. 서버는 undo와 감사를 위해 버전 스냅샷을 계속 저장하지만 이용자용 목록 API는 두지 않는다. 연속 되돌리기 깊이와 다시 적용(redo) 여부는 정해지지 않았다(spec.md Open Decisions 8).
 
 ### `POST /spaces/{spaceId}/theme-versions/undo`
 

@@ -62,14 +62,14 @@
 - `schema_version`, `scene_document` (JSONB: 카탈로그 오브젝트 + 텍스트만)
 - `room_presentation` (JSONB: D-day 별도 네이티브 뷰 표현/표시 여부)
 - `room_theme_document` (JSONB: 방 모드 `day | night | follow_time`, IANA `timeZone`, 낮/밤별 배경색·팔레트 및 카탈로그 에셋 variant)
-- `source`: `initial | prompt | undo | restore | manual_migration`
+- `source`: `initial | prompt | undo | manual_migration` (이용자가 버전 목록에서 골라 복구하는 `restore`는 기록 화면과 함께 V1에서 뺐다)
 - `provenance`: `model_provider?`, `model_id?`, `model_snapshot?`, `request_id?`, `created_at`, `created_by_user_id`
-- `restores_version_id?`, `content_hash`
+- `restores_version_id?` (undo가 되돌린 대상 버전), `content_hash`
 - 확정 후 불변. AI 출처는 내부 감사용이며 캔버스에 배지를 렌더링하지 않는다.
 - 마스코트는 `asset_id=app_mascot`인 카탈로그 오브젝트로 표현하며 방 초기 문서에 정확히 하나 포함한다. 사용자가 이후 방에서 제거할 수 있는지는 spec Open Decisions 5에서 정한다. 기본 디자인을 교체하거나 그려 넣을 수는 없다.
 - 마스코트의 **이용자 설정 상태는 저장하지 않는다**. 이전 문서에 있던 `mascot_state`(슬롯 아이템·팔레트 색·표정·포즈 ID)는 없앴다. 마스코트가 어떤 포즈를 보일지는 앱이 시각·화면·누름 반응에 따라 정하는 클라이언트 동작이며 서버 데이터가 아니다. 크기와 위치는 일반 오브젝트의 좌표 필드를 사용한다.
 - UI theme preference는 사용자 설정 `system | light | dark`이며 기본값은 `system`이다. room theme document의 기본 `mode`는 `follow_time`, 기본 `timeZone`은 공간 생성자의 시간대이며 설정에서 둘 다 변경 가능하다.
-- 버전 수 상한은 명세에서 결정하지 않았다. 보관 상한/정리기간은 캡틴이 정한다. 복구 가능 범위에 있는 버전은 보존한다.
+- 이용자에게 보여 주는 버전 목록(기록)은 V1에 없다. 버전 스냅샷은 직전 적용 되돌리기(undo)와 감사·충돌 검사를 위해서만 서버에 저장한다. 버전 수 상한과 정리 기간은 정하지 않았다(spec Open Decisions 8: 되돌리기 깊이에 따라 달라진다). 공간 종료 복구 범위에 있는 버전은 보존한다.
 
 ### DecorationRequest
 

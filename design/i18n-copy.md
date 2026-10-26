@@ -2,7 +2,7 @@
 
 > 이 문서는 디자인 원본에서 자동으로 만든 표예요. 구현은 **키만 코드에 쓰고** 텍스트는 번역 리소스(`ko-KR`, `en-US`, `ja-JP`)로 둬요. `{name}` 형태는 보간 변수예요. 달력·할 일·가격·알림을 떠올리게 하는 표현과(홈 배경 사진 한 장 말고는) 사진 기능 표현은 쓰지 않았어요. 일본어·영어 문구는 디자이너가 쓴 초안이라 **원어민 검수**가 필요해요(handoff.md).
 
-- 총 키 수: **570**
+- 총 키 수: **536**
 - 사용자가 입력한 방 문구와 프롬프트는 번역하지 않고 입력한 그대로 저장·표시해요.
 - 서버 오류는 언어 중립 코드(`VERSION_CONFLICT` 등)만 오고, 앱이 아래 키로 문구를 골라요: `VERSION_CONFLICT`→`preview.conflict.*`·`undo.conflict.*`, `QUOTA_REACHED`→`prompt.quota.*`, `CONSENT_REQUIRED`→`prompt.consent.need`, `SESSION_OCCUPIED`→`prompt.partner`, `SESSION_EXPIRED`→`prompt.idle.me.*`, `INVITE_EXPIRED`→`join.expired.*`, `INVITE_USED`→`join.used.*`, `SPACE_FULL`→`join.full.*`, `ALREADY_IN_SPACE`→`join.hasSpace.*`, `UNSUPPORTED_REQUEST`→`prompt.unsupported.*`, `BRAND_REQUEST`→`prompt.brand.*`, `AUTH_EXPIRED`→`sys.login.*`. (코드 이름은 계약 문서 `contracts/api.md`의 이름을 확인해서 맞춰야 해요.)
 
@@ -34,7 +34,6 @@
 | `room.ctl.settings` | 설정 | Settings | 設定 |
 | `room.ctl.undo` | 되돌리기 | Undo | 元に戻す |
 | `room.ctl.decorate` | 꾸미기 | Decorate | 飾る |
-| `room.ctl.history` | 기록 | History | 履歴 |
 | `room.loading` | 방을 불러오는 중이에요 | Loading your room | 部屋を読み込んでいます |
 | `room.offline` | 인터넷이 끊겨서 보기만 할 수 있어요 | You're offline, so the room is view-only | オフラインのため、表示のみ可能です |
 | `room.syncing` | 동기화하는 중 | Syncing | 同期中 |
@@ -42,8 +41,8 @@
 | `room.syncFail.body` | 마지막으로 확인한 방을 보여 드리고 있어요. | Showing the room as last seen. | 最後に確認した部屋を表示しています。 |
 | `room.partnerChanged` | {name}님이 방을 바꿨어요 | {name} changed the room | {name}さんが部屋を変更しました |
 | `room.recover.title` | 방 데이터를 읽지 못했어요 | Couldn't read the room data | 部屋のデータを読み込めませんでした |
-| `room.recover.body` | 저장된 이전 버전으로 방을 복구할 수 있어요. | You can restore the room from a saved earlier version. | 保存されている以前のバージョンから部屋を復元できます。 |
-| `room.recover.action` | 이전 버전 보기 | View earlier versions | 以前のバージョンを見る |
+| `room.recover.body` | 저장된 방은 그대로 있어요. 다시 불러와 주세요. | Your saved room is untouched. Please try loading it again. | 保存されている部屋はそのままです。もう一度読み込んでください。 |
+| `room.recover.action` | 다시 불러오기 | Load again | もう一度読み込む |
 | `room.ddayHidden` | 날짜 위젯은 이 방에서 숨겨져 있어요. 메인 화면에서는 그대로 보여요. | The day counter is hidden in this room. It still shows on the home screen. | 日数ウィジェットはこの部屋では非表示です。メイン画面ではそのまま表示されます。 |
 | `room.protect.legend.system` | 시스템 영역 | System area | システム領域 |
 | `room.protect.legend.ctl` | 방 도구 막대 | Room toolbar | 部屋のツールバー |
@@ -329,50 +328,13 @@
 | `undo.done.title` | 되돌렸어요 | Undone | 元に戻しました |
 | `undo.done.body` | 방이 이전 모습이에요. | The room is back to how it was. | 部屋は以前の状態です。 |
 | `undo.none.title` | 되돌릴 수 있는 변경이 없어요 | Nothing to undo | 元に戻せる変更がありません |
-| `undo.none.body` | 처음 상태의 방이에요. 이전 버전을 고르려면 기록을 열어 주세요. | This is the original room. To pick an earlier version, open History. | 最初の状態の部屋です。以前のバージョンを選ぶには履歴を開いてください。 |
+| `undo.none.body` | 처음 상태의 방이라 되돌릴 변경이 없어요. | This is the original room, so there is nothing to undo. | 最初の状態の部屋なので、元に戻せる変更はありません。 |
 | `undo.busy.title` | {name}님이 꾸미는 중이에요 | {name} is decorating | {name}さんが飾っています |
 | `undo.busy.body` | {name}님이 끝나거나 자리를 비우면 되돌릴 수 있어요. | You can undo once {name} finishes or steps away. | {name}さんが終えるか席を外すと、元に戻せます。 |
 | `undo.conflict.title` | 이미 되돌려졌거나 방이 바뀌었어요 | It was already undone, or the room changed | すでに元に戻されたか、部屋が変更されました |
-| `undo.conflict.body` | 최신 방을 불러왔어요. 필요하면 기록에서 다시 골라 주세요. | We loaded the latest room. If needed, pick a version from History. | 最新の部屋を読み込みました。必要なら履歴から選び直してください。 |
+| `undo.conflict.body` | 최신 방을 불러왔어요. 필요하면 다시 되돌려 주세요. | We loaded the latest room. Undo again if you still need to. | 最新の部屋を読み込みました。必要であればもう一度元に戻してください。 |
 | `undo.err.title` | 되돌리지 못했어요 | Couldn't undo | 元に戻せませんでした |
 | `undo.err.body` | 방은 그대로예요. 다시 시도해 주세요. | The room is unchanged. Please try again. | 部屋はそのままです。もう一度お試しください。 |
-
-## S11 기록·복구
-
-| 키 | 한국어 | English | 日本語 |
-|---|---|---|---|
-| `history.title` | 방 기록 | Room history | 部屋の履歴 |
-| `history.version` | 버전 {n} | Version {n} | バージョン{n} |
-| `history.current` | 지금 방 | Current | 現在 |
-| `history.by` | {name} · {time} | {name} · {time} | {name} · {time} |
-| `history.time.1` | 오늘 오후 9:14 | Today, 9:14 PM | 今日 21:14 |
-| `history.time.2` | 오늘 오후 6:40 | Today, 6:40 PM | 今日 18:40 |
-| `history.time.3` | 어제 오후 11:05 | Yesterday, 11:05 PM | 昨日 23:05 |
-| `history.time.4` | 10월 20일 | Oct 20 | 10月20日 |
-| `history.sum.added` | 소품 추가 | Items added | 小物を追加 |
-| `history.sum.moved` | 소품 이동·제거 | Items moved or removed | 小物を移動・削除 |
-| `history.sum.text` | 문구 변경 | Text changed | 文言を変更 |
-| `history.sum.dday` | 날짜 위젯 모양 변경 | Day counter restyled | 日数ウィジェットの見た目を変更 |
-| `history.sum.mascot` | 마스코트 변경 | Mascot changed | マスコットを変更 |
-| `history.sum.restore` | 이전 버전에서 복구 | Restored from an earlier version | 以前のバージョンから復元 |
-| `history.privacy` | 프롬프트 내용은 기록 목록에 보이지 않아요. | Prompt text isn't shown in this list. | プロンプトの内容は履歴の一覧には表示されません。 |
-| `history.view` | 이 버전 보기 | View this version | このバージョンを見る |
-| `history.restore` | 이 버전으로 복구 | Restore this version | このバージョンに復元 |
-| `history.restore.title` | 버전 {n}으로 복구할까요? | Restore version {n}? | バージョン{n}に復元しますか？ |
-| `history.restore.body` | 지금 방이 이 버전의 모습으로 바뀌고, 상대 화면에도 반영돼요. 지금 방은 기록에 남아 있어서 다시 돌아올 수 있어요. | The room changes to how it looked in this version, and your partner's screen follows. The current room stays in History, so you can come back. | 今の部屋がこのバージョンの状態に変わり、パートナーの画面にも反映されます。今の部屋は履歴に残るので、元に戻せます。 |
-| `history.restore.progress` | 복구하는 중이에요 | Restoring | 復元しています |
-| `history.restore.done` | 버전 {n}으로 복구했어요 | Restored version {n} | バージョン{n}に復元しました |
-| `history.restore.busy` | {name}님이 꾸미는 중이라 지금은 복구할 수 없어요 | {name} is decorating, so you can't restore right now | {name}さんが飾っているため、今は復元できません |
-| `history.restore.err` | 복구하지 못했어요. 방은 그대로예요. | Couldn't restore it. The room is unchanged. | 復元できませんでした。部屋はそのままです。 |
-| `history.empty.title` | 아직 기록이 없어요 | No history yet | まだ履歴がありません |
-| `history.empty.body` | 방을 꾸미고 적용하면 여기에 쌓여요. | Versions appear here after you decorate and apply. | 部屋を飾って反映すると、ここに記録されます。 |
-| `history.old.title` | 이 버전은 지금 앱에서 열 수 없어요 | This version can't be opened in this app | このバージョンは今のアプリでは開けません |
-| `history.old.body` | 앱을 최신 버전으로 업데이트하면 볼 수 있어요. | Update the app to the latest version to view it. | アプリを最新バージョンに更新すると表示できます。 |
-| `history.loading` | 기록을 불러오는 중이에요 | Loading history | 履歴を読み込んでいます |
-| `history.preview.note` | 미리 보기 · 방은 아직 바뀌지 않았어요 | Preview · the room hasn't changed | プレビュー · 部屋はまだ変わっていません |
-| `history.empty.action` | 방 꾸미러 가기 | Go decorate the room | 部屋を飾りに行く |
-| `history.first.tip` | 방을 적용할 때마다 기록이 쌓여요 | A version is saved each time you apply | 反映するたびに履歴が貯まります |
-| `history.offline` | 오프라인 · 마지막으로 받은 기록만 보여요 | Offline · showing the history last loaded | オフライン · 最後に読み込んだ履歴のみ表示 |
 
 ## S12 해외 AI 처리 동의
 
@@ -546,7 +508,8 @@
 | `sys.pending.title` | 동기화를 기다리고 있어요 | Waiting to sync | 同期を待っています |
 | `sys.pending.body` | 인터넷에 연결되면 최신 내용으로 바뀌어요. | It updates to the latest once you're connected. | インターネットに接続されると、最新の内容に更新されます。 |
 | `sys.quota.title` | 오늘 꾸미기를 모두 썼어요 | You've used all of today's tries | 今日の回数を使い切りました |
-| `sys.empty.hist` | 아직 보여 드릴 게 없어요 | Nothing to show yet | まだ表示できるものがありません |
+| `sys.empty.title` | 아직 보여 드릴 게 없어요 | Nothing to show yet | まだ表示できるものがありません |
+| `sys.empty.body` | 내용이 생기면 여기에 나타나요. | Content will show up here once there is some. | 表示できる内容ができると、ここに表示されます。 |
 | `sys.retry` | 다시 시도 | Try again | もう一度試す |
 
 ## 접근성 이름(스크린 리더)
@@ -560,7 +523,6 @@
 | `a11y.settings` | 설정 열기 | Open settings | 設定を開く |
 | `a11y.decorate` | 방 꾸미기 열기 | Open room decorating | 部屋の飾り付けを開く |
 | `a11y.undo` | 방금 적용한 꾸밈 되돌리기 | Undo the last applied change | 直前に反映した変更を元に戻す |
-| `a11y.history` | 방 기록 열기 | Open room history | 部屋の履歴を開く |
 | `a11y.mascot` | 마스코트, {pose} | Mascot, {pose} | マスコット、{pose} |
 | `a11y.send` | 요청 보내기 | Send request | リクエストを送信 |
 | `a11y.input` | 꾸미기 요청 입력칸 | Decorating request field | 飾り付けリクエストの入力欄 |
@@ -607,7 +569,6 @@
 |---|---|---|---|
 | `tab.home` | 홈 | Home | ホーム |
 | `tab.room` | 방 | Room | 部屋 |
-| `tab.history` | 기록 | History | 履歴 |
 | `tab.settings` | 설정 | Settings | 設定 |
 
 ## 첫 실행 안내

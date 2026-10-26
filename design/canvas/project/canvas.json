@@ -157,20 +157,12 @@
       "x": 5520,
       "y": 30143
     },
-    "S11-history.dc.html": {
-      "expand": "fill",
-      "h": 8000,
-      "title": "S11 버전 기록 · 복구",
-      "w": 1760,
-      "x": 0,
-      "y": 46020
-    },
     "S12-ai-consent.dc.html": {
       "expand": "fill",
       "h": 7294,
       "title": "S12 해외 AI 처리 동의",
       "w": 1760,
-      "x": 1840,
+      "x": 0,
       "y": 46020
     },
     "S13-settings.dc.html": {
@@ -178,7 +170,7 @@
       "h": 8000,
       "title": "S13 설정",
       "w": 1760,
-      "x": 3680,
+      "x": 1840,
       "y": 46020
     },
     "S14-end-space.dc.html": {
@@ -186,7 +178,7 @@
       "h": 8000,
       "title": "S14 공간 종료 · 복구",
       "w": 1760,
-      "x": 5520,
+      "x": 3680,
       "y": 46020
     },
     "S15-report-block.dc.html": {
@@ -261,20 +253,12 @@
       "x": 0,
       "y": 76678
     },
-    "S25-tab-history.dc.html": {
-      "expand": "fill",
-      "h": 8000,
-      "title": "S25 기록 탭",
-      "w": 1760,
-      "x": 1840,
-      "y": 76678
-    },
     "S26-tab-settings.dc.html": {
       "expand": "fill",
       "h": 8000,
       "title": "S26 설정 탭",
       "w": 1760,
-      "x": 3680,
+      "x": 1840,
       "y": 76678
     },
     "S27-navigation.dc.html": {
@@ -282,7 +266,7 @@
       "h": 2194,
       "title": "S27 탭 구조 · 이동",
       "w": 1760,
-      "x": 5520,
+      "x": 3680,
       "y": 76678
     }
   },
@@ -331,7 +315,7 @@
     "row4": {
       "kind": "title1",
       "maxW": 7280,
-      "text": "단계 2 · 방향 A · S11–S14",
+      "text": "단계 2 · 방향 A · S12–S14",
       "w": 240,
       "x": 0,
       "y": 45720
@@ -355,7 +339,7 @@
     "row7": {
       "kind": "title1",
       "maxW": 7280,
-      "text": "단계 2 · 방향 A · S24–S27",
+      "text": "단계 2 · 방향 A · S24 · S26–S27",
       "w": 240,
       "x": 0,
       "y": 76378
@@ -381,7 +365,6 @@
     "S08-prompt-session.dc.html",
     "S09-preview-confirm.dc.html",
     "S10-undo.dc.html",
-    "S11-history.dc.html",
     "S12-ai-consent.dc.html",
     "S13-settings.dc.html",
     "S14-end-space.dc.html",
@@ -394,7 +377,6 @@
     "S22-components.dc.html",
     "S23-tab-home.dc.html",
     "S24-tab-room.dc.html",
-    "S25-tab-history.dc.html",
     "S26-tab-settings.dc.html",
     "S27-navigation.dc.html"
   ],

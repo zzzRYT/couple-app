@@ -47,7 +47,7 @@
 ### A4. 마스코트 동작과 로더 (클라이언트)
 
 - 전체 크기 방 화면에서 40초 주기로 인사 → 걷기 → 신나게 인사 → 올려다보기 → 엎드리기 → 잠자기 → 걸어 돌아와 인사를 반복하는지, 누르는 동안 신나게 인사 포즈가 나오는지 확인한다.
-- 축소된 방(방 카드, 미리 보기 축소, 기록 섬네일)과 미리 보기·되돌리기 확인 화면에서는 정지 포즈인지 확인한다.
+- 축소된 방(방 카드, 미리 보기 축소)과 미리 보기·되돌리기 확인 화면에서는 정지 포즈인지 확인한다.
 - 동작 줄이기(iOS 동작 줄이기, Android 애니메이션 끔)를 켜면 마스코트는 서서 인사하는 정지 포즈, 로더는 첫 오브젝트 정지 그림, S04 편지는 정지인지 확인한다.
 - 순환 로더(화분 → 풍선 → 창문 → 책, 4.8초)가 공간 만드는 중, 로그인 처리 중, 이동 중 등 모든 로딩 자리에서 같은 컴포넌트로 보이는지 확인한다.
 - 마스코트 모션 중 방 오브젝트·보호 영역·고정 컨트롤을 가리거나 입력을 가로채지 않는지, 스크린 리더 낭독이 한 번만 되는지 확인한다.
@@ -86,22 +86,22 @@
 - A가 입력/생성하는 동안 heartbeat가 lease를 연장한다. A가 앱을 닫거나 3분 idle이 지나면 만료되고, B takeover 후 같은 대화와 preview를 이어서 본다.
 - cancel, confirm, undo에 성공하면 session이 해제되어 상대가 다음 acquire를 할 수 있다.
 - 서버에서 session owner를 우회해 두 기기가 동시에 confirm/apply하도록 race를 발생시켜도 하나만 성공하고 version/idempotency guard가 중복 적용을 막는다.
-- confirm/restore/undo 후 양쪽 화면이 동일한 version으로 sync된다.
+- confirm/undo 후 양쪽 화면이 동일한 version으로 sync된다.
 
 예상: 어느 API 경로와 Realtime 채널에서도 제3자 공간 데이터가 노출되지 않는다.
 
-### D. 미리보기·확정·undo/restore
+### D. 미리보기·확정·undo
 
 - preview 직후 app 강제 종료/취소 후 current version이 바뀌지 않음.
 - confirm 이후 버전 스냅샷이 하나 추가되며 두 구성원이 같은 결과를 봄.
-- undo는 직전 상태를 새 스냅샷으로 재현하고, history 원본 버전은 불변.
+- undo는 버전 목록 화면 없이 직전 상태를 새 스냅샷으로 재현하고 원본 버전은 불변. undo할 직전 버전이 없으면 `NOTHING_TO_UNDO`. 연속 undo 깊이는 spec Open Decisions 8 결정 후 검증한다.
 - Occupier만 preview를 적용할 수 있고, 성공한 confirm은 새 immutable snapshot 저장과 session release가 함께 처리됨.
 - 두 simultaneous apply를 서버에 직접 보내면 stale/idempotent guard로 하나만 저장되며, 일반 UX는 active lease가 request를 serialize.
 
 ### E. 오프라인 / 공간 종료
 
 - 온라인에서 동기화한 후 비행기 모드에서 D-day와 마지막 확정 방 표시.
-- 오프라인 AI/초대/confirm/restore/end 시 네트워크 요청을 큐에 보관해 나중에 자동 적용하지 않고 명확한 온라인 안내 제공.
+- 오프라인 AI/초대/confirm/undo/end/recover 시 네트워크 요청을 큐에 보관해 나중에 자동 적용하지 않고 명확한 온라인 안내 제공.
 - 한 멤버의 종료 즉시 새 초대/편집/AI 차단; 30일 안 복구 가능, 시각 경계 이후 삭제 job 실행.
 - 복구·삭제에는 30일 경계, 시간대, 재실행 가능한 batch를 fixture clock으로 검증.
 
