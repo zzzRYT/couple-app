@@ -2,7 +2,7 @@
 
 > 이 문서는 디자인 원본에서 자동으로 만든 표예요. 구현은 **키만 코드에 쓰고** 텍스트는 번역 리소스(`ko-KR`, `en-US`, `ja-JP`)로 둬요. `{name}` 형태는 보간 변수예요. 달력·할 일·가격·알림을 떠올리게 하는 표현과(홈 배경 사진 한 장 말고는) 사진 기능 표현은 쓰지 않았어요. 일본어·영어 문구는 디자이너가 쓴 초안이라 **원어민 검수**가 필요해요(handoff.md).
 
-- 총 키 수: **542**
+- 총 키 수: **541**
 - 사용자가 입력한 방 문구와 프롬프트는 번역하지 않고 입력한 그대로 저장·표시해요.
 - 서버 오류는 언어 중립 코드(`VERSION_CONFLICT` 등)만 오고, 앱이 아래 키로 문구를 골라요: `VERSION_CONFLICT`→`preview.conflict.*`·`undo.conflict.*`, `QUOTA_REACHED`→`prompt.quota.*`, `CONSENT_REQUIRED`→`prompt.consent.need`, `SESSION_OCCUPIED`→`prompt.partner`, `SESSION_EXPIRED`→`prompt.idle.me.*`, `INVITE_EXPIRED`→`join.expired.*`, `INVITE_USED`→`join.used.*`, `SPACE_FULL`→`join.full.*`, `ALREADY_IN_SPACE`→`join.hasSpace.*`, `UNSUPPORTED_REQUEST`→`prompt.unsupported.*`, `BRAND_REQUEST`→`prompt.brand.*`, `AUTH_EXPIRED`→`sys.login.*`. (코드 이름은 계약 문서 `contracts/api.md`의 이름을 확인해서 맞춰야 해요.)
 
@@ -74,13 +74,13 @@
 | `onb.p1.body` | 함께한 날짜를 정하면 메인 화면에서 오늘이 며칠째인지 볼 수 있어요. | Set the date you got together and see which day it is on the home screen. | 一緒に過ごし始めた日を決めると、メイン画面で今日が何日目か分かります。 |
 | `onb.p2.title` | 프롬프트로 우리 방을 꾸며요 | Decorate your room with a prompt | プロンプトでふたりの部屋を飾ろう |
 | `onb.p2.body` | 원하는 분위기를 글로 적으면 미리 보기가 나와요. 마음에 들 때만 적용해요. | Describe the mood you want and see a preview. Apply it only when you like it. | 好きな雰囲気を書くとプレビューが出ます。気に入ったときだけ反映できます。 |
-| `onb.p3.title` | 방에는 마스코트가 함께 있어요 | A mascot lives in your room | 部屋にはマスコットがいます |
+| `onb.p3.title` | 방에는 모피가 함께 있어요 | Mopi lives in your room | 部屋にはモピがいます |
 | `onb.p3.body` | 방 한쪽에서 두 사람을 반겨 줘요. | It greets the two of you from a corner of the room. | 部屋の一角で、ふたりを迎えてくれます。 |
 | `onb.start` | 시작하기 | Get started | はじめる |
 | `onb.hasAccount` | 이미 계정이 있어요 | I already have an account | アカウントをお持ちの方 |
 | `onb.legal.lead` | 계속하면 아래 내용에 동의하는 것으로 봐요. | By continuing, you agree to the following. | 続けると、以下に同意したものとみなされます。 |
 | `onb.legal.links` | 이용약관 · 개인정보 처리방침 | Terms of Use · Privacy Policy | 利用規約 · プライバシーポリシー |
-| `onb.age` | 만 14세 이상만 사용할 수 있어요. | You must be 14 or older to use this app. | ご利用は14歳以上の方に限ります。 |
+| `onb.age` | 만 14세 이상만 사용할 수 있어요. | You must be 14 or older to use Mopiru. | ご利用は14歳以上の方に限ります。 |
 | `onb.back.title` | 다시 만나서 반가워요 | Welcome back | おかえりなさい |
 | `onb.back.body` | 지난번에 쓴 방법으로 로그인해 주세요. | Sign in the way you did last time. | 前回と同じ方法でログインしてください。 |
 | `onb.lastUsed` | 최근 사용 | Last used | 前回の方法 |
@@ -96,7 +96,7 @@
 | `login.apple` | Apple로 계속하기 | Continue with Apple | Appleで続ける |
 | `login.email` | 이메일로 계속하기 | Continue with email | メールで続ける |
 | `login.redirect.title` | 카카오로 이동하고 있어요 | Opening Kakao | Kakaoに移動しています |
-| `login.redirect.body` | 로그인을 마치면 이 앱으로 돌아와요. | You'll come back to this app after signing in. | ログインが終わると、このアプリに戻ります。 |
+| `login.redirect.body` | 로그인을 마치면 모피루로 돌아와요. | You'll come back to Mopiru after signing in. | ログインが終わると、モピルに戻ります。 |
 | `login.processing` | 로그인하는 중이에요 | Signing you in | ログインしています |
 | `login.cancelled.title` | 로그인을 취소했어요 | Sign-in was canceled | ログインをキャンセルしました |
 | `login.cancelled.body` | 원할 때 다시 시도할 수 있어요. | You can try again whenever you like. | いつでももう一度試せます。 |
@@ -209,7 +209,8 @@
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
-| `main.appName` | [앱 이름] | [App name] | [アプリ名] |
+| `main.appName` | 모피루 | Mopiru | モピル |
+| `brand.tagline` | Our little world, together. | Our little world, together. | Our little world, together. |
 | `main.invitePending.title` | 상대를 기다리고 있어요 | Waiting for your partner | パートナーを待っています |
 | `main.invitePending.body` | 초대 코드는 {h}시간 뒤에 만료돼요. | The invite code expires in {h} hours. | 招待コードはあと{h}時間で期限切れになります。 |
 | `main.invitePending.action` | 초대 코드 보기 | View invite code | 招待コードを見る |
@@ -233,15 +234,13 @@
 | `main.offline.body` | 마지막으로 확인한 내용을 보여 드리고 있어요. 방 꾸미기는 연결된 뒤에 할 수 있어요. | Showing what was last loaded. You can decorate once you're back online. | 最後に確認した内容を表示しています。飾り付けは、接続が戻ってからできます。 |
 | `main.lastSeen` | 마지막 확인 {time} | Last checked {time} | 最終確認 {time} |
 | `main.lastSeen.sample` | 오후 9:12 | 9:12 PM | 21:12 |
-| `main.mascot.alt` | 마스코트 | Mascot | マスコット |
+| `main.mascot.alt` | 모피 | Mopi | モピ |
 
 ## S08 공유 프롬프트 세션
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
 | `prompt.title` | 함께 꾸미기 | Decorate together | いっしょに飾る |
-| `prompt.tab.prompt` | 프롬프트 | Prompt | プロンプト |
-| `prompt.tab.mascot` | 마스코트 | Mascot | マスコット |
 | `prompt.free` | 지금은 아무도 꾸미고 있지 않아요 | No one is decorating right now | 今は誰も飾っていません |
 | `prompt.mine` | 내가 꾸미는 중 | You're decorating | あなたが飾っています |
 | `prompt.partner` | {name}님이 꾸미는 중 | {name} is decorating | {name}さんが飾っています |
@@ -349,9 +348,9 @@
 | `consent.purpose.label` | 사용 목적 | Purpose | 利用目的 |
 | `consent.purpose.body` | 요청에 맞는 방 꾸미기 미리 보기를 만드는 것 | To create a room preview that matches your request | リクエストに合った部屋のプレビューを作ること |
 | `consent.processor.label` | 처리하는 곳 | Processed by | 処理する事業者 |
-| `consent.processor.body` | Anthropic PBC(미국). 이 앱의 서버를 거쳐 전송돼요. | Anthropic PBC (United States). Sent through this app's servers. | Anthropic PBC（米国）。このアプリのサーバーを経由して送信されます。 |
+| `consent.processor.body` | Anthropic PBC(미국). 모피루 서버를 거쳐 전송돼요. | Anthropic PBC (United States). Sent through Mopiru's servers. | Anthropic PBC（米国）。モピルのサーバーを経由して送信されます。 |
 | `consent.keep.label` | 보관과 철회 | Retention and withdrawal | 保管と撤回 |
-| `consent.keep.body` | 적용한 요청 글은 30일, 적용하지 않은 미리 보기는 24시간 뒤 이 앱 서버에서 삭제돼요. 설정의 'AI 처리 동의'에서 언제든 철회할 수 있어요. | Applied requests are deleted from this app's servers after 30 days, and unapplied previews after 24 hours. You can withdraw any time in Settings under "AI processing consent". | 反映したリクエスト文は30日後、反映しなかったプレビューは24時間後に、このアプリのサーバーから削除されます。設定の「AI処理への同意」からいつでも撤回できます。 |
+| `consent.keep.body` | 적용한 요청 글은 30일, 적용하지 않은 미리 보기는 24시간 뒤 모피루 서버에서 삭제돼요. 설정의 'AI 처리 동의'에서 언제든 철회할 수 있어요. | Applied requests are deleted from Mopiru's servers after 30 days, and unapplied previews after 24 hours. You can withdraw any time in Settings under "AI processing consent". | 反映したリクエスト文は30日後、反映しなかったプレビューは24時間後に、モピルのサーバーから削除されます。設定の「AI処理への同意」からいつでも撤回できます。 |
 | `consent.provider.keep` | 해외 사업자의 보관 기간: [법무 확인 후 입력] | Provider retention period: [fill in after legal review] | 海外事業者の保管期間：[法務確認後に記入] |
 | `consent.couple.label` | 두 사람이 함께 쓰는 방이에요 | This room is shared by two | ふたりで使う部屋です |
 | `consent.couple.body` | 동의는 사람마다 따로 해요. 내 동의는 내가 보내는 요청에만 적용돼요. 요청에는 두 사람이 함께 꾸민 방 배치가 들어가요. | Consent is given per person. Yours applies only to requests you send. Requests include the room layout you two decorated together. | 同意は一人ひとり別々です。あなたの同意は、あなたが送るリクエストにのみ適用されます。リクエストには、ふたりで飾った部屋の配置が含まれます。 |
@@ -525,7 +524,7 @@
 | `a11y.settings` | 설정 열기 | Open settings | 設定を開く |
 | `a11y.decorate` | 방 꾸미기 열기 | Open room decorating | 部屋の飾り付けを開く |
 | `a11y.undo` | 이전 미리 보기로 되돌리기 | Go back to the previous preview | 前のプレビューに戻す |
-| `a11y.mascot` | 마스코트, {pose} | Mascot, {pose} | マスコット、{pose} |
+| `a11y.mascot` | 모피, {pose} | Mopi, {pose} | モピ、{pose} |
 | `a11y.send` | 요청 보내기 | Send request | リクエストを送信 |
 | `a11y.input` | 꾸미기 요청 입력칸 | Decorating request field | 飾り付けリクエストの入力欄 |
 | `a11y.input.ro` | {name}님이 꾸미는 중이라 입력할 수 없어요 | Can't type: {name} is decorating | 入力できません：{name}さんが飾っています |
@@ -577,7 +576,7 @@
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
-| `coach.home` | 방 탭에서 마스코트와 우리 방을 꾸며 보세요 | Open the Room tab to decorate your room and mascot | 部屋タブで、マスコットとふたりの部屋を飾ってみましょう |
+| `coach.home` | 방 탭에서 우리 방을 꾸며 보세요 | Open the Room tab to decorate your room | 部屋タブで、ふたりの部屋を飾ってみましょう |
 | `coach.room` | 꾸미기를 눌러 첫 방을 꾸며 보세요 | Tap Decorate to style your first room | 「飾る」をタップして最初の部屋を飾りましょう |
 | `coach.ok` | 알겠어요 | Got it | わかりました |
 
@@ -585,7 +584,7 @@
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
-| `mascot.name` | [캐릭터 이름] | [Mascot name] | [キャラクター名] |
+| `mascot.name` | 모피 | Mopi | モピ |
 
 ## 에셋 이름(마스코트 11 · 오브젝트 18)
 
@@ -655,7 +654,7 @@
 | `lic.notokr` | Noto Sans KR · Noto 프로젝트 | Noto Sans KR · The Noto Project | Noto Sans KR · Noto プロジェクト |
 | `lic.notojp` | Noto Sans JP · Noto 프로젝트 | Noto Sans JP · The Noto Project | Noto Sans JP · Noto プロジェクト |
 | `lic.view` | 전문 보기 | View full text | 全文を見る |
-| `lic.note` | 이 앱의 글꼴은 위 라이선스에 따라 앱에 포함되어 있어요. | The fonts in this app are bundled under the licenses above. | このアプリのフォントは、上記のライセンスに基づいてアプリに同梱されています。 |
+| `lic.note` | 모피루의 글꼴은 위 라이선스에 따라 앱에 포함되어 있어요. | The fonts in Mopiru are bundled under the licenses above. | モピルのフォントは、上記のライセンスに基づいてアプリに同梱されています。 |
 
 ## cover
 
@@ -683,3 +682,21 @@
 | `cover.partner.removed` | {name}님이 배경 사진을 없앴어요 | {name} removed the background photo | {name}さんが背景写真を外しました |
 | `cover.loading` | 사진을 불러오는 중 | Loading photo | 写真を読み込み中 |
 
+## 앱 이름 · 캐릭터 이름 · 슬로건 (결정 반영)
+
+| 항목 | 한국어 | English | 日本語 | 상태 |
+|---|---|---|---|---|
+| 앱 이름 (`main.appName`) | 모피루 | Mopiru | モピル | 한국어·영어 결정됨. **일본어 표기(カタカナ)는 디자이너 제안**이고 확정이 아니에요 |
+| 캐릭터 이름 (`mascot.name`) | 모피 | Mopi | モピ | 한국어·영어 결정됨. **일본어 표기는 제안**이에요 |
+| 슬로건 (`brand.tagline`) | Our little world, together. | Our little world, together. | Our little world, together. | **영어 원문만 결정**됐어요. 한국어·일본어 문구가 정해지기 전까지 모든 언어에서 영어 그대로 보여 줘요 |
+
+**한국어·일본어 슬로건 번역 초안 (제안 · 확정 아님, 화면에는 쓰지 않았어요)**
+
+| 언어 | 초안 | 메모 |
+|---|---|---|
+| 한국어 | 우리의 작은 세상, 함께 | 영어의 어순을 살린 직역. 더 자연스러운 문장은 결정권자가 정해 주세요 |
+| 日本語 | ふたりの小さな世界、いっしょに | "ふたり"를 넣은 의역. 원어민 검수 필요 |
+
+번역을 확정하면 `brand.tagline`의 한국어·일본어 칸만 바꾸면 돼요(키 수는 그대로).
+
+참고: 슬로건은 온보딩 첫 장(S01 소개 1)과 로그인 선택(S02)의 이름 아래에 보여요. 글자 크기 130% 이상에서는 작업 내용에 공간을 내주려고 이름·슬로건 묶음을 숨겨요.
