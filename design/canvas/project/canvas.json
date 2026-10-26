@@ -308,6 +308,14 @@
       "w": 1760,
       "x": 5520,
       "y": 76678
+    },
+    "C06-app-icon.dc.html": {
+      "expand": "fill",
+      "h": 4300,
+      "title": "C06 앱 아이콘 (모피루)",
+      "w": 1760,
+      "x": 7360,
+      "y": 5300
     }
   },
   "createdOnFiles": {
@@ -403,6 +411,7 @@
     "C03-palette-anatomy-rules.dc.html",
     "C04-backgrounds-sizes.dc.html",
     "C05-harmonized-vs-supplied.dc.html",
+    "C06-app-icon.dc.html",
     "S01-onboarding.dc.html",
     "S02-login.dc.html",
     "S03-couple-space.dc.html",

@@ -456,9 +456,9 @@
 | `S26-sheet-tz` | 설정 → 시간대(시트) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `set.room.tz.pick` `set.room.tz.search` `set.room.tz.tokyo` `set.room.tz.la` `set.room.tz.ny` `set.room.tz.london` |
 | `S26-push-end` | 설정 → 공간 종료 확인(푸시 · 탭 바 숨김) | `end.date` `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` |
 
-## 캐릭터 섹션 (C01~C05)
+## 캐릭터 섹션 (C01~C06)
 
-마스코트(소유자가 생성형 AI 도구로 만든 원본을 가공한 캐릭터)는 화면 안에 퍼뜨리지 않고 **독립 보드 5장**에 모았어요: C01 캐릭터 개요 · C02 제스처 시트(11개 제스처를 원본/가공본으로 1:1) · C03 팔레트·해부·규칙 · C04 배경·크기 · C05 하모나이즈 vs 원본. 파일은 `mascot/`.
+마스코트(소유자가 생성형 AI 도구로 만든 원본을 가공한 캐릭터)는 화면 안에 퍼뜨리지 않고 **독립 보드 6장**에 모았어요: C01 캐릭터 개요 · C02 제스처 시트(11개 제스처를 원본/가공본으로 1:1) · C03 팔레트·해부·규칙 · C04 배경·크기 · C05 하모나이즈 vs 원본 · **C06 앱 아이콘**(모피 얼굴 아이콘 후보 3개와 추천안 세트, 파일은 `icon/`). 파일은 `mascot/`.
 
 **캐릭터가 나오는 화면(현재 두 곳)**
 
@@ -473,4 +473,4 @@
 
 ## 설명 없는 보드
 
-- **C01~C05 캐릭터 섹션**, **S18 에셋**, **S19 글꼴·토큰**, **S20 접근성**, **S21 긴 문구**, **S22 컴포넌트**, **S27 탭 구조**는 화면이 아니라 참고 보드예요: 각각 `assets-spec.md`, `tokens.json`, `contrast-report.md`, 이 문서, `components.md`, `interaction-notes.md`와 대응해요.
+- **C01~C06 캐릭터 섹션**, **S18 에셋**, **S19 글꼴·토큰**, **S20 접근성**, **S21 긴 문구**, **S22 컴포넌트**, **S27 탭 구조**는 화면이 아니라 참고 보드예요: 각각 `assets-spec.md`, `tokens.json`, `contrast-report.md`, 이 문서, `components.md`, `interaction-notes.md`와 대응해요.
