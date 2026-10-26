@@ -41,6 +41,10 @@
 
 ## D-day 및 조회
 
+### `GET /profile/preferences`
+
+응답 200: `{ "locale": "ko-KR" | "en-US" | "ja-JP" | null, "uiTheme": "system" | "light" | "dark" }`. 본인 설정만 읽는다(스냅샷에는 사용자별 설정이 들어 있지 않다).
+
 ### `PATCH /profile/preferences`
 
 요청: `{ "locale": "ko-KR" | "en-US" | "ja-JP" | null, "uiTheme": "system" | "light" | "dark" }`.
@@ -61,7 +65,7 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 
 요청: `{ "mode": "day" | "night" | "follow_time", "timeZone": "Asia/Seoul", "expectedCurrentVersion": 13, "idempotencyKey": "uuid" }`.
 
-방 모드는 커플 공유 설정이며 새 공간 기본은 `follow_time`과 공간 생성자의 저장된 IANA 시간대다. 구성원은 설정에서 모드와 시간대를 변경할 수 있고 변경은 새 version으로 저장된다.
+방 모드는 커플 공유 설정이며 새 공간 기본은 `follow_time`과 공간 생성자의 저장된 IANA 시간대다. 구성원은 설정에서 모드와 시간대를 변경할 수 있고 변경은 새 version으로 저장된다(`source: room_mode`, 오래된 `expectedCurrentVersion`은 `409 VERSION_CONFLICT`).
 
 ## 마일스톤 축하
 
@@ -114,7 +118,7 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 
 ## 공유 프롬프트 세션 및 AI 미리보기
 
-두 구성원은 공유 prompt conversation과 preview를 읽는다. 한 명만 입력·요청·적용을 점유할 수 있다. 기본 유휴 lease는 3분이며 최근의 의미 있는 사용자 활동에 맞춰 heartbeat를 갱신한다. 앱이 닫히거나 유휴 상태면 만료 후 takeover 가능하다.
+두 구성원은 공유 prompt conversation과 preview를 읽는다. 한 명만 입력·요청·적용을 점유할 수 있다. 유휴 lease는 3분(만료 30초 전 경고, 서버 설정값)이며 최근의 의미 있는 사용자 활동에 맞춰 heartbeat를 갱신한다. 앱이 닫히거나 유휴 상태면 만료 후 takeover 가능하다.
 
 ### `GET /spaces/{spaceId}/prompt-conversation`
 

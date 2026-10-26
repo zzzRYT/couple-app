@@ -60,7 +60,7 @@ Expo / React Native 모바일 앱에 메인 D-day 화면과 둘만의 자유 배
 
 ### 공유 프롬프트 세션
 
-- 공간당 하나의 DB lease만 `occupied`일 수 있다. `PromptSession`에는 session ID, owner member, last activity, heartbeat 및 expiry를 둔다. 기본 idle timeout 3분은 조정 가능한 가정이다.
+- 공간당 하나의 DB lease만 `occupied`일 수 있다. `PromptSession`에는 session ID, owner member, last activity, heartbeat 및 expiry를 둔다. idle timeout은 3분(만료 30초 전 경고)으로 결정했고 서버 설정값이다.
 - prompt, status, preview는 shared conversation에 저장한다. Supabase Realtime은 두 구성원에게 message/preview ID, owner ID와 expiry만 알리고, 각 구성원은 RLS가 적용된 conversation endpoint에서 같은 대화와 preview를 불러온다.
 - 점유자는 입력·제출·적용·취소·**세션 안 되돌리기**를 사용할 수 있다. 상대 화면은 live read-only로 대화와 preview를 보여 주고 owner/presence 및 expiry를 표시한다. 취소와 성공한 confirm은 DB transaction에서 저장/상태 전환과 함께 lease를 해제한다. 세션 안 되돌리기는 열린 대화의 마지막 후보를 `reverted`로 바꾸고 바로 앞 후보(없으면 현재 방 보기)를 다시 보여 줄 뿐이며 lease를 풀지 않고 방 버전도 바꾸지 않는다. **적용한 변경은 되돌릴 수 없고 다시 적용(redo)도 없다.** 앱은 적용 확인 단계에서 이를 알린다.
 - heartbeat는 사용자 입력/모델 생성이 진행 중일 때 server clock 기준으로 연장한다. 앱이 background/닫힘 상태이거나 idle limit에 도달하면 만료된다. 다른 멤버의 takeover는 `expectedOwnerUserId`와 만료 시각을 비교해 원자적으로 owner를 갱신하며 shared preview를 이어서 볼 수 있다.
@@ -165,7 +165,7 @@ supabase/seed/                리뷰용 고정 샘플 공간/장면
 assets/catalog/               manifest, 권리 기록, 최적화된 이미지
 ```
 
-현재 저장소에 애플리케이션 코드가 없으므로 이 구조는 제안이며, 구현 시작 때 저장소 소유자가 확정한다.
+현재 저장소에 애플리케이션 코드가 없으므로 이 구조는 제안이며, 구현 시작 때 저장소 소유자가 확정한다. **구현 태스크 목록은 [tasks.md](./tasks.md)**(DB 테스트용 `supabase/tests/`, `tools/`, `docs/`는 이 구조 밖에 더한 제안)이고 문서 간 일관성 점검은 [analysis.md](./analysis.md)다.
 
 ## 범위 간극
 

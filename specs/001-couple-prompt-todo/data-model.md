@@ -8,6 +8,7 @@
 
 - `user_id` (UUID, 인증 사용자 PK)
 - `created_at`, `updated_at`
+- `ui_theme`: `system | light | dark` (기본 `system`, 사용자별 앱 모양 설정; API `PATCH /profile/preferences`의 `uiTheme`).
 - `locale`, `time_zone` (선택적 개인 설정). `locale`은 앱 언어 재정의를 저장하며 비어 있으면 기기 언어를 사용한다. V1 지원 언어는 `ko-KR`, `en-US`, `ja-JP`다. 커플 방의 시간대는 room theme document에 저장한다.
 - 공급자 식별자는 Auth 공급자 저장소가 관리하며 앱 도메인 데이터나 AI 문맥에 복제하지 않는다.
 - 사용자 개인 설정은 공유 장면/프롬프트가 변경할 수 없다.
@@ -48,6 +49,7 @@
 - `license_kind`, `license_text_version`, `creator`, `source_url?`, `attribution?`, `rights_record_ref`
 - `status`: `active | retired`; 기존 장면의 은퇴 에셋은 레거시 렌더 허용 또는 교체 마이그레이션 필요.
 - 앱 기본 카탈로그 24~36개를 목표로 하며 방 안 마스코트 포즈도 이 수에 포함한다. 현재 디자인이 내놓은 구성은 마스코트 방 안 포즈 6개 + 일반 소품 18개 = 24개다(`design/assets-manifest.csv`의 `mascot_*` 방 안 6종과 `obj_*` 18종). 소품 포즈 일러스트 5종은 방 밖 용도라 이 엔트리에 두지 않는다.
+- 장면 문서는 마스코트를 `asset_id=app_mascot` 오브젝트 **하나**로만 참조한다. 방 안 포즈 6장(`mascot_*`)은 `mascot_pose` 카탈로그 엔트리이고 어떤 포즈를 보일지는 클라이언트가 정한다(장면·서버 데이터가 아님).
 - 마스코트는 앱이 소유한 고정 캐릭터라 착용 아이템·슬롯·색 변형 엔트리를 두지 않는다. 기본 디자인과 사용 권리는 앱이 관리한다.
 
 ### RoomTheme
@@ -62,7 +64,7 @@
 - `schema_version`, `scene_document` (JSONB: 카탈로그 오브젝트 + 텍스트만)
 - `room_presentation` (JSONB: D-day 별도 네이티브 뷰 표현/표시 여부)
 - `room_theme_document` (JSONB: 방 모드 `day | night | follow_time`, IANA `timeZone`, 낮/밤별 배경색·팔레트 및 카탈로그 에셋 variant)
-- `source`: `initial | prompt | manual_migration | mascot_recall | milestone_preset` (적용 후 되돌리기 `undo`와 목록에서 고르는 `restore`는 V1에 없다)
+- `source`: `initial | prompt | manual_migration | mascot_recall | milestone_preset | room_mode` (`room_mode`: 방 모드·시간대 변경이 새 버전으로 저장되는 경우, `PATCH /room-mode`) (적용 후 되돌리기 `undo`와 목록에서 고르는 `restore`는 V1에 없다)
 - `provenance`: `model_provider?`, `model_id?`, `model_snapshot?`, `request_id?`, `created_at`, `created_by_user_id`
 - `content_hash`
 - 확정 후 불변. AI 출처는 내부 감사용이며 캔버스에 배지를 렌더링하지 않는다.

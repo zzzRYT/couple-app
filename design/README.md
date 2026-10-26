@@ -33,7 +33,7 @@
 
 ## 이렇게 쓰세요
 
-1. `handoff.md`를 읽고 결정이 필요한 항목(§4, §5)을 정리해요.
+1. `handoff.md`를 읽고 결정이 필요한 항목(§4, §5)을 정리해요. 구현은 `specs/001-couple-prompt-todo/tasks.md`(구현 태스크 목록)대로 시작해요.
 2. `tokens.json`을 디자인 토큰으로 옮기고 `node design/tools/contrast-check.mjs`를 CI에 걸어요(토큰을 바꾸면 대비가 깨지는지 바로 알 수 있어요).
 3. 화면은 `screens.md`의 상태 ID(예: `S07-decorated`)를 `exports/`·`canvas/`의 같은 이름 프레임과 대조하며 구현해요. 문구는 `i18n-copy.md`의 키만 쓰세요.
 4. 에셋은 `assets-spec.md`와 `assets-manifest.csv`를 의뢰서에 첨부해서 일러스트레이터에게 보내요. 스케치(`assets-sketch/`)는 비율과 배치의 기준이고 최종 그림이 아니에요.
