@@ -1,0 +1,11 @@
+{
+  "name": "mopiru-figcraft-sync",
+  "version": "1.0.0",
+  "private": true,
+  "description": "One-way viewing-copy sync of the Claude Design canvas boards (design/canvas/project/*.dc.html) into a local FigCraft document.",
+  "type": "module",
+  "scripts": { "sync": "node sync-figcraft.mjs" },
+  "dependencies": {
+    "puppeteer-core": "25.16.0"
+  }
+}

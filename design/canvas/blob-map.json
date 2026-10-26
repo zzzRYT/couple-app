@@ -1,0 +1,28 @@
+{
+ "_comment": "canvas asset-store id (the /_blob/<id> in the boards) -> file under design/. Used by tools/figcraft-sync to render the boards locally.",
+ "blobs": {
+  "8f4a043021c5c4b811cff038c256965f": "mascot/cutouts/mascot_back.png",
+  "486286e7841f11eff1899af1b0ac56a4": "mascot/cutouts/mascot_box.png",
+  "d3b26cf4fb1e6c8ffbe8447fcdd0f5e6": "mascot/cutouts/mascot_cheer.png",
+  "c5aff4934a3ac61ea7e3fbdfe23f177f": "mascot/cutouts/mascot_heart.png",
+  "06670adab2bb13cc46f1049e2a3fddbb": "mascot/cutouts/mascot_lie.png",
+  "14b86e3a280750a605c42c9362528d47": "mascot/cutouts/mascot_lookup.png",
+  "aa467169a13d067b345ea829695c6da0": "mascot/cutouts/mascot_phone.png",
+  "5bf9bbd27d6df347a5fe001632a894fe": "mascot/cutouts/mascot_sleep.png",
+  "c6a870eedf4158b89678b4ab6f5a0213": "mascot/cutouts/mascot_star_sit.png",
+  "5447c4fecf73526bdb2c29a1460257d6": "mascot/cutouts/mascot_walk.png",
+  "f23c5c152f83091e30e9324da3283499": "mascot/cutouts/mascot_wave_main.png",
+  "e23b0d6c955798d89548b5fe9f1b2fdf": "mascot/harmonized/mascot_back@2x.png",
+  "5cdc8a007e2720270bfcf9f4cd23ec08": "mascot/harmonized/mascot_box@2x.png",
+  "ad10ffa29b24aa7475d4ee58d1b1bacf": "mascot/harmonized/mascot_cheer@2x.png",
+  "decba3b2d4186c9a49d72f3028d18e05": "mascot/harmonized/mascot_heart@2x.png",
+  "b789b162e1fc093512eec47f8e2da9f9": "mascot/harmonized/mascot_lie@2x.png",
+  "5615ca8fb23b403b9f8a721cc834fee8": "mascot/harmonized/mascot_lookup@2x.png",
+  "5eb0315eb212ace3e3d9d4038f286b0e": "mascot/harmonized/mascot_phone@2x.png",
+  "d314807894fbd5d44002df11769437da": "mascot/harmonized/mascot_sleep@2x.png",
+  "d6e16fbffeda8ec43aa948e8655306ad": "mascot/harmonized/mascot_star_sit@2x.png",
+  "8bdaf6194ff69e3ca3706aca6ba9524b": "mascot/harmonized/mascot_walk@2x.png",
+  "2af6794870da9a488e87b623bc0ff9bc": "mascot/harmonized/mascot_wave_main@2x.png",
+  "6a158124c31364e2e73b33f56f9cc986": "mascot/source/mascot-source.png"
+ }
+}
