@@ -21,6 +21,7 @@
 | [`assets-sketch/`](assets-sketch/) | 일반 오브젝트 **자리표시 스케치** SVG 19개(최종 그림이 아니에요) | 일러스트레이터 |
 | [`canvas/`](canvas/README.md) | Claude Design 캔버스 원본 파일(`project/*.dc.html`, `canvas.json`). 보드 S00~S27(S11·S17·S25 없음) | 디자인 |
 | [`exports/`](exports/) | 주요 화면 PNG(@2x) 37장(움직임은 정지 프레임) | 모두 |
+| [`later/history/`](later/history/README.md) | **V1 이후 · 기록 포함 버전(1차에서는 쓰지 않아요)**: 보류했지만 채택하면 바로 쓸 수 있게 준비한 기록 설계(화면·문구·4탭 바·적용 시 되돌릴 목록). V1 수치에 들어가지 않아요 | 디자인·기획 |
 | [`tools/contrast-check.mjs`](tools/contrast-check.mjs) | 토큰의 핵심 대비 쌍을 다시 확인하는 의존성 없는 스크립트 | 구현 |
 | [`tools/`](tools/) `cutout-mascot.py` `harmonize-mascot.py` `mascot-sheets.py` | 마스코트 시트 → 컷아웃 → 방향 A 가공 → 비교 시트를 다시 만드는 파이프라인(Python, 매개변수·사용법은 파일 머리말) | 디자인·구현 |
 

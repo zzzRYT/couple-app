@@ -268,6 +268,38 @@
       "w": 1760,
       "x": 3680,
       "y": 76678
+    },
+    "L-S11-history.dc.html": {
+      "expand": "fill",
+      "h": 8000,
+      "title": "L-S11 기록 화면 · 복구 (V1 이후)",
+      "w": 1760,
+      "x": 0,
+      "y": 87208
+    },
+    "L-S24-room-with-history.dc.html": {
+      "expand": "fill",
+      "h": 8000,
+      "title": "L-S24 방 탭 · 기록 바로가기 · 4탭 (V1 이후)",
+      "w": 1760,
+      "x": 1840,
+      "y": 87208
+    },
+    "L-S25-tab-history.dc.html": {
+      "expand": "fill",
+      "h": 8000,
+      "title": "L-S25 기록 탭 (V1 이후)",
+      "w": 1760,
+      "x": 3680,
+      "y": 87208
+    },
+    "L-S27-navigation-4tabs.dc.html": {
+      "expand": "fill",
+      "h": 2194,
+      "title": "L-S27 4탭 구조 · 이동 (V1 이후)",
+      "w": 1760,
+      "x": 5520,
+      "y": 87208
     }
   },
   "createdOnFiles": {
@@ -343,6 +375,14 @@
       "w": 240,
       "x": 0,
       "y": 76378
+    },
+    "row8": {
+      "kind": "title1",
+      "maxW": 7280,
+      "text": "V1 이후 · 기록 포함 버전 (1차에서는 쓰지 않아요) · L-S11 · L-S24 · L-S25 · L-S27",
+      "w": 240,
+      "x": 0,
+      "y": 86908
     }
   },
   "order": [
@@ -378,7 +418,11 @@
     "S23-tab-home.dc.html",
     "S24-tab-room.dc.html",
     "S26-tab-settings.dc.html",
-    "S27-navigation.dc.html"
+    "S27-navigation.dc.html",
+    "L-S11-history.dc.html",
+    "L-S24-room-with-history.dc.html",
+    "L-S25-tab-history.dc.html",
+    "L-S27-navigation-4tabs.dc.html"
   ],
   "pages": [],
   "title": "커플 앱 시각 설계 · 최종 방향 A"
