@@ -55,13 +55,33 @@
 
 요청: `{ "anniversaryDate": "YYYY-MM-DD", "expectedUpdatedAt": "RFC3339" }`.
 
-D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에게 sync한다. 잘못된 날짜 또는 stale state는 거절한다.
+D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에게 sync한다. 잘못된 날짜 또는 stale state는 거절한다. 응답에 `milestonesReset`(다시 축하하게 된 `milestone_key` 목록, 보통 빈 배열)을 포함한다(FR-043).
 
 ### `PATCH /spaces/{spaceId}/room-mode`
 
 요청: `{ "mode": "day" | "night" | "follow_time", "timeZone": "Asia/Seoul", "expectedCurrentVersion": 13, "idempotencyKey": "uuid" }`.
 
 방 모드는 커플 공유 설정이며 새 공간 기본은 `follow_time`과 공간 생성자의 저장된 IANA 시간대다. 구성원은 설정에서 모드와 시간대를 변경할 수 있고 변경은 새 version으로 저장된다.
+
+## 마일스톤 축하
+
+앱 안 축하만 다룬다(푸시·로컬 알림 없음). 문구는 서버가 보내지 않고 클라이언트의 번역 템플릿을 쓴다.
+
+### `GET /spaces/{spaceId}/milestones/current`
+
+응답 200: `{ "dayCount": 100, "timezone": "Asia/Seoul", "celebration": null | { "id": "uuid", "key": "d100", "kind": "day|anniversary", "days": 100, "anniversaryN": null, "milestoneDate": "YYYY-MM-DD", "daysAgo": 0, "seenByMe": false, "presetAvailable": true, "presetId": "milestone-day" } }`.
+- 방 시간대 기준 오늘이 마일스톤 당일부터 7일(제안값) 안인 가장 최근 하나만 준다. 없으면 `celebration: null`. 필요하면 `MilestoneCelebration` 행을 이 호출에서 만든다(멱등).
+- 구성원이 둘이고 공간이 활성일 때만 값이 있다. `seenByMe`가 참이면 카드·말풍선은 보이지 않고, `presetAvailable`(적용 전, 보이는 기간 안)이 참인 동안 방의 제안 입구는 남는다.
+
+### `POST /spaces/{spaceId}/milestones/{celebrationId}/seen`
+
+요청: `{ "via": "home | room" }`. 응답 204. 호출한 구성원의 `MilestoneSeen` 한 행만 만든다(멱등, 오프라인 큐에서 다시 보내도 안전). 상대에게 영향이 없다.
+
+### `POST /spaces/{spaceId}/prompt-session/{sessionId}/milestone-preview`
+
+요청: `{ "celebrationId": "uuid", "idempotencyKey": "uuid" }`. 먼저 기존 `acquire`로 점유를 얻어야 한다. 응답은 `POST decoration-previews`의 성공 응답과 같은 모양(`previewId`, `baseVersionNumber`, 후보 장면)에 `placed`·`requested`(놓은 소품 수/원래 5~6개)를 더한다. AI를 호출하지 않고 동의·일일 한도도 확인하지 않는다.
+- 오류: `409 SESSION_OCCUPIED`(상대가 점유 중이거나 내가 점유자가 아님), `410 MILESTONE_PASSED`(보이는 기간이 지남), `422 ROOM_FULL`(자리가 전혀 없음), `409 VERSION_CONFLICT`.
+- 적용은 기존 `POST decoration-previews/{previewId}/confirm`을 그대로 쓴다. 자동 적용은 없다. 적용되면 `preset_applied_version_id`가 기록된다.
 
 ## 홈 커버 사진
 

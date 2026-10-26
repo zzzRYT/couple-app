@@ -3,7 +3,7 @@
 각 화면의 목적, 이동, 상태, 사용하는 번역 키, 긴 문구 사례예요. 상태 ID는 캔버스 프레임 캡션과 같아요(예: `S07-decorated`). 모든 화면은 iOS와 Android, 한국어·영어·일본어, 밝은/어두운 앱, 방의 낮/밤(방 화면), 고대비, 글자 200%에서 그렸어요(어느 프레임이 어느 조합인지는 캔버스 캡션 두 번째 줄). 탭 3개(홈·방·설정)의 루트 화면은 S06·S07·S13이고, 탭 단위로 상태를 모은 보드가 S23·S24·S26, 이동 규칙은 S27 / `interaction-notes.md`예요.
 
 공통 규칙
-- **화면 번호**는 `specs/001-couple-prompt-todo/design-brief.md`의 1~16번과 같아요(S01~S16). S11(기록)은 첫 버전에서 뺐어요(후속 버전). S17은 비어 있어요(마스코트는 **캐릭터 섹션 C01~C05**로 옮겼어요), S18 에셋, S19 글꼴·토큰, S20 접근성, S21 긴 문구, S22 컴포넌트, S23·S24·S26 탭 단위(S25는 기록 탭이라 뺐어요), S27 탭 구조.
+- **화면 번호**는 `specs/001-couple-prompt-todo/design-brief.md`의 1~16번과 같아요(S01~S16). S11(기록)은 첫 버전에서 뺐어요(후속 버전). 마일스톤 축하는 새 화면 **S28**(브리프 17번)이에요. S17은 비어 있어요(마스코트는 **캐릭터 섹션 C01~C05**로 옮겼어요), S18 에셋, S19 글꼴·토큰, S20 접근성, S21 긴 문구, S22 컴포넌트, S23·S24·S26 탭 단위(S25는 기록 탭이라 뺐어요), S27 탭 구조.
 - **탭 바가 보이는 화면**: 홈·방·설정 루트(및 그 루트의 시트). 나머지 푸시 화면과 작업 흐름, 탭 바 앞의 흐름(S01~S05)에서는 숨겨요.
 - **글자 확대**: 200%까지 설계. 줄이지 않고 줄바꿈·스크롤. 방 도구 막대 라벨은 160%에서 멈추고 2단으로 바뀌어요.
 - 한국어 문구는 존댓말 해요체, 알림·달력·할 일·가격, 그리고 홈 배경 사진 말고 다른 사진 기능을 암시하는 표현을 쓰지 않아요.
@@ -372,6 +372,33 @@
 | `S16-loading-main` | 로딩 · 메인 스켈레톤 | `main.loading` `main.appName` `main.openRoom` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
 | `S16-empty` | 빈 상태 (공통 빈 화면) | `sys.empty.title` `sys.empty.body` `common.close` | iOS·밝게·ko, Android·어둡게·ko |
 
+## S28 마일스톤 축하 · 기념 방 꾸미기 제안
+
+- **캔버스 보드**: `S28-milestone`
+- **목적**: 함께한 날이 50일·100일·200일·300일·1주년(365일째)·500일·2주년·1000일·이후 매년에 닿으면, 앱을 열었을 때 마스코트(모피)가 홈 카드와 방 말풍선으로 축하하고 앱이 준비한 기념 방 꾸미기 제안을 기존 미리 보기 → 적용 흐름으로 볼 수 있어요. 푸시·로컬 알림 없음, 고정 문구(AI 호출 없음), 자동 적용 없음.
+- **이동**: 앱 열기 → 홈 카드(닫기 / 기념 방 꾸미기 보기) · 방 탭 말풍선(닫기) + 하단 제안 입구 → 점유 시작 → 미리 보기(S09, "{라벨} 제안" 뱃지) → 적용 확인("적용한 뒤에는 되돌릴 수 없어요") → 적용. 상대가 점유 중이면 입구가 막히고 이유를 알려요.
+- 마일스톤 목록·규칙(7일 안에 처음 열면 늦은 축하, 커플당 한 번, 구성원마다 한 번씩, 날짜 수정 규칙)은 보드 아래쪽 표에 있어요. 모두 **제안값**이고 결정권자가 조정할 수 있어요.
+- 마스코트 포즈는 기존 `cheer`(신나게 인사)만 써요. 통통 뛰기(2.4초)와 반짝임(1.4초)은 앱 고정 동작이고 동작 줄이기에서는 정지해요.
+- 제안은 AI를 쓰지 않는 앱 프리셋(케이크·풍선·리본·반짝이 + 기념 문구, 주년은 선물 추가)이라 해외 AI 동의·하루 10회 한도와 무관해요. 새 카탈로그 오브젝트는 0개(24종 그대로).
+- 카드는 앱 면 위에 놓여서 홈 배경 사진과 상관없이 같은 대비예요. 글자 130% 이상에서는 카드가 세로로 쌓이고, 방의 입구는 글자 크기를 160%로 제한해요.
+- **알림이 아니에요**: 앱을 열었을 때만 보이고, 배지·"알려 드려요" 문구는 없어요. 실제 알림은 열린 결정(보드 아래 비교 표).
+- **긴 문구·언어 사례**: 일본어 제목은 {n}日目です / {n}周年です로 줄여서 한 줄에 들어가고, 영어 "Your 1-year anniversary"는 두 줄로 줄바꿈돼요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S28-home-day` | 홈 · 100일 당일 축하 카드(앱을 열면 보임) | `milestone.label.day` `milestone.title.day` `milestone.body.today` `a11y.pose.cheer` `a11y.mascot` `a11y.milestone.close` `milestone.action.suggest` `a11y.milestone.card` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 2 |
+| `S28-home-anniv` | 홈 · 1주년(365일째) 축하 카드 | `milestone.label.anniv` `milestone.title.anniv` `milestone.body.today` `a11y.pose.cheer` `a11y.mascot` `a11y.milestone.close` `milestone.action.suggest` `a11y.milestone.card` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S28-home-late` | 홈 · 며칠 뒤에 처음 연 경우(늦은 축하 문구) | `milestone.label.day` `milestone.title.day` `milestone.body.late` `a11y.pose.cheer` `a11y.mascot` `a11y.milestone.close` `milestone.action.suggest` `a11y.milestone.card` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S28-home-photo` | 홈 · 배경 사진 위에서도 카드는 앱 면 위에 놓임 | `milestone.label.day` `milestone.title.day` `milestone.body.today` `a11y.pose.cheer` `a11y.mascot` `a11y.milestone.close` `milestone.action.suggest` `a11y.milestone.card` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `a11y.cover.photo` `main.appName` `a11y.cover.change` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S28-room-day` | 방 · 마스코트 말풍선 + 기념 꾸미기 제안 입구 | `milestone.bubble.day` `a11y.milestone.bubble` `a11y.milestone.close` `milestone.label.day` `milestone.suggest.chip` `milestone.suggest.hint` `a11y.pose.cheer` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 3 |
+| `S28-room-anniv` | 방 · 1주년 말풍선 | `milestone.bubble.anniv` `a11y.milestone.bubble` `a11y.milestone.close` `milestone.label.anniv` `milestone.suggest.chip` `milestone.suggest.hint` `a11y.pose.cheer` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S28-room-closed` | 방 · 말풍선을 닫은 뒤(제안 입구는 남음) | `milestone.label.day` `milestone.suggest.chip` `milestone.suggest.hint` `a11y.pose.cheer` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S28-room-busy` | 방 · 상대가 꾸미는 중이라 제안 막힘 | `milestone.bubble.day` `a11y.milestone.bubble` `a11y.milestone.close` `milestone.label.day` `milestone.suggest.busy` `a11y.pose.cheer` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 1 |
+| `S28-room-full` | 방 · 방이 가득 차서 제안 막힘 | `milestone.bubble.day` `a11y.milestone.bubble` `a11y.milestone.close` `milestone.label.day` `milestone.suggest.full` `a11y.pose.cheer` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S28-preview` | 제안 미리 보기(기존 S09 흐름) · AI 없음 · 점유자 | `milestone.label.day` `milestone.msg.suggest` `preview.changes` `milestone.preview.changes` `milestone.preview.badge` `milestone.preview.note` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `milestone.plate.day` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S28-preview-partial` | 제안 미리 보기 · 방에 자리가 모자라 일부만 | `milestone.label.day` `milestone.msg.suggest` `preview.changes` `milestone.preview.changes` `milestone.suggest.partial` `milestone.preview.badge` `milestone.preview.note` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `milestone.plate.day` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S28-preview-anniv` | 1주년 제안 미리 보기(선물 포함 6개) | `milestone.label.anniv` `milestone.msg.suggest` `preview.changes` `milestone.preview.changes` `milestone.preview.badge` `milestone.preview.note` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `milestone.plate.anniv` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+
 ## 탭 단위 보기 (S23 · S24 · S26)
 
 탭마다 루트 화면의 **첫 실행 · 비어 있음 · 보통 · 로딩 · 오프라인 · 오류**(방은 **상대가 꾸미는 중**)와 한국어·영어·일본어 긴 문구, 푸시·시트·모달로 이어지는 화면을 한 보드에 모았어요. 상태 ID는 `S23-first`처럼 탭 번호로 시작해요.
@@ -423,7 +450,7 @@
 
 ## 캐릭터 섹션 (C01~C05)
 
-마스코트(소유자가 제공한 캐릭터)는 화면 안에 퍼뜨리지 않고 **독립 보드 5장**에 모았어요: C01 캐릭터 개요 · C02 제스처 시트(11개 제스처를 원본/가공본으로 1:1) · C03 팔레트·해부·규칙 · C04 배경·크기 · C05 하모나이즈 vs 원본. 파일은 `mascot/`.
+마스코트(소유자가 생성형 AI 도구로 만든 원본을 가공한 캐릭터)는 화면 안에 퍼뜨리지 않고 **독립 보드 5장**에 모았어요: C01 캐릭터 개요 · C02 제스처 시트(11개 제스처를 원본/가공본으로 1:1) · C03 팔레트·해부·규칙 · C04 배경·크기 · C05 하모나이즈 vs 원본. 파일은 `mascot/`.
 
 **캐릭터가 나오는 화면(현재 두 곳)**
 

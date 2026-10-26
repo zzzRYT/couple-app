@@ -152,7 +152,7 @@
     "S10-undo.dc.html": {
       "expand": "fill",
       "h": 7294,
-      "title": "S10 되돌리기 확인",
+      "title": "S10 되돌리기 (열린 대화 안에서만)",
       "w": 1760,
       "x": 5520,
       "y": 30143
@@ -300,6 +300,14 @@
       "w": 1760,
       "x": 5520,
       "y": 87208
+    },
+    "S28-milestone.dc.html": {
+      "expand": "fill",
+      "h": 8000,
+      "title": "S28 마일스톤 축하 · 기념 방 꾸미기 제안",
+      "w": 1760,
+      "x": 5520,
+      "y": 76678
     }
   },
   "createdOnFiles": {
@@ -371,7 +379,7 @@
     "row7": {
       "kind": "title1",
       "maxW": 7280,
-      "text": "단계 2 · 방향 A · S24 · S26–S27",
+      "text": "단계 2 · 방향 A · S24 · S26–S28",
       "w": 240,
       "x": 0,
       "y": 76378
@@ -419,6 +427,7 @@
     "S24-tab-room.dc.html",
     "S26-tab-settings.dc.html",
     "S27-navigation.dc.html",
+    "S28-milestone.dc.html",
     "L-S11-history.dc.html",
     "L-S24-room-with-history.dc.html",
     "L-S25-tab-history.dc.html",

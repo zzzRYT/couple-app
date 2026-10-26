@@ -2,7 +2,7 @@
 
 > 이 문서는 디자인 원본에서 자동으로 만든 표예요. 구현은 **키만 코드에 쓰고** 텍스트는 번역 리소스(`ko-KR`, `en-US`, `ja-JP`)로 둬요. `{name}` 형태는 보간 변수예요. 달력·할 일·가격·알림을 떠올리게 하는 표현과(홈 배경 사진 한 장 말고는) 사진 기능 표현은 쓰지 않았어요. 일본어·영어 문구는 디자이너가 쓴 초안이라 **원어민 검수**가 필요해요(handoff.md).
 
-- 총 키 수: **541**
+- 총 키 수: **564**
 - 사용자가 입력한 방 문구와 프롬프트는 번역하지 않고 입력한 그대로 저장·표시해요.
 - 서버 오류는 언어 중립 코드(`VERSION_CONFLICT` 등)만 오고, 앱이 아래 키로 문구를 골라요: `VERSION_CONFLICT`→`preview.conflict.*`·`undo.conflict.*`, `QUOTA_REACHED`→`prompt.quota.*`, `CONSENT_REQUIRED`→`prompt.consent.need`, `SESSION_OCCUPIED`→`prompt.partner`, `SESSION_EXPIRED`→`prompt.idle.me.*`, `INVITE_EXPIRED`→`join.expired.*`, `INVITE_USED`→`join.used.*`, `SPACE_FULL`→`join.full.*`, `ALREADY_IN_SPACE`→`join.hasSpace.*`, `UNSUPPORTED_REQUEST`→`prompt.unsupported.*`, `BRAND_REQUEST`→`prompt.brand.*`, `AUTH_EXPIRED`→`sys.login.*`. (코드 이름은 계약 문서 `contracts/api.md`의 이름을 확인해서 맞춰야 해요.)
 
@@ -681,6 +681,36 @@
 | `cover.partner.changed` | {name}님이 배경 사진을 바꿨어요 | {name} changed the background photo | {name}さんが背景写真を変更しました |
 | `cover.partner.removed` | {name}님이 배경 사진을 없앴어요 | {name} removed the background photo | {name}さんが背景写真を外しました |
 | `cover.loading` | 사진을 불러오는 중 | Loading photo | 写真を読み込み中 |
+
+## 마일스톤 축하 (S28)
+
+앱을 열었을 때 앱 안에서만 보이는 고정 문구예요(AI 호출 없음, 알림 아님). `{label}`은 `milestone.label.day` / `milestone.label.anniv` 결과, `{date}`는 로케일 날짜(10월 24일 / Oct 24 / 10月24日)예요.
+
+| 키 | 한국어 | English | 日本語 |
+|---|---|---|---|
+| `milestone.label.day` | {n}일 | {n} days | {n}日 |
+| `milestone.label.anniv` | {n}주년 | {n}-year anniversary | {n}周年 |
+| `milestone.title.day` | {n}일을 함께했어요 | {n} days together | {n}日目です |
+| `milestone.title.anniv` | {n}주년을 맞았어요 | Your {n}-year anniversary | {n}周年です |
+| `milestone.body.today` | 모피가 두 사람의 오늘을 함께 축하해요. | Mopi is celebrating today with the two of you. | モピがふたりの今日をいっしょにお祝いします。 |
+| `milestone.body.late` | {date}이 기념일이었어요. 모피가 조금 늦게 축하해요. | Your milestone was on {date}. Mopi is celebrating a little late. | 記念日は{date}でした。モピが少し遅れてお祝いします。 |
+| `milestone.action.suggest` | 기념 방 꾸미기 보기 | See a decorating idea | 記念の飾り付けを見る |
+| `milestone.bubble.day` | {n}일째, 축하해요! | Day {n}! Congrats! | {n}日目、おめでとう！ |
+| `milestone.bubble.anniv` | {n}주년, 축하해요! | {n}-year anniversary! Congrats! | {n}周年、おめでとう！ |
+| `milestone.suggest.chip` | {label} 기념 꾸미기 | Decorate for {label} | {label}の飾り付け |
+| `milestone.suggest.hint` | AI 없이 앱이 준비한 제안이에요 | A ready-made idea from the app, no AI | AIなしで、アプリが用意した提案です |
+| `milestone.suggest.busy` | 상대가 꾸미는 중이라 지금은 제안을 볼 수 없어요. | Your partner is decorating, so the idea isn't available right now. | パートナーが飾り付け中のため、今は提案を見られません。 |
+| `milestone.suggest.full` | 방이 가득 차서 소품을 놓을 수 없어요. 소품을 줄이면 볼 수 있어요. | The room is full, so nothing can be added. Remove an item to see the idea. | 部屋がいっぱいで小物を置けません。小物を減らすと見られます。 |
+| `milestone.suggest.partial` | 방에 자리가 모자라 소품 {n}개만 놓았어요. | The room is nearly full, so only {n} items were placed. | 部屋の空きが足りず、小物を{n}個だけ置きました。 |
+| `milestone.preview.badge` | {label} 제안 | {label} idea | {label}の提案 |
+| `milestone.msg.suggest` | 모피가 {label} 기념 꾸미기를 제안했어요. | Mopi suggested a decoration for {label}. | モピが{label}の飾り付けを提案しました。 |
+| `milestone.preview.note` | AI를 쓰지 않는 앱의 제안이에요. 마음에 들 때만 적용해요. | This is the app's own idea, with no AI. Apply it only if you like it. | AIを使わないアプリからの提案です。気に入ったときだけ反映できます。 |
+| `milestone.preview.changes` | 케이크·풍선·리본 같은 소품 {n}개와 문구 1개 | {n} party items (cake, balloons, ribbon) and 1 text | ケーキ・風船・リボンなどの小物{n}個と文言1つ |
+| `milestone.plate.day` | 우리 {n}일 | Our day {n} | ふたりの{n}日 |
+| `milestone.plate.anniv` | 우리 {n}주년 | Our {n}-year anniversary | ふたりの{n}周年 |
+| `a11y.milestone.card` | {label} 축하 카드 | {label} celebration card | {label}のお祝いカード |
+| `a11y.milestone.close` | 축하 카드 닫기 | Close the celebration card | お祝いカードを閉じる |
+| `a11y.milestone.bubble` | 모피의 말풍선: {text} | Mopi's speech bubble: {text} | モピの吹き出し：{text} |
 
 ## 앱 이름 · 캐릭터 이름 · 슬로건 (결정 반영)
 

@@ -75,6 +75,7 @@
 
 - `id`, `space_id`, `session_id`, `requested_by_user_id`, `base_version_id`, `base_version_number`
 - `prompt_text` (두 구성원이 보는 공유 대화; 전송 전 동의 확인, 데이터 최소화; 암호화/보관 기간 필요)
+- `source`: `ai | milestone_preset` (`milestone_preset`은 AI를 호출하지 않는 앱 프리셋 미리 보기이고 `prompt_text`는 없으며 `preset_id`·`milestone_key`를 가진다. AI 요청 이력과 일일 한도에 세지 않는다)
 - `state`: `queued | generated | rejected | previewed | reverted | applied | cancelled | expired | failed` (`reverted`: 열린 대화 안에서 점유자가 이전 미리 보기로 되돌려 더 이상 보이지 않는 후보. 적용된 요청은 되돌릴 수 없다)
 - `result_candidate` (스키마 검증된 후보; 원문 모델 출력은 별도 저장하지 않음)
 - `failure_code?`, `repair_count` (최대 1), `created_at`, `expires_at`, `applied_version_id?`
@@ -113,9 +114,26 @@
 - 삭제(결정): 공간이 삭제될 때(복구 기간 30일 뒤) 객체와 행을 함께 지운다. 복구 대기 중에는 사진을 유지하고 복구하면 그대로 돌아온다.
 - `SpaceLifecycleEvent`와 달리 사진 변경은 감사 이벤트에 개인 내용(경로, 파일명)을 넣지 않고 `cover_changed`/`cover_removed` 종류만 남긴다(정형 속성).
 
+### MilestoneCelebration
+
+마일스톤마다 한 번 만드는 기록. 장면 문서와 AI 문맥과 분리된 별도 행이다.
+
+- `id`, `space_id`, `milestone_key` (`d50 | d100 | d200 | d300 | y1 | d500 | y2 | d1000 | y3 | y4 …`), `kind`: `day | anniversary`, `milestone_days` (50, 100, … 365×N), `anniversary_n?`
+- `milestone_date` (방 시간대 기준 달력 날짜 = 함께한 날짜 + `milestone_days` − 1), `status`: `active | passed`
+- `preset_applied_version_id?` (기념 제안이 적용되어 새 방 버전이 만들어졌을 때), `created_at`
+- 유일: `(space_id, milestone_key)` — 커플당 한 번. 서버가 `GET /milestones/current`에서 필요할 때 만든다(별도 스케줄러 없음).
+- 보이는 기간: `milestone_date`부터 7일(제안값 N) 이내. 그 뒤에는 `passed`로 바꾸고 보이지 않는다.
+- 두 구성원이 모두 참여한 활성 공간에서만 만든다. 공간 종료(복구 대기) 중에는 만들지도 보이지도 않고, 복구하면 기록이 그대로 돌아온다. 공간이 삭제되면 함께 지운다.
+
+### MilestoneSeen
+
+- `celebration_id`, `member_user_id` (복합 PK), `seen_at`, `via`: `home | room`
+- 구성원이 카드나 말풍선을 닫으면 한 행. 상대에게 영향 없음. 같은 요청을 다시 보내도 그대로(멱등). 오프라인에서 닫은 기록은 연결 후 전달한다.
+- 읽기: 본인 행과 "상대가 봤는지"는 필요 없으므로 상대 행은 읽지 않는다(RLS로 본인 행만).
+
 ### SpaceLifecycleEvent
 
-- `id`, `space_id`, `event_type`: `ended | recovered | deletion_started | deletion_completed | cover_changed | cover_removed`
+- `id`, `space_id`, `event_type`: `ended | recovered | deletion_started | deletion_completed | cover_changed | cover_removed | milestone_preset_previewed | milestone_preset_applied` (마일스톤 두 종류는 정형 속성만: `milestone_key`)
 - `actor_user_id`, `occurred_at`, `metadata` (개인 내용을 넣지 않는 정형 속성)
 - 공간 복구 및 만료 삭제를 감사한다. 최소 이벤트 보관기간/법적 예외는 개인정보 검토 후 결정한다.
 
@@ -135,10 +153,16 @@ previewed --confirm at matching base version--> applied
 previewed --cancel/expiry--> cancelled/expired
 previewed --undo within the open session--> reverted (이전 후보 또는 현재 방 보기로, 점유 유지)
 applied --(되돌리기 없음)
+MilestoneCelebration: (없음) --처음 조회한 날 milestone_date부터 7일 이내--> active --7일 경과--> passed
+active --함께한 날짜 변경으로 milestone_date가 미래가 됨--> (삭제, 새 날짜에 다시 생성)
+MilestoneSeen: (없음) --구성원이 닫음--> seen (되돌리지 않음)
 queued/generated --invalid result/provider failure--> rejected/failed
 ```
 
 ## 검증 및 동시성 규칙
+
+- 마일스톤: 일수는 방 시간대의 오늘 날짜와 `anniversary_date`로 서버에서 계산한다(기기 시계 불사용). 함께한 날짜 변경 시 기록된 `milestone_key`는 유지하되 새 `milestone_date`가 오늘보다 뒤이면 행과 `MilestoneSeen`을 지운다. 그 밖의 기록은 그대로 둔다.
+- 마일스톤 제안 미리 보기: 점유 세션 owner만, 현재 방 버전 기준(`base_version_number` 검사), 방 오브젝트 16개·문구 3개 한도 내에서만 만든다. confirm은 기존 경로와 같다.
 
 - 공간 구성원 수 ≤ 2; 초대 수락은 단일 DB 트랜잭션.
 - 요청 시 공간 활성, 사용자 구성원, 필요한 동의가 모두 유효해야 한다. 권장 정책은 두 명 모두 유효 동의가 있어야 외부 AI 호출 가능.
