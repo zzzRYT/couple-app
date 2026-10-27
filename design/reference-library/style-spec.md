@@ -2,7 +2,7 @@
 
 > **상태: 자리표시 스케치 기준이에요.** 이 문서의 모양 규칙은 기존 카탈로그 스케치(`design/assets-sketch/*.svg`)와 `design/assets-spec.md` §4를 재서 정리했고, 기준 오브젝트 10개는 이 프로젝트를 위해 그린 자리표시 그림이에요. 최종 그림은 소유자·일러스트레이터 승인이 필요해요([approval-checklist.md](approval-checklist.md)).
 
-모델이 만드는 오브젝트는 세 가지뿐이에요: **방 배경 조각**(`background_piece`), **말풍선 틀**(`bubble_frame`), **작은 방 소품**(`prop`). 형식과 검증 규칙은 [`design/tools/mopi-shape/README.md`](../tools/mopi-shape/README.md)에 있고, 여기는 **어떻게 보여야 하는지**(스타일)를 정해요. 형식은 안전을, 스타일은 일관된 분위기를 지켜요. 둘 다 통과해야 좋은 결과예요.
+모델이 만드는 오브젝트는 세 가지뿐이에요: **방 배경 조각**(`background_piece`), **말풍선 틀**(`bubble_frame`), **작은 방 소품**(`prop`). 형식과 검증 규칙은 [`design/tools/aroomi-shape/README.md`](../tools/aroomi-shape/README.md)에 있고, 여기는 **어떻게 보여야 하는지**(스타일)를 정해요. 형식은 안전을, 스타일은 일관된 분위기를 지켜요. 둘 다 통과해야 좋은 결과예요.
 
 ## 1. 허용 팔레트 (채움색)
 
@@ -142,7 +142,7 @@
 
 ## 9. 범위 밖 (그리지 않아요)
 
-- 캐릭터와 **마스코트(모피)를 닮은 것**: 달걀·감자 모양 몸통에 점 눈과 분홍 볼, 파란 어깨띠, 노란 별 핀 같은 조합. 앱 안의 다른 캐릭터도 마찬가지예요. 마스코트는 소유자가 제공한 고정 에셋이고 모델이 만들지 않아요(소품이 마스코트 곁에 놓이므로 특히 소품에서 조심해요).
+- 캐릭터와 **마스코트(아루미)를 닮은 것**: 달걀·감자 모양 몸통에 점 눈과 분홍 볼, 파란 어깨띠, 노란 별 핀 같은 조합. 앱 안의 다른 캐릭터도 마찬가지예요. 마스코트는 소유자가 제공한 고정 에셋이고 모델이 만들지 않아요(소품이 마스코트 곁에 놓이므로 특히 소품에서 조심해요).
 - 얼굴(눈·코·입이 있는 모든 것, 동물·해 달 얼굴 포함), 사람·동물 실루엣.
 - **로고·브랜드·상표 모양**, 글자·숫자·기호, QR·바코드 같은 무늬, 상표권이 있는 물건의 윤곽(특정 회사 캐릭터·신발·가방·과일 모양 로고 등).
 - 사진, 실제 장소·작품을 따라 그린 것, 외부 이미지를 조각낸 것.
@@ -165,7 +165,7 @@
 
 ### 스타일 점검 도구 `style-check.mjs`
 
-`node design/tools/mopi-shape/cli.mjs style-check`로 기준 오브젝트와 `examples-dont`를 한 번에 재요.
+`node design/tools/aroomi-shape/cli.mjs style-check`로 기준 오브젝트와 `examples-dont`를 한 번에 재요.
 
 | 지표 | 뜻 | 통과 기준 |
 |---|---|---|
@@ -185,9 +185,9 @@
 생성 프롬프트에 그대로 넣는 요약이에요(번역하지 않고 영문으로 두는 이유: 모델에게 주는 지시문이라서예요). 크기는 [README.md](README.md)의 표에 있어요.
 
 <!-- PROMPT-SUMMARY-BEGIN -->
-You draw ONE small flat 2D decoration as JSON in format "mopi-shape-v1". Output a single JSON object only: no prose, no markdown fence.
+You draw ONE small flat 2D decoration as JSON in format "aroomi-shape-v1". Output a single JSON object only: no prose, no markdown fence.
 kind is "background_piece" (also needs layerHint: wall|floor|backdrop|window_view), "bubble_frame" (also needs textArea{x,y,w,h}, textFill, optional tail{x,y}) or "prop" (a small room object; also needs layerHint: floor|wall|shelf; viewBox longer side 64..256, typically 96-160; at most 30 shapes; anchor (0.5,1) for floor and shelf props, (0.5,0) for hanging wall props).
-Fields: schemaVersion 1, format "mopi-shape-v1", kind, [layerHint], label (1-24 chars; letters, digits, space and . , ' - only; never URLs, @ or phone numbers), viewBox{w,h} integers 32..512 (longer side 128..512; background pieces 128-256, bubbles 128x96), anchor{x,y} 0..1, palette [1-4 uppercase hex fill colors], shapes [1-40 shapes drawn in order].
+Fields: schemaVersion 1, format "aroomi-shape-v1", kind, [layerHint], label (1-24 chars; letters, digits, space and . , ' - only; never URLs, @ or phone numbers), viewBox{w,h} integers 32..512 (longer side 128..512; background pieces 128-256, bubbles 128x96), anchor{x,y} 0..1, palette [1-4 uppercase hex fill colors], shapes [1-40 shapes drawn in order].
 Every shape has "fill" (palette index or null) and "stroke" (true draws the outline). Shape types: rect{x,y,w,h,rx?} ellipse{cx,cy,rx,ry} poly{pts:[[x,y],...] 3-24 points} path{d}. In d use ONLY absolute M L H V C Q Z, plain decimals with at most 2 decimals, start with M, at most 48 commands and 600 chars. Nothing else exists: no text, image, use, gradient, opacity, transform, filter, clip, animation, script or link.
 Coordinates stay inside -8..size+8 with at most 2 decimals. The app adds a dark-brown outline and a cream rim to stroke:true shapes, so never draw outlines yourself.
 Palette (only these): peach #F4B79B, butter #F7D98B, sage #A8C6A0, sage2 #8FB68A, sky #AACBE2, sky2 #8DB6D2, pink #F2A7B4, rose #E88A9B, cream #FFF4DF, terra #D98B63, wood #C99A6B, ice #E6F0F7, lav #C9B8E8, aqua #9ED8CB, dark #7A5C48, wall #FBF1E3, floor #F3E0C4.

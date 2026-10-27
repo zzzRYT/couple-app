@@ -1,4 +1,4 @@
-// Deterministic reference renderer for mopi-shape-v1 (zero dependencies).
+// Deterministic reference renderer for aroomi-shape-v1 (zero dependencies).
 //
 // toSvg(doc, { background?: 'day' | 'night' | 'none', surface?: 'wall' | 'floor', scale?: number, pad?: number }) -> string
 //

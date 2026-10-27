@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-make-icon.py — build the Mopiru app icon candidates and the production set from the EXISTING mascot art.
+make-icon.py — build the Aroom app icon candidates and the production set from the EXISTING mascot art.
 
 Input : design/mascot/harmonized/mascot_wave_main@3x.png (the direction-A look of the supplied, AI-generated master)
 Output: design/icon/** (candidates, iOS/Android/Expo files, legibility previews, legibility report)
 
 What it does (and does not do)
-  * crops, scales and places Mopi's head/face from the existing pose and puts it on a flat ground colour from tokens.json
+  * crops, scales and places Aroomi's head/face from the existing pose and puts it on a flat ground colour from tokens.json
   * never redraws or generates art; the only derived art is a grayscale copy (iOS tinted), a single-colour line layer
     made from the art's own dark pixels (Android monochrome) and flat colour grounds; no text in any icon
   * all store icons are opaque RGB PNGs (no alpha channel, no pre-rounded corners)

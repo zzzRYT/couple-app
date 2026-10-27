@@ -29,7 +29,7 @@ test('svg output only contains allowlisted elements and attributes (no script, h
 });
 
 test('draw order: rim pass first, then fill (offset) and outline per shape', () => {
-  const doc = { schemaVersion: 1, format: 'mopi-shape-v1', kind: 'background_piece', layerHint: 'wall', label: 'Two', viewBox: { w: 128, h: 128 }, anchor: { x: 0.5, y: 0.5 }, palette: ['#F4B79B', '#A8C6A0'], shapes: [{ t: 'rect', fill: 0, stroke: true, x: 10, y: 10, w: 50, h: 50 }, { t: 'ellipse', fill: 1, stroke: false, cx: 90, cy: 90, rx: 20, ry: 20 }, { t: 'path', fill: null, stroke: true, d: 'M10 100L60 100' }] };
+  const doc = { schemaVersion: 1, format: 'aroomi-shape-v1', kind: 'background_piece', layerHint: 'wall', label: 'Two', viewBox: { w: 128, h: 128 }, anchor: { x: 0.5, y: 0.5 }, palette: ['#F4B79B', '#A8C6A0'], shapes: [{ t: 'rect', fill: 0, stroke: true, x: 10, y: 10, w: 50, h: 50 }, { t: 'ellipse', fill: 1, stroke: false, cx: 90, cy: 90, rx: 20, ry: 20 }, { t: 'path', fill: null, stroke: true, d: 'M10 100L60 100' }] };
   const lines = toSvg(doc).split('\n');
   const m = strokeMetrics(doc.viewBox);
   const rim = lines.filter(l => l.includes(`stroke="${STYLE.rim}"`));

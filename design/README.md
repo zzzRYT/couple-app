@@ -18,14 +18,14 @@
 | [`assets-spec.md`](assets-spec.md) | 에셋 사양(카탈로그 24종 + 방 밖 일러스트 5종), **방향 A 스타일 가이드(일러스트레이터용)**, 마스코트 출처·권리(§8.1), 교체 절차, 납품 체크리스트 | 일러스트레이터·구현 |
 | [`assets-manifest.csv`](assets-manifest.csv) | 에셋 파일 매니페스트(마스코트 원본·가공 파일의 체크섬·도구 버전·출처, 스케치 SVG, 권리·검수 열) | 권리 관리 |
 | [`mascot/`](mascot/README.md) | **마스코트(독립 패키지)**: 소유자가 생성형 AI 도구로 만든 캐릭터 시트 원본, 포즈별 컷아웃, 방향 A 가공본(@1x·@2x·@3x), 비교 시트, 가공 보고서. 캔버스의 **캐릭터 섹션 C01~C07**와 짝이에요. **`mascot/vector/`에 벡터 버전**(자동 트레이스한 SVG 11포즈·앱 아이콘 얼굴·PDF, 캔버스 C07) | 모두 |
-| [`figcraft/`](figcraft/README.md) | **FigCraft 보기용 사본**: 캔버스를 오프라인으로 편하게 보려고 `.figcraft` 문서 하나로 모으는 방법(캔버스 → FigCraft 한 방향, 편집용 아님). 동기화 스크립트는 `tools/figcraft-sync/`. `.figcraft` 파일 자체는 크기(15MB 초과) 때문에 저장소에 넣지 않았고 로컬 `~/Documents/Mopiru-design/`에 있어요 | 모두 |
-| [`icon/`](icon/README.md) | **앱 아이콘**: 모피 얼굴 후보 3개(A/B/C, **소유자가 A를 선택**, B·C는 탈락 후보), 선택안(A)의 iOS light·dark·tinted, Android adaptive(전경·배경·monochrome), 스플래시·파비콘·스토어용, 크기·마스크 점검 그림. 새 그림 없이 마스코트 파일에서 파생(권리 상태도 마스코트와 같아요). 캔버스 **C06** | 구현·디자인 |
-| [`reference-library/`](reference-library/README.md) | **기준 라이브러리(P2 생성 장식)**: AI가 새 배경 조각·말풍선 틀·방 소품을 만들 때 스타일 앵커로 주는 앱 소유 레퍼런스 14개(JSON, **자리표시 그림**)·스타일 규칙·소유자 승인 체크리스트·미리 보기·대비 시트. 검증기·렌더러는 `tools/mopi-shape/` | 디자인·구현 |
+| [`figcraft/`](figcraft/README.md) | **FigCraft 보기용 사본**: 캔버스를 오프라인으로 편하게 보려고 `.figcraft` 문서 하나로 모으는 방법(캔버스 → FigCraft 한 방향, 편집용 아님). 동기화 스크립트는 `tools/figcraft-sync/`. `.figcraft` 파일 자체는 크기(15MB 초과) 때문에 저장소에 넣지 않았고 로컬 `~/Documents/Aroom-design/`에 있어요 | 모두 |
+| [`icon/`](icon/README.md) | **앱 아이콘**: 아루미 얼굴 후보 3개(A/B/C, **소유자가 A를 선택**, B·C는 탈락 후보), 선택안(A)의 iOS light·dark·tinted, Android adaptive(전경·배경·monochrome), 스플래시·파비콘·스토어용, 크기·마스크 점검 그림. 새 그림 없이 마스코트 파일에서 파생(권리 상태도 마스코트와 같아요). 캔버스 **C06** | 구현·디자인 |
+| [`reference-library/`](reference-library/README.md) | **기준 라이브러리(P2 생성 장식)**: AI가 새 배경 조각·말풍선 틀·방 소품을 만들 때 스타일 앵커로 주는 앱 소유 레퍼런스 14개(JSON, **자리표시 그림**)·스타일 규칙·소유자 승인 체크리스트·미리 보기·대비 시트. 검증기·렌더러는 `tools/aroomi-shape/` | 디자인·구현 |
 | [`assets-sketch/`](assets-sketch/) | 일반 오브젝트 **자리표시 스케치** SVG 19개(최종 그림이 아니에요) | 일러스트레이터 |
 | [`canvas/`](canvas/README.md) | Claude Design 캔버스 원본 파일(`project/*.dc.html`, `canvas.json`). 보드 S00~S28(S11·S17·S25 없음) | 디자인 |
 | [`exports/`](exports/) | 주요 화면 PNG 71장(화면 @2x + 보드)(움직임은 정지 프레임) | 모두 |
 | [`later/history/`](later/history/README.md) | **V1 이후 · 기록 포함 버전(1차에서는 쓰지 않아요)**: 보류했지만 채택하면 바로 쓸 수 있게 준비한 기록 설계(화면·문구·4탭 바·적용 시 되돌릴 목록). V1 수치에 들어가지 않아요 | 디자인·기획 |
-| [`tools/mopi-shape/`](tools/mopi-shape/README.md) | 생성 장식 형식(`mopi-shape-v1`)의 의존성 없는 검증기·결정적 SVG 렌더러·스타일 적합도 검사와 테스트(`node --test`), 서버·앱 검증기의 참고 구현 | 구현 |
+| [`tools/aroomi-shape/`](tools/aroomi-shape/README.md) | 생성 장식 형식(`aroomi-shape-v1`)의 의존성 없는 검증기·결정적 SVG 렌더러·스타일 적합도 검사와 테스트(`node --test`), 서버·앱 검증기의 참고 구현 | 구현 |
 | [`tools/contrast-check.mjs`](tools/contrast-check.mjs) | 토큰의 핵심 대비 쌍을 다시 확인하는 의존성 없는 스크립트 | 구현 |
 | [`tools/`](tools/) `cutout-mascot.py` `harmonize-mascot.py` `mascot-sheets.py` `make-icon.py` `vectorize-mascot.py` `figcraft-sync/` | 마스코트 시트 → 컷아웃 → 방향 A 가공 → 비교 시트 → 앱 아이콘 세트 → 벡터 버전(VectorCraft CLI)을 다시 만드는 파이프라인(Python, 매개변수·사용법은 파일 머리말) | 디자인·구현 |
 
@@ -44,5 +44,5 @@
 
 - **하단 탭 바는 시스템 컴포넌트**예요(iOS UITabBar · Android Material 3). 직접 그리지 말고 틴트·라벨·아이콘만 정해요. 방 화면의 **방 도구 막대**(꾸미기 하나)는 방 화면 자신의 막대예요.
 - 캔버스 그림은 **헤드리스 Chrome으로 렌더해 확인**했어요. 실기기·스크린 리더·시스템 탭 바의 실제 모습은 아직 확인하지 못했어요(`handoff.md` §8).
-- 앱 이름은 **모피루(Mopiru)**, 캐릭터 이름은 **모피(Mopi)**, 슬로건은 **"Our little world, together."** 로 정해졌어요(일본어 표기 モピル·モピ까지 소유자 승인, 상표·스토어 이름·도메인·bundle ID·운영 주체는 확인 전, `handoff.md` §16). 일반 오브젝트 그림과 지원 이메일 `[지원 이메일]`은 **자리표시**예요. **마스코트 그림은 소유자가 생성형 AI 도구로 만든 마스터를 그대로 쓰기로 한 것이고(재작업 없음, 약한 저작권 보호 위험 수용), 닮음 검사·법률 검토는 출시 전 권장이에요**(`handoff.md` §10.4). **마스코트는 앱이 제공하는 고정 캐릭터이고 이용자가 꾸미지 않아요**(꾸미기는 첫 버전 범위 밖, `handoff.md` §11). **마스코트는 화면 곳곳에 뿌리지 않아요**: 방 장면의 기본 오브젝트와 온보딩 히어로 1개에만 나오고, 나머지는 오브젝트 스케치로 만든 작은 일러스트예요. 캐릭터 자체는 캔버스 **캐릭터 섹션(C01~C05)** 에서 봐요.
+- 앱 이름은 **아룸(Aroom)**, 캐릭터 이름은 **아루미(Aroomi)**, 슬로건은 **"Our little world, together."** 로 정해졌어요(일본어 표기 アルーム·アルーミ는 **초안(원어민 검수 G4 전)**, 상표·스토어 이름·도메인·bundle ID·운영 주체는 확인 전, `handoff.md` §16). 일반 오브젝트 그림과 지원 이메일 `[지원 이메일]`은 **자리표시**예요. **마스코트 그림은 소유자가 생성형 AI 도구로 만든 마스터를 그대로 쓰기로 한 것이고(재작업 없음, 약한 저작권 보호 위험 수용), 닮음 검사·법률 검토는 출시 전 권장이에요**(`handoff.md` §10.4). **마스코트는 앱이 제공하는 고정 캐릭터이고 이용자가 꾸미지 않아요**(꾸미기는 첫 버전 범위 밖, `handoff.md` §11). **마스코트는 화면 곳곳에 뿌리지 않아요**: 방 장면의 기본 오브젝트와 온보딩 히어로 1개에만 나오고, 나머지는 오브젝트 스케치로 만든 작은 일러스트예요. 캐릭터 자체는 캔버스 **캐릭터 섹션(C01~C05)** 에서 봐요.
 - 글꼴은 미리 보기에서만 Google Fonts를 불러와요. 실제 앱은 파일을 번들하고 원격 글꼴을 쓰지 않아요(라이선스 표기는 `tokens.json`의 `typography.fonts`와 캔버스 S19).

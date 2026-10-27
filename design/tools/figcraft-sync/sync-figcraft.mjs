@@ -11,7 +11,7 @@
  *
  * Needs:  Node 20+, `npm ci` in this folder (puppeteer-core), Google Chrome, the official figcraft-cli (never commit it),
  *         network access (the boards load their Google Fonts).
- * Usage:  node sync-figcraft.mjs --cli /path/to/figcraft-cli [--out ~/Documents/Mopiru-design/mopiru-design.figcraft]
+ * Usage:  node sync-figcraft.mjs --cli /path/to/figcraft-cli [--out ~/Documents/Aroom-design/aroom-design.figcraft]
  *             [--chrome "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"] [--scale 2] [--quality 85]
  *             [--only S06,S28] [--work DIR]
  * Prints a JSON report (pages, frames, sizes, 3 re-exported frames). See design/figcraft/README.md.
@@ -33,11 +33,11 @@ const argv = process.argv.slice(2)
 const arg = (k, d) => { const i = argv.indexOf('--' + k); return i >= 0 ? argv[i + 1] : d }
 const CLI = arg('cli', process.env.FIGCRAFT_CLI)
 const CHROME = arg('chrome', process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome')
-const OUT = path.resolve(arg('out', path.join(os.homedir(), 'Documents', 'Mopiru-design', 'mopiru-design.figcraft')).replace(/^~/, os.homedir()))
+const OUT = path.resolve(arg('out', path.join(os.homedir(), 'Documents', 'Aroom-design', 'aroom-design.figcraft')).replace(/^~/, os.homedir()))
 const SCALE = +arg('scale', '2')
 const QUALITY = +arg('quality', '85')
 const ONLY = arg('only', '') ? arg('only').split(',') : null
-const WORK = path.resolve(arg('work', fs.mkdtempSync(path.join(os.tmpdir(), 'mopiru-figcraft-'))))
+const WORK = path.resolve(arg('work', fs.mkdtempSync(path.join(os.tmpdir(), 'aroom-figcraft-'))))
 if (!CLI || !fs.existsSync(CLI)) { console.error('give the official figcraft-cli with --cli (or FIGCRAFT_CLI); see the header of this file'); process.exit(2) }
 if (!fs.existsSync(CHROME)) { console.error('Chrome not found: ' + CHROME + ' (use --chrome)'); process.exit(2) }
 fs.mkdirSync(path.join(WORK, 'html'), { recursive: true })
@@ -114,7 +114,7 @@ await browser.close()
 
 // ---------------------------------------------------------------- one document: a page per section, boards in a 4-wide grid like the canvas
 const GAP = 80, ROWGAP = 140, COLS = 4
-const steps = [{ command: 'file.rename', params: { name: '모피루 디자인 (캔버스 보기용 사본)' } }]
+const steps = [{ command: 'file.rename', params: { name: '아룸 디자인 (캔버스 보기용 사본)' } }]
 let firstPage = true
 for (let si = 0; si < SECTIONS.length; si++) {
   const list = boards.filter((b) => b.sec === si)

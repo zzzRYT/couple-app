@@ -1,6 +1,6 @@
 # reference-library — 생성 오브젝트 기준 라이브러리 (자리표시 스케치)
 
-멤버의 프롬프트로 Claude가 새 배경 조각·말풍선 틀·작은 방 소품을 만들 때, 모델에게 **그림체를 보여 주는 기준 그림 묶음**이에요. 설명만으로는 모델이 집 그림체(손그림, 윤곽선, 크림 림)를 놓치기 쉬워서, 같은 형식(`mopi-shape-v1`)으로 그린 **실제 예시**를 몇 개 함께 줘요(few-shot 스타일 기준).
+멤버의 프롬프트로 Claude가 새 배경 조각·말풍선 틀·작은 방 소품을 만들 때, 모델에게 **그림체를 보여 주는 기준 그림 묶음**이에요. 설명만으로는 모델이 집 그림체(손그림, 윤곽선, 크림 림)를 놓치기 쉬워서, 같은 형식(`aroomi-shape-v1`)으로 그린 **실제 예시**를 몇 개 함께 줘요(few-shot 스타일 기준).
 
 > ## 상태: 모든 오브젝트가 자리표시 스케치예요
 > 열네 개(배경 6, 말풍선 4, 소품 4) 모두 **이 프로젝트를 위해, 앱의 그림체로 새로 그린 자리표시 스케치**예요. 앱이 소유하고, 외부 출처나 참고 이미지는 없어요(모양은 줄무늬·물방울·구름·언덕·러그·가랜드·말풍선·쿠션·탁자·모빌·책 더미처럼 흔한 소재만 썼어요). 제작 방식은 솔직히 적어 둬요: AI 코딩 도우미가 스타일 규칙에 맞춰 **좌표를 계산하는 스크립트로** 만들었고, 이미지 생성 도구나 외부 이미지는 쓰지 않았어요. 그래도 **최종 그림이 아니에요.** 출시에 쓰려면 소유자·일러스트레이터의 승인이 필요해요([approval-checklist.md](approval-checklist.md): 닮음 검사, 권리·출처 진술, 밤·낮 대비, 작은 크기 가독성, 서명). 승인 전에는 `status: "placeholder"`로 둬요.
@@ -8,7 +8,7 @@
 ## 서버가 쓰는 방법
 
 1. 생성 요청이 오면 서버가 프롬프트를 만들어요: **스타일 요약**([style-spec.md §11](style-spec.md#11-모델-프롬프트용-요약-영문-원문), 영문 원문 2.7 KB) + **기준 JSON**(`objects/*.json`, 한 줄로 합친 모양). 요청한 종류(배경·말풍선·소품)의 기준만 넣는 것을 기본으로 해요.
-2. 모델 출력은 [`tools/mopi-shape`](../tools/mopi-shape/README.md)의 `validateJsonText`로 검증하고 `normalize`해서 저장해요. 통과한 데이터만 앱이 그려요.
+2. 모델 출력은 [`tools/aroomi-shape`](../tools/aroomi-shape/README.md)의 `validateJsonText`로 검증하고 `normalize`해서 저장해요. 통과한 데이터만 앱이 그려요.
 3. (선택) `examples-dont/`는 "이렇게 하지 마" 예시로 프롬프트에 넣거나, 생성 결과의 스타일 점검 시험(`style-check`)에 써요.
 4. 기준 JSON도 같은 검증기를 통과하는 데이터라서, 프롬프트에 넣은 예시가 형식에 어긋날 일이 없어요(테스트가 매번 확인).
 
@@ -65,12 +65,12 @@
 미리 보기와 모아보기는 렌더러(`render-svg.mjs`)가 만들어요. 임시 HTML은 시스템 임시 폴더에 만들고 끝나면 지워요.
 
 ```sh
-node design/tools/mopi-shape/cli.mjs previews          # previews/*.svg 28개
-node design/tools/mopi-shape/cli.mjs contact-sheet     # contact-sheet.png (헤드리스 Chrome 필요)
-node design/tools/mopi-shape/cli.mjs contact-sheet design/reference-library design/reference-library/contact-sheet-dont.png --set dont
-node design/tools/mopi-shape/cli.mjs style-check       # 기준 통과, 어긋남 실패를 확인
-node design/tools/mopi-shape/cli.mjs check-samples     # 샘플 + 기준 라이브러리 검증
-node --test design/tools/mopi-shape/test/              # 테스트 (미리 보기가 최신인지도 확인해요)
+node design/tools/aroomi-shape/cli.mjs previews          # previews/*.svg 28개
+node design/tools/aroomi-shape/cli.mjs contact-sheet     # contact-sheet.png (헤드리스 Chrome 필요)
+node design/tools/aroomi-shape/cli.mjs contact-sheet design/reference-library design/reference-library/contact-sheet-dont.png --set dont
+node design/tools/aroomi-shape/cli.mjs style-check       # 기준 통과, 어긋남 실패를 확인
+node design/tools/aroomi-shape/cli.mjs check-samples     # 샘플 + 기준 라이브러리 검증
+node --test design/tools/aroomi-shape/test/              # 테스트 (미리 보기가 최신인지도 확인해요)
 ```
 
 Chrome 경로는 `CHROME_BIN` 환경 변수로 바꿀 수 있어요(기본: macOS의 Google Chrome).
