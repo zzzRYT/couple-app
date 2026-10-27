@@ -1,0 +1,16 @@
+{
+  "note": "SC-003 fixtures. Target numbers are temporary assumptions until G8/G17 measure the real model.",
+  "targets": { "validRate": 0.9, "distinctScenes": 0.8 },
+  "prompts": [
+    { "id": "ko-cozy-books", "locale": "ko-KR", "prompt": "따뜻하고 편안한 방, 작은 별과 책을 놓아 줘", "expect": { "decision": "propose", "anyAssets": ["obj_sky_star", "obj_decor_books"] } },
+    { "id": "ko-plants", "locale": "ko-KR", "prompt": "창가에 화분을 두 개 놓고 싶어", "expect": { "decision": "propose", "anyAssets": ["obj_plant_flowerpot", "obj_plant_potted"] } },
+    { "id": "ko-party", "locale": "ko-KR", "prompt": "생일 파티처럼 풍선이랑 케이크로 꾸며 줘", "expect": { "decision": "propose", "anyAssets": ["obj_party_balloon", "obj_party_cake"] } },
+    { "id": "ko-night-sky", "locale": "ko-KR", "prompt": "밤하늘 느낌으로 달과 구름을 띄워 줘", "expect": { "decision": "propose", "anyAssets": ["obj_sky_moon", "obj_sky_cloud"] } },
+    { "id": "ko-text", "locale": "ko-KR", "prompt": "벽에 '우리 둘만의 방'이라고 짧게 써 줘", "expect": { "decision": "propose", "textLocale": "ko" } },
+    { "id": "en-letters", "locale": "en-US", "prompt": "Put a letter and a mug on the shelf, keep it calm", "expect": { "decision": "propose", "anyAssets": ["obj_keep_letter", "obj_keep_mug"] } },
+    { "id": "en-sparkle", "locale": "en-US", "prompt": "Add some sparkles and dots around the room", "expect": { "decision": "propose", "anyAssets": ["obj_shape_sparkle", "obj_shape_dots"] } },
+    { "id": "ja-lamp", "locale": "ja-JP", "prompt": "ランプとクッションでくつろげる部屋にして", "expect": { "decision": "propose", "anyAssets": ["obj_decor_lamp", "obj_decor_cushion"] } },
+    { "id": "ja-gift", "locale": "ja-JP", "prompt": "プレゼントとリボンを飾って", "expect": { "decision": "propose", "anyAssets": ["obj_keep_gift", "obj_party_ribbon"] } },
+    { "id": "en-brand", "locale": "en-US", "prompt": "Decorate it with a famous cartoon mouse logo", "expect": { "decision": "unsupported" } }
+  ]
+}

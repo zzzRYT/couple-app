@@ -1,4 +1,4 @@
-import { overlaps, rotatedBounds, type Rect, type SceneNode } from './geometry';
+import { overlaps, rotatedBounds, type Rect, type SceneNode } from './geometry.ts';
 
 export function protectedZones(input: { width: number; height: number; safeTop: number; safeBottom: number; controls: Rect[] }): Rect[] {
   return [

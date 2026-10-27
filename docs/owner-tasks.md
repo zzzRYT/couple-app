@@ -11,7 +11,8 @@
 5. **이메일 OTP 발송 설정(원격)** — 원격 Supabase Auth에서 이메일 OTP 6자리를 켜고, 필요하면 SMTP를 연결한다(무료 기본 메일은 발송 한도가 낮음). 로컬에서는 Mailpit(`http://127.0.0.1:54324`)으로 확인된다.
 6. **카카오 로그인 앱** — Kakao Developers 앱 생성, REST API 키·Client Secret, Redirect URI(`https://<project>.supabase.co/auth/v1/callback`), 동의항목 설정 후 Supabase Auth의 Kakao 공급자에 입력. 자세한 순서는 `docs/auth-setup.md`.
 7. **Apple 로그인** — Apple Developer 계정, Services ID·Key(.p8)·redirect domain 설정 후 Supabase Auth의 Apple 공급자에 입력. `.p8` 파일은 저장소에 넣지 않는다.
-8. **두 기기 실측** — 개발 클라이언트로 두 기기(또는 에뮬레이터 2대)에서 초대 → 수락 → 같은 D-day → 점유 → 프롬프트 → 미리 보기 → 적용 → 양쪽 같은 방을 확인한다. 이 PR은 이 실기기·실서비스 확인을 하지 않았다.
+8. **원격 배포(준비되면)** — `supabase db push`로 마이그레이션 적용 → 카탈로그 시드 1회 적재(`psql "<원격 DB URL>" -f supabase/seed/catalog.sql`, `db push`는 시드를 돌리지 않음) → `supabase functions deploy`로 8개 함수 배포 → `lifecycle-sweep`을 하루 1회 이상 부르는 스케줄(pg_cron 또는 Supabase 스케줄, service-role 키로 호출) 설정.
+9. **두 기기 실측** — 개발 클라이언트로 두 기기(또는 에뮬레이터 2대)에서 초대 → 수락 → 같은 D-day → 점유 → 프롬프트 → 미리 보기 → 적용 → 양쪽 같은 방을 확인한다. 이 PR은 이 실기기·실서비스 확인을 하지 않았다.
 
 ## B. 출시 전에 소유자가 닫는 게이트 (구현을 막지 않음)
 

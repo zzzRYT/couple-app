@@ -21,8 +21,10 @@ for (const r of selected) {
 }
 await writeFile('assets/catalog/manifest.json', JSON.stringify(entries, null, 2) + '\n');
 
+// Metro resolves density variants itself, so the bundle requires the base name (x.png picks x@2x.png).
+const bundlePath = (uri) => '../../../../' + uri.replace('@2x.png', '.png');
 const mapLines = entries.flatMap((entry) => [
-  `  ${JSON.stringify(entry.asset_id)}: require(${JSON.stringify('../../../../' + entry.uri)}),`,
-  ...(entry.night_variant ? [`  ${JSON.stringify(entry.asset_id + '__night')}: require(${JSON.stringify('../../../../' + entry.night_variant.uri)}),`] : []),
+  `  ${JSON.stringify(entry.asset_id)}: require(${JSON.stringify(bundlePath(entry.uri))}),`,
+  ...(entry.night_variant ? [`  ${JSON.stringify(entry.asset_id + '__night')}: require(${JSON.stringify(bundlePath(entry.night_variant.uri))}),`] : []),
 ]);
 await writeFile('apps/mobile/src/scene/catalogImages.ts', `// Static requires allow Metro to bundle the catalog images.\nexport const catalogImages: Record<string, number> = {\n${mapLines.join('\n')}\n};\n`);

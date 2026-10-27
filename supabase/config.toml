@@ -427,3 +427,30 @@ enabled = true
 enabled = false
 client_id = ""
 secret = "env(SUPABASE_AUTH_EXTERNAL_KAKAO_SECRET)"
+
+# Every function imports the shared scene contract, whose bare npm specifiers resolve through this import map.
+[functions.spaces]
+import_map = "./functions/deno.json"
+
+[functions.invitations]
+import_map = "./functions/deno.json"
+
+[functions.profile]
+import_map = "./functions/deno.json"
+
+[functions.prompt-session]
+import_map = "./functions/deno.json"
+
+[functions.ai-consent]
+import_map = "./functions/deno.json"
+
+[functions.decoration-previews]
+import_map = "./functions/deno.json"
+
+[functions.room]
+import_map = "./functions/deno.json"
+
+[functions.lifecycle-sweep]
+import_map = "./functions/deno.json"
+verify_jwt = false
+

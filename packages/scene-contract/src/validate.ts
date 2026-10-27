@@ -3,7 +3,7 @@ import scene from '../schemas/room-scene.schema.json' with { type: 'json' };
 import theme from '../schemas/room-theme.schema.json' with { type: 'json' };
 import presentation from '../schemas/room-presentation.schema.json' with { type: 'json' };
 import session from '../schemas/room-prompt-session.schema.json' with { type: 'json' };
-import { ensureSingleMascot } from './mascot';
+import { ensureSingleMascot } from './mascot.ts';
 
 export type ValidationResult = { ok: boolean; errors: { path: string; code: string }[] };
 const ajv = new Ajv2020({ strict: true, allErrors: true });
