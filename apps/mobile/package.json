@@ -42,6 +42,11 @@
     "typescript": "~5.9.2"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "moduleNameMapper": {
+      "^@shopify/react-native-skia$": "<rootDir>/src/test/skiaMock.tsx",
+      "^(?:\\.\\./)+assets/catalog/images/([a-z_]+)\\.png$": "<rootDir>/../../assets/catalog/images/$1@2x.png",
+      "^(?:\\.\\./)+assets/loader/([a-z_]+)\\.png$": "<rootDir>/assets/loader/$1@2x.png"
+    }
   }
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Image, View } from 'react-native';
 import { catalogImages } from '../scene/catalogImages';
 import { useReducedMotion } from './motion';
-const frames = [catalogImages.obj_plant_potted, catalogImages.obj_party_balloon, require('../../assets/loader/window@2x.png'), catalogImages.obj_decor_books];
+const frames = [catalogImages.obj_plant_potted, catalogImages.obj_party_balloon, require('../../assets/loader/window.png'), catalogImages.obj_decor_books];
 export function CycleLoader({ label, reducedMotion }: { label: string; reducedMotion?: boolean }) {
   const systemReduced = useReducedMotion();
   const reduced = reducedMotion ?? systemReduced;

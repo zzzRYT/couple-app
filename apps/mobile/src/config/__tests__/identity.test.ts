@@ -3,7 +3,7 @@ import { join, relative } from 'node:path';
 
 it('keeps the placeholder bundle identifier in identity.ts only', () => {
   const root = join(__dirname, '../../..');
-  const identifier = ['com', 'jinjinstar', 'mopiru'].join('.');
+  const identifier = ['com', 'jinjinstar', 'aroom'].join('.');
   const matches: string[] = [];
   function walk(dir: string) {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {

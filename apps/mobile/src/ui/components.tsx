@@ -2,11 +2,11 @@ import type { ReactNode } from 'react';
 import { Modal, Pressable, Text, TextInput, View, type TextInputProps } from 'react-native';
 import { tokens } from '../theme/tokens';
 const color = tokens.color.app.light.normal;
-type ActionProps = { label: string; onPress: () => void; disabled?: boolean };
-export function Button({ label, onPress, disabled = false, variant = 'primary' }: ActionProps & { variant?: 'primary' | 'secondary' | 'danger' | 'dangerOutline' | 'ghost' }) {
+type ActionProps = { label: string; onPress: () => void; disabled?: boolean; accessibilityLabel?: string; testID?: string };
+export function Button({ label, onPress, disabled = false, variant = 'primary', accessibilityLabel, testID }: ActionProps & { variant?: 'primary' | 'secondary' | 'danger' | 'dangerOutline' | 'ghost' }) {
   const backgroundColor = variant === 'primary' ? color.primary : variant === 'danger' ? color.danger : 'transparent';
   const foreground = variant === 'primary' || variant === 'danger' ? color.onPrimary : variant === 'dangerOutline' ? color.danger : color.text;
-  return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled }} disabled={disabled} onPress={onPress} style={{ minHeight: 44, minWidth: 44, paddingHorizontal: 16, justifyContent: 'center', alignItems: 'center', backgroundColor, borderWidth: variant === 'secondary' || variant === 'dangerOutline' ? 1 : 0, borderColor: foreground, opacity: disabled ? 0.5 : 1 }}><Text style={{ color: foreground }}>{label}</Text></Pressable>;
+  return <Pressable testID={testID} accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? label} accessibilityState={{ disabled }} disabled={disabled} onPress={onPress} style={{ minHeight: 44, minWidth: 44, paddingHorizontal: 16, justifyContent: 'center', alignItems: 'center', backgroundColor, borderWidth: variant === 'secondary' || variant === 'dangerOutline' ? 1 : 0, borderColor: foreground, opacity: disabled ? 0.5 : 1 }}><Text style={{ color: foreground }}>{label}</Text></Pressable>;
 }
 export function TextField({ label, ...props }: TextInputProps & { label: string }) {
   return <TextInput {...props} accessibilityLabel={label} style={[{ minHeight: 44, borderWidth: 1, borderColor: color.border, color: color.text, padding: 10 }, props.style]} />;
