@@ -32,6 +32,7 @@
           "assetId"
         ]
       },
+      "minContains": 0,
       "maxContains": 1,
       "items": {
         "$ref": "#/$defs/object"

@@ -139,9 +139,9 @@
 | `space.err.title` | 공간을 만들지 못했어요 | Couldn't create your space | スペースを作れませんでした |
 | `space.err.body` | 인터넷 연결을 확인하고 다시 시도해 주세요. | Check your internet connection and try again. | インターネット接続を確認して、もう一度お試しください。 |
 | `space.date.pick` | 날짜 고르기 | Choose a date | 日付を選ぶ |
-| `space.year` | 년 |  | 年 |
-| `space.month` | 월 |  | 月 |
-| `space.day` | 일 |  | 日 |
+| `space.year` | 년 | Year | 年 |
+| `space.month` | 월 | Month | 月 |
+| `space.day` | 일 | Day | 日 |
 
 ## S04 초대 코드 생성·공유
 

@@ -1,0 +1,1 @@
+export { OccupancyChip } from './components';
