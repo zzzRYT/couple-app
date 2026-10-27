@@ -11,7 +11,7 @@ const idx = libraryIndex();
 
 test('index describes 6 background, 4 bubble and 4 prop references, all placeholders', () => {
   assert.equal(idx.version, 1);
-  assert.equal(idx.format, 'mopi-shape-v1');
+  assert.equal(idx.format, 'aroomi-shape-v1');
   assert.equal(idx.status, 'placeholder');
   assert.equal(idx.objects.filter(o => o.kind === 'background_piece').length, 6);
   assert.equal(idx.objects.filter(o => o.kind === 'bubble_frame').length, 4);
@@ -42,7 +42,7 @@ for (const o of idx.objects) {
   test(`preview files of ${o.id} are up to date`, () => {
     const doc = readJson(join(LIBRARY, o.file));
     const surface = o.layerHint === 'floor' ? 'floor' : 'wall';
-    for (const bg of ['day', 'night']) assert.equal(readText(join(LIBRARY, 'previews', `${o.id}.${bg}.svg`)), toSvg(doc, { background: bg, surface, scale: 2, pad: 12 }) + '\n', `${o.id}.${bg}.svg is stale; run: node design/tools/mopi-shape/cli.mjs previews`);
+    for (const bg of ['day', 'night']) assert.equal(readText(join(LIBRARY, 'previews', `${o.id}.${bg}.svg`)), toSvg(doc, { background: bg, surface, scale: 2, pad: 12 }) + '\n', `${o.id}.${bg}.svg is stale; run: node design/tools/aroomi-shape/cli.mjs previews`);
   });
 }
 

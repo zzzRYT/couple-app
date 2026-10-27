@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// mopi-shape CLI (zero dependencies).
+// aroomi-shape CLI (zero dependencies).
 //   node cli.mjs validate <files...>
 //   node cli.mjs render <file> <out.svg> [--bg day|night|none] [--surface wall|floor] [--scale n] [--pad n]
 //   node cli.mjs check-samples
@@ -117,7 +117,7 @@ body{margin:0;background:#E9E2D8;font:14px -apple-system,system-ui,sans-serif;co
 
 export function renderContactSheet(dir = LIBRARY_DIR, outPng = join(dir, 'contact-sheet.png'), which = 'objects') {
   const { html, W, H } = buildContactSheetHtml(dir, which);
-  const tmp = mkdtempSync(join(tmpdir(), 'mopi-sheet-'));
+  const tmp = mkdtempSync(join(tmpdir(), 'aroomi-sheet-'));
   try {
     const page = join(tmp, 'sheet.html');
     writeFileSync(page, html);

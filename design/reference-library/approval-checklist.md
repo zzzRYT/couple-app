@@ -2,7 +2,7 @@
 
 현재 `objects/*.json` 14개(배경 6, 말풍선 4, 소품 4)는 **자리표시 스케치**예요. 이 목록을 모두 확인하고 서명한 뒤에야 `status`를 `placeholder`에서 `approved`로 바꾸고(`reference-library.json`과 각 항목), 모델 프롬프트의 기준 그림으로 확정해요. 일부 오브젝트만 승인했다면 그것만 `approved`로 바꾸고 나머지는 `placeholder`로 남겨요.
 
-확인에 쓰는 것: `contact-sheet.png`, `previews/*.svg`, `style-spec.md`, 그리고 `node design/tools/mopi-shape/cli.mjs check-samples`, `style-check`.
+확인에 쓰는 것: `contact-sheet.png`, `previews/*.svg`, `style-spec.md`, 그리고 `node design/tools/aroomi-shape/cli.mjs check-samples`, `style-check`.
 
 ## 1. 스타일 일관성
 
@@ -17,7 +17,7 @@
 
 - [ ] 각 오브젝트의 미리 보기 PNG/SVG로 **역이미지 검색**을 했어요(검색 도구·날짜·결과 링크를 아래 기록란에 적었어요).
 - [ ] 유명 캐릭터, 브랜드, 로고, 상표가 있는 물건, 특정 작가의 대표 그림과 닮은 곳이 없어요(말풍선 꼬리·리본·구름처럼 흔한 소재라도 고유한 조합이 닮지 않았는지 봐요).
-- [ ] **마스코트(모피)와 닮은 요소가 없어요**: 달걀·감자 몸통, 점 눈과 분홍 볼, 파란 어깨띠, 노란 별 핀. 특히 **소품 4개**(`prop-*`)를 마스코트 이미지 옆에 놓고 비교했어요(실루엣·색 조합·눈 두 개 + 입 같은 배치가 겹치지 않아요).
+- [ ] **마스코트(아루미)와 닮은 요소가 없어요**: 달걀·감자 몸통, 점 눈과 분홍 볼, 파란 어깨띠, 노란 별 핀. 특히 **소품 4개**(`prop-*`)를 마스코트 이미지 옆에 놓고 비교했어요(실루엣·색 조합·눈 두 개 + 입 같은 배치가 겹치지 않아요).
 - [ ] 소품 4개에 얼굴·표정·팔다리·사람/동물 모양이 없고, 앱 안의 다른 캐릭터와도 닮지 않았어요.
 - [ ] `PROP_FACE_LIKE` 검증은 어림 점검일 뿐이라는 것을 알고, 소품이 새로 늘어나면 이 항목을 사람 눈으로 다시 확인해요.
 - [ ] 얼굴(눈·코·입), 글자·숫자·기호(책등 포함), QR 같은 무늬가 없어요.
@@ -48,8 +48,8 @@
 
 ## 6. 파일·검증
 
-- [ ] `node design/tools/mopi-shape/cli.mjs check-samples`가 실패 없이 끝나요.
-- [ ] `node --test design/tools/mopi-shape/test/`가 모두 통과해요.
+- [ ] `node design/tools/aroomi-shape/cli.mjs check-samples`가 실패 없이 끝나요.
+- [ ] `node --test design/tools/aroomi-shape/test/`가 모두 통과해요.
 - [ ] `objects/*.json` 파일 크기가 각각 3 KB 이하예요(현재 0.8~2.6 KB, 소품 0.8~1.8 KB). 요청 종류별 프롬프트가 예산(약 6k 토큰) 안이에요(배경 약 11.9 KB ≈ 4.0k 토큰, 소품 약 8.0 KB ≈ 2.7k, 말풍선 약 6.5 KB ≈ 2.2k 토큰 어림). 14개 전부를 한 번에 넣으면 약 20.5 KB로 예산을 넘어요.
 - [ ] 바뀐 오브젝트가 있다면 `previews`와 `contact-sheet.png`를 다시 만들었어요.
 - [ ] 접근성: 배경 조각과 말풍선은 장식이에요. 의미 있는 정보를 색이나 모양으로만 전달하지 않아요(`label`은 보조 기술용 이름으로 쓰이니 의미가 맞아요).

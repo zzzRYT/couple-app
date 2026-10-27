@@ -74,13 +74,13 @@
 | `onb.p1.body` | 함께한 날짜를 정하면 메인 화면에서 오늘이 며칠째인지 볼 수 있어요. | Set the date you got together and see which day it is on the home screen. | 一緒に過ごし始めた日を決めると、メイン画面で今日が何日目か分かります。 |
 | `onb.p2.title` | 프롬프트로 우리 방을 꾸며요 | Decorate your room with a prompt | プロンプトでふたりの部屋を飾ろう |
 | `onb.p2.body` | 원하는 분위기를 글로 적으면 미리 보기가 나와요. 마음에 들 때만 적용해요. | Describe the mood you want and see a preview. Apply it only when you like it. | 好きな雰囲気を書くとプレビューが出ます。気に入ったときだけ反映できます。 |
-| `onb.p3.title` | 방에는 모피가 함께 있어요 | Mopi lives in your room | 部屋にはモピがいます |
+| `onb.p3.title` | 방에는 아루미가 함께 있어요 | Aroomi lives in your room | 部屋にはアルーミがいます |
 | `onb.p3.body` | 방 한쪽에서 두 사람을 반겨 줘요. | It greets the two of you from a corner of the room. | 部屋の一角で、ふたりを迎えてくれます。 |
 | `onb.start` | 시작하기 | Get started | はじめる |
 | `onb.hasAccount` | 이미 계정이 있어요 | I already have an account | アカウントをお持ちの方 |
 | `onb.legal.lead` | 계속하면 만 14세 이상이며 아래 내용에 동의하는 것으로 봐요. | By continuing, you confirm you are 14 or older and agree to the following. | 続けると、14歳以上であり、以下に同意したものとみなされます。 |
 | `onb.legal.links` | 이용약관 · 개인정보 처리방침 | Terms of Use · Privacy Policy | 利用規約 · プライバシーポリシー |
-| `onb.age` | 만 14세 이상만 사용할 수 있어요. | You must be 14 or older to use Mopiru. | ご利用は14歳以上の方に限ります。 |
+| `onb.age` | 만 14세 이상만 사용할 수 있어요. | You must be 14 or older to use Aroom. | ご利用は14歳以上の方に限ります。 |
 | `onb.back.title` | 다시 만나서 반가워요 | Welcome back | おかえりなさい |
 | `onb.back.body` | 지난번에 쓴 방법으로 로그인해 주세요. | Sign in the way you did last time. | 前回と同じ方法でログインしてください。 |
 | `onb.lastUsed` | 최근 사용 | Last used | 前回の方法 |
@@ -96,7 +96,7 @@
 | `login.apple` | Apple로 계속하기 | Continue with Apple | Appleで続ける |
 | `login.email` | 이메일로 계속하기 | Continue with email | メールで続ける |
 | `login.redirect.title` | 카카오로 이동하고 있어요 | Opening Kakao | Kakaoに移動しています |
-| `login.redirect.body` | 로그인을 마치면 모피루로 돌아와요. | You'll come back to Mopiru after signing in. | ログインが終わると、モピルに戻ります。 |
+| `login.redirect.body` | 로그인을 마치면 아룸으로 돌아와요. | You'll come back to Aroom after signing in. | ログインが終わると、アルームに戻ります。 |
 | `login.processing` | 로그인하는 중이에요 | Signing you in | ログインしています |
 | `login.cancelled.title` | 로그인을 취소했어요 | Sign-in was canceled | ログインをキャンセルしました |
 | `login.cancelled.body` | 원할 때 다시 시도할 수 있어요. | You can try again whenever you like. | いつでももう一度試せます。 |
@@ -209,7 +209,7 @@
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
-| `main.appName` | 모피루 | Mopiru | モピル |
+| `main.appName` | 아룸 | Aroom | アルーム |
 | `brand.tagline` | Our little world, together. | Our little world, together. | Our little world, together. |
 | `main.invitePending.title` | 상대를 기다리고 있어요 | Waiting for your partner | パートナーを待っています |
 | `main.invitePending.body` | 초대 코드는 {h}시간 뒤에 만료돼요. | The invite code expires in {h} hours. | 招待コードはあと{h}時間で期限切れになります。 |
@@ -234,7 +234,7 @@
 | `main.offline.body` | 마지막으로 확인한 내용을 보여 드리고 있어요. 방 꾸미기는 연결된 뒤에 할 수 있어요. | Showing what was last loaded. You can decorate once you're back online. | 最後に確認した内容を表示しています。飾り付けは、接続が戻ってからできます。 |
 | `main.lastSeen` | 마지막 확인 {time} | Last checked {time} | 最終確認 {time} |
 | `main.lastSeen.sample` | 오후 9:12 | 9:12 PM | 21:12 |
-| `main.mascot.alt` | 모피 | Mopi | モピ |
+| `main.mascot.alt` | 아루미 | Aroomi | アルーミ |
 
 ## S08 공유 프롬프트 세션
 
@@ -348,9 +348,9 @@
 | `consent.purpose.label` | 사용 목적 | Purpose | 利用目的 |
 | `consent.purpose.body` | 요청에 맞는 방 꾸미기 미리 보기를 만드는 것 | To create a room preview that matches your request | リクエストに合った部屋のプレビューを作ること |
 | `consent.processor.label` | 처리하는 곳 | Processed by | 処理する事業者 |
-| `consent.processor.body` | Anthropic PBC(미국). 모피루 서버를 거쳐 전송돼요. | Anthropic PBC (United States). Sent through Mopiru's servers. | Anthropic PBC（米国）。モピルのサーバーを経由して送信されます。 |
+| `consent.processor.body` | Anthropic PBC(미국). 아룸 서버를 거쳐 전송돼요. | Anthropic PBC (United States). Sent through Aroom's servers. | Anthropic PBC（米国）。アルームのサーバーを経由して送信されます。 |
 | `consent.keep.label` | 보관과 철회 | Retention and withdrawal | 保管と撤回 |
-| `consent.keep.body` | 적용한 요청 글은 30일, 적용하지 않은 미리 보기는 24시간 뒤 모피루 서버에서 삭제돼요. 설정의 'AI 처리 동의'에서 언제든 철회할 수 있어요. | Applied requests are deleted from Mopiru's servers after 30 days, and unapplied previews after 24 hours. You can withdraw any time in Settings under "AI processing consent". | 反映したリクエスト文は30日後、反映しなかったプレビューは24時間後に、モピルのサーバーから削除されます。設定の「AI処理への同意」からいつでも撤回できます。 |
+| `consent.keep.body` | 적용한 요청 글은 30일, 적용하지 않은 미리 보기는 24시간 뒤 아룸 서버에서 삭제돼요. 설정의 'AI 처리 동의'에서 언제든 철회할 수 있어요. | Applied requests are deleted from Aroom's servers after 30 days, and unapplied previews after 24 hours. You can withdraw any time in Settings under "AI processing consent". | 反映したリクエスト文は30日後、反映しなかったプレビューは24時間後に、アルームのサーバーから削除されます。設定の「AI処理への同意」からいつでも撤回できます。 |
 | `consent.provider.keep` | 해외 사업자의 보관 기간: [법무 확인 후 입력] | Provider retention period: [fill in after legal review] | 海外事業者の保管期間：[法務確認後に記入] |
 | `consent.couple.label` | 두 사람이 함께 쓰는 방이에요 | This room is shared by two | ふたりで使う部屋です |
 | `consent.couple.body` | 동의는 사람마다 따로 해요. 내 동의는 내가 보내는 요청에만 적용돼요. 요청에는 두 사람이 함께 꾸민 방 배치가 들어가요. | Consent is given per person. Yours applies only to requests you send. Requests include the room layout you two decorated together. | 同意は一人ひとり別々です。あなたの同意は、あなたが送るリクエストにのみ適用されます。リクエストには、ふたりで飾った部屋の配置が含まれます。 |
@@ -513,8 +513,8 @@
 | `gen.refuse.people` | 실제 사람이나 유명인이 나오는 그림은 만들 수 없어요. 대신 '구름 사이로 달이 보이는 창밖 풍경'처럼 풍경이나 무늬로 말해 주세요. | We can't make pictures of real people or celebrities. Try a scene or pattern instead, like "a window view with the moon between clouds." | 実在の人物や有名人の絵は作れません。「雲の間に月が見える窓の外の景色」のように、風景や模様で伝えてみてください。 |
 | `gen.refuse.unsafe` | 성적이거나 폭력적이거나 누군가를 해치거나 차별하는 내용은 만들 수 없어요. 포근한 분위기의 장식으로 다시 말해 주세요. | We can't make anything sexual, violent, hateful or harmful. Try describing something cozy instead. | 性的・暴力的・差別的な内容や、誰かを傷つける内容は作れません。ほっとするような飾りで言い直してみてください。 |
 | `gen.refuse.personal` | 전화번호, 주소, 링크, QR 코드나 글자가 많은 그림은 만들 수 없어요. 글자는 방의 짧은 문구로 따로 넣을 수 있어요. | We can't make pictures with phone numbers, addresses, links, QR codes or lots of text. You can add short text to the room separately. | 電話番号・住所・リンク・QRコード・文字の多い絵は作れません。文字は部屋の短い文として別に入れられます。 |
-| `gen.refuse.photo` | 사진처럼 실제 같은 이미지는 만들 수 없어요. 모피의 세계처럼 부드러운 손그림 느낌으로 말해 주세요. | We can't make realistic, photo-like images. Describe something soft and hand-drawn, like Mopi's world. | 写真のようにリアルな画像は作れません。モピの世界のような、やわらかな手描き風で伝えてみてください。 |
-| `gen.refuse.purpose` | 배경, 말풍선, 작은 방 소품 장식만 만들 수 있어요. 캐릭터는 만들 수 없고, 모피는 바꿀 수 없어요. '벽 아래 물결 띠'나 '동그란 쿠션'처럼 말해 주세요. | We can only make backgrounds, speech-bubble frames and small room props. We can't make characters, and Mopi can't be changed. Try something like "a wavy band along the wall" or "a round cushion." | 作れるのは背景、吹き出しの飾り、小さな部屋の小物だけです。キャラクターは作れず、モピも変えられません。「壁の下の波模様の帯」や「丸いクッション」のように伝えてみてください。 |
+| `gen.refuse.photo` | 사진처럼 실제 같은 이미지는 만들 수 없어요. 아루미의 세계처럼 부드러운 손그림 느낌으로 말해 주세요. | We can't make realistic, photo-like images. Describe something soft and hand-drawn, like Aroomi's world. | 写真のようにリアルな画像は作れません。アルーミの世界のような、やわらかな手描き風で伝えてみてください。 |
+| `gen.refuse.purpose` | 배경, 말풍선, 작은 방 소품 장식만 만들 수 있어요. 캐릭터는 만들 수 없고, 아루미는 바꿀 수 없어요. '벽 아래 물결 띠'나 '동그란 쿠션'처럼 말해 주세요. | We can only make backgrounds, speech-bubble frames and small room props. We can't make characters, and Aroomi can't be changed. Try something like "a wavy band along the wall" or "a round cushion." | 作れるのは背景、吹き出しの飾り、小さな部屋の小物だけです。キャラクターは作れず、アルーミも変えられません。「壁の下の波模様の帯」や「丸いクッション」のように伝えてみてください。 |
 | `gen.refuse.note` | 이번 요청은 오늘 횟수에 들어가지 않았어요. | This request didn't count toward today's limit. | このリクエストは今日の回数に含まれていません。 |
 | `gen.refuse.action` | 다시 말해 보기 | Try again | 言い直す |
 | `gen.fail.title` | 이번에는 만들지 못했어요 | We couldn't make it this time | 今回は作れませんでした |
@@ -606,7 +606,7 @@
 | `a11y.settings` | 설정 열기 | Open settings | 設定を開く |
 | `a11y.decorate` | 방 꾸미기 열기 | Open room decorating | 部屋の飾り付けを開く |
 | `a11y.undo` | 이전 미리 보기로 되돌리기 | Go back to the previous preview | 前のプレビューに戻す |
-| `a11y.mascot` | 모피, {pose} | Mopi, {pose} | モピ、{pose} |
+| `a11y.mascot` | 아루미, {pose} | Aroomi, {pose} | アルーミ、{pose} |
 | `a11y.send` | 요청 보내기 | Send request | リクエストを送信 |
 | `a11y.input` | 꾸미기 요청 입력칸 | Decorating request field | 飾り付けリクエストの入力欄 |
 | `a11y.input.ro` | {name}님이 꾸미는 중이라 입력할 수 없어요 | Can't type: {name} is decorating | 入力できません：{name}さんが飾っています |
@@ -667,7 +667,7 @@
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
-| `mascot.name` | 모피 | Mopi | モピ |
+| `mascot.name` | 아루미 | Aroomi | アルーミ |
 
 ## 에셋 이름(마스코트 11 · 오브젝트 18)
 
@@ -737,7 +737,7 @@
 | `lic.notokr` | Noto Sans KR · Noto 프로젝트 | Noto Sans KR · The Noto Project | Noto Sans KR · Noto プロジェクト |
 | `lic.notojp` | Noto Sans JP · Noto 프로젝트 | Noto Sans JP · The Noto Project | Noto Sans JP · Noto プロジェクト |
 | `lic.view` | 전문 보기 | View full text | 全文を見る |
-| `lic.note` | 모피루의 글꼴은 위 라이선스에 따라 앱에 포함되어 있어요. | The fonts in Mopiru are bundled under the licenses above. | モピルのフォントは、上記のライセンスに基づいてアプリに同梱されています。 |
+| `lic.note` | 아룸의 글꼴은 위 라이선스에 따라 앱에 포함되어 있어요. | The fonts in Aroom are bundled under the licenses above. | アルームのフォントは、上記のライセンスに基づいてアプリに同梱されています。 |
 
 ## cover
 
@@ -775,8 +775,8 @@
 | `milestone.label.anniv` | {n}주년 | {n}-year anniversary | {n}周年 |
 | `milestone.title.day` | {n}일을 함께했어요 | {n} days together | {n}日目です |
 | `milestone.title.anniv` | {n}주년을 맞았어요 | Your {n}-year anniversary | {n}周年です |
-| `milestone.body.today` | 모피가 두 사람의 오늘을 함께 축하해요. | Mopi is celebrating today with the two of you. | モピがふたりの今日をいっしょにお祝いします。 |
-| `milestone.body.late` | {date}이 기념일이었어요. 모피가 조금 늦게 축하해요. | Your milestone was on {date}. Mopi is celebrating a little late. | 記念日は{date}でした。モピが少し遅れてお祝いします。 |
+| `milestone.body.today` | 아루미가 두 사람의 오늘을 함께 축하해요. | Aroomi is celebrating today with the two of you. | アルーミがふたりの今日をいっしょにお祝いします。 |
+| `milestone.body.late` | {date}이 기념일이었어요. 아루미가 조금 늦게 축하해요. | Your milestone was on {date}. Aroomi is celebrating a little late. | 記念日は{date}でした。アルーミが少し遅れてお祝いします。 |
 | `milestone.action.suggest` | 기념 방 꾸미기 보기 | See a decorating idea | 記念の飾り付けを見る |
 | `milestone.bubble.day` | {n}일째, 축하해요! | Day {n}! Congrats! | {n}日目、おめでとう！ |
 | `milestone.bubble.anniv` | {n}주년, 축하해요! | {n}-year anniversary! Congrats! | {n}周年、おめでとう！ |
@@ -786,23 +786,23 @@
 | `milestone.suggest.full` | 방이 가득 차서 소품을 놓을 수 없어요. 소품을 줄이면 볼 수 있어요. | The room is full, so nothing can be added. Remove an item to see the idea. | 部屋がいっぱいで小物を置けません。小物を減らすと見られます。 |
 | `milestone.suggest.partial` | 방에 자리가 모자라 소품 {n}개만 놓았어요. | The room is nearly full, so only {n} items were placed. | 部屋の空きが足りず、小物を{n}個だけ置きました。 |
 | `milestone.preview.badge` | {label} 제안 | {label} idea | {label}の提案 |
-| `milestone.msg.suggest` | 모피가 {label} 기념 꾸미기를 제안했어요. | Mopi suggested a decoration for {label}. | モピが{label}の飾り付けを提案しました。 |
+| `milestone.msg.suggest` | 아루미가 {label} 기념 꾸미기를 제안했어요. | Aroomi suggested a decoration for {label}. | アルーミが{label}の飾り付けを提案しました。 |
 | `milestone.preview.note` | AI를 쓰지 않는 앱의 제안이에요. 마음에 들 때만 적용해요. | This is the app's own idea, with no AI. Apply it only if you like it. | AIを使わないアプリからの提案です。気に入ったときだけ反映できます。 |
 | `milestone.preview.changes` | 케이크·풍선·리본 같은 소품 {n}개와 문구 1개 | {n} party items (cake, balloons, ribbon) and 1 text | ケーキ・風船・リボンなどの小物{n}個と文言1つ |
 | `milestone.plate.day` | 우리 {n}일 | Our day {n} | ふたりの{n}日 |
 | `milestone.plate.anniv` | 우리 {n}주년 | Our {n}-year anniversary | ふたりの{n}周年 |
 | `a11y.milestone.card` | {label} 축하 카드 | {label} celebration card | {label}のお祝いカード |
 | `a11y.milestone.close` | 축하 카드 닫기 | Close the celebration card | お祝いカードを閉じる |
-| `a11y.milestone.bubble` | 모피의 말풍선: {text} | Mopi's speech bubble: {text} | モピの吹き出し：{text} |
+| `a11y.milestone.bubble` | 아루미의 말풍선: {text} | Aroomi's speech bubble: {text} | アルーミの吹き出し：{text} |
 
 ## 마일스톤 알림 · 마스코트 되살림
 
-옵트인 기기 예약 로컬 알림의 문구(알림 본문은 잠금 화면에 보이므로 이름·날짜·일수가 없는 한 문장)와 설정 행, 방의 "모피 다시 부르기" 컨트롤이에요. 알림 제목은 `main.appName`을 써요.
+옵트인 기기 예약 로컬 알림의 문구(알림 본문은 잠금 화면에 보이므로 이름·날짜·일수가 없는 한 문장)와 설정 행, 방의 "아루미 다시 부르기" 컨트롤이에요. 알림 제목은 `main.appName`을 써요.
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
-| `notif.body` | 모피가 축하할 일이 생겼어요. | Mopi has something to celebrate. | モピからお祝いのお知らせです。 |
-| `notif.prompt.title` | 기념일에 모피가 알려 줄까요? | Want Mopi to remind you on milestones? | 記念日にモピがお知らせしましょうか？ |
+| `notif.body` | 아루미가 축하할 일이 생겼어요. | Aroomi has something to celebrate. | アルーミからお祝いのお知らせです。 |
+| `notif.prompt.title` | 기념일에 아루미가 알려 줄까요? | Want Aroomi to remind you on milestones? | 記念日にアルーミがお知らせしましょうか？ |
 | `notif.prompt.body` | 50일, 100일, 1주년 같은 날 오전 9시(방 시간대)에 이 기기로 알려 줘요. 알림에는 이름이나 날짜를 담지 않고, 설정에서 언제든 끌 수 있어요. | On days like 50, 100 or your anniversary, this device will notify you at 9:00 am (room time zone). The notification has no names or dates, and you can turn it off anytime in Settings. | 50日・100日・1周年などの日の午前9時（部屋のタイムゾーン）に、この端末でお知らせします。通知に名前や日付は入れず、設定でいつでもオフにできます。 |
 | `notif.prompt.allow` | 알림 켜기 | Turn on | オンにする |
 | `notif.prompt.later` | 다음에 | Not now | あとで |
@@ -814,17 +814,17 @@
 | `set.notif.sub.denied` | 기기에서 알림이 꺼져 있어요 | Notifications are off on this device | 端末で通知がオフです |
 | `set.notif.help` | 다가오는 기념일을 이 기기에 예약해 두고 오전 9시에 알려 줘요. 상대 기기는 따로 정해요. | Upcoming milestones are scheduled on this device and delivered at 9:00 am. Your partner's device is set separately. | 近づく記念日をこの端末に予約し、午前9時にお知らせします。パートナーの端末は別に設定します。 |
 | `set.notif.denied.title` | 알림이 꺼져 있어요 | Notifications are turned off | 通知がオフです |
-| `set.notif.denied.body` | 기기 설정에서 모피루 알림을 켜면 기념일에 받을 수 있어요. | Turn on Mopiru notifications in your device settings to receive them on milestone days. | 端末の設定でモピルの通知をオンにすると、記念日に受け取れます。 |
+| `set.notif.denied.body` | 기기 설정에서 아룸 알림을 켜면 기념일에 받을 수 있어요. | Turn on Aroom notifications in your device settings to receive them on milestone days. | 端末の設定でアルームの通知をオンにすると、記念日に受け取れます。 |
 | `set.notif.denied.action` | 기기 설정 열기 | Open device settings | 端末の設定を開く |
-| `room.mascot.recall` | 모피 다시 부르기 | Call Mopi back | モピを呼び戻す |
-| `room.mascot.missing` | 방에 모피가 없어요. 누르면 기본 자리로 돌아와요. | Mopi isn't in the room. Tap to bring Mopi back to the default spot. | 部屋にモピがいません。タップすると元の位置に戻ります。 |
+| `room.mascot.recall` | 아루미 다시 부르기 | Call Aroomi back | アルーミを呼び戻す |
+| `room.mascot.missing` | 방에 아루미가 없어요. 누르면 기본 자리로 돌아와요. | Aroomi isn't in the room. Tap to bring Aroomi back to the default spot. | 部屋にアルーミがいません。タップすると元の位置に戻ります。 |
 
 ## 앱 이름 · 캐릭터 이름 · 슬로건 (결정 반영)
 
 | 항목 | 한국어 | English | 日本語 | 상태 |
 |---|---|---|---|---|
-| 앱 이름 (`main.appName`) | 모피루 | Mopiru | モピル | 소유자 승인(일본어 표기 포함). 이름 사용 가능 여부는 **확인 전** |
-| 캐릭터 이름 (`mascot.name`) | 모피 | Mopi | モピ | 소유자 승인(일본어 표기 포함) |
+| 앱 이름 (`main.appName`) | 아룸 | Aroom | アルーム | 캡틴 결정. 일본어 アルーム는 초안(G4 원어민 검수 전). 이름 사용 가능 여부는 **확인 전** |
+| 캐릭터 이름 (`mascot.name`) | 아루미 | Aroomi | アルーミ | 캡틴 결정. 일본어 アルーミ는 초안(G4 원어민 검수 전, 'アルミ'(알루미늄)와 구별) |
 | 슬로건 (`brand.tagline`) | Our little world, together. | Our little world, together. | Our little world, together. | 영어 원문 결정. 한국어·일본어 초안은 승인됐지만 화면에는 아직 영어를 써요(번역을 넣을 때 이 칸만 바꿔요) |
 
 **한국어·일본어 슬로건 번역 초안 (소유자 승인 · 초안, 화면에는 아직 쓰지 않았어요)**

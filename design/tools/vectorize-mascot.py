@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-vectorize-mascot.py — auto-trace Mopi's harmonized raster poses into SVG (and PDF) with the VectorCraft command-line tool.
+vectorize-mascot.py — auto-trace Aroomi's harmonized raster poses into SVG (and PDF) with the VectorCraft command-line tool.
 
 Input : design/mascot/harmonized/mascot_{pose}@3x.png   (the 11 poses, direction-A look of the supplied AI-generated master)
 Output: design/mascot/vector/**  (SVG per pose, the app-icon faces (A selected, B rejected), PDFs, vector-report.json, preview/vector-vs-raster.png)
@@ -228,7 +228,7 @@ def sheet(out_dir, report, icon_files):
     H3 = 40 + 1024 * mh // mw + 60
     img = Image.new('RGB', (W, H1 + H2 + H3 + 60), PAPER)
     d = ImageDraw.Draw(img)
-    d.text((gap, 14), 'Mopi - raster (left) vs auto-traced vector (right), rendered by resvg; vector is not redrawn', fill=INK, font=font(20))
+    d.text((gap, 14), 'Aroomi - raster (left) vs auto-traced vector (right), rendered by resvg; vector is not redrawn', fill=INK, font=font(20))
     for i, p in enumerate(POSES):
         r, c = divmod(i, cols)
         x = gap + c * (2 * cw + 2 * gap)
@@ -294,13 +294,13 @@ def main():
     report = dict(tool='vectorize-mascot.py', vectorcraft_cli=version, preset=a.preset, poses={}, icon={}, pdf={}, problems=[])
     icon_files = {f'{k}_{i}': (f'icon_face_{i}.svg' if k == 'face' else f'icon_{i}_1024.svg') for i in ICONS for k in ('face', 'icon')}
 
-    tmp = tempfile.mkdtemp(prefix='mopi-vec-')
+    tmp = tempfile.mkdtemp(prefix='aroomi-vec-')
     try:
         if not a.check_only:
             for p in POSES:
                 raw = os.path.join(tmp, f'{p}.svg')
                 info = trace(a.cli, os.path.join(ART, f'mascot_{p}@3x.png'), raw, a.preset)
-                text = tidy(open(raw, encoding='utf-8').read(), f'mopi-{p}', f'Mopi - {p} (traced vector)', desc, roles)
+                text = tidy(open(raw, encoding='utf-8').read(), f'aroomi-{p}', f'Aroomi - {p} (traced vector)', desc, roles)
                 open(os.path.join(out, f'mascot_{p}.svg'), 'w', encoding='utf-8').write(text)
                 report['poses'][p] = dict(anchors=info['anchors'], trace_warnings=info.get('warnings', []))
             src = Image.open(os.path.join(ART, 'mascot_wave_main@3x.png')).convert('RGBA')
@@ -310,13 +310,13 @@ def main():
                 src.crop((x0, y0, x0 + side, y0 + side)).save(cpng)
                 raw = os.path.join(tmp, f'icon_face_{iid}.svg')
                 info = trace(a.cli, cpng, raw, a.preset)
-                face = tidy(open(raw, encoding='utf-8').read(), f'mopi-icon-face-{iid}', f'Mopi - app icon face {iid} (traced vector)', desc, roles)
+                face = tidy(open(raw, encoding='utf-8').read(), f'aroomi-icon-face-{iid}', f'Aroomi - app icon face {iid} (traced vector)', desc, roles)
                 open(os.path.join(out, icon_files[f'face_{iid}']), 'w', encoding='utf-8').write(face)
                 report['icon'][f'face_{iid}'] = dict(anchors=info['anchors'], window=[x0, y0, side, side])
                 # ground colour + the face, 1024 x 1024, no rounded corners, no alpha needed
                 icon = ('<?xml version="1.0" encoding="UTF-8"?>\n'
                         '<svg xmlns="%s" width="1024" height="1024" viewBox="0 0 1024 1024">\n'
-                        '  <title>Mopi - app icon %s, %s (traced vector)</title>\n  <desc>%s</desc>\n'
+                        '  <title>Aroomi - app icon %s, %s (traced vector)</title>\n  <desc>%s</desc>\n'
                         '  <rect id="ground" width="1024" height="1024" fill="%s"/>\n'
                         '  <g id="face" transform="scale(%.6f)">\n%s\n  </g>\n</svg>\n') % (NS, iid, ic['status'], desc, ic['ground'], 1024 / side, inner(face))
                 open(os.path.join(out, icon_files[f'icon_{iid}']), 'w', encoding='utf-8').write(icon)

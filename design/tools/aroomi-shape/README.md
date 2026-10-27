@@ -1,8 +1,8 @@
-# mopi-shape — 생성 오브젝트 검증기와 기준 렌더러
+# aroomi-shape — 생성 오브젝트 검증기와 기준 렌더러
 
 멤버가 프롬프트를 쓰면 Claude가 **방 배경 조각**, **말풍선 틀**, **작은 방 소품** 같은 작은 2D 장식을 만들어 줘요. 이 폴더는 그 결과를 안전하게 받는 쪽의 도구예요.
 
-- 모델이 돌려주는 것은 **코드나 SVG 글이 아니라 데이터**(`mopi-shape-v1` JSON 도형 목록)예요.
+- 모델이 돌려주는 것은 **코드나 SVG 글이 아니라 데이터**(`aroomi-shape-v1` JSON 도형 목록)예요.
 - 서버가 이 데이터를 **검증하고 정리(normalize)** 하고, 앱은 **검증이 끝난 데이터만** 그려요.
 - 헌법 규칙: *모델이 만든 데이터는 절대 실행되는 코드가 아니다.* 그래서 형식 자체에 글자·이미지·참조·변형·그라디언트·투명도·애니메이션이 없어요.
 
@@ -25,39 +25,39 @@
 
 ```sh
 # 검증 (잘못이면 코드와 위치를 보여 주고 종료 코드 1)
-node design/tools/mopi-shape/cli.mjs validate design/reference-library/objects/*.json
+node design/tools/aroomi-shape/cli.mjs validate design/reference-library/objects/*.json
 
 # 그리기 (낮 벽 위, 가장자리 12칸 여유, 2배)
-node design/tools/mopi-shape/cli.mjs render design/reference-library/objects/bg-round-rug.json /tmp/rug.svg --bg day --surface floor --pad 12 --scale 2
+node design/tools/aroomi-shape/cli.mjs render design/reference-library/objects/bg-round-rug.json /tmp/rug.svg --bg day --surface floor --pad 12 --scale 2
 
 # 샘플 전체와 기준 라이브러리 확인
-node design/tools/mopi-shape/cli.mjs check-samples
+node design/tools/aroomi-shape/cli.mjs check-samples
 
 # 미리 보기 SVG와 모아보기 PNG 다시 만들기 (PNG는 헤드리스 Chrome이 필요해요)
-node design/tools/mopi-shape/cli.mjs previews
-node design/tools/mopi-shape/cli.mjs contact-sheet
+node design/tools/aroomi-shape/cli.mjs previews
+node design/tools/aroomi-shape/cli.mjs contact-sheet
 
 # 스타일 점검
-node design/tools/mopi-shape/cli.mjs style-check
+node design/tools/aroomi-shape/cli.mjs style-check
 
 # 테스트
-node --test design/tools/mopi-shape/test/
+node --test design/tools/aroomi-shape/test/
 ```
 
 테스트 안내:
 
-- Node 22는 디렉터리 인자를 모듈 경로로 보기 때문에 `test/index.js`가 `*.test.mjs`를 모두 불러와요. `node --test design/tools/mopi-shape/test/*.test.mjs`(glob)도 같은 결과예요. **둘을 한 번에 섞어 쓰지는 마세요**(두 번 돌아요).
+- Node 22는 디렉터리 인자를 모듈 경로로 보기 때문에 `test/index.js`가 `*.test.mjs`를 모두 불러와요. `node --test design/tools/aroomi-shape/test/*.test.mjs`(glob)도 같은 결과예요. **둘을 한 번에 섞어 쓰지는 마세요**(두 번 돌아요).
 - JSON Schema와 검증기가 구조에서 같은 판단을 하는지 `ajv`로 교차 확인하는 테스트가 있어요. 이 저장소는 아무것도 설치하지 않으니, 이미 있는 `ajv/dist/2020.js` 경로를 `AJV_PATH`로 알려 주면 돌고 없으면 건너뛰어요.
-  `AJV_PATH=/path/to/node_modules/ajv/dist/2020.js node --test design/tools/mopi-shape/test/`
+  `AJV_PATH=/path/to/node_modules/ajv/dist/2020.js node --test design/tools/aroomi-shape/test/`
 
-## 문서 형식 `mopi-shape-v1`
+## 문서 형식 `aroomi-shape-v1`
 
 모든 객체는 `additionalProperties:false`예요(모르는 키는 거절).
 
 | 필드 | 규칙 |
 |---|---|
 | `schemaVersion` | 정수 `1` |
-| `format` | 문자열 `"mopi-shape-v1"` |
+| `format` | 문자열 `"aroomi-shape-v1"` |
 | `kind` | `"background_piece"`, `"bubble_frame"`, `"prop"` |
 | `layerHint` | `background_piece`에 **필수**: `wall` `floor` `backdrop` `window_view`. `prop`에 **필수**: `floor` `wall` `shelf`(놓는 자리 힌트). `bubble_frame`에는 **금지**. 종류에 안 맞는 값은 `KIND_FIELDS`, 아예 모르는 값은 `SCHEMA_TYPE` |
 | `label` | 1~24자. 한글·영문·가나·숫자·공백·`. , ' -` 만. URL 같은 글(`://` `www.` `.com`…), `@` `<` `>`, 연속 숫자 5개 이상(또는 숫자 합계 7개 이상), 제어 문자는 거절 |

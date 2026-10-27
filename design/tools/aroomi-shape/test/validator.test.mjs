@@ -2,8 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { validateGeneratedObject as V, validateJsonText as VT, contrastRatio, parsePath, serializePath, normalizeGeneratedObject, labelProblem, LIMITS, PALETTE_ALLOWLIST } from '../validate.mjs';
 
-const bg = () => ({ schemaVersion: 1, format: 'mopi-shape-v1', kind: 'background_piece', layerHint: 'wall', label: 'Dots patch', viewBox: { w: 128, h: 128 }, anchor: { x: 0.5, y: 0.5 }, palette: ['#FFF4DF', '#F4B79B'], shapes: [{ t: 'rect', fill: 0, stroke: true, x: 8, y: 8, w: 112, h: 112, rx: 14 }, { t: 'ellipse', fill: 1, stroke: false, cx: 64, cy: 64, rx: 20, ry: 20 }] });
-const bubble = () => ({ schemaVersion: 1, format: 'mopi-shape-v1', kind: 'bubble_frame', label: 'Round bubble', viewBox: { w: 128, h: 96 }, anchor: { x: 0.2, y: 0.95 }, palette: ['#FFF4DF', '#F2A7B4'], shapes: [{ t: 'ellipse', fill: 0, stroke: true, cx: 64, cy: 44, rx: 56, ry: 38 }], textArea: { x: 32, y: 26, w: 64, h: 36 }, textFill: 0 });
+const bg = () => ({ schemaVersion: 1, format: 'aroomi-shape-v1', kind: 'background_piece', layerHint: 'wall', label: 'Dots patch', viewBox: { w: 128, h: 128 }, anchor: { x: 0.5, y: 0.5 }, palette: ['#FFF4DF', '#F4B79B'], shapes: [{ t: 'rect', fill: 0, stroke: true, x: 8, y: 8, w: 112, h: 112, rx: 14 }, { t: 'ellipse', fill: 1, stroke: false, cx: 64, cy: 64, rx: 20, ry: 20 }] });
+const bubble = () => ({ schemaVersion: 1, format: 'aroomi-shape-v1', kind: 'bubble_frame', label: 'Round bubble', viewBox: { w: 128, h: 96 }, anchor: { x: 0.2, y: 0.95 }, palette: ['#FFF4DF', '#F2A7B4'], shapes: [{ t: 'ellipse', fill: 0, stroke: true, cx: 64, cy: 44, rx: 56, ry: 38 }], textArea: { x: 32, y: 26, w: 64, h: 36 }, textFill: 0 });
 const code = r => r.errors[0]?.code ?? 'OK';
 
 test('baseline documents are valid', () => {
@@ -83,7 +83,7 @@ test('object route measures canonical bytes', () => {
 });
 
 test('labels', () => {
-  for (const ok of ['모피 방', 'Sofa-1', "It's ok", 'ありがとう', 'ABC, def.', 'a', 'x'.repeat(24), '가'.repeat(24)]) assert.equal(labelProblem(ok), null, ok);
+  for (const ok of ['아루미 방', 'Sofa-1', "It's ok", 'ありがとう', 'ABC, def.', 'a', 'x'.repeat(24), '가'.repeat(24)]) assert.equal(labelProblem(ok), null, ok);
   for (const bad of ['', ' lead', 'trail ', 'a  b', 'x.com', 'a_b', 'hi!', '😀', '\u0000a', 'ａｂｃ', '1234567', '010-1234-5678', '12345', 'a@b', '<b>', 'x'.repeat(25), 'go to www.a.b', 'ftp://x', 'tab\there', 'line\nbreak', 'ｗｗｗ', 'data:text']) assert.notEqual(labelProblem(bad), null, JSON.stringify(bad));
   assert.notEqual(labelProblem(5), null);
 });
@@ -260,7 +260,7 @@ test('maxErrors caps the error list', () => {
 });
 
 // ---------------------------------------------------------------- props
-const prop = () => ({ schemaVersion: 1, format: 'mopi-shape-v1', kind: 'prop', layerHint: 'floor', label: 'Pouf', viewBox: { w: 96, h: 96 }, anchor: { x: 0.5, y: 1 }, palette: ['#F4B79B', '#FFF4DF', '#7A5C48'], shapes: [{ t: 'ellipse', fill: 0, stroke: true, cx: 48, cy: 56, rx: 40, ry: 30 }, { t: 'rect', fill: 1, stroke: false, x: 38, y: 36, w: 20, h: 8, rx: 4 }] });
+const prop = () => ({ schemaVersion: 1, format: 'aroomi-shape-v1', kind: 'prop', layerHint: 'floor', label: 'Pouf', viewBox: { w: 96, h: 96 }, anchor: { x: 0.5, y: 1 }, palette: ['#F4B79B', '#FFF4DF', '#7A5C48'], shapes: [{ t: 'ellipse', fill: 0, stroke: true, cx: 48, cy: 56, rx: 40, ry: 30 }, { t: 'rect', fill: 1, stroke: false, x: 38, y: 36, w: 20, h: 8, rx: 4 }] });
 const face = () => {
   const d = prop();
   d.shapes.push({ t: 'ellipse', fill: 2, stroke: false, cx: 34, cy: 48, rx: 4, ry: 5 }, { t: 'ellipse', fill: 2, stroke: false, cx: 62, cy: 48, rx: 4, ry: 5 }, { t: 'path', fill: null, stroke: true, d: 'M38 62Q48 70 58 62' });
