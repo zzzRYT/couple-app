@@ -15,6 +15,8 @@ export function promptSessionHandler(deps: Deps) {
       await deps.db.rpc('release_session', { actor: userId, ...ids(params), reason: body.reason });
       return new Response(null, { status: 204 });
     }),
+    route('POST', '/spaces/:spaceId/prompt-session/:sessionId/undo', ({ userId, params, body, deps }) =>
+      deps.db.rpc('undo_preview', { actor: userId, ...ids(params), expected: uuidParam(body.expectedPreviewId) })),
   ], deps);
 }
 if (import.meta.main) Deno.serve(promptSessionHandler(defaultDeps()));

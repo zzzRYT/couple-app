@@ -1,0 +1,17 @@
+begin;
+select plan(10);
+insert into auth.users (id,aud,role,email) values ('00000000-0000-0000-0000-000000000081','authenticated','authenticated','room-a@example.invalid');
+create temp table ctx (k text primary key, v uuid);
+insert into ctx select 's', ((public.create_space('00000000-0000-0000-0000-000000000081','2025-01-01','America/Los_Angeles'))->>'spaceId')::uuid;
+select is((select version_number from public.current_room((select v from ctx where k='s'))),1,'new space gets an initial room version');
+select is((select source from public.current_room((select v from ctx where k='s'))),'initial','initial source');
+select is((select count(*) from public.current_room((select v from ctx where k='s')) r, jsonb_array_elements(r.scene_document->'objects') o where o->>'assetId'='app_mascot'),1::bigint,'exactly one mascot');
+select is((select room_theme_document->>'mode' from public.current_room((select v from ctx where k='s'))),'follow_time','follow_time by default');
+select is((select room_theme_document->>'timeZone' from public.current_room((select v from ctx where k='s'))),'America/Los_Angeles','creator time zone');
+select throws_ok($$update public.room_theme_version set source='prompt' where space_id=(select v from ctx where k='s')$$,'P0001','IMMUTABLE_VERSION','versions are immutable');
+select throws_ok($$delete from public.room_theme_version where space_id=(select v from ctx where k='s')$$,'P0001','IMMUTABLE_VERSION','versions cannot be deleted');
+select throws_ok($$insert into public.decoration_request (space_id,base_version_number,repair_count) values ((select v from ctx where k='s'),1,2)$$,'23514',null,'repair_count is at most 1');
+select throws_ok($$insert into public.decoration_request (space_id,base_version_number,state) values ((select v from ctx where k='s'),1,'done')$$,'23514',null,'state values are restricted');
+select is((select count(*) from public.asset_catalog_entry where status='active'),24::bigint,'catalog of 24 is seeded');
+select * from finish();
+rollback;
