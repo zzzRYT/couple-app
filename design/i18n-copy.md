@@ -2,9 +2,9 @@
 
 > 이 문서는 디자인 원본에서 자동으로 만든 표예요. 구현은 **키만 코드에 쓰고** 텍스트는 번역 리소스(`ko-KR`, `en-US`, `ja-JP`)로 둬요. `{name}` 형태는 보간 변수예요. 달력·할 일·가격을 떠올리게 하는 표현과(마일스톤 알림 문구는 예외)(홈 배경 사진 한 장 말고는) 사진 기능 표현은 쓰지 않았어요. 일본어·영어 문구는 디자이너가 쓴 초안이라 **원어민 검수**가 필요해요(handoff.md).
 
-- 총 키 수: **581**
+- 총 키 수: **587**
 - 사용자가 입력한 방 문구와 프롬프트는 번역하지 않고 입력한 그대로 저장·표시해요.
-- 서버 오류는 언어 중립 코드(`VERSION_CONFLICT` 등)만 오고, 앱이 아래 키로 문구를 골라요: `VERSION_CONFLICT`→`preview.conflict.*`·`undo.conflict.*`, `QUOTA_REACHED`→`prompt.quota.*`, `CONSENT_REQUIRED`→`prompt.consent.need`, `SESSION_OCCUPIED`→`prompt.partner`, `SESSION_EXPIRED`→`prompt.idle.me.*`, `INVITE_EXPIRED`→`join.expired.*`, `INVITE_USED`→`join.used.*`, `SPACE_FULL`→`join.full.*`, `ALREADY_IN_SPACE`→`join.hasSpace.*`, `UNSUPPORTED_REQUEST`→`prompt.unsupported.*`, `BRAND_REQUEST`→`prompt.brand.*`, `AUTH_EXPIRED`→`sys.login.*`. (코드 이름은 계약 문서 `contracts/api.md`의 이름을 확인해서 맞춰야 해요.)
+- 서버 오류는 언어 중립 코드(`VERSION_CONFLICT` 등)만 오고, 앱이 아래 키로 문구를 골라요: `VERSION_CONFLICT`→`preview.conflict.*`·`undo.conflict.*`, `QUOTA_REACHED`→`prompt.quota.*`, `CONSENT_REQUIRED`→`prompt.consent.need`, `SESSION_OCCUPIED`→`prompt.partner`, `SESSION_EXPIRED`→`prompt.idle.me.*`, `INVITE_EXPIRED`→`join.expired.*`, `INVITE_USED`→`join.used.*`, `SPACE_FULL`→`join.full.*`, `ALREADY_IN_SPACE`→`join.hasSpace.*`, `RESTORE_BLOCKED_OTHER_SPACE`→`end.restore.blocked.*`, `UNSUPPORTED_REQUEST`→`prompt.unsupported.*`, `BRAND_REQUEST`→`prompt.brand.*`, `AUTH_EXPIRED`→`sys.login.*`. (코드 이름은 계약 문서 `contracts/api.md`의 이름을 확인해서 맞춰야 해요.)
 
 ## 샘플 데이터(사용자가 입력하는 값 · 번역하지 않음)
 
@@ -444,6 +444,12 @@
 | `end.done.body` | {date}까지 복구할 수 있어요. 그 뒤에는 모든 내용이 삭제돼요. | You can restore it until {date}. After that, everything is deleted. | {date}まで復元できます。それ以降はすべて削除されます。 |
 | `end.left` | 복구 기한까지 {n}일 남았어요 | {n} days left to restore | 復元期限まであと{n}日 |
 | `end.byPartner` | {name}님이 공간을 종료했어요 | {name} ended the space | {name}さんがスペースを終了しました |
+| `end.byPartnerDisconnect` | {name}님이 연결을 끊었어요 | {name} disconnected | {name}さんがつながりを終了しました |
+| `end.onlyDisconnector` | 복구는 연결을 끊은 사람만 할 수 있어요. {date}까지 보관된 뒤에는 모두 삭제돼요. | Only the person who disconnected can restore it. Everything is kept until {date}, then deleted. | 復元できるのはつながりを終了した本人だけです。{date}まで保管され、その後はすべて削除されます。 |
+| `end.newSpace` | 새 공간 시작하기 | Start a new space | 新しいスペースを始める |
+| `end.newSpace.note` | 새 공간을 써도 이 공간은 {date}까지 보관돼요. 다만 다른 공간을 쓰는 동안에는 복구할 수 없어요. | Using a new space doesn't delete this one; it's kept until {date}. But you can't restore it while you're using another space. | 新しいスペースを使っても、このスペースは{date}まで保管されます。ただし、別のスペースを使っている間は復元できません。 |
+| `end.restore.blocked.title` | 지금은 복구할 수 없어요 | You can't restore it right now | 今は復元できません |
+| `end.restore.blocked.body` | 두 사람 중 한 명이 지금 다른 공간을 쓰고 있어요. 한 번에 하나의 공간만 쓸 수 있어서, 그 공간을 종료한 뒤 {date} 전에 다시 시도해 주세요. | One of you is using another space right now. You can only use one space at a time, so end that space and try again before {date}. | おふたりのどちらかが、いま別のスペースを使っています。スペースは一度にひとつしか使えないため、そのスペースを終了してから{date}までにもう一度お試しください。 |
 | `end.restore` | 공간 복구하기 | Restore space | スペースを復元する |
 | `end.restore.title` | 공간을 복구할까요? | Restore this space? | スペースを復元しますか？ |
 | `end.restore.body` | D-day와 방이 종료 전 모습으로 돌아오고, 두 사람 모두 다시 들어갈 수 있어요. | The day count and room come back as they were, and both of you can open them again. | 日数表示と部屋が終了前の状態に戻り、ふたりとも再び入れるようになります。 |

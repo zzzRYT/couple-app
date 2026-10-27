@@ -312,10 +312,11 @@
 ## S14 공간 종료 / 30일 복구
 
 - **캔버스 보드**: `S14-end-space`
-- **목적**: 결과·날짜를 또렷하게 쓴 확인(체크 후에만 활성), 진행, 종료 직후 복구 기한과 남은 일수, 복구 확인·성공·실패, 30일 만료·삭제 완료, 상대가 종료한 경우.
-- **이동**: 설정 > 공간 종료(푸시) → 확인 → 종료 완료 화면(탭 구조 대신). 복구 → 홈. 만료 → S03.
+- **목적**: 결과·날짜를 또렷하게 쓴 확인(체크 후에만 활성), 진행, 종료 직후 복구 기한과 남은 일수, 복구 확인·성공·실패, **복구 막힘(두 사람 중 한 명이 다른 공간을 쓰는 중)**, 30일 만료·삭제 완료, 상대가 종료한 경우, **상대가 연결을 끊은 경우(복구 버튼 없음)**.
+- **이동**: 설정 > 공간 종료(푸시) → 확인 → 종료 완료 화면(탭 구조 대신). 복구 → 홈. 만료 → S03. 종료 화면의 "새 공간 시작하기"는 S03(공간 만들기) 또는 S05(초대 코드 입력)로 가요.
 - 날짜는 종료 시점 + 30일을 언어 관례로(예 2026년 11월 23일).
 - "잘못 누른 느낌"을 줄이지 않도록 결과 세 줄 + 체크박스 + 빨간 버튼.
+- 복구 규칙(가정, 2026-10-27): 복구 대기 중에도 새 공간을 만들거나 초대를 수락할 수 있어요("한 공간만"은 활성 공간만 세요). 대신 두 사람 중 누구라도 다른 공간을 쓰는 동안에는 복구가 막혀요(`end.restore.blocked.*`, 누가 쓰는지는 알리지 않아요). **연결 끊기**로 끝난 공간은 연결을 끊은 사람만 복구할 수 있어요(`end.onlyDisconnector`, 상대 화면에는 복구 버튼이 없어요). 보통 "공간 종료"는 어느 쪽이든 복구할 수 있어요.
 - **긴 문구·언어 사례**: 결과 설명이 일본어에서 4줄까지 늘어나요.
 
 | 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
@@ -324,12 +325,14 @@
 | `S14-confirm` | 종료 확인 · 결과와 날짜 명시 (체크 전) | `end.date` `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
 | `S14-checked` | 확인 체크 후 활성 | `end.date` `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko |
 | `S14-progress` | 종료 중 | `end.date` `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko |
-| `S14-done` | 종료 직후 · 복구 기한과 남은 일수 | `end.done.title` `end.date` `end.done.body` `end.left` `end.restore` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 1 |
-| `S14-partner` | 상대가 종료한 경우 (내 화면) | `sample.partner` `end.byPartner` `end.done.title` `end.date` `end.done.body` `end.left` `end.restore` | iOS·밝게·ko, Android·어둡게·ko |
-| `S14-restore-confirm` | 복구 확인 | `end.done.title` `end.date` `end.done.body` `end.left` `end.restore` `end.restore.title` `end.restore.body` `common.cancel` | iOS·밝게·ko, Android·어둡게·ko |
-| `S14-restore-progress` | 복구 중 | `end.restore.progress` `end.done.title` `end.date` `end.done.body` `end.left` | iOS·밝게·ko, Android·어둡게·ko |
+| `S14-done` | 종료 직후 · 복구 기한과 남은 일수 | `end.date` `end.done.title` `end.done.body` `end.left` `end.newSpace.note` `end.restore` `end.newSpace` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 1 |
+| `S14-partner` | 상대가 종료한 경우 (내 화면) | `end.date` `sample.partner` `end.byPartner` `end.done.title` `end.done.body` `end.left` `end.newSpace.note` `end.restore` `end.newSpace` | iOS·밝게·ko, Android·어둡게·ko |
+| `S14-partner-disconnect` | 상대가 연결을 끊은 경우 (내 화면 · 복구 버튼 없음) | `end.date` `sample.partner` `end.byPartnerDisconnect` `end.done.title` `end.onlyDisconnector` `end.left` `end.newSpace` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 1 |
+| `S14-restore-confirm` | 복구 확인 | `end.date` `end.done.title` `end.done.body` `end.left` `end.newSpace.note` `end.restore` `end.newSpace` `end.restore.title` `end.restore.body` `common.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S14-restore-progress` | 복구 중 | `end.restore.progress` `end.date` `end.done.title` `end.done.body` `end.left` | iOS·밝게·ko, Android·어둡게·ko |
 | `S14-restore-ok` | 복구 성공 | `end.restore.done` `tab.home` | iOS·밝게·ko, Android·어둡게·ko |
-| `S14-restore-fail` | 복구 실패 · 기한 재안내 | `end.done.title` `end.date` `end.done.body` `end.left` `end.restore` `end.restore.fail.title` `end.restore.fail.body` `common.retry` `common.close` | iOS·밝게·ko, Android·어둡게·ko |
+| `S14-restore-fail` | 복구 실패 · 기한 재안내 | `end.date` `end.done.title` `end.done.body` `end.left` `end.newSpace.note` `end.restore` `end.newSpace` `end.restore.fail.title` `end.restore.fail.body` `common.retry` `common.close` | iOS·밝게·ko, Android·어둡게·ko |
+| `S14-restore-blocked` | 복구 막힘 · 다른 공간을 쓰는 중 | `end.date` `end.done.title` `end.done.body` `end.left` `end.newSpace.note` `end.restore` `end.newSpace` `end.restore.blocked.title` `end.restore.blocked.body` `common.close` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
 | `S14-expired` | 30일 만료 · 삭제 완료 | `end.expired.title` `end.expired.body` `end.expired.action` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
 | `S14-error` | 종료 실패 | `end.date` `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` `end.err.title` `end.err.body` `common.retry` `common.close` | iOS·밝게·ko, Android·어둡게·ko |
 
@@ -352,7 +355,7 @@
 | `S15-done` | 제출 성공 · 지원 연락처 | `report.done.title` `report.done.body` `report.contact` `common.done` | iOS·밝게·ko, Android·어둡게·ko |
 | `S15-fail` | 제출 실패 (입력 유지) | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `report.why` `report.reason.harass` `report.reason.inappropriate` `report.reason.privacy` `report.reason.other` `report.fail.title` `report.fail.body` `common.retry` `report.submit` | iOS·밝게·ko, Android·어둡게·ko |
 | `S15-block` | 연결 끊기 확인 · 결과 설명 | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `sample.partner` `report.block` `report.block.title` `end.date` `report.block.body` `report.block.confirm` `common.cancel` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
-| `S15-blocked` | 연결을 끊은 뒤 결과 (공간 종료 상태) | `end.done.title` `end.date` `end.done.body` `end.left` `end.restore` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-blocked` | 연결을 끊은 뒤 결과 (공간 종료 상태) | `end.date` `end.done.title` `end.done.body` `end.left` `end.newSpace.note` `end.restore` `end.newSpace` | iOS·밝게·ko, Android·어둡게·ko |
 
 ## S16 공통 오류 · 빈 · 로딩 · 오프라인
 

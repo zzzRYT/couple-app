@@ -4,7 +4,7 @@
 
 ## 공통 응답 / 오류
 
-- JSON UTF-8. 성공은 2xx, 잘못된 입력은 `400`, 미인증은 `401`, 권한 없음은 정보 누설 없는 `403`, stale version은 `409`, 한도 초과는 `429`, 일시적 장애는 `503`. 이미 다른 공간에 속한 사용자의 가입·생성 시도는 `409 ALREADY_IN_SPACE`.
+- JSON UTF-8. 성공은 2xx, 잘못된 입력은 `400`, 미인증은 `401`, 권한 없음은 정보 누설 없는 `403`, stale version은 `409`, 한도 초과는 `429`, 일시적 장애는 `503`. 이미 다른 **활성** 공간에 속한 사용자의 가입·생성 시도는 `409 ALREADY_IN_SPACE`. 복구 요청은 `403 RESTORE_NOT_ALLOWED`(권한 없음, 정보 누설 없는 코드)·`409 RESTORE_BLOCKED_OTHER_SPACE`(두 사람 중 누군가 다른 활성 공간에 있음)로 거절된다.
 - 오류 형태: `{ "error": { "code": "VERSION_CONFLICT", "retryable": true } }`. `code`는 언어 중립 안정 코드이며 앱이 현재 locale의 번역 리소스에서 사용자 메시지를 찾는다.
 - 오류 응답에 사용자 표시용 자연어 문구나 locale별 메시지 키를 넣지 않고 원문 프롬프트를 되풀이하지 않는다. 화면·설정·오류 문구는 앱 번역 리소스에서 제공한다.
 - 모든 변경 요청은 `Idempotency-Key` UUID를 받아 중복 tap/retry로 이중 적용되지 않게 한다.
@@ -15,7 +15,7 @@
 
 ### `POST /spaces`
 
-공간 및 첫 구성원을 하나의 트랜잭션으로 만든다. **한 사용자는 한 번에 하나의 공간에만 속한다(FR-057)**: 이미 활성 또는 복구 대기 공간의 구성원이면 `409 ALREADY_IN_SPACE`로 거절한다(복구 대기 공간도 구성원으로 센다. 종료 후 30일이 지나 삭제되면 새 공간을 만들 수 있다).
+공간 및 첫 구성원을 하나의 트랜잭션으로 만든다. **한 사용자는 한 번에 하나의 공간에만 속한다(FR-057)**: 이미 **활성** 공간의 구성원이면 `409 ALREADY_IN_SPACE`로 거절한다. **복구 대기(종료·연결 끊기 후 30일) 공간은 세지 않으므로** 그 사용자는 새 공간을 만들 수 있다(가정, `spec.md` Decided 23). 새 공간을 쓰는 동안에는 이전 공간을 복구할 수 없다(`POST /recover` 참고).
 
 요청: `{ "anniversaryDate": "YYYY-MM-DD" }`
 
@@ -35,11 +35,15 @@
 
 요청: `{ "code": "one-time-secret" }`
 
-서버는 해시 대조, 미만료·미사용, 대상 공간 활성·멤버 1명 조건과 **호출한 사용자가 다른 공간의 구성원이 아님**을 원자적으로 확인하고 가입 후 코드를 즉시 소비한다. 사용자가 이미 다른 공간에 있으면 `409 ALREADY_IN_SPACE`로 거절하고 **코드는 소모하지 않는다**(공간에서 나온 뒤 같은 코드로 다시 시도할 수 있다). 코드 형식은 8자(4-4 표시), 혼동 문자(0/O, 1/I) 제외.
+서버는 해시 대조, 미만료·미사용, 대상 공간 활성·멤버 1명 조건과 **호출한 사용자가 다른 활성 공간의 구성원이 아님**(복구 대기 공간은 제외)을 원자적으로 확인하고 가입 후 코드를 즉시 소비한다. 사용자가 이미 다른 활성 공간에 있으면 `409 ALREADY_IN_SPACE`로 거절하고 **코드는 소모하지 않는다**(공간에서 나온 뒤 같은 코드로 다시 시도할 수 있다). 코드 형식은 8자(4-4 표시), 혼동 문자(0/O, 1/I) 제외.
 
 응답 200: `{ "spaceId": "uuid", "status": "active", "memberCount": 2 }`.
 
 ## D-day 및 조회
+
+### `GET /spaces/mine`
+
+(제안 · 일관성 점검에서 찾은 빈칸을 메운 것) 앱을 열 때 호출자가 어느 공간으로 들어갈지 정한다. 응답 200: `{ "active": { "spaceId": "uuid" } | null, "ended": { "spaceId": "uuid", "lifecycle": { ... } } | null }`. `active`는 호출자의 활성 공간 하나(없으면 null). `ended`는 호출자가 구성원인 복구 대기 공간 중 `ended_at`이 **가장 최근인 하나**(없으면 null; 가정). `lifecycle`은 아래 스냅샷의 `lifecycle`과 같다. 앱은 `active`가 있으면 그 공간으로 열고, 없고 `ended`가 있으면 종료 화면(S14)을, 둘 다 없으면 공간 만들기(S03)·초대 코드 입력(S05)을 연다. 그 밖의 공간 정보는 응답에 없다.
 
 ### `GET /profile/preferences`
 
@@ -53,7 +57,7 @@
 
 ### `GET /spaces/{spaceId}/snapshot`
 
-구성원만 접근 가능. 응답은 공간 요약, 홈 커버 사진 요약(`homeCover`: `status`, `version`, `uploadedBy`, `updatedAt`; 주소는 별도 요청), 현재 버전의 `sceneDocument`, `roomPresentation`, `roomThemeDocument`(낮/밤 자산·색 variant, 모드와 시간대), 현재 `promptSession` owner/expiry 상태, 버전 번호, 카탈로그 버전, 서버 시간으로 구성한다. 사용자별 `locale` 및 `system | light | dark` UI 테마 설정은 프로필 설정 API로 읽고 저장한다. 인증 사용자는 해당 공간 구성원이 아니면 공간 존재 여부도 확인할 수 없다.
+구성원만 접근 가능. 응답은 공간 요약, 홈 커버 사진 요약(`homeCover`: `status`, `version`, `uploadedBy`, `updatedAt`; 주소는 별도 요청), 현재 버전의 `sceneDocument`, `roomPresentation`, `roomThemeDocument`(낮/밤 자산·색 variant, 모드와 시간대), 현재 `promptSession` owner/expiry 상태, 버전 번호, 카탈로그 버전, 서버 시간으로 구성한다. 사용자별 `locale` 및 `system | light | dark` UI 테마 설정은 프로필 설정 API로 읽고 저장한다. 인증 사용자는 해당 공간 구성원이 아니면 공간 존재 여부도 확인할 수 없다. 공간이 `recovery_pending`이면 구성원 누구에게나 **`lifecycle`만** 돌려준다(방 장면·홈 사진·대화는 포함하지 않고, 연결 끊기로 끝난 경우 끊긴 쪽도 이 요약은 읽는다): `{ "status": "recovery_pending", "endedAt": "…", "deleteAfter": "…", "endedReason": "ended" | "disconnect", "endedBy": "me" | "partner", "canRestore": true | false }`. `canRestore`는 **요청자의 권한**만 뜻한다(보통 종료는 항상 true, 연결 끊기는 끊은 사람만 true). 다른 활성 공간 때문에 막히는지는 여기에 담지 않고 복구를 실제로 요청할 때 `409 RESTORE_BLOCKED_OTHER_SPACE`로 알린다(상대의 새 공간 사용 여부가 노출되지 않도록).
 
 ### `PATCH /spaces/{spaceId}/anniversary`
 
@@ -201,7 +205,12 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 
 ### `POST /spaces/{spaceId}/recover`
 
-30일 이내 공간 구성원이 호출한다. `{ "confirm": true }`. 공간과 저장 데이터를 다시 활성화한다. 복구 시 상대 동의가 필요한지는 아직 정하지 않았다(구현 전 확인).
+30일 이내 공간 구성원이 호출한다. `{ "confirm": true }`. 공간과 저장 데이터를 다시 활성화하고 두 구성원의 `space_active`를 true로 되돌린다(가정, `spec.md` Decided 23·24):
+
+- 종료 이유가 `ended`이면 **어느 구성원이든**, `disconnect`이면 **연결을 끊은 사람만** 호출할 수 있다. 권한이 없으면 `403 RESTORE_NOT_ALLOWED`. 상대 동의는 필요하지 않다.
+- 복구하는 순간 **두 구성원 중 누구라도 다른 활성 공간에 있으면** `409 RESTORE_BLOCKED_OTHER_SPACE`로 거절하고 공간은 복구 대기 그대로다(응답에 누가 쓰는지 담지 않는다). 새 공간을 종료한 뒤 `deleteAfter` 전에 다시 호출할 수 있다.
+- 기한(`deleteAfter`)이 지나 삭제된 공간은 `404`이고 앱은 `end.expired.*`를 보인다.
+- 응답 200: `{ "spaceId": "uuid", "status": "active" }`.
 
 ## 신고와 연결 끊기 (FR-059)
 
@@ -211,7 +220,7 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 
 ### `POST /spaces/{spaceId}/block`
 
-**화면 이름은 "연결 끊기"(예전 "차단")이고 엔드포인트 이름은 `block`을 유지한다**(계약 이름을 불필요하게 바꾸지 않기 위해). 구성원이 호출한다. `{ "confirm": true }`. 상대의 접근을 끊고 공간을 `recovery_pending`으로 전환한다(`POST /end`와 같은 종료·30일 복구, 종료 이유 `disconnect`). 복구는 30일 안에 가능하다. 이 호출은 신고와 별개이고 신고를 만들지 않는다. 응답은 `/end`와 같다(`deleteAfter` 포함)이며 앱은 확인 창에서 이 결과를 미리 알린다.
+**화면 이름은 "연결 끊기"(예전 "차단")이고 엔드포인트 이름은 `block`을 유지한다**(계약 이름을 불필요하게 바꾸지 않기 위해). 구성원이 호출한다. `{ "confirm": true }`. 상대의 접근을 끊고 공간을 `recovery_pending`으로 전환한다(`POST /end`와 같은 종료·30일 복구, 종료 이유 `disconnect`, `ended_by_user_id` = 호출자). **복구는 30일 안에 연결을 끊은 사람만** 할 수 있다(`POST /recover`, 가정). 이 호출은 신고와 별개이고 신고를 만들지 않는다. 응답은 `/end`와 같다(`deleteAfter` 포함)이며 앱은 확인 창에서 이 결과를 미리 알린다.
 
 ## 실시간 업데이트
 

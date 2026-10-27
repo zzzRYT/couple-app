@@ -19,6 +19,7 @@
 - `status`: `active | recovery_pending | deleted`
 - `anniversary_date` (날짜; AI로 보내지 않음)
 - `created_at`, `updated_at`, `ended_at?`, `delete_after?`
+- `ended_reason?`: `ended | disconnect` (종료할 때만 채워진다. `disconnect` = "연결 끊기"(API `block`)), `ended_by_user_id?` (종료·연결 끊기를 한 사용자). 복구하면 종료 관련 열 네 개(`ended_at`, `delete_after`, `ended_reason`, `ended_by_user_id`)를 비우고 이력은 `SpaceLifecycleEvent`에 남는다.
 - 활성 또는 복구 대기 공간은 최대 두 구성원만 가진다. 종료 요청 시 즉시 초대/AI/편집을 막는다.
 - 30일 후 배치 삭제 작업이 공간 관련 복구 대상 데이터와 홈 커버 사진 객체를 지운다.
 
@@ -27,6 +28,7 @@
 - `space_id`, `user_id` (복합 PK)
 - `role`: `member` (V1 두 사람 동일 권한)
 - `joined_at`, `left_at?`
+- `space_active` (boolean): 이 구성원이 속한 공간이 `active`일 때만 true. 공간이 종료·연결 끊기로 `recovery_pending`이 될 때 **같은 트랜잭션에서** false로 바꾸고, 복구할 때(조건 검사 뒤) true로 되돌린다. "한 사용자는 활성 공간 하나만" 규칙의 부분 고유 인덱스를 걸기 위한 비정규화 열이다(아래 "검증 및 동시성 규칙").
 - `ai_consent_state`: 사용자 단위 `not_given | granted | revoked`
 - `ai_consent_at?`, `ai_consent_text_version?`, `ai_consent_revoked_at?`
 - 공간에 속한 해당 사용자만 구성원 데이터와 동의를 읽을 수 있다.
@@ -110,7 +112,7 @@
 - `version` (바뀔 때마다 증가, 마지막 변경 우선 판단), `uploaded_by_user_id`(홈에서 **누가 마지막으로 바꿨는지** 보여 줌, 사진을 없앤 사람도 같은 필드에 기록), `uploaded_at`, `updated_at`
 - `pending_delete[]` (교체·삭제로 남은 이전 객체 경로와 삭제 예정 시각; 새 사진 저장 확인 후 24시간 뒤 삭제, plan.md)
 - 주소(URL)는 저장하지 않는다. 앱은 RLS로 권한을 확인한 짧은 수명의 서명된 URL만 요청해 쓴다.
-- 읽기: 활성 또는 복구 대기 공간의 구성원. 쓰기·교체·삭제: 활성 공간 구성원(점유 세션 불필요). 공간이 `recovery_pending`이면 새 업로드를 막는다.
+- 읽기·쓰기·교체·삭제: 활성 공간 구성원(점유 세션 불필요). 공간이 `recovery_pending`이면 읽기도 새 업로드도 막는다(사진은 유지되고 복구하면 그대로 돌아온다).
 - 허용 형식·크기(승인): JPG·PNG·HEIC, 원본 20MB 이하. 저장본은 EXIF/XMP를 제거한 재인코딩 사본이다.
 - 상태 전이: `none --upload ok--> ready`, `ready --replace ok--> ready (version+1)`, `ready --remove--> none`, `none/ready --upload fail--> (이전 상태 유지, 실패는 클라이언트 표시)`. 새 사진 저장이 끝나기 전에는 기존 사진을 바꾸지 않는다.
 - 삭제(결정): 공간이 삭제될 때(복구 기간 30일 뒤) 객체와 행을 함께 지운다. 복구 대기 중에는 사진을 유지하고 복구하면 그대로 돌아온다.
@@ -148,8 +150,11 @@
 ## 상태 전이
 
 ```text
-CoupleSpace: active --end by either member--> recovery_pending
-recovery_pending --restore by either member within 30 days--> active
+CoupleSpace: active --end by either member--> recovery_pending (ended_reason=ended)
+active --disconnect(block) by either member--> recovery_pending (ended_reason=disconnect, ended_by=호출자)
+recovery_pending --restore within 30 days--> active
+  조건: ended_reason=ended이면 어느 구성원이든, ended_reason=disconnect이면 ended_by 본인만(상대 동의 없음);
+        그리고 두 구성원 모두 다른 활성 공간(space_active)에 속하지 않을 때만. 아니면 거절하고 상태를 바꾸지 않는다.
 recovery_pending --30 days elapsed--> deleted
 
 Invitation: active --accept once--> accepted
@@ -177,7 +182,8 @@ queued/generated --invalid result/provider failure--> rejected/failed
 - 공간 구성원 수 ≤ 2; 초대 수락은 단일 DB 트랜잭션.
 - 요청 시 공간 활성, 사용자 구성원, 필요한 동의가 모두 유효해야 한다. 권장 정책은 두 명 모두 유효 동의가 있어야 외부 AI 호출 가능.
 - 서버 일일 요청 계수는 `space_id` 기준으로 **방 시간대의 날짜**(자정 초기화)를 키로 atomic increment한다. 한도는 커플당 **5회**이고 초과 응답은 `429 DAILY_LIMIT_REACHED`. 마일스톤 제안(AI 호출 없음)은 계수하지 않는다.
-- 한 사용자(`user_id`)는 활성 또는 복구 대기 상태 공간의 `SpaceMember`를 하나만 가진다(부분 고유 인덱스, FR-057). 초대 수락과 공간 생성은 같은 트랜잭션에서 이를 확인한다.
+- 한 사용자(`user_id`)는 **활성** 공간의 `SpaceMember`를 하나만 가진다(FR-057): 부분 고유 인덱스 `unique (user_id) where space_active`. 복구 대기 공간의 구성원 행은 `space_active = false`이므로 새 공간 생성·초대 수락을 막지 않는다. 종료·연결 끊기는 공간 상태와 두 구성원의 `space_active`를 한 트랜잭션에서 false로 바꾸고, 복구는 두 구성원 행을 true로 되돌리는 갱신이므로 둘 중 누구라도 다른 활성 공간이 있으면 고유 인덱스 위반으로 거절된다(`RESTORE_BLOCKED_OTHER_SPACE`). 같은 사용자의 동시 요청은 사용자 단위 어드바이저리 락(`pg_advisory_xact_lock(hashtext(user_id))`)으로 직렬화한다.
+- 복구 권한(FR-023): `ended_reason = 'ended'`이면 어느 구성원이든, `'disconnect'`이면 `ended_by_user_id` 본인만(`RESTORE_NOT_ALLOWED`). 상대 동의는 없다. 복구 가능한 공간이 둘 이상이면 앱은 가장 최근 `ended_at`의 공간 하나만 복구 대상으로 보여 준다(가정).
 - 후보/confirm은 `base_version_number`를 검사한다. 오래된 제안은 적용하지 않고 최신 테마로 재요청을 요구한다.
 - scene document의 `objects.length ≤ 16`, `texts.length ≤ 3`; 각 노드는 스키마의 범위 제한을 만족해야 한다.
 - `PromptSession`은 공간당 하나만 `occupied` 상태일 수 있다. heartbeat는 최근 사용자 활동이 있을 때만 `expires_at`을 갱신한다. 세션 만료 후 takeover는 만료된 session ID와 예상 owner를 조건으로 원자적으로 새 owner에게 양도한다.

@@ -4,7 +4,7 @@
 
 방을 꾸민 버전을 목록으로 보고, 이전 버전을 골라 복구하는 **기록 기능**의 설계예요. 1차(V1)에서는 이 기능을 뺐고(탭 3개: 홈·방·설정), 나중에 확인하고 넣을 수 있도록 **따로 모아 두었어요**. 상태는 *보류, 채택하면 바로 쓸 수 있게 준비됨(deferred, ready to adopt)*이에요.
 
-V1은 그대로예요. 이 폴더는 V1의 `screens.md` 화면 수, `i18n-copy.md` 키 수(581), `assets-manifest.csv` 수에 **들어가지 않아요**. V1 화면과 문서는 이 폴더를 참조하지 않고, `design/README.md`와 `design/handoff.md`만 "보류, 채택 준비됨"으로 가리켜요.
+V1은 그대로예요. 이 폴더는 V1의 `screens.md` 화면 수, `i18n-copy.md` 키 수(587), `assets-manifest.csv` 수에 **들어가지 않아요**. V1 화면과 문서는 이 폴더를 참조하지 않고, `design/README.md`와 `design/handoff.md`만 "보류, 채택 준비됨"으로 가리켜요.
 
 ## 무엇이 있나
 
