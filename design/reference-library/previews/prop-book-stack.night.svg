@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-12 -12 152 120" width="304" height="240">
+<title>Book stack</title>
+<rect x="-12" y="-12" width="152" height="120" fill="#2B2320"/>
+<rect x="10" y="62" width="104" height="22" rx="6" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="11.6" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="22" y="40" width="86" height="22" rx="6" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="11.6" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="14" y="18" width="94" height="22" rx="6" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="11.6" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="10" y="62" width="104" height="22" rx="6" fill="#D98B63" transform="translate(2.6 2)"/>
+<rect x="10" y="62" width="104" height="22" rx="6" fill="none" stroke="#4A3426" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="98" y="67" width="8" height="12" rx="3" fill="#FFF4DF" transform="translate(2.6 2)"/>
+<rect x="22" y="40" width="86" height="22" rx="6" fill="#A8C6A0" transform="translate(2.6 2)"/>
+<rect x="22" y="40" width="86" height="22" rx="6" fill="none" stroke="#4A3426" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="94" y="45" width="8" height="12" rx="3" fill="#FFF4DF" transform="translate(2.6 2)"/>
+<rect x="14" y="18" width="94" height="22" rx="6" fill="#D98B63" transform="translate(2.6 2)"/>
+<rect x="14" y="18" width="94" height="22" rx="6" fill="none" stroke="#4A3426" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="86" y="23" width="8" height="12" rx="3" fill="#FFF4DF" transform="translate(2.6 2)"/>
+</svg>

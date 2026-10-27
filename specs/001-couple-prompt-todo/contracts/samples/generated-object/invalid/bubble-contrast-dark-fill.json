@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "format": "mopi-shape-v1",
+  "kind": "bubble_frame",
+  "label": "Round bubble",
+  "viewBox": {"w": 128, "h": 96},
+  "anchor": {"x": 0.2, "y": 0.95},
+  "palette": ["#7A5C48", "#F2A7B4"],
+  "shapes": [
+    {"t": "ellipse", "fill": 0, "stroke": true, "cx": 64, "cy": 44, "rx": 56, "ry": 38}
+  ],
+  "textArea": {"x": 32, "y": 26, "w": 64, "h": 36},
+  "textFill": 0
+}

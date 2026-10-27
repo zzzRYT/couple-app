@@ -1,0 +1,780 @@
+{
+ "tool": "harmonize-mascot.py",
+ "version": "1.0.0",
+ "opencv": "5.0.0",
+ "numpy": "2.5.4",
+ "parameters": {
+  "line": 0.0375,
+  "inner": 0.65,
+  "rim": 0.027,
+  "offset": [
+   0.01,
+   0.008
+  ],
+  "wobble": 0.1,
+  "min_line_px": 1.6,
+  "tones": {
+   "body": 3,
+   "sash": 4,
+   "star": 3,
+   "heart": 3,
+   "box": 3,
+   "phone": 3
+  },
+  "smooth": 2.2,
+  "shade_sigma": 4.0,
+  "island": 0.01,
+  "box_ids": "mascot_box",
+  "prop_smooth": 0.9,
+  "form_lines": 1,
+  "valley": 7.0,
+  "valley_lo": 3.0,
+  "valley_min": 0.001,
+  "line_min_len": 0.09,
+  "sp": 5,
+  "sr": 14
+ },
+ "files": {
+  "mascot_back.png": {
+   "line_px": 7.88,
+   "inner_px": 5.12,
+   "rim_px": 5.67,
+   "offset_px": [
+    2,
+    2
+   ],
+   "tones": {
+    "sash": 4,
+    "body": 3
+   },
+   "size": [
+    189,
+    216
+   ],
+   "source": "mascot_back.png",
+   "source_sha256": "61803033dad2ed72fa26c55e87ddc3d01215d4f7ca1a3049463ecfea147795fd",
+   "sha256": "3258940dec819dd80870931ff6649e23b61fa9c7a37dbdb44a51d8a029f079c8",
+   "scale": 1
+  },
+  "mascot_back@2x.png": {
+   "line_px": 15.75,
+   "inner_px": 10.24,
+   "rim_px": 11.34,
+   "offset_px": [
+    4,
+    3
+   ],
+   "tones": {
+    "sash": 4,
+    "body": 3
+   },
+   "size": [
+    379,
+    431
+   ],
+   "source": "mascot_back.png",
+   "source_sha256": "61803033dad2ed72fa26c55e87ddc3d01215d4f7ca1a3049463ecfea147795fd",
+   "sha256": "5750b7815cabdf00dddc2f5d81f241d0ba63b3c08b67f62d9eef8b657a4056a8",
+   "scale": 2
+  },
+  "mascot_back@3x.png": {
+   "line_px": 23.62,
+   "inner_px": 15.36,
+   "rim_px": 17.01,
+   "offset_px": [
+    6,
+    5
+   ],
+   "tones": {
+    "sash": 4,
+    "body": 3
+   },
+   "size": [
+    568,
+    648
+   ],
+   "source": "mascot_back.png",
+   "source_sha256": "61803033dad2ed72fa26c55e87ddc3d01215d4f7ca1a3049463ecfea147795fd",
+   "sha256": "148860377108c156c8e33d4472b449633905884e523bc49082645073c7711bb0",
+   "scale": 3
+  },
+  "mascot_box.png": {
+   "line_px": 9.45,
+   "inner_px": 6.14,
+   "rim_px": 6.8,
+   "offset_px": [
+    3,
+    2
+   ],
+   "tones": {
+    "box": 3,
+    "sash": 4,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    263,
+    200
+   ],
+   "source": "mascot_box.png",
+   "source_sha256": "a72446cbb4a52ff1f671a443f9aa854aad1f2c70c64402c408dfa79d1aca63d0",
+   "sha256": "9c0735c8fd91c33023a3a235c014fb57cbec7059b0463c69a4c5964fe6114f13",
+   "scale": 1
+  },
+  "mascot_box@2x.png": {
+   "line_px": 18.9,
+   "inner_px": 12.29,
+   "rim_px": 13.61,
+   "offset_px": [
+    5,
+    4
+   ],
+   "tones": {
+    "box": 3,
+    "sash": 4,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    526,
+    399
+   ],
+   "source": "mascot_box.png",
+   "source_sha256": "a72446cbb4a52ff1f671a443f9aa854aad1f2c70c64402c408dfa79d1aca63d0",
+   "sha256": "1d48d6bb873160702dd9e6b77297cb954be7593cd351e1e3d31baa78aed06970",
+   "scale": 2
+  },
+  "mascot_box@3x.png": {
+   "line_px": 28.35,
+   "inner_px": 18.43,
+   "rim_px": 20.41,
+   "offset_px": [
+    8,
+    6
+   ],
+   "tones": {
+    "box": 3,
+    "sash": 4,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    789,
+    599
+   ],
+   "source": "mascot_box.png",
+   "source_sha256": "a72446cbb4a52ff1f671a443f9aa854aad1f2c70c64402c408dfa79d1aca63d0",
+   "sha256": "a4c73c2b9b1b0791ceae04540b5a785ca595c94764f9d02d3d60bffa0ca4d2c1",
+   "scale": 3
+  },
+  "mascot_cheer.png": {
+   "line_px": 9.34,
+   "inner_px": 6.07,
+   "rim_px": 6.72,
+   "offset_px": [
+    2,
+    2
+   ],
+   "tones": {
+    "star": 3,
+    "body": 3,
+    "heart": 1,
+    "cheek": 1,
+    "sash": 4
+   },
+   "size": [
+    260,
+    235
+   ],
+   "source": "mascot_cheer.png",
+   "source_sha256": "0ea754e3a5d50ab8e10bfda6de3258087233e56769ad6419a3967068e2b9a580",
+   "sha256": "7e0d6ca4667040ffb4d3ca69aecc17fdc045a6e786757719eba6927cbff4fdef",
+   "scale": 1
+  },
+  "mascot_cheer@2x.png": {
+   "line_px": 18.68,
+   "inner_px": 12.14,
+   "rim_px": 13.45,
+   "offset_px": [
+    5,
+    4
+   ],
+   "tones": {
+    "star": 3,
+    "body": 3,
+    "heart": 1,
+    "cheek": 1,
+    "sash": 4
+   },
+   "size": [
+    517,
+    469
+   ],
+   "source": "mascot_cheer.png",
+   "source_sha256": "0ea754e3a5d50ab8e10bfda6de3258087233e56769ad6419a3967068e2b9a580",
+   "sha256": "45f6b51501ed847586a050110dff32c49b9fd5a8bf86bbdc7d375f906b1cc8cb",
+   "scale": 2
+  },
+  "mascot_cheer@3x.png": {
+   "line_px": 28.01,
+   "inner_px": 18.21,
+   "rim_px": 20.17,
+   "offset_px": [
+    7,
+    6
+   ],
+   "tones": {
+    "star": 3,
+    "body": 3,
+    "heart": 1,
+    "cheek": 1,
+    "sash": 4
+   },
+   "size": [
+    779,
+    706
+   ],
+   "source": "mascot_cheer.png",
+   "source_sha256": "0ea754e3a5d50ab8e10bfda6de3258087233e56769ad6419a3967068e2b9a580",
+   "sha256": "8b78b37add4fe5e05ed370a6ae212f69bc41890c0a675464ac969b90c01a235d",
+   "scale": 3
+  },
+  "mascot_heart.png": {
+   "line_px": 8.51,
+   "inner_px": 5.53,
+   "rim_px": 6.13,
+   "offset_px": [
+    2,
+    2
+   ],
+   "tones": {
+    "sash": 4,
+    "cheek": 1,
+    "body": 3,
+    "heart": 3
+   },
+   "size": [
+    206,
+    235
+   ],
+   "source": "mascot_heart.png",
+   "source_sha256": "e063685d519ee1abfcafbf1aa70f6c7a6ce61a2d3f4baf95812e9f7c1dbf8d36",
+   "sha256": "b7b3f8071c96b0e180c427063e0f4fbdf1406725c82cef4631fe2ef797267c60",
+   "scale": 1
+  },
+  "mascot_heart@2x.png": {
+   "line_px": 17.02,
+   "inner_px": 11.07,
+   "rim_px": 12.26,
+   "offset_px": [
+    5,
+    4
+   ],
+   "tones": {
+    "sash": 4,
+    "cheek": 1,
+    "body": 3,
+    "heart": 3
+   },
+   "size": [
+    409,
+    468
+   ],
+   "source": "mascot_heart.png",
+   "source_sha256": "e063685d519ee1abfcafbf1aa70f6c7a6ce61a2d3f4baf95812e9f7c1dbf8d36",
+   "sha256": "6246a809472b416309a0959313020a2062484f755f338c1c5f0748875ffb66d3",
+   "scale": 2
+  },
+  "mascot_heart@3x.png": {
+   "line_px": 25.54,
+   "inner_px": 16.6,
+   "rim_px": 18.39,
+   "offset_px": [
+    7,
+    5
+   ],
+   "tones": {
+    "sash": 4,
+    "cheek": 1,
+    "body": 3,
+    "heart": 3
+   },
+   "size": [
+    617,
+    705
+   ],
+   "source": "mascot_heart.png",
+   "source_sha256": "e063685d519ee1abfcafbf1aa70f6c7a6ce61a2d3f4baf95812e9f7c1dbf8d36",
+   "sha256": "6e44769f0db121e5d8e9b7d1f034d6e3a6090231bd4d62bd2d499481374d8b41",
+   "scale": 3
+  },
+  "mascot_lie.png": {
+   "line_px": 9.86,
+   "inner_px": 6.41,
+   "rim_px": 7.1,
+   "offset_px": [
+    3,
+    2
+   ],
+   "tones": {
+    "sash": 4,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    277,
+    154
+   ],
+   "source": "mascot_lie.png",
+   "source_sha256": "321569d9c004338065f912a17e9a73b751d73620126d3e9f1747c23937156a53",
+   "sha256": "69a28dfb5cd63c13ad50087e6b97ec233141d91ff89e23b0335cf8bf3fc7c63f",
+   "scale": 1
+  },
+  "mascot_lie@2x.png": {
+   "line_px": 19.72,
+   "inner_px": 12.82,
+   "rim_px": 14.2,
+   "offset_px": [
+    5,
+    4
+   ],
+   "tones": {
+    "sash": 4,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    551,
+    305
+   ],
+   "source": "mascot_lie.png",
+   "source_sha256": "321569d9c004338065f912a17e9a73b751d73620126d3e9f1747c23937156a53",
+   "sha256": "5d9ac011e06d445f41e8bd431a6a2b6ec4006561195d7e37173a324d8335b56e",
+   "scale": 2
+  },
+  "mascot_lie@3x.png": {
+   "line_px": 29.59,
+   "inner_px": 19.23,
+   "rim_px": 21.3,
+   "offset_px": [
+    8,
+    6
+   ],
+   "tones": {
+    "sash": 4,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    827,
+    459
+   ],
+   "source": "mascot_lie.png",
+   "source_sha256": "321569d9c004338065f912a17e9a73b751d73620126d3e9f1747c23937156a53",
+   "sha256": "63ab64db3275e66d525c772e63177176685904c1436a1593e04269c08102eb11",
+   "scale": 3
+  },
+  "mascot_lookup.png": {
+   "line_px": 7.39,
+   "inner_px": 4.8,
+   "rim_px": 5.32,
+   "offset_px": [
+    2,
+    2
+   ],
+   "tones": {
+    "sash": 4,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    204,
+    202
+   ],
+   "source": "mascot_lookup.png",
+   "source_sha256": "6099bbea139873040c28d4931d5c64912d383df46e15474f21ddffc4a468971e",
+   "sha256": "c8247cf652cb83545f566da027e6bcfc99b434f673246db098db4f6fc41d4b96",
+   "scale": 1
+  },
+  "mascot_lookup@2x.png": {
+   "line_px": 14.77,
+   "inner_px": 9.6,
+   "rim_px": 10.64,
+   "offset_px": [
+    4,
+    3
+   ],
+   "tones": {
+    "sash": 4,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    406,
+    403
+   ],
+   "source": "mascot_lookup.png",
+   "source_sha256": "6099bbea139873040c28d4931d5c64912d383df46e15474f21ddffc4a468971e",
+   "sha256": "a45685a610962e30fec037ff0096830373942aa2f89cb04977b7ec32fa8c5ea0",
+   "scale": 2
+  },
+  "mascot_lookup@3x.png": {
+   "line_px": 22.16,
+   "inner_px": 14.41,
+   "rim_px": 15.96,
+   "offset_px": [
+    6,
+    5
+   ],
+   "tones": {
+    "sash": 4,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    610,
+    605
+   ],
+   "source": "mascot_lookup.png",
+   "source_sha256": "6099bbea139873040c28d4931d5c64912d383df46e15474f21ddffc4a468971e",
+   "sha256": "a4d5813b29440de6f3efea77abe772e1d49c2e2f5c75fcaa5a820148964d67a8",
+   "scale": 3
+  },
+  "mascot_phone.png": {
+   "line_px": 7.88,
+   "inner_px": 5.12,
+   "rim_px": 5.67,
+   "offset_px": [
+    2,
+    2
+   ],
+   "tones": {
+    "sash": 1,
+    "phone": 3,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    184,
+    216
+   ],
+   "source": "mascot_phone.png",
+   "source_sha256": "47753641d30f51350bb5fc7be81927d682a8916d74a61db6b7081ba35d973fa0",
+   "sha256": "235f2608f626284dd562b1da2ed4a5b1dd83cffc40cbfa1b12b0790edfad5628",
+   "scale": 1
+  },
+  "mascot_phone@2x.png": {
+   "line_px": 15.75,
+   "inner_px": 10.24,
+   "rim_px": 11.34,
+   "offset_px": [
+    4,
+    3
+   ],
+   "tones": {
+    "sash": 1,
+    "phone": 3,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    367,
+    432
+   ],
+   "source": "mascot_phone.png",
+   "source_sha256": "47753641d30f51350bb5fc7be81927d682a8916d74a61db6b7081ba35d973fa0",
+   "sha256": "5eb2891e995a8266ba5a0d32094fccf1bf92b26de43679d73744a4850f854950",
+   "scale": 2
+  },
+  "mascot_phone@3x.png": {
+   "line_px": 23.62,
+   "inner_px": 15.36,
+   "rim_px": 17.01,
+   "offset_px": [
+    6,
+    5
+   ],
+   "tones": {
+    "sash": 1,
+    "phone": 3,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    551,
+    648
+   ],
+   "source": "mascot_phone.png",
+   "source_sha256": "47753641d30f51350bb5fc7be81927d682a8916d74a61db6b7081ba35d973fa0",
+   "sha256": "451f4cb66aea8b8d2c1cb90b68331d90ad53b351014a0e0cc56c31ef5ae28746",
+   "scale": 3
+  },
+  "mascot_sleep.png": {
+   "line_px": 9.38,
+   "inner_px": 6.09,
+   "rim_px": 6.75,
+   "offset_px": [
+    2,
+    2
+   ],
+   "tones": {
+    "sash": 4,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    262,
+    145
+   ],
+   "source": "mascot_sleep.png",
+   "source_sha256": "d688a84fd217ec7b9e0769672e25441ae0adae0b9e2649a4aabf18580b8df1a9",
+   "sha256": "bd427ec79c1c6b32f6c02db2ec87ea72ca762f8573eddb50c94db663310e0174",
+   "scale": 1
+  },
+  "mascot_sleep@2x.png": {
+   "line_px": 18.75,
+   "inner_px": 12.19,
+   "rim_px": 13.5,
+   "offset_px": [
+    5,
+    4
+   ],
+   "tones": {
+    "sash": 4,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    521,
+    288
+   ],
+   "source": "mascot_sleep.png",
+   "source_sha256": "d688a84fd217ec7b9e0769672e25441ae0adae0b9e2649a4aabf18580b8df1a9",
+   "sha256": "0efc14ed8b4e13432721994d178d2d37399047de60ddd65258b0a56e791b042d",
+   "scale": 2
+  },
+  "mascot_sleep@3x.png": {
+   "line_px": 28.12,
+   "inner_px": 18.28,
+   "rim_px": 20.25,
+   "offset_px": [
+    8,
+    6
+   ],
+   "tones": {
+    "sash": 4,
+    "cheek": 1,
+    "body": 3
+   },
+   "size": [
+    785,
+    435
+   ],
+   "source": "mascot_sleep.png",
+   "source_sha256": "d688a84fd217ec7b9e0769672e25441ae0adae0b9e2649a4aabf18580b8df1a9",
+   "sha256": "f48bbbed00d8fa3d74b73bef2a57425e9a912ee0be10e91687ad667bf22a0922",
+   "scale": 3
+  },
+  "mascot_star_sit.png": {
+   "line_px": 7.95,
+   "inner_px": 5.17,
+   "rim_px": 5.72,
+   "offset_px": [
+    2,
+    2
+   ],
+   "tones": {
+    "cheek": 1,
+    "star": 3,
+    "body": 3
+   },
+   "size": [
+    200,
+    219
+   ],
+   "source": "mascot_star_sit.png",
+   "source_sha256": "a13cd6d78e600294f39da74400ed5c7eba9fe9006abc2d039d8f22bf76b1c9ac",
+   "sha256": "7708c523f62f7cb4e6cbff2872f63eed7ade5fe0b14a2132db9debe1c9f3e26a",
+   "scale": 1
+  },
+  "mascot_star_sit@2x.png": {
+   "line_px": 15.9,
+   "inner_px": 10.33,
+   "rim_px": 11.45,
+   "offset_px": [
+    4,
+    3
+   ],
+   "tones": {
+    "cheek": 1,
+    "star": 3,
+    "body": 3
+   },
+   "size": [
+    400,
+    438
+   ],
+   "source": "mascot_star_sit.png",
+   "source_sha256": "a13cd6d78e600294f39da74400ed5c7eba9fe9006abc2d039d8f22bf76b1c9ac",
+   "sha256": "185bfb2f14d1ef68d62a4f81b572f52c1e96b4e136254a99e7ce0f8db63e282d",
+   "scale": 2
+  },
+  "mascot_star_sit@3x.png": {
+   "line_px": 23.85,
+   "inner_px": 15.5,
+   "rim_px": 17.17,
+   "offset_px": [
+    6,
+    5
+   ],
+   "tones": {
+    "cheek": 1,
+    "star": 3,
+    "body": 3
+   },
+   "size": [
+    602,
+    658
+   ],
+   "source": "mascot_star_sit.png",
+   "source_sha256": "a13cd6d78e600294f39da74400ed5c7eba9fe9006abc2d039d8f22bf76b1c9ac",
+   "sha256": "01c78f39539087dd832b3b6ec54c4b1ddda57ca990bc781b6e9a8abfc1634454",
+   "scale": 3
+  },
+  "mascot_walk.png": {
+   "line_px": 9.07,
+   "inner_px": 5.9,
+   "rim_px": 6.53,
+   "offset_px": [
+    2,
+    2
+   ],
+   "tones": {
+    "sash": 4,
+    "body": 3
+   },
+   "size": [
+    254,
+    222
+   ],
+   "source": "mascot_walk.png",
+   "source_sha256": "160bdba132bd711c90a9803efeede0ad4dfb0cf0214c0209d9754c0a2aee1733",
+   "sha256": "d4856be6dc0c8bb77e86e005d5c48f6ade3471d8890df61ee081462e8c8cbcc2",
+   "scale": 1
+  },
+  "mascot_walk@2x.png": {
+   "line_px": 18.15,
+   "inner_px": 11.8,
+   "rim_px": 13.07,
+   "offset_px": [
+    5,
+    4
+   ],
+   "tones": {
+    "sash": 4,
+    "body": 3
+   },
+   "size": [
+    504,
+    443
+   ],
+   "source": "mascot_walk.png",
+   "source_sha256": "160bdba132bd711c90a9803efeede0ad4dfb0cf0214c0209d9754c0a2aee1733",
+   "sha256": "be036c531844bc48d13b5304c8955c0d02ce6ccef7a4ebfe41fbacdb072a4785",
+   "scale": 2
+  },
+  "mascot_walk@3x.png": {
+   "line_px": 27.22,
+   "inner_px": 17.7,
+   "rim_px": 19.6,
+   "offset_px": [
+    7,
+    6
+   ],
+   "tones": {
+    "sash": 4,
+    "body": 3
+   },
+   "size": [
+    758,
+    665
+   ],
+   "source": "mascot_walk.png",
+   "source_sha256": "160bdba132bd711c90a9803efeede0ad4dfb0cf0214c0209d9754c0a2aee1733",
+   "sha256": "f9a05304df97ff22d14357ce30ff022cc891aab78253656ac74192519aaee5b4",
+   "scale": 3
+  },
+  "mascot_wave_main.png": {
+   "line_px": 25.31,
+   "inner_px": 16.45,
+   "rim_px": 18.23,
+   "offset_px": [
+    7,
+    5
+   ],
+   "tones": {
+    "star": 3,
+    "body": 3,
+    "heart": 3,
+    "cheek": 1,
+    "sash": 4
+   },
+   "size": [
+    723,
+    637
+   ],
+   "source": "mascot_wave_main.png",
+   "source_sha256": "f265a38cafcbd75fc7f032b5054ff26bebf0c34de5ffae5b8bc1c44a19898e85",
+   "sha256": "7bce4cb8d85d1e6dcdb46bbd4ce0fb7844f048b03841f39a0151af2a05e769f1",
+   "scale": 1
+  },
+  "mascot_wave_main@2x.png": {
+   "line_px": 50.62,
+   "inner_px": 32.91,
+   "rim_px": 36.45,
+   "offset_px": [
+    14,
+    11
+   ],
+   "tones": {
+    "star": 3,
+    "body": 3,
+    "heart": 3,
+    "cheek": 1,
+    "sash": 4
+   },
+   "size": [
+    1448,
+    1274
+   ],
+   "source": "mascot_wave_main.png",
+   "source_sha256": "f265a38cafcbd75fc7f032b5054ff26bebf0c34de5ffae5b8bc1c44a19898e85",
+   "sha256": "22363796d86d796c3ad596490b0b7c6c6d35f160ef085dd9da3dc41ef23da888",
+   "scale": 2
+  },
+  "mascot_wave_main@3x.png": {
+   "line_px": 75.94,
+   "inner_px": 49.36,
+   "rim_px": 54.67,
+   "offset_px": [
+    20,
+    16
+   ],
+   "tones": {
+    "star": 3,
+    "body": 3,
+    "heart": 3,
+    "cheek": 1,
+    "sash": 4
+   },
+   "size": [
+    2173,
+    1913
+   ],
+   "source": "mascot_wave_main.png",
+   "source_sha256": "f265a38cafcbd75fc7f032b5054ff26bebf0c34de5ffae5b8bc1c44a19898e85",
+   "sha256": "6d44411596b8ea3dfd1eb69524c02b7deebe88dfa39ce66c272570755449ad38",
+   "scale": 3
+  }
+ }
+}

@@ -2,87 +2,177 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://couple-app.invalid/contracts/room-scene-v1.schema.json",
   "title": "Couple Room Scene v1",
-  "description": "Serializable catalog decoration data rendered by the fixed application. Each room has exactly one app-owned mascot. D-day and app controls are native views outside this canvas document.",
+  "description": "Serializable decoration data rendered by the fixed application: catalog objects, references to per-couple validated generated objects (background pieces; never raw shape data), and short texts that may reference a generated bubble frame. Each room has exactly one app-owned, fixed mascot (no user-selectable state: no wearables, palette, expression or pose fields). The home cover photo is never part of this document. D-day and app controls are native views outside this canvas document.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "canvasProfile", "objects", "texts"],
+  "required": [
+    "schemaVersion",
+    "canvasProfile",
+    "objects",
+    "texts"
+  ],
   "properties": {
-    "schemaVersion": { "const": 1 },
-    "canvasProfile": { "const": "room-portrait-v1" },
+    "schemaVersion": {
+      "const": 1
+    },
+    "canvasProfile": {
+      "const": "room-portrait-v1"
+    },
     "objects": {
       "type": "array",
       "maxItems": 16,
-      "contains": { "type": "object", "properties": { "assetId": { "const": "app_mascot" } }, "required": ["assetId"] },
+      "contains": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "const": "app_mascot"
+          }
+        },
+        "required": [
+          "assetId"
+        ]
+      },
       "maxContains": 1,
-      "items": { "$ref": "#/$defs/object" }
+      "items": {
+        "$ref": "#/$defs/object"
+      }
     },
     "texts": {
       "type": "array",
       "maxItems": 3,
-      "items": { "$ref": "#/$defs/text" }
+      "items": {
+        "$ref": "#/$defs/text"
+      }
     }
   },
   "$defs": {
-    "unitCoordinate": { "type": "number", "minimum": 0, "maximum": 1 },
-    "unitSize": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+    "unitCoordinate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "unitSize": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 1
+    },
     "object": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["assetId", "x", "y", "width", "height", "rotationDeg", "zIndex", "opacity"],
+      "required": [
+        "assetId",
+        "x",
+        "y",
+        "width",
+        "height",
+        "rotationDeg",
+        "zIndex",
+        "opacity"
+      ],
       "properties": {
-        "assetId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" },
-        "x": { "$ref": "#/$defs/unitCoordinate" },
-        "y": { "$ref": "#/$defs/unitCoordinate" },
-        "width": { "$ref": "#/$defs/unitSize" },
-        "height": { "$ref": "#/$defs/unitSize" },
-        "rotationDeg": { "type": "number", "minimum": -180, "maximum": 180 },
-        "zIndex": { "type": "integer", "minimum": 0, "maximum": 31 },
-        "opacity": { "type": "number", "minimum": 0.2, "maximum": 1 },
-        "mascotState": { "$ref": "#/$defs/mascotState" }
-      },
-      "allOf": [
-        {
-          "if": { "properties": { "assetId": { "const": "app_mascot" } }, "required": ["assetId"] },
-          "then": { "required": ["mascotState"] },
-          "else": { "not": { "required": ["mascotState"] } }
-        }
-      ]
-    },
-    "mascotState": {
-      "description": "State for the fixed app-owned mascot base asset. Catalog validation binds each wearable ID to its declared slot.",
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["colorToken", "expression", "pose"],
-      "properties": {
-        "colorToken": { "type": "string", "enum": ["mascot.color.cream", "mascot.color.rose", "mascot.color.sky", "mascot.color.mint"] },
-        "expression": { "type": "string", "enum": ["mascot.expression.calm", "mascot.expression.happy", "mascot.expression.sleepy"] },
-        "pose": { "type": "string", "enum": ["mascot.pose.idle", "mascot.pose.wave", "mascot.pose.sit", "mascot.pose.sleep"] },
-        "wearables": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "head": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" },
-            "face": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" },
-            "neck": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" },
-            "hand": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" }
-          }
+        "assetId": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/catalogAssetId"
+            },
+            {
+              "$ref": "#/$defs/generatedObjectRef"
+            }
+          ]
+        },
+        "x": {
+          "$ref": "#/$defs/unitCoordinate"
+        },
+        "y": {
+          "$ref": "#/$defs/unitCoordinate"
+        },
+        "width": {
+          "$ref": "#/$defs/unitSize"
+        },
+        "height": {
+          "$ref": "#/$defs/unitSize"
+        },
+        "rotationDeg": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+        "zIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 31
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0.2,
+          "maximum": 1
         }
       }
     },
     "text": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["text", "x", "y", "width", "height", "rotationDeg", "zIndex", "styleToken"],
+      "required": [
+        "text",
+        "x",
+        "y",
+        "width",
+        "height",
+        "rotationDeg",
+        "zIndex",
+        "styleToken"
+      ],
       "properties": {
-        "text": { "type": "string", "minLength": 1, "maxLength": 40 },
-        "x": { "$ref": "#/$defs/unitCoordinate" },
-        "y": { "$ref": "#/$defs/unitCoordinate" },
-        "width": { "$ref": "#/$defs/unitSize" },
-        "height": { "$ref": "#/$defs/unitSize" },
-        "rotationDeg": { "type": "number", "minimum": -15, "maximum": 15 },
-        "zIndex": { "type": "integer", "minimum": 0, "maximum": 31 },
-        "styleToken": { "type": "string", "enum": ["text.primary", "text.accent", "text.soft"] }
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "x": {
+          "$ref": "#/$defs/unitCoordinate"
+        },
+        "y": {
+          "$ref": "#/$defs/unitCoordinate"
+        },
+        "width": {
+          "$ref": "#/$defs/unitSize"
+        },
+        "height": {
+          "$ref": "#/$defs/unitSize"
+        },
+        "rotationDeg": {
+          "type": "number",
+          "minimum": -15,
+          "maximum": 15
+        },
+        "zIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 31
+        },
+        "styleToken": {
+          "type": "string",
+          "enum": [
+            "text.primary",
+            "text.accent",
+            "text.soft"
+          ]
+        },
+        "frameObjectId": {
+          "$ref": "#/$defs/generatedObjectRef",
+          "description": "Optional bubble_frame generated object drawn around this text. The text color is chosen by the app (styleToken); the validator checks the contrast of the frame's declared text fill."
+        }
       }
+    },
+    "catalogAssetId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+      "description": "Catalog asset id (app bundled manifest)."
+    },
+    "generatedObjectRef": {
+      "type": "string",
+      "pattern": "^gen:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Reference to a GeneratedObject row of the SAME space (status active, or candidate while previewing). Validator-enforced: kind must match (background_piece as an object here; bubble_frame only as texts[].frameObjectId), the referenced row must exist, and generated objects count toward the 16 objects limit. Shape data is never embedded in the scene."
     }
   }
 }

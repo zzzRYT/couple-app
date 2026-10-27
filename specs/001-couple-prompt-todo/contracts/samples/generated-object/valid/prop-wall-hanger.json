@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "format": "mopi-shape-v1",
+  "kind": "prop",
+  "layerHint": "wall",
+  "label": "Wall hook rack",
+  "viewBox": {"w": 128, "h": 80},
+  "anchor": {"x": 0.5, "y": 0},
+  "palette": ["#C99A6B", "#A8C6A0"],
+  "shapes": [
+    {"t": "rect", "fill": 0, "stroke": true, "x": 8, "y": 8, "w": 112, "h": 18, "rx": 8},
+    {"t": "path", "fill": 1, "stroke": true, "d": "M30 26Q22 44 34 56Q46 62 52 50Q52 36 44 26Z"},
+    {"t": "path", "fill": 1, "stroke": true, "d": "M84 26Q76 40 88 54Q100 60 106 46Q104 34 98 26Z"}
+  ]
+}

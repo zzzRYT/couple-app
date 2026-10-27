@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-12 -12 152 120" width="304" height="240">
+<title>Cloud bubble</title>
+<rect x="-12" y="-12" width="152" height="120" fill="#FBF1E3"/>
+<path d="M116.35 42Q120.08 53.28 109.2 58.06Q103.7 70.71 89.95 69.66Q78.27 79.68 64 73.92Q49.73 79.67 38.07 69.64Q24.42 70.56 19.25 57.9Q8.34 53.28 11.98 42Q8.23 30.77 19.09 26.04Q24.46 13.41 38.15 14.44Q49.76 4.4 64 10.14Q78.23 4.43 89.8 14.5Q103.62 13.25 109.44 25.86Q120.25 30.78 116.35 42Z" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="11.6" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="24" cy="82" rx="8" ry="6.5" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="11.6" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="12" cy="90" rx="5" ry="4" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="11.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M116.35 42Q120.08 53.28 109.2 58.06Q103.7 70.71 89.95 69.66Q78.27 79.68 64 73.92Q49.73 79.67 38.07 69.64Q24.42 70.56 19.25 57.9Q8.34 53.28 11.98 42Q8.23 30.77 19.09 26.04Q24.46 13.41 38.15 14.44Q49.76 4.4 64 10.14Q78.23 4.43 89.8 14.5Q103.62 13.25 109.44 25.86Q120.25 30.78 116.35 42Z" fill="#E6F0F7" transform="translate(2.6 2)"/>
+<path d="M116.35 42Q120.08 53.28 109.2 58.06Q103.7 70.71 89.95 69.66Q78.27 79.68 64 73.92Q49.73 79.67 38.07 69.64Q24.42 70.56 19.25 57.9Q8.34 53.28 11.98 42Q8.23 30.77 19.09 26.04Q24.46 13.41 38.15 14.44Q49.76 4.4 64 10.14Q78.23 4.43 89.8 14.5Q103.62 13.25 109.44 25.86Q120.25 30.78 116.35 42Z" fill="none" stroke="#4A3426" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="64" cy="42" rx="44" ry="26.5" fill="#E6F0F7" transform="translate(2.6 2)"/>
+<ellipse cx="24" cy="82" rx="8" ry="6.5" fill="#AACBE2" transform="translate(2.6 2)"/>
+<ellipse cx="24" cy="82" rx="8" ry="6.5" fill="none" stroke="#4A3426" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="12" cy="90" rx="5" ry="4" fill="#AACBE2" transform="translate(2.6 2)"/>
+<ellipse cx="12" cy="90" rx="5" ry="4" fill="none" stroke="#4A3426" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

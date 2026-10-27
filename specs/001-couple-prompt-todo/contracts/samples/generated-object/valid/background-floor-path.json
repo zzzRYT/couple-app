@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "format": "mopi-shape-v1",
+  "kind": "background_piece",
+  "layerHint": "floor",
+  "label": "Floor mat",
+  "viewBox": {"w": 160, "h": 96},
+  "anchor": {"x": 0.5, "y": 0.5},
+  "palette": ["#D98B63", "#FFF4DF"],
+  "shapes": [
+    {"t": "path", "fill": 0, "stroke": true, "d": "M16 20C40 10 120 10 144 20L148 70Q80 90 12 70Z"},
+    {"t": "path", "fill": 1, "stroke": false, "d": "M40 30H120V50H40Z"},
+    {"t": "path", "fill": null, "stroke": true, "d": "M30 60Q80 72 130 60V64"}
+  ]
+}

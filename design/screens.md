@@ -1,0 +1,500 @@
+# screens.md — 화면 목록과 상태 (방향 A)
+
+각 화면의 목적, 이동, 상태, 사용하는 번역 키, 긴 문구 사례예요. 상태 ID는 캔버스 프레임 캡션과 같아요(예: `S07-decorated`). 모든 화면은 iOS와 Android, 한국어·영어·일본어, 밝은/어두운 앱, 방의 낮/밤(방 화면), 고대비, 글자 200%에서 그렸어요(어느 프레임이 어느 조합인지는 캔버스 캡션 두 번째 줄). 탭 3개(홈·방·설정)의 루트 화면은 S06·S07·S13이고, 탭 단위로 상태를 모은 보드가 S23·S24·S26, 이동 규칙은 S27 / `interaction-notes.md`예요.
+
+공통 규칙
+- **화면 번호**는 `specs/001-couple-prompt-todo/design-brief.md`의 1~16번과 같아요(S01~S16). S11(기록)은 첫 버전에서 뺐어요(후속 버전). 마일스톤 축하는 새 화면 **S28**(브리프 17번)이에요. S17은 비어 있어요(마스코트는 **캐릭터 섹션 C01~C07**로 옮겼어요), S18 에셋, S19 글꼴·토큰, S20 접근성, S21 긴 문구, S22 컴포넌트, S23·S24·S26 탭 단위(S25는 기록 탭이라 뺐어요), S27 탭 구조.
+- **탭 바가 보이는 화면**: 홈·방·설정 루트(및 그 루트의 시트). 나머지 푸시 화면과 작업 흐름, 탭 바 앞의 흐름(S01~S05)에서는 숨겨요.
+- **글자 확대**: 200%까지 설계. 줄이지 않고 줄바꿈·스크롤. 방 도구 막대 라벨은 160%에서 멈추고 2단으로 바뀌어요.
+- 한국어 문구는 존댓말 해요체, 달력·할 일·가격(마일스톤 알림 문구는 예외), 그리고 홈 배경 사진 말고 다른 사진 기능을 암시하는 표현을 쓰지 않아요.
+
+## S01 온보딩 / 시작
+
+- **캔버스 보드**: `S01-onboarding`
+- **목적**: 제품 소개 3장(함께한 날 세기 · 프롬프트로 방 꾸미기 · 마스코트 — 3번째 장이 앱 전체에서 유일한 캐릭터 히어로), 로그인 시작, 약관·개인정보·연령 문구, 재실행 상태.
+- **이동**: 앱 첫 실행 → 소개 1~3 → 시작하기 → S02. 이미 계정이 있어요 → S02. 재실행(로그아웃 후) → 최근 사용한 방법 강조된 로그인.
+- 연령: 가입 시작 화면의 약관 줄이 "계속하면 만 14세 이상이며 아래 내용에 동의하는 것으로 봐요"라고 해요(최소 연령 14세는 결정, 정확한 문구는 법무 검토 필요). 연령은 이 문구로만 확인하고 생년월일을 묻지 않아요(가정).
+- 스토어 정책 문구 자리는 약관 링크 아래 한 줄이에요(법무 확정 후 교체).
+- 소개 1장 맨 위에 앱 이름(모피루)과 슬로건("Our little world, together.")을 보여 줘요(`brand.tagline`, 영어 원문만 결정이라 세 언어 모두 영어). 글자 크기 130% 이상에서는 이 묶음을 숨겨요.
+- 소개 3의 캐릭터 이름은 모피예요(일본어 표기까지 소유자 승인).
+- 탭 바 없음(탭 구조 앞의 흐름).
+- **긴 문구·언어 사례**: 영어 "Count the days you've had together"처럼 제목이 길어도 두 줄로 줄바꿈돼요. 일본어 본문은 line-break: strict.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S01-1` | 소개 1: 둘이 함께한 날 | `onb.skip` `main.appName` `brand.tagline` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `onb.p1.title` `onb.p1.body` `onb.pageOf` `common.next` | iOS·밝게·ko, Android·어둡게·ko |
+| `S01-2` | 소개 2: 프롬프트로 방 꾸미기 | `onb.skip` `onb.p2.title` `onb.p2.body` `onb.pageOf` `common.next` | iOS·밝게·ko, Android·어둡게·ko |
+| `S01-3` | 소개 3: 마스코트 + 시작, 약관·연령 문구 위치 | `a11y.pose.wave_main` `a11y.mascot` `onb.p3.title` `onb.p3.body` `onb.pageOf` `onb.start` `onb.hasAccount` `onb.legal.lead` `onb.legal.links` `onb.age` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S01-return` | 재실행: 최근 사용 로그인 표시 | `onb.back.title` `onb.back.body` `onb.lastUsed` `login.kakao` `login.apple` `login.email` `onb.legal.lead` `onb.legal.links` `onb.age` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+
+## S02 로그인 선택 / 인증
+
+- **캔버스 보드**: `S02-login`
+- **목적**: 카카오·Apple·이메일 선택, OAuth 이동·복귀, 처리 중, 취소, 재시도, 이메일 코드 입력·재전송·만료·시도 과다.
+- **이동**: S01 → 선택 → (카카오/Apple) 외부 이동 → 복귀 → 처리 중 → 공간 없음이면 S03, 있으면 홈. 이메일 → 주소 입력 → 6자리 코드(메일의 링크로도 가능) → 처리 중.
+- 카카오·Apple 버튼은 공식 에셋으로 교체할 자리표시예요. 카카오는 공식 노랑 #FEE500·검정 글자, Apple은 플랫폼 지침의 흑백을 그대로 써요.
+- 코드 방식(6자리)을 기본으로 그렸어요. 링크 방식만 쓸지는 구현 때 확정(인계 문서의 열린 질문).
+- Android도 Apple 로그인은 웹 흐름이라 같은 버튼을 써요.
+- 선택 화면 맨 위에 이름·슬로건 묶음이 있어요(글자 크기 130% 이상에서는 숨김).
+- **긴 문구·언어 사례**: 코드 안내 문구는 이메일 주소가 길어지면 줄바꿈돼요(주소는 줄 중간에서 끊지 않고 전체를 다음 줄로).
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S02-select` | 로그인 방법 선택 | `main.appName` `brand.tagline` `login.title` `login.kakao` `login.apple` `login.email` `onb.legal.lead` `onb.legal.links` `onb.age` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S02-redirect` | OAuth 이동 중 (카카오) | `login.redirect.title` `login.redirect.body` `login.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S02-proc` | 복귀 후 처리 중 | `login.processing` | iOS·밝게·ko, Android·어둡게·ko |
+| `S02-cancel` | 취소 | `login.cancelled.title` `login.cancelled.body` `common.retry` `login.other` | iOS·밝게·ko, Android·어둡게·ko |
+| `S02-error` | 오류 · 재시도 | `login.error.title` `login.error.body` `common.retry` `login.other` | iOS·밝게·ko, Android·어둡게·ko |
+| `S02-email` | 이메일 입력 (입력 중) | `login.email.title` `login.email.label` `login.email.send` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·ko·200% |
+| `S02-email-bad` | 이메일 형식 오류 | `login.email.title` `login.email.label` `login.email.invalid` `login.email.send` | iOS·밝게·ko, Android·어둡게·ko |
+| `S02-sending` | 이메일 코드 발송 중 | `login.email.title` `login.email.label` `login.email.send` | iOS·밝게·ko, Android·어둡게·ko |
+| `S02-code` | 코드 입력 (재전송 대기) | `login.code.wrong` `login.code.expired` `login.code.rate` `login.code.resendIn` `login.code.title` `login.code.body` `login.code.confirm` | iOS·밝게·ko, Android·어둡게·ko |
+| `S02-code-wrong` | 코드 불일치 | `login.code.wrong` `login.code.expired` `login.code.rate` `login.code.resend` `login.code.title` `login.code.body` `login.code.confirm` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S02-code-exp` | 코드 만료 | `login.code.wrong` `login.code.expired` `login.code.rate` `login.code.resend` `login.code.title` `login.code.body` `login.code.confirm` | iOS·밝게·ko, Android·어둡게·ko |
+| `S02-code-rate` | 시도 과다 | `login.code.wrong` `login.code.expired` `login.code.rate` `login.code.resend` `login.code.title` `login.code.body` `login.code.confirm` | iOS·밝게·ko, Android·어둡게·ko |
+
+## S03 커플 공간 생성
+
+- **캔버스 보드**: `S03-couple-space`
+- **목적**: 함께한 날짜 입력·수정(달력이 아닌 3열 휠), 형식·유효성 오류(미래 날짜, 존재하지 않는 날짜), 생성 중·성공·연결 오류. 방의 시간대 안내.
+- **이동**: S02 → 날짜 입력 → 공간 만들기 → 성공 → S04.
+- 날짜는 달력 UI로 고르지 않아요(달력 기능을 암시하지 않기 위해). 3열 휠(년·월·일, 영어는 월·일·년 순서).
+- 방의 낮밤은 만드는 사람의 현재 시간대로 정해지고 설정에서 바꿀 수 있다는 안내를 여기서 처음 보여요(FR-020).
+- **긴 문구·언어 사례**: 날짜 필드 순서가 언어별로 달라요(ko/ja 년·월·일, en 월·일·년).
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S03-form` | 날짜 입력 (기본) | `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.date.hint` `space.tz.name` `space.tz.note` `space.create` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S03-picker` | 날짜 휠 선택 시트 | `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.date.hint` `space.tz.name` `space.tz.note` `space.create` `space.date.pick` `common.done` | iOS·밝게·ko, Android·어둡게·ko |
+| `S03-future` | 미래 날짜 오류 | `space.date.future` `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.tz.name` `space.tz.note` `space.create` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S03-invalid` | 존재하지 않는 날짜 오류 | `space.date.invalid` `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.tz.name` `space.tz.note` `space.create` | iOS·밝게·ko, Android·어둡게·ko |
+| `S03-creating` | 생성 중 | `space.creating` | iOS·밝게·ko, Android·어둡게·ko |
+| `S03-ok` | 생성 성공 | `space.ok.title` `space.ok.body` `space.ok.next` | iOS·밝게·ko, Android·어둡게·ko |
+| `S03-error` | 연결 오류 | `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.date.hint` `space.tz.name` `space.tz.note` `space.err.title` `space.err.body` `common.retry` `space.create` | iOS·밝게·ko, Android·어둡게·ko |
+
+## S04 초대 코드 생성 · 공유
+
+- **캔버스 보드**: `S04-invite-create`
+- **목적**: 코드 생성 중, 8자리 코드와 만료 시간(24시간, 한 번만 수락), OS 공유 시트, 복사, 만료 임박, 만료됨, 재발급(기존 미사용 코드 폐기 안내), 공유 취소, 네트워크 오류, 상대 대기.
+- **이동**: S03 → S04. 공유 시트(OS) / 복사. 나중에 초대하기 → 홈(초대 미완료).
+- 코드는 0/O, 1/I 없이 8자(4-4 그룹)로 제안했어요(스펙에 길이 없음).
+- 공유 시트는 OS 컴포넌트를 닮게 그린 자리표시예요.
+- 초대·꾸밈 변경에 대한 알림은 없어서 "상대가 들어오면 알려 드려요"가 아니라 "앱을 열면 확인할 수 있어요"로 써요.
+- **긴 문구·언어 사례**: 200% 글자에서는 코드 8칸이 4+4 두 줄로 나뉘어요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S04-gen` | 코드 생성 중 | `invite.title` `invite.body` `invite.generating` `invite.share` `invite.copy` | iOS·밝게·ko, Android·어둡게·ko |
+| `S04-code` | 코드 · 만료 시간 · 공유/복사 | `invite.expires` `invite.expiresAt.sample` `invite.expiresAt` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` `invite.share` `invite.copy` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S04-share` | OS 공유 시트 | `invite.expires` `invite.expiresAt.sample` `invite.expiresAt` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` `invite.share` `invite.copy` `login.email.label` `invite.shareSheet.title` `invite.shareMsg` | iOS·밝게·ko, Android·어둡게·ko |
+| `S04-copied` | 복사 완료 토스트 | `invite.expires` `invite.expiresAt.sample` `invite.expiresAt` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` `invite.share` `invite.copy` `invite.copied` | iOS·밝게·ko, Android·어둡게·ko |
+| `S04-soon` | 만료 임박 (30분 이내) | `invite.expiring` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` `invite.share` `invite.copy` | iOS·밝게·ko, Android·어둡게·ko |
+| `S04-expired` | 만료됨 · 재발급 유도 | `invite.expired.title` `invite.expired.body` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 1 |
+| `S04-reissue` | 재발급 확인 (기존 코드 폐기) | `invite.expires` `invite.expiresAt.sample` `invite.expiresAt` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` `invite.share` `invite.copy` `invite.reissue.title` `invite.reissue.body` `common.cancel` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S04-cancelled` | 공유 취소 안내 | `invite.expires` `invite.expiresAt.sample` `invite.expiresAt` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` `invite.share` `invite.copy` `invite.shareCancelled` | iOS·밝게·ko, Android·어둡게·ko |
+| `S04-error` | 네트워크 오류 | `invite.title` `invite.err.title` `invite.err.body` `common.retry` `invite.later` | iOS·밝게·ko, Android·어둡게·ko |
+| `S04-waiting` | 상대 참여 대기 (메인 진입 전) | `invite.waiting.title` `invite.waiting.body` `invite.code.label` `common.next` | iOS·밝게·ko, Android·어둡게·ko |
+
+## S05 초대 코드 입력 / 수락
+
+- **캔버스 보드**: `S05-invite-enter`
+- **목적**: 코드 입력, 확인, 초대 상대·공간 확인 후 수락, 만료·사용됨·유효하지 않음·인원 초과·이미 다른 공간 소속.
+- **이동**: S02(공간 없음) → "초대 코드가 있어요" → S05 → 참여 → 홈.
+- 이미 다른 공간에 있는 사용자는 "한 번에 하나의 공간만" 안내를 받고 코드가 소모되지 않아요(결정: 사용자당 한 공간). 지금 공간에서 먼저 나오려면(설정의 공간 종료) 한 뒤 다시 입력해요.
+- 붙여넣기를 제공해요.
+- **긴 문구·언어 사례**: 오류 문구가 영어·일본어에서 길어져도 카드 안에서 줄바꿈돼요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S05-empty` | 코드 입력 (비어 있음) | `join.check` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko |
+| `S05-typing` | 코드 입력 중 | `join.check` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·ko·고대비, Android·어둡게·ko·고대비 외 2 |
+| `S05-checking` | 코드 확인 중 | `join.checking` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko |
+| `S05-found` | 초대 상대·공간 확인 후 수락 | `join.found.heading` `sample.partner` `join.found.title` `set.together.value` `join.found.body` `join.accept` `join.decline` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S05-expired` | 만료된 코드 | `join.expired.title` `join.expired.body` `join.check` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S05-used` | 이미 사용된 코드 | `join.used.title` `join.used.body` `join.check` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko |
+| `S05-invalid` | 유효하지 않은 코드 | `join.invalid.title` `join.invalid.body` `join.check` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko |
+| `S05-full` | 공간 인원 초과 | `join.full.title` `join.full.body` `join.check` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko |
+| `S05-has` | 이미 다른 공간 소속 | `join.hasSpace.title` `join.hasSpace.body` `join.hasSpace.action` `common.close` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 1 |
+| `S05-ok` | 참여 완료 | `join.ok.title` `sample.partner` `join.ok.body` `join.ok.next` | iOS·밝게·ko, Android·어둡게·ko |
+| `S05-net` | 네트워크 오류 | `join.err` `common.retry` `join.check` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko |
+
+## S06 홈 탭 — 메인 D-day 페이지
+
+- **캔버스 보드**: `S06-main-dday, S23-tab-home`
+- **목적**: 함께한 일수(풍선·리본 일러스트와 함께), 날짜 편집, 초대 미완료, 두 사람 참여, 로딩, 동기화 오류, 오프라인 마지막 상태, 날짜 미설정, 방 카드(지금 방의 낮·밤 표시), "우리 방 열기".
+- **이동**: 탭 루트(홈). 초대 코드 보기 → 푸시(탭 바 숨김). 날짜 수정 → 시트. 우리 방 열기 → 방 탭.
+- D-day 문구는 템플릿: `dday.eyebrow` + `dday.count`(ko "함께한 지 / {n}일째", en "Together / Day {n}", ja "一緒に過ごして / {n}日目"). 접근성 문장은 별도 키 `a11y.dday`.
+- 일수 규칙 제안: 함께한 날짜 당일을 1일째로 센다.
+- 큰 글자(≥160%)에서는 마스코트를 줄이고 방 카드를 접어서 숫자를 우선해요.
+- **긴 문구·언어 사례**: 영어는 "Day 483"처럼 단어가 숫자 앞, 일본어는 "483日目". 200%에서 영어 "Day"와 숫자가 두 줄이 돼요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S06-loading` | 로딩 (스켈레톤) | `main.loading` `main.appName` `main.openRoom` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-both` | 기본: 두 사람 참여 · 배경 사진 없음(종이색 바탕) | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S06-photo` | 배경 사진 있음 (사진 위 글자는 어두운 막으로 받침) | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `a11y.cover.photo` `main.appName` `a11y.cover.change` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 2 |
+| `S06-photo-load` | 배경 사진 불러오는 중 | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `cover.loading` `main.appName` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-photo-err` | 배경 사진 불러오기 실패 (종이색으로 대체) | `cover.load.err` `common.retry` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-photo-sheet` | 사진 바꾸기 시트 (앨범 선택 · 없애기) | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `a11y.cover.photo` `main.appName` `a11y.cover.change` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` `cover.sheet.title` `cover.by.time` `cover.by` `cover.sheet.pick` `cover.sheet.remove` `cover.sheet.note` `common.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-photo-add-sheet` | 사진 추가 시트 (처음) | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` `cover.sheet.title` `cover.sheet.pick` `cover.sheet.note` `common.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-photo-crop` | 사진 자르기 (시스템 사진 선택 뒤) | `cover.crop.title` `a11y.cover.crop` `cover.crop.hint` `cover.crop.done` `common.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-photo-upload` | 사진 올리는 중 | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `cover.up.title` `a11y.cover.photo` `main.appName` `a11y.cover.change` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-photo-uperr` | 사진 올리기 실패 (기존 사진 유지) | `cover.err.title` `cover.err.body` `common.retry` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `a11y.cover.photo` `main.appName` `a11y.cover.change` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-photo-reject` | 쓸 수 없는 사진 (형식·크기) | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` `cover.rej.title` `cover.rej.body` `common.done` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-photo-updated` | 사진 바꿈 완료 토스트 | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `a11y.cover.photo` `main.appName` `a11y.cover.change` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` `cover.updated` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-photo-partner-changed` | 상대가 사진을 바꿈 (홈을 열면 누가 바꿨는지 안내) | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `a11y.cover.photo` `main.appName` `a11y.cover.change` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` `cover.partner.changed` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-photo-partner-removed` | 상대가 사진을 없앰 (종이색으로 돌아감) | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` `cover.partner.removed` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-photo-removed` | 사진 없앰 토스트 (종이색으로 돌아감) | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` `cover.removed` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-pending` | 상대 초대 미완료 | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `main.appName` `a11y.cover.add` `cover.add` `main.invitePending.title` `main.invitePending.body` `main.invitePending.action` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 1 |
+| `S06-nodate` | 날짜 미설정 | `main.noDate.title` `main.noDate.body` `main.appName` `a11y.cover.add` `cover.add` `main.noDate.action` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-edit` | 날짜 수정 시트 | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` `main.editSheet.title` `main.editSheet.body` `common.save` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S06-saved` | 날짜 수정 완료 토스트 | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` `main.editSheet.saved` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-syncerr` | 동기화 오류 (마지막 저장본) | `main.sync.title` `main.sync.body` `common.retry` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-offline` | 오프라인 · 마지막 상태 | `main.offline.title` `main.offline.body` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S06-night` | 방이 밤일 때 방 카드 | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.night` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+
+## S07 방 탭 — 방 페이지
+
+- **캔버스 보드**: `S07-room, S24-tab-room`
+- **목적**: 마스코트가 기본 포함된 장면, 낮/밤, 네이티브 날짜 위젯, 방 도구 막대(꾸미기 하나), 시스템 탭 바, 로딩·오프라인 읽기 전용·동기화 중/실패·상대 변경 실시간 반영·장면 데이터 복구 오류, 날짜 위젯 숨김, 보호 영역.
+- **이동**: 탭 루트(방). 꾸미기 → 모달 시트(S08). 탭 바로 다른 탭. 되돌리기는 방 탭에 없고 꾸미기 시트 안(S09)에만 있어요.
+- 방 도구 막대는 방 화면 **자신의 도구 막대**(위쪽)이고, 아래 탭 바는 **시스템 컴포넌트**예요. 두 영역 + 날짜 위젯 + 시스템 안전 영역이 보호 영역이에요(장식이 가리거나 입력을 가로챌 수 없음).
+- 도구 막대 윤곽선은 방의 낮밤을 따라가요(낮 방 갈색, 밤 방 크림).
+- 상대가 꾸미는 중이면 꾸미기 알약이 "지켜보기"로 바뀌어요.
+- **긴 문구·언어 사례**: 도구 막대는 버튼 하나라 글자가 커져도 한 줄이고, 라벨은 160%에서 확대를 멈춰요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S07-new` | 새 방 (마스코트 기본 + 화분) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S07-decorated` | 꾸민 방 (소품·문구 2개·날짜 위젯) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 10 |
+| `S07-loading` | 로딩 (장면 자리 표시) | `room.loading` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-offline` | 오프라인 읽기 전용 | `room.offline` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S07-syncing` | 동기화 중 표시 | `room.syncing` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-syncfail` | 동기화 실패 | `room.syncFail.title` `room.syncFail.body` `common.retry` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-partner` | 상대가 방을 바꿈 (실시간 반영) | `sample.partner` `room.partnerChanged` `a11y.pose.lookup` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-recover` | 장면 데이터 복구 오류 | `room.recover.title` `room.recover.body` `room.recover.action` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-hidden` | 날짜 위젯을 방에서 숨긴 경우 | `room.ddayHidden` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-no-mascot` | 모피가 방에서 빠진 방 · 고정 컨트롤 "모피 다시 부르기" | `room.mascot.recall` `room.mascot.missing` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S07-protect` | 보호 영역 표시 (측정값에서 계산) | `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·ko·200% |
+| `S07-gen-room` | 생성 장식이 들어간 방 (배경 조각 2 + 말풍선 틀) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S07-obj-detail` | 생성 장식을 누르면 · 장식 상세 시트 (신고하기 · 방 전체 신고) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` `obj.detail.kind.bubble` `sample.partner` `gen.lib.by` `obj.report` `obj.report.scene` `common.close` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S07-obj-reported` | 신고 직후 · 내 화면에서 그 장식이 숨겨짐 | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` `report.obj.done.title` `obj.hidden.note` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-obj-detail-reported` | 신고한 장식의 상세 · "신고했어요 · 접수됨" | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` `obj.hidden.note` `obj.reported` `obj.report.scene` `common.close` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-obj-removed` | 운영 검토로 장식이 방에서 빠짐 · 두 사람에게 한 번 안내 | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` `obj.removed.notice` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-protect-small` | 보호 영역 · 360×640 | `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | Android·낮·밝게·ko |
+| `S07-protect-med` | 보호 영역 · 412×915 | `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | Android·낮·밝게·ko |
+| `S07-protect-large` | 보호 영역 · 430×932 | `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko |
+| `S07-protect-1.3` | 보호 영역 · 글자 130% | `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·밤·어둡게·ja·130% |
+| `S07-protect-1.6` | 보호 영역 · 글자 160% | `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·밤·어둡게·ja·160% |
+| `S07-widget-coral` | 날짜 위젯 모양·위치 변경 · coral | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko |
+| `S07-widget-yellow` | 날짜 위젯 모양·위치 변경 · yellow | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·밤·어둡게·ko |
+| `S07-widget-white` | 날짜 위젯 모양·위치 변경 · white | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko |
+| `S07-widget-navy` | 날짜 위젯 모양·위치 변경 · navy | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·밤·어둡게·ko |
+
+## S08 공유 프롬프트 대화 / 입력
+
+- **캔버스 보드**: `S08-prompt-session`
+- **목적**: 공유 대화와 미리 보기, 점유 상태 6가지(비어 있음 / 내가 점유 / 상대가 점유(쓰는 중·만드는 중) / 내 점유 만료 임박 / 내 점유 만료 / 상대 만료 후 이어받기), 이어받기 경합, 동의 필요, 하루 3회 소진, 오프라인, 미지원 요청, 브랜드 요청 거절, 실패·재시도, 키보드.
+- **이동**: 방 탭의 꾸미기 → 모달 시트. 비어 있을 때 "내가 꾸밀게요"로 점유. 닫기 → 방.
+- 점유는 자동이 아니라 "내가 꾸밀게요"로 시작해요(상대가 의도치 않게 막히는 것 방지). 3분(가정) 입력이 없으면 풀리고 쓰던 글은 남아요.
+- 상대는 대화·미리 보기를 실시간 읽기 전용으로 봐요. 입력칸은 잠금 아이콘과 이유를 보여요.
+- AI 배지는 두지 않았어요(스펙). 결과 카드는 "제안"으로 말해요.
+- 탭 바는 모달 시트가 덮어요.
+- **긴 문구·언어 사례**: 점유 표시 칩은 두 줄 헤더(제목 + 칩)로 둬서 영어·일본어 이름이 길어도 줄바꿈되지 않아요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S08-free` | 비어 있음 (아무도 점유 안 함) · 내가 꾸밀게요 | `prompt.msg.status.released` `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.start` `prompt.start.help` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.free` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·ko·200%, Android·밤·어둡게·ja·200% |
+| `S08-empty` | 비어 있음 · 대화 없음(처음) | `prompt.history.empty` `prompt.start` `prompt.start.help` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.free` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-mine` | 내가 점유 · 입력 가능 | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 3 |
+| `S08-kbd` | 내가 점유 · 키보드 입력 중 (탭 바·도구 막대를 가리지 않는 모달) | `prompt.msg.result` `prompt.msg.me` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `prompt.kbd` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-sending` | 제출 중 · 입력 잠김 | `prompt.msg.me` `prompt.msg.time` `prompt.sending` `sample.partner` `prompt.input.partner` `a11y.input.ro` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-partner-typing` | 상대 점유 · 쓰는 중 (읽기 전용 실시간) | `prompt.msg.me` `prompt.msg.time` `sample.partner` `prompt.msg.partner` `prompt.partner.typing` `prompt.input.partner` `a11y.input.ro` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.partner` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S08-partner-working` | 상대 점유 · 미리 보기 만드는 중 | `sample.partner` `prompt.msg.partner` `prompt.msg.time` `prompt.partner.thinking` `prompt.input.partner` `a11y.input.ro` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.partner` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-expiring` | 내 점유 · 만료 임박 (30초 전) | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.expiring` `prompt.expiring.action` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-idle` | 내 점유 · 유휴로 해제됨 (쓰던 글 남음) | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.idle.me.title` `prompt.idle.me.body` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.idle.me.action` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.free` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-takeover` | 상대 유휴 만료 · 이어받기 (이전 미리 보기 유지) | `preview.badge` `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.msg.status.preview` `sample.partner` `prompt.takeover.title` `prompt.takeover.body` `prompt.takeover.action` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.free` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S08-takeover-lost` | 이어받기 경합 · 상대가 먼저 | `preview.badge` `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.msg.status.preview` `sample.partner` `prompt.input.partner` `a11y.input.ro` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.partner` `a11y.presence` `prompt.takeover.lost` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-consent` | 동의 필요 · 입력 막힘 | `prompt.consent.need` `prompt.consent.action` `a11y.input` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-quota` | 하루 3회 소진 | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.quota.title` `prompt.quota.body` `a11y.input` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-offline` | 오프라인 · 온라인 전용 | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `main.offline.title` `prompt.offline` `a11y.input` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-unsupported` | 지원하지 않는 요청 | `prompt.unsupported.title` `prompt.unsupported.body` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-brand` | 기존 캐릭터·브랜드 요청 거절 | `prompt.brand.refuse` `prompt.brand.action` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-fail` | 실패 · 재시도 | `prompt.msg.me` `prompt.msg.time` `prompt.fail.title` `prompt.fail.body` `common.retry` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-gen-refused` | 생성 요청 거절 · 저작권·브랜드 (이유 + 대안 + 횟수 안 씀) | `gen.refuse.title` `gen.refuse.ip` `gen.refuse.note` `gen.refuse.action` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 2 |
+| `S08-gen-refused-purpose` | 생성 요청 거절 · 배경·말풍선 밖의 목적(마스코트·캐릭터·소품) | `gen.refuse.title` `gen.refuse.purpose` `gen.refuse.note` `gen.refuse.action` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S08-gen-failed` | 생성 실패 · 재시도 1회 뒤에도 안 됨 (횟수 안 씀) | `prompt.msg.time` `gen.fail.title` `gen.fail.body` `common.retry` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-gen-disabled` | 새 장식 만들기 잠시 중단 (킬 스위치, 다른 꾸미기는 계속) | `gen.disabled.title` `gen.disabled.body` `sample.partner` `prompt.input.partner` `a11y.input.ro` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-library` | 우리 장식 보관함 (다시 쓰기 · 지우기 · 방에 놓인 장식도 지울 수 있음) | `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `gen.lib.title` `gen.lib.count` `gen.lib.byMe` `gen.lib.use` `gen.lib.delete` `sample.partner` `gen.lib.by` `gen.lib.delete.inuse` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S08-library-full` | 보관함이 가득 참 (설정값 상한) · 모델 호출 전에 막음 | `prompt.msg.time` `gen.lib.count` `gen.lib.title` `gen.lib.full` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-library-delete` | 장식 지우기 확인 | `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `gen.lib.delete.title` `gen.lib.delete.body` `gen.lib.delete.inuse` `gen.lib.delete.confirm` `common.cancel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+
+## S09 공유 미리 보기 / 적용 확인·취소
+
+- **캔버스 보드**: `S09-preview-confirm`
+- **목적**: 두 사람에게 같은 현재 방과 후보를 보여 주고, 점유자만 적용·취소·이전 미리 보기로 되돌리기(S10). 적용 전에 "적용한 뒤에는 되돌릴 수 없어요"를 확인. 현재 방/미리 보기 전환, 유효성 경고(보호 영역 자동 이동, 한도 초과), 세션 만료 직전, 적용 중·성공·취소, 네트워크·모델 오류, 버전 충돌.
+- **이동**: S08 → 미리 보기 → 적용(점유 해제 → 방) / 취소(현재 방 유지, 점유 해제).
+- 1단계의 "나에게만 보여요"는 폐기: 미리 보기는 공유 대화에 저장되어 **두 사람 모두에게 보여요**(방은 적용 전까지 안 바뀜).
+- 적용은 session owner + expected version + idempotency key(서버). 충돌이면 "방이 방금 바뀌었어요".
+- **적용한 뒤에는 되돌릴 수 없어요**: 적용 버튼 위 안내와 적용 확인 다이얼로그(`S09-confirm`), 적용 완료 안내가 같은 말을 해요. 다시 적용하는 기능(redo)도 없어요.
+- **긴 문구·언어 사례**: 만료 직전 안내는 초 단위 변수(`{s}`)를 쓰고 두 줄까지 늘어나요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S09-mine` | 점유자 · 미리 보기 + 적용/취소 (공유 미리 보기) | `preview.changes` `preview.changes.list` `preview.shared` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 4 |
+| `S09-confirm` | 적용 확인 · 적용하면 되돌릴 수 없다고 알림 | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `preview.confirm.title` `preview.confirm.body` `common.cancel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-toggle` | 점유자 · 현재 방 보기로 전환 | `preview.changes` `preview.changes.list` `preview.shared` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-partner` | 상대 · 읽기 전용 (적용 버튼 비활성, 점유자 표시) | `preview.changes` `preview.changes.list` `preview.shared` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `sample.partner` `preview.partner.wait` `preview.partner.readonly` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.partner` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S09-warn-protect` | 경고 · 보호 영역을 가린 소품 자동 이동 | `preview.warn.protected` `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-warn-limit` | 경고 · 한도 초과, 줄인 제안 | `preview.suggest` `prompt.limit` `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-expiring` | 세션 만료 직전 | `preview.expiring` `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-applying` | 적용 중 | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.applying` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-applied` | 적용 완료 (점유 해제) | `preview.applied.title` `preview.applied.body` `sample.me` `prompt.msg.status.applied` `preview.view.current` `preview.view.candidate` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.free` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-cancelled` | 취소 (현재 방 유지, 점유 해제) | `prompt.start` `sample.me` `prompt.msg.status.cancelled` `preview.view.current` `preview.view.candidate` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.free` `a11y.presence` `preview.cancel.toast` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-apply-err` | 적용 실패 (네트워크) | `preview.apply.err.title` `preview.apply.err.body` `common.retry` `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-model-err` | 모델 오류 (미리 보기 생성 실패) | `prompt.msg.me` `prompt.msg.time` `prompt.fail.title` `preview.model.err` `common.retry` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-conflict` | 버전 충돌 (늦은 중복 적용 · 서버 거부) | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `preview.conflict.title` `preview.conflict.body` `common.confirm` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S09-gen-preview` | 새로 만든 장식이 들어간 미리 보기 (장식 표시 · 개수) | `gen.preview.count` `gen.badge` `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+
+## S10 되돌리기 — 열린 대화 안에서만
+
+- **캔버스 보드**: `S10-undo`
+- **목적**: 점유자가 지금 열린 프롬프트 대화에서 방금 만든 변경을 취소하고 바로 앞 미리 보기로 돌아가요(없으면 현재 방 보기). 확인, 진행, 성공(점유는 그대로), 되돌릴 변경 없음, 상대 점유 중, 늦은 중복 요청(서버 충돌), 실패.
+- **이동**: S09의 "이전 미리 보기로 되돌리기" → 확인 다이얼로그 → 같은 미리 보기 화면.
+- **적용한 뒤에는 되돌릴 수 없어요.** 되돌리기는 아직 적용하지 않은 변경에만 있고 방 도구 막대에는 되돌리기 버튼이 없어요. 다시 적용(redo)도 없어요.
+- 되돌려도 점유와 대화는 그대로 이어져요(점유를 풀지 않아요). 되돌릴 수 있는 만큼은 이 대화에서 만든 미리 보기까지예요.
+- 되돌리기는 점유자만 할 수 있어서 상대가 점유 중이면 이유와 함께 막혀요.
+- **긴 문구·언어 사례**: 다이얼로그 본문은 3줄까지 늘어나요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S10-confirm` | 되돌리기 확인 (이 대화 안에서만) | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `undo.title` `undo.body` `undo.confirm` `common.cancel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 4 |
+| `S10-progress` | 되돌리는 중 | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `undo.progress` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S10-done` | 성공 · 바로 앞 미리 보기로 (점유는 그대로) | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `undo.done.title` `undo.done.body` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S10-none` | 되돌릴 변경 없음 (적용한 방은 되돌릴 수 없음) | `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `undo.none.title` `undo.none.body` `common.confirm` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S10-busy` | 상대가 점유 중 · 되돌릴 수 없음 | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `sample.partner` `preview.partner.wait` `preview.partner.readonly` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.partner` `a11y.presence` `undo.busy.title` `undo.busy.body` `common.confirm` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S10-conflict` | 늦은 중복 요청 · 서버 충돌 안전 상태 | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `undo.conflict.title` `undo.conflict.body` `common.confirm` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S10-error` | 되돌리기 실패 | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `undo.err.title` `undo.err.body` `common.retry` `common.cancel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+
+## S12 해외 AI 처리 동의
+
+- **캔버스 보드**: `S12-ai-consent`
+- **목적**: 전송 정보, 목적, 처리 사업자·국가, 보관·철회, 두 사람이 함께 쓰는 방이라 동의는 사람마다 따로라는 설명. 동의 / 나중에 / 철회 / 철회됨.
+- **이동**: 꾸미기 첫 요청 직전(전체 화면 모달). 설정 > AI 처리 동의(푸시)에서 상태 확인·철회.
+- 해외 사업자의 보관 기간은 법무 확인 전이라 `[법무 확인 후 입력]` 자리표시를 그대로 뒀어요.
+- 나중에 → 방 보기와 D-day는 그대로, 꾸미기만 잠겨요.
+- 동의 버튼은 항상 화면 아래에 고정이고 본문만 스크롤돼요.
+- **긴 문구·언어 사례**: 본문이 영어·일본어에서 길어져 스크롤 길이가 늘어요. 버튼은 화면에 고정.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S12-first` | 요청 직전 첫 동의 (상단) | `consent.title` `consent.lead` `consent.sent.label` `consent.sent.body` `consent.purpose.label` `consent.purpose.body` `consent.processor.label` `consent.processor.body` `consent.keep.label` `consent.keep.body` `consent.provider.keep` `consent.couple.label` `consent.couple.body` `consent.agree` `consent.later` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S12-end` | 스크롤 끝 · 동의 버튼은 항상 보임 | `consent.title` `consent.lead` `consent.sent.label` `consent.sent.body` `consent.purpose.label` `consent.purpose.body` `consent.processor.label` `consent.processor.body` `consent.keep.label` `consent.keep.body` `consent.provider.keep` `consent.couple.label` `consent.couple.body` `consent.agree` `consent.later` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·ko·200% |
+| `S12-later` | 나중에 → 방 보기는 유지 (꾸미기만 잠김) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` `consent.later.note` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S12-status-on` | 설정 · 동의 상태 (동의함) | `set.ai.consent` `consent.status.date` `consent.status.on` `consent.couple.body` `consent.sent.body` `consent.keep.body` `consent.withdraw` | iOS·밝게·ko, Android·어둡게·ko |
+| `S12-withdraw` | 철회 확인 | `consent.withdraw.title` `consent.withdraw.body` `consent.withdraw` `common.cancel` `set.ai.consent` `consent.status.date` `consent.status.on` `consent.couple.body` `consent.sent.body` `consent.keep.body` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S12-withdrawn` | 철회됨 (다시 동의 가능) | `set.ai.consent` `consent.status.off` `consent.couple.body` `consent.sent.body` `consent.keep.body` `consent.agree` `consent.withdraw.done` | iOS·밝게·ko, Android·어둡게·ko |
+
+## S13 설정 탭
+
+- **캔버스 보드**: `S13-settings, S26-tab-settings`
+- **목적**: 프로필/로그아웃/**계정 삭제(US10)**, 앱 언어(기기 언어 기본), 방 낮·밤 모드와 시간대(두 사람에게 적용), 앱 화면 모드·고대비(이 기기에만), 함께한 날짜, AI 동의, 앱 정보, 약관, 문의·신고, 공간 종료 진입.
+- **이동**: 탭 루트(설정). 언어·시간대 → 시트. AI 동의 관리·라이선스·공간 종료·문의·신고 → 푸시(탭 바 숨김).
+- 구역 제목으로 **어디에 적용되는지** 구분해요: "방 · 두 사람에게 적용돼요" / "이 기기의 화면 · 이 기기에만 적용돼요".
+- "공간 종료"는 고정 컨트롤이 아니라 설정 안 위험 구역 한 줄(확인 단계 필수). 이는 스펙 FR-027 문구와 달라요(handoff.md).
+- 방 낮·밤·시간대는 공유 설정이라 오프라인에서는 잠겨요. 이 기기의 화면 설정은 오프라인에서도 바꿀 수 있어요.
+- **긴 문구·언어 사례**: 구역 제목이 영어·일본어에서 길어져 두 줄이 돼요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S13-loading` | 로딩 | `set.title` `set.loading` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-top` | 계정 · 공간 · 방 (낮·밤 모드는 두 사람에게 적용) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 2 |
+| `S13-bottom` | 이 기기 화면 · 언어 · 모드 · 고대비 · 앱 정보 · 공간 종료 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 3 |
+| `S13-cover-sheet` | 홈 배경 사진 행 → 바꾸기 시트 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `cover.sheet.title` `sample.partner` `cover.by.time` `cover.by` `cover.sheet.pick` `cover.sheet.remove` `cover.sheet.note` `common.cancel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S13-room-night` | 방 모드 = 밤 선택 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S13-notif-off` | 알림 행 · 꺼짐(처음 상태, 이 기기에만 적용) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S13-notif-on` | 알림 행 · 켜짐(오전 9시) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.on` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S13-notif-denied` | 알림 행 · 기기에서 꺼져 있음(켜는 방법 안내) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.denied` `set.notif.denied.title` `set.notif.denied.body` `set.notif.denied.action` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S13-hc-on` | 고대비 켬 (글자·컨트롤만 강화) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.on` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko·고대비, Android·밤·어둡게·ko·고대비 |
+| `S13-lang` | 언어 선택 시트 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `set.lang.sheet` `set.lang.system` `set.lang.note` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S13-tz` | 시간대 선택 시트 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `set.room.tz.pick` `set.room.tz.search` `set.room.tz.tokyo` `set.room.tz.la` `set.room.tz.ny` `set.room.tz.london` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S13-theme-dark` | 화면 모드 = 어둡게 선택 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S13-logout` | 로그아웃 확인 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `set.logout.title` `set.logout.body` `common.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-error` | 불러오기 오류 | `set.title` `set.err.title` `set.err.body` `common.retry` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-delete-explain` | 계정 삭제 · 결과 설명(체크 전) | `acct.delete.b1` `acct.delete.b2` `acct.delete.b3` `acct.delete.title` `acct.delete.lead` `end.check` `acct.delete.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 2 |
+| `S13-delete-checked` | 계정 삭제 · 확인 체크 후 활성 | `acct.delete.b1` `acct.delete.b2` `acct.delete.b3` `acct.delete.title` `acct.delete.lead` `end.check` `acct.delete.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-delete-reauth` | 계정 삭제 · 본인 확인(카카오·Apple·이메일 재로그인) | `acct.delete.b1` `acct.delete.b2` `acct.delete.b3` `acct.delete.title` `acct.delete.lead` `end.check` `acct.delete.confirm` `end.cancel` `acct.delete.reauth.title` `acct.delete.reauth.body` `login.kakao` `login.apple` `login.email` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S13-delete-reauth-fail` | 계정 삭제 · 본인 확인 실패 | `acct.delete.b1` `acct.delete.b2` `acct.delete.b3` `acct.delete.title` `acct.delete.lead` `end.check` `acct.delete.confirm` `end.cancel` `acct.delete.reauth.title` `acct.delete.reauth.body` `acct.delete.reauth.fail` `login.kakao` `login.apple` `login.email` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-delete-progress` | 계정 삭제 · 삭제하는 중 | `acct.delete.progress` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-delete-offline` | 계정 삭제 · 오프라인(대기열 없음, 온라인에서만) | `acct.delete.b1` `acct.delete.b2` `acct.delete.b3` `acct.delete.title` `acct.delete.lead` `end.check` `acct.delete.offline` `acct.delete.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-delete-fail` | 계정 삭제 · 요청 실패(아직 아무것도 지워지지 않음) | `acct.delete.b1` `acct.delete.b2` `acct.delete.b3` `acct.delete.title` `acct.delete.lead` `end.check` `acct.delete.fail.title` `acct.delete.fail.body` `common.retry` `acct.delete.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-delete-done` | 계정 삭제 · 완료 후 로그아웃 화면 | `main.appName` `brand.tagline` `login.title` `login.kakao` `login.apple` `login.email` `onb.legal.lead` `onb.legal.links` `onb.age` `acct.delete.done` | iOS·밝게·ko, Android·어둡게·ko |
+
+## S14 공간 종료
+
+- **캔버스 보드**: `S14-end-space`
+- **목적**: 결과(삭제되고 되돌릴 수 없음)를 또렷하게 쓴 확인(체크 후에만 활성), 진행, 종료 직후 안내와 "새 공간 시작하기", 상대가 종료한 경우, 상대가 연결을 끊은 경우, 상대가 계정을 삭제한 경우(이름 없이). **복구 기능과 보관 기간 안내는 없어요**(2026-10-27 결정 · 가정).
+- **이동**: 설정 > 공간 종료(푸시) → 확인 → 종료 안내 화면(탭 구조 대신). "새 공간 시작하기" → S03(공간 만들기) 또는 S05(초대 코드 입력). 상대가 먼저 끝냈다면 앱을 열 때 같은 안내 화면이 보여요.
+- 종료는 소프트 삭제예요: 두 사람 모두 즉시 접근이 끊기고 서버가 내부적으로 일정 기간 뒤 완전히 삭제해요. 화면·문구는 기간이나 복구 방법을 말하지 않아요.
+- "잘못 누른 느낌"을 줄이지 않도록 결과 세 줄 + 체크박스 + 빨간 버튼.
+- 종료한 뒤 바로 새 공간을 만들거나 초대를 수락할 수 있어요("한 공간만"은 활성 공간만 세요).
+- **긴 문구·언어 사례**: 결과 설명이 일본어에서 4줄까지 늘어나요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S14-entry` | 설정의 공간 종료 진입 (확인 단계 앞) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S14-confirm` | 종료 확인 · 결과 명시(삭제되고 되돌릴 수 없음, 체크 전) | `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S14-checked` | 확인 체크 후 활성 | `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S14-progress` | 종료 중 | `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S14-done` | 종료 직후 · 새 공간 시작하기 (기간·복구 안내 없음) | `end.done.title` `end.done.body` `end.newSpace` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 1 |
+| `S14-partner` | 상대가 종료한 경우 (내 화면) | `sample.partner` `end.byPartner` `end.done.title` `end.done.body` `end.newSpace` | iOS·밝게·ko, Android·어둡게·ko |
+| `S14-partner-disconnect` | 상대가 연결을 끊은 경우 (내 화면) | `sample.partner` `end.byPartnerDisconnect` `end.done.title` `end.done.body` `end.newSpace` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 1 |
+| `S14-partner-deleted` | 상대가 계정을 삭제한 경우 (내 화면 · 이름 없이) | `sample.partner` `end.byPartnerDeleted` `end.done.title` `end.done.body` `end.newSpace` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S14-error` | 종료 실패 | `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` `end.err.title` `end.err.body` `common.retry` `common.close` | iOS·밝게·ko, Android·어둡게·ko |
+
+## S15 신고 / 연결 끊기
+
+- **캔버스 보드**: `S15-report-block`
+- **목적**: 대상(상대·공유 문구·방 장면) 선택, 사유, 자세한 내용(선택), 제출 성공·실패, 연결 끊기 확인과 결과, 지원 연락처.
+- **이동**: 설정 > 문의·신고(푸시), 대화 메시지의 ⋯ > 이 메시지 신고(시트).
+- 지원 연락처는 `[지원 이메일]` 자리표시예요.
+- **연결 끊기**(예전 이름 "차단")는 "상대는 방·대화를 볼 수 없고 이 공간이 종료돼요. 함께 쓰던 데이터는 삭제돼요"라고 분명히 말해요(기간·복구 안내 없음)(결정). 신고와는 별개의 기능이에요. 구현의 문구 키·API 이름은 `report.block*`·`block` 그대로예요(계약 이름을 바꾸지 않으려고).
+- **긴 문구·언어 사례**: 사유 문구가 길어져도 한 줄에 라디오와 함께 줄바꿈돼요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S15-entry` | 진입 · 설정의 문의·신고 → 신고 대상 고르기 | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `sample.partner` `report.block` `report.contact` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S15-msg-menu` | 진입 · 대화 메시지에서 신고 | `sample.partner` `prompt.msg.partner` `prompt.msg.time` `prompt.input.partner` `a11y.input.ro` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.partner` `a11y.presence` `report.msg.menu` `report.msg.menu.cancel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S15-reason` | 사유 선택 | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `report.why` `report.reason.harass` `report.reason.inappropriate` `report.reason.privacy` `report.reason.other` `report.submit` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-detail` | 자세한 내용 입력 (선택) | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `report.why` `report.reason.harass` `report.reason.inappropriate` `report.reason.privacy` `report.reason.other` `report.detail` `report.detail.placeholder` `report.submit` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-sending` | 제출 중 | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `report.why` `report.reason.harass` `report.reason.inappropriate` `report.reason.privacy` `report.reason.other` `report.sending` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-done` | 제출 성공 · 지원 연락처 | `report.done.title` `report.done.body` `report.contact` `common.done` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-fail` | 제출 실패 (입력 유지) | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `report.why` `report.reason.harass` `report.reason.inappropriate` `report.reason.privacy` `report.reason.other` `report.fail.title` `report.fail.body` `common.retry` `report.submit` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-block` | 연결 끊기 확인 · 결과 설명 | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `sample.partner` `report.block` `report.block.title` `report.block.body` `report.block.confirm` `common.cancel` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S15-blocked` | 연결을 끊은 뒤 결과 (공간 종료 상태) | `end.done.title` `end.done.body` `end.newSpace` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-obj-reason` | 장식 신고 · 사유 선택 | `report.obj.title` `obj.detail.kind.bubble` `sample.partner` `gen.lib.by` `report.obj.lead` `report.obj.reason.copyright` `report.obj.reason.offensive` `report.obj.reason.personal` `report.obj.reason.other` `report.obj.send` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 1 |
+| `S15-obj-note` | 장식 신고 · 선택 메모 (상대에게 안 보임) | `report.obj.title` `obj.detail.kind.bubble` `sample.partner` `gen.lib.by` `report.obj.reason.copyright` `report.obj.reason.offensive` `report.obj.reason.personal` `report.obj.reason.other` `report.obj.note` `report.obj.note.hint` `report.obj.send` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-obj-sent` | 장식 신고 · 접수 (내 화면에서 숨김) | `report.obj.done.title` `report.obj.done.body` `common.done` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S15-obj-fail` | 장식 신고 · 보내지 못함 (입력 유지) | `report.obj.title` `obj.detail.kind.bubble` `sample.partner` `gen.lib.by` `report.obj.reason.copyright` `report.obj.reason.offensive` `report.obj.reason.personal` `report.obj.reason.other` `report.obj.fail.title` `report.obj.fail.body` `common.retry` `report.obj.send` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-obj-limit` | 장식 신고 · 오늘 한도(10건) 초과 | `report.obj.title` `obj.detail.kind.bubble` `sample.partner` `gen.lib.by` `report.obj.reason.copyright` `report.obj.reason.offensive` `report.obj.reason.personal` `report.obj.reason.other` `report.obj.limit` `report.obj.send` | iOS·밝게·ko, Android·어둡게·ko |
+
+## S16 공통 오류 · 빈 · 로딩 · 오프라인
+
+- **캔버스 보드**: `S16-system-states`
+- **목적**: 서버·AI 일시 장애, 로그인 만료, 접근 거부, 인터넷 끊김, 요청 한도, 구버전 장면, 삭제된 에셋, 동기화 대기, 로딩, 빈 상태.
+- **이동**: 발생 지점에 따라 전체 화면 또는 배너. 앱은 마지막 확정 방·D-day를 보여 주고 오프라인 편집이나 미리 보기 적용은 하지 않아요.
+- 오류는 항상 "무엇이 그대로인지"를 먼저 말해요(예: 방은 그대로예요).
+- **긴 문구·언어 사례**: 오류 제목이 일본어에서 길어져도 가운데 정렬 두 줄.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S16-server` | 서버·AI 일시 장애 (서버) | `sys.server.title` `sys.server.body` `sys.retry` `common.close` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S16-ai` | AI 처리 일시 중단 (꾸미기만) | `sys.ai.title` `sys.ai.body` `sys.retry` `prompt.offline` `a11y.input` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S16-login` | 로그인 만료 | `sys.login.title` `sys.login.body` `sys.login.action` | iOS·밝게·ko, Android·어둡게·ko |
+| `S16-denied` | 접근 거부 (구성원 아님·종료) | `sys.denied.title` `sys.denied.body` `join.haveCode` `join.createSpace` | iOS·밝게·ko, Android·어둡게·ko |
+| `S16-offline` | 인터넷 끊김 · 메인 마지막 상태 | `main.offline.title` `main.offline.body` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S16-quota` | 요청 한도 (하루 3회) | `sys.quota.title` `prompt.quota.body` `prompt.quota.title` `a11y.input` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S16-old-scene` | 구버전 장면 (읽을 수 있는 부분만) | `sys.old.title` `sys.old.body` `sys.old.action` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S16-asset` | 삭제된·누락된 에셋 (빈 자리 유지) | `sys.asset.title` `sys.asset.body` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S16-pending` | 데이터 동기화 대기 | `sys.pending.title` `sys.pending.body` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S16-loading-main` | 로딩 · 메인 스켈레톤 | `main.loading` `main.appName` `main.openRoom` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S16-empty` | 빈 상태 (공통 빈 화면) | `sys.empty.title` `sys.empty.body` `common.close` | iOS·밝게·ko, Android·어둡게·ko |
+
+## S28 마일스톤 축하 · 기념 방 꾸미기 제안
+
+- **캔버스 보드**: `S28-milestone`
+- **목적**: 함께한 날이 50일·100일·200일·300일·500일·1000일이거나 주년(함께한 날짜와 같은 달력 날짜)이면, 앱을 열었을 때 마스코트(모피)가 홈 카드와 방 말풍선으로 축하하고 앱이 준비한 기념 방 꾸미기 제안을 기존 미리 보기 → 적용 흐름으로 볼 수 있어요. 옵트인 기기 예약 알림(오전 9시)도 받을 수 있어요(서버 푸시 없음). 고정 문구(AI 호출 없음), 자동 적용 없음.
+- **이동**: 앱 열기(또는 알림을 눌러 열기) → 홈 카드(닫기 / 기념 방 꾸미기 보기) → 첫 카드를 닫은 뒤 알림 사전 안내 시트(알림 켜기 / 다음에) → OS 권한 창 · 방 탭 말풍선(닫기) + 하단 제안 입구 → 점유 시작 → 미리 보기(S09, "{라벨} 제안" 뱃지) → 적용 확인("적용한 뒤에는 되돌릴 수 없어요") → 적용. 상대가 점유 중이면 입구가 막히고 이유를 알려요.
+- 마일스톤 목록·규칙(7일 안에 처음 열면 늦은 축하, 커플당 한 번, 구성원마다 한 번씩, 날짜 수정 규칙)은 보드 아래쪽 표에 있어요. 모두 **제안값**이고 결정권자가 조정할 수 있어요.
+- 마스코트 포즈는 기존 `cheer`(신나게 인사)만 써요. 통통 뛰기(2.4초)와 반짝임(1.4초)은 앱 고정 동작이고 동작 줄이기에서는 정지해요.
+- 제안은 AI를 쓰지 않는 앱 프리셋(케이크·풍선·리본·반짝이 + 기념 문구, 주년은 선물 추가)이라 해외 AI 동의·하루 3회 한도와 무관해요. 새 카탈로그 오브젝트는 0개(24종 그대로).
+- 카드는 앱 면 위에 놓여서 홈 배경 사진과 상관없이 같은 대비예요. 글자 130% 이상에서는 카드가 세로로 쌓이고, 방의 입구는 글자 크기를 160%로 제한해요.
+- **알림은 옵트인 기기 예약 알림만**이에요: 오전 9시(방 시간대), 이름·날짜 없는 문구, 서버 푸시·토큰 저장 없음, 탭 바 배지 없음. 규칙은 보드 아래 표, 설정 행은 S13·S26.
+- **긴 문구·언어 사례**: 일본어 제목은 {n}日目です / {n}周年です로 줄여서 한 줄에 들어가고, 영어 "Your 1-year anniversary"는 두 줄로 줄바꿈돼요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S28-home-day` | 홈 · 100일 당일 축하 카드(앱을 열면 보임) | `milestone.label.day` `milestone.title.day` `milestone.body.today` `a11y.pose.cheer` `a11y.mascot` `a11y.milestone.close` `milestone.action.suggest` `a11y.milestone.card` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 2 |
+| `S28-home-anniv` | 홈 · 1주년(같은 달력 날짜) 축하 카드 | `milestone.label.anniv` `milestone.title.anniv` `milestone.body.today` `a11y.pose.cheer` `a11y.mascot` `a11y.milestone.close` `milestone.action.suggest` `a11y.milestone.card` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S28-home-late` | 홈 · 며칠 뒤에 처음 연 경우(늦은 축하 문구) | `milestone.label.day` `milestone.title.day` `milestone.body.late` `a11y.pose.cheer` `a11y.mascot` `a11y.milestone.close` `milestone.action.suggest` `a11y.milestone.card` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S28-home-photo` | 홈 · 배경 사진 위에서도 카드는 앱 면 위에 놓임 | `milestone.label.day` `milestone.title.day` `milestone.body.today` `a11y.pose.cheer` `a11y.mascot` `a11y.milestone.close` `milestone.action.suggest` `a11y.milestone.card` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `a11y.cover.photo` `main.appName` `a11y.cover.change` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S28-room-day` | 방 · 마스코트 말풍선 + 기념 꾸미기 제안 입구 | `milestone.bubble.day` `a11y.milestone.bubble` `a11y.milestone.close` `milestone.label.day` `milestone.suggest.chip` `milestone.suggest.hint` `a11y.pose.cheer` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 3 |
+| `S28-room-anniv` | 방 · 1주년 말풍선 | `milestone.bubble.anniv` `a11y.milestone.bubble` `a11y.milestone.close` `milestone.label.anniv` `milestone.suggest.chip` `milestone.suggest.hint` `a11y.pose.cheer` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S28-room-closed` | 방 · 말풍선을 닫은 뒤(제안 입구는 남음) | `milestone.label.day` `milestone.suggest.chip` `milestone.suggest.hint` `a11y.pose.cheer` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S28-room-busy` | 방 · 상대가 꾸미는 중이라 제안 막힘 | `milestone.bubble.day` `a11y.milestone.bubble` `a11y.milestone.close` `milestone.label.day` `milestone.suggest.busy` `a11y.pose.cheer` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 1 |
+| `S28-room-full` | 방 · 방이 가득 차서 제안 막힘 | `milestone.bubble.day` `a11y.milestone.bubble` `a11y.milestone.close` `milestone.label.day` `milestone.suggest.full` `a11y.pose.cheer` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S28-notif-banner` | 알림 배너(OS가 그림) · 잠금 화면 · 이름·날짜 없는 문구 | `a11y.pose.wave_main` `a11y.mascot` `main.appName` `notif.body` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S28-notif-prompt` | 알림 사전 안내 시트(첫 축하 카드를 닫은 뒤 한 번) · 다음 화면은 OS 권한 창 | `a11y.pose.cheer` `a11y.mascot` `notif.prompt.body` `notif.prompt.note` `notif.prompt.allow` `notif.prompt.later` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` `notif.prompt.title` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S28-notif-opened` | 알림을 눌러 앱을 연 모습 · 홈에 축하 카드가 바로 보임 | `milestone.label.day` `milestone.title.day` `milestone.body.today` `a11y.pose.cheer` `a11y.mascot` `a11y.milestone.close` `milestone.action.suggest` `a11y.milestone.card` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` | iOS·밝게·ko, Android·어둡게·ko |
+| `S28-preview` | 제안 미리 보기(기존 S09 흐름) · AI 없음 · 점유자 | `milestone.label.day` `milestone.msg.suggest` `preview.changes` `milestone.preview.changes` `milestone.preview.badge` `milestone.preview.note` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `milestone.plate.day` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S28-preview-partial` | 제안 미리 보기 · 방에 자리가 모자라 일부만 | `milestone.label.day` `milestone.msg.suggest` `preview.changes` `milestone.preview.changes` `milestone.suggest.partial` `milestone.preview.badge` `milestone.preview.note` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `milestone.plate.day` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S28-preview-anniv` | 1주년 제안 미리 보기(선물 포함 6개) | `milestone.label.anniv` `milestone.msg.suggest` `preview.changes` `milestone.preview.changes` `milestone.preview.badge` `milestone.preview.note` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `milestone.plate.anniv` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+
+## 탭 단위 보기 (S23 · S24 · S26)
+
+탭마다 루트 화면의 **첫 실행 · 비어 있음 · 보통 · 로딩 · 오프라인 · 오류**(방은 **상대가 꾸미는 중**)와 한국어·영어·일본어 긴 문구, 푸시·시트·모달로 이어지는 화면을 한 보드에 모았어요. 상태 ID는 `S23-first`처럼 탭 번호로 시작해요.
+
+### S23
+
+| 상태 ID | 설명 | 사용하는 키 |
+|---|---|---|
+| `S23-first` | 홈 · 첫 실행(공간을 만든 직후) + 방 탭 안내 | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `main.appName` `a11y.cover.add` `cover.add` `main.invitePending.title` `main.invitePending.body` `main.invitePending.action` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` `coach.home` `a11y.coach` `coach.ok` `main.editDate` |
+| `S23-empty` | 홈 · 비어 있음(날짜 미설정) | `main.noDate.title` `main.noDate.body` `main.appName` `a11y.cover.add` `cover.add` `main.noDate.action` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` |
+| `S23-normal` | 홈 · 보통(두 사람 참여) | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` |
+| `S23-photo` | 홈 · 배경 사진 있음 | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `a11y.cover.photo` `main.appName` `a11y.cover.change` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` |
+| `S23-pending` | 홈 · 상대 초대 미완료 | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `main.appName` `a11y.cover.add` `cover.add` `main.invitePending.title` `main.invitePending.body` `main.invitePending.action` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` |
+| `S23-sheet-photo` | 홈 → 배경 사진 바꾸기(시트 · 탭 바 위로 올라옴) | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `a11y.cover.photo` `main.appName` `a11y.cover.change` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` `cover.sheet.title` `cover.by.time` `cover.by` `cover.sheet.pick` `cover.sheet.remove` `cover.sheet.note` `common.cancel` |
+| `S23-loading` | 홈 · 로딩 | `main.loading` `main.appName` `main.openRoom` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` |
+| `S23-offline` | 홈 · 오프라인(마지막 상태) | `main.offline.title` `main.offline.body` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` |
+| `S23-error` | 홈 · 동기화 오류 | `main.sync.title` `main.sync.body` `common.retry` `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` |
+| `S23-push-invite` | 홈 → 초대 코드 보기(푸시 · 탭 바 숨김) | `invite.expires` `invite.expiresAt.sample` `invite.expiresAt` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` `invite.share` `invite.copy` |
+| `S23-sheet-date` | 홈 → 날짜 수정(시트 · 탭 바 위로 올라옴) | `dday.eyebrow` `a11y.dday` `dday.count` `date.since` `sample.partner` `main.chip.both` `main.appName` `a11y.cover.add` `cover.add` `a11y.pose.wave_main` `a11y.mascot` `main.roomCard.title` `main.roomCard.day` `main.openRoom` `main.editDate` `a11y.tabbar` `tab.home` `a11y.tab.sel` `a11y.tab` `tab.room` `tab.settings` `main.editSheet.title` `main.editSheet.body` `common.save` |
+
+### S24
+
+| 상태 ID | 설명 | 사용하는 키 |
+|---|---|---|
+| `S24-first` | 방 · 첫 실행(마스코트만) + 꾸미기 안내 | `coach.room` `coach.ok` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` |
+| `S24-empty` | 방 · 비어 있음(새 방 그대로) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` |
+| `S24-normal` | 방 · 보통(꾸민 방) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` |
+| `S24-partner` | 방 · 상대가 꾸미는 중(실시간 읽기 전용 · 꾸미기가 지켜보기로 바뀜) | `sample.partner` `room.partnerLive` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.watch` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` |
+| `S24-loading` | 방 · 로딩 | `room.loading` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` |
+| `S24-offline` | 방 · 오프라인 읽기 전용 | `room.offline` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` |
+| `S24-error` | 방 · 동기화 실패 / 장면 복구 오류 | `room.syncFail.title` `room.syncFail.body` `common.retry` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` |
+| `S24-modal-decorate` | 방 → 꾸미기(모달 시트 · 탭 바를 덮음) | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` |
+
+### S26
+
+| 상태 ID | 설명 | 사용하는 키 |
+|---|---|---|
+| `S26-first` | 설정 · 첫 실행(AI 동의 전 · 언어는 기기 설정) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `consent.status.off` |
+| `S26-normal` | 설정 · 보통(위) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` |
+| `S26-normal2` | 설정 · 보통(아래) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` |
+| `S26-loading` | 설정 · 로딩 | `set.title` `set.loading` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` |
+| `S26-notif-denied` | 설정 · 마일스톤 알림이 기기에서 꺼져 있음 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.denied` `set.notif.denied.title` `set.notif.denied.body` `set.notif.denied.action` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` |
+| `S26-offline` | 설정 · 오프라인(방 설정은 잠김) | `set.title` `set.offline.title` `set.offline.body` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` |
+| `S26-error` | 설정 · 불러오기 오류 | `set.title` `set.err.title` `set.err.body` `common.retry` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` |
+| `S26-push-consent` | 설정 → AI 처리 동의 관리(푸시) | `set.ai.consent` `consent.status.date` `consent.status.on` `consent.couple.body` `consent.sent.body` `consent.keep.body` `consent.withdraw` |
+| `S26-push-lic` | 설정 → 글꼴·오픈소스 라이선스(푸시) | `lic.title` `lic.note` `lic.inter` `lic.ofl` `lic.view` `lic.notokr` `lic.notojp` |
+| `S26-sheet-lang` | 설정 → 언어(시트) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `set.lang.sheet` `set.lang.system` `set.lang.note` |
+| `S26-sheet-tz` | 설정 → 시간대(시트) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `set.room.tz.pick` `set.room.tz.search` `set.room.tz.tokyo` `set.room.tz.la` `set.room.tz.ny` `set.room.tz.london` |
+| `S26-push-end` | 설정 → 공간 종료 확인(푸시 · 탭 바 숨김) | `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` |
+
+## 캐릭터 섹션 (C01~C07)
+
+마스코트(소유자가 생성형 AI 도구로 만든 원본을 가공한 캐릭터)는 화면 안에 퍼뜨리지 않고 **독립 보드 7장**에 모았어요: C01 캐릭터 개요 · C02 제스처 시트(11개 제스처를 원본/가공본으로 1:1) · C03 팔레트·해부·규칙 · C04 배경·크기 · C05 하모나이즈 vs 원본 · **C06 앱 아이콘**(모피 얼굴 아이콘 후보 3개와 추천안 세트, 파일은 `icon/`) · **C07 벡터 버전**(자동 트레이스한 SVG 11포즈와 아이콘 얼굴, 파일은 `mascot/vector/`). 파일은 `mascot/`.
+
+**캐릭터가 나오는 화면(현재 두 곳)**
+
+| 어디 | 화면 · 상태 | 포즈 | 이유 |
+|---|---|---|---|
+| 방 장면의 기본 오브젝트 | S07 방(방 상태 전부), S24 방 탭, 그리고 방을 축소해 보여 주는 곳(S06·S23 홈의 방 카드, S08·S09·S10 프롬프트·미리 보기·되돌리기의 방 축소 보기) | `wave_main`(상대 점유 상태는 `lookup`) | 방에 처음부터 있는 앱 소유 기본 오브젝트라서 방 그림이면 같이 나와요 |
+| 온보딩 히어로 1개 | S01-3 | `wave_main` | 앱의 얼굴을 소개하는 유일한 히어로 |
+
+그 밖의 화면(온보딩 1·2, 재실행, 로그인 처리, 공간 생성 중·성공, 초대 대기·확인·참여 완료, 홈 D-day 상단, 빈 상태, 프롬프트 빈 대화, 공간 종료 안내, 신고 제출 완료, 설정 프로필 등)은 캐릭터 없이 **오브젝트 스케치로 만든 작은 일러스트**(책 더미·편지·화분·풍선·리본·달·구름·선물)나 단순한 레이아웃이에요.
+
+**나중에 캡틴이 원하면 더 쓸 수 있는 곳(제안만, 배치 아님)**: `cheer` 성공·참여 완료 · `heart` 초대 수락 · `phone` 로그인 대기 · `box` 빈 상태 · `lookup` 초대 대기 · `walk` 불러오는 중 · `sleep` 밤·보관 중 · `star_sit` 기념일 · `back` 이별·종료 안내 · `lie` 오프라인 대기.
+
+## 설명 없는 보드
+
+- **C01~C07 캐릭터 섹션**, **S18 에셋**, **S19 글꼴·토큰**, **S20 접근성**, **S21 긴 문구**, **S22 컴포넌트**, **S27 탭 구조**는 화면이 아니라 참고 보드예요: 각각 `assets-spec.md`, `tokens.json`, `contrast-report.md`, 이 문서, `components.md`, `interaction-notes.md`와 대응해요.

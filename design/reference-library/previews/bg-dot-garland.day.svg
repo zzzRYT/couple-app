@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-12 -12 216 104" width="432" height="208">
+<title>Dot garland</title>
+<rect x="-12" y="-12" width="216" height="104" fill="#FBF1E3"/>
+<path d="M10 12Q96 62 182 12" fill="none" stroke="#FFF4DF" stroke-width="17.4" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="29.93" cy="35.57" rx="10.72" ry="12.73" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="17.4" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="63.5" cy="48.12" rx="10.55" ry="12" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="17.4" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="96.1" cy="50.54" rx="10.5" ry="12.02" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="17.4" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="129.61" cy="47.58" rx="10.85" ry="12.86" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="17.4" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="162.32" cy="36.31" rx="11.15" ry="12.92" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="17.4" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M10 12Q96 62 182 12" fill="none" stroke="#4A3426" stroke-width="7.2" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="29.93" cy="35.57" rx="10.72" ry="12.73" fill="#F4B79B" transform="translate(3.9 3)"/>
+<ellipse cx="29.93" cy="35.57" rx="10.72" ry="12.73" fill="none" stroke="#4A3426" stroke-width="7.2" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="63.5" cy="48.12" rx="10.55" ry="12" fill="#F7D98B" transform="translate(3.9 3)"/>
+<ellipse cx="63.5" cy="48.12" rx="10.55" ry="12" fill="none" stroke="#4A3426" stroke-width="7.2" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="96.1" cy="50.54" rx="10.5" ry="12.02" fill="#A8C6A0" transform="translate(3.9 3)"/>
+<ellipse cx="96.1" cy="50.54" rx="10.5" ry="12.02" fill="none" stroke="#4A3426" stroke-width="7.2" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="129.61" cy="47.58" rx="10.85" ry="12.86" fill="#F4B79B" transform="translate(3.9 3)"/>
+<ellipse cx="129.61" cy="47.58" rx="10.85" ry="12.86" fill="none" stroke="#4A3426" stroke-width="7.2" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="162.32" cy="36.31" rx="11.15" ry="12.92" fill="#F7D98B" transform="translate(3.9 3)"/>
+<ellipse cx="162.32" cy="36.31" rx="11.15" ry="12.92" fill="none" stroke="#4A3426" stroke-width="7.2" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

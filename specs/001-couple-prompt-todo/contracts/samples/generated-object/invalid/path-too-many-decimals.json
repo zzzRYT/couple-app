@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "format": "mopi-shape-v1",
+  "kind": "background_piece",
+  "layerHint": "wall",
+  "label": "Dots patch",
+  "viewBox": {"w": 128, "h": 128},
+  "anchor": {"x": 0.5, "y": 0.5},
+  "palette": ["#FFF4DF", "#F4B79B"],
+  "shapes": [
+    {"t": "rect", "fill": 0, "stroke": true, "x": 8, "y": 8, "w": 112, "h": 112, "rx": 14},
+    {"t": "path", "fill": 1, "stroke": false, "d": "M20 20L60.123 20L60 60Z"}
+  ]
+}

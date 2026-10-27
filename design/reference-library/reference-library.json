@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "format": "mopi-shape-v1",
+  "status": "placeholder",
+  "objects": [
+    {
+      "id": "bg-stripe-band",
+      "file": "objects/bg-stripe-band.json",
+      "kind": "background_piece",
+      "layerHint": "wall",
+      "status": "placeholder",
+      "provenance": "drawn for this project (placeholder)"
+    },
+    {
+      "id": "bg-polka-patch",
+      "file": "objects/bg-polka-patch.json",
+      "kind": "background_piece",
+      "layerHint": "wall",
+      "status": "placeholder",
+      "provenance": "drawn for this project (placeholder)"
+    },
+    {
+      "id": "bg-cloud-band",
+      "file": "objects/bg-cloud-band.json",
+      "kind": "background_piece",
+      "layerHint": "backdrop",
+      "status": "placeholder",
+      "provenance": "drawn for this project (placeholder)"
+    },
+    {
+      "id": "bg-window-hills",
+      "file": "objects/bg-window-hills.json",
+      "kind": "background_piece",
+      "layerHint": "window_view",
+      "status": "placeholder",
+      "provenance": "drawn for this project (placeholder)"
+    },
+    {
+      "id": "bg-round-rug",
+      "file": "objects/bg-round-rug.json",
+      "kind": "background_piece",
+      "layerHint": "floor",
+      "status": "placeholder",
+      "provenance": "drawn for this project (placeholder)"
+    },
+    {
+      "id": "bg-dot-garland",
+      "file": "objects/bg-dot-garland.json",
+      "kind": "background_piece",
+      "layerHint": "wall",
+      "status": "placeholder",
+      "provenance": "drawn for this project (placeholder)"
+    },
+    {
+      "id": "bubble-round-tail",
+      "file": "objects/bubble-round-tail.json",
+      "kind": "bubble_frame",
+      "layerHint": null,
+      "status": "placeholder",
+      "provenance": "drawn for this project (placeholder)"
+    },
+    {
+      "id": "bubble-cloud",
+      "file": "objects/bubble-cloud.json",
+      "kind": "bubble_frame",
+      "layerHint": null,
+      "status": "placeholder",
+      "provenance": "drawn for this project (placeholder)"
+    },
+    {
+      "id": "bubble-scallop",
+      "file": "objects/bubble-scallop.json",
+      "kind": "bubble_frame",
+      "layerHint": null,
+      "status": "placeholder",
+      "provenance": "drawn for this project (placeholder)"
+    },
+    {
+      "id": "bubble-ribbon-rect",
+      "file": "objects/bubble-ribbon-rect.json",
+      "kind": "bubble_frame",
+      "layerHint": null,
+      "status": "placeholder",
+      "provenance": "drawn for this project (placeholder)"
+    },
+    {
+      "id": "prop-cushion-stack",
+      "file": "objects/prop-cushion-stack.json",
+      "kind": "prop",
+      "layerHint": "floor",
+      "status": "placeholder",
+      "provenance": "drawn for this project (placeholder)"
+    },
+    {
+      "id": "prop-round-side-table",
+      "file": "objects/prop-round-side-table.json",
+      "kind": "prop",
+      "layerHint": "floor",
+      "status": "placeholder",
+      "provenance": "drawn for this project (placeholder)"
+    },
+    {
+      "id": "prop-star-mobile",
+      "file": "objects/prop-star-mobile.json",
+      "kind": "prop",
+      "layerHint": "wall",
+      "status": "placeholder",
+      "provenance": "drawn for this project (placeholder)"
+    },
+    {
+      "id": "prop-book-stack",
+      "file": "objects/prop-book-stack.json",
+      "kind": "prop",
+      "layerHint": "shelf",
+      "status": "placeholder",
+      "provenance": "drawn for this project (placeholder)"
+    }
+  ]
+}

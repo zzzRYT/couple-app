@@ -1,0 +1,246 @@
+{
+ "tool": "cutout-mascot.py",
+ "version": "1.0.0",
+ "sheet": "mascot-source.png",
+ "sheet_sha256": "3f7e2a26f0f019962ded5b327936245120729d67a7bdf6480940b41db07088bd",
+ "files": {
+  "mascot_wave_main": {
+   "folder": "cutouts",
+   "size": [
+    675,
+    591
+   ],
+   "sheet_box": [
+    34,
+    232,
+    709,
+    823
+   ],
+   "sha256": "f265a38cafcbd75fc7f032b5054ff26bebf0c34de5ffae5b8bc1c44a19898e85"
+  },
+  "mascot_star_sit": {
+   "folder": "cutouts",
+   "size": [
+    194,
+    212
+   ],
+   "sheet_box": [
+    715,
+    180,
+    909,
+    392
+   ],
+   "sha256": "a13cd6d78e600294f39da74400ed5c7eba9fe9006abc2d039d8f22bf76b1c9ac"
+  },
+  "mascot_lie": {
+   "folder": "cutouts",
+   "size": [
+    263,
+    141
+   ],
+   "sheet_box": [
+    940,
+    239,
+    1203,
+    380
+   ],
+   "sha256": "321569d9c004338065f912a17e9a73b751d73620126d3e9f1747c23937156a53"
+  },
+  "mascot_cheer": {
+   "folder": "cutouts",
+   "size": [
+    249,
+    226
+   ],
+   "sheet_box": [
+    1231,
+    169,
+    1480,
+    395
+   ],
+   "sha256": "0ea754e3a5d50ab8e10bfda6de3258087233e56769ad6419a3967068e2b9a580"
+  },
+  "mascot_box": {
+   "folder": "cutouts",
+   "size": [
+    252,
+    188
+   ],
+   "sheet_box": [
+    714,
+    457,
+    966,
+    645
+   ],
+   "sha256": "a72446cbb4a52ff1f671a443f9aa854aad1f2c70c64402c408dfa79d1aca63d0"
+  },
+  "mascot_heart": {
+   "folder": "cutouts",
+   "size": [
+    196,
+    227
+   ],
+   "sheet_box": [
+    1004,
+    432,
+    1200,
+    659
+   ],
+   "sha256": "e063685d519ee1abfcafbf1aa70f6c7a6ce61a2d3f4baf95812e9f7c1dbf8d36"
+  },
+  "mascot_walk": {
+   "folder": "cutouts",
+   "size": [
+    242,
+    213
+   ],
+   "sheet_box": [
+    1265,
+    450,
+    1507,
+    663
+   ],
+   "sha256": "160bdba132bd711c90a9803efeede0ad4dfb0cf0214c0209d9754c0a2aee1733"
+  },
+  "mascot_back": {
+   "folder": "cutouts",
+   "size": [
+    182,
+    210
+   ],
+   "sheet_box": [
+    643,
+    714,
+    825,
+    924
+   ],
+   "sha256": "61803033dad2ed72fa26c55e87ddc3d01215d4f7ca1a3049463ecfea147795fd"
+  },
+  "mascot_phone": {
+   "folder": "cutouts",
+   "size": [
+    176,
+    210
+   ],
+   "sheet_box": [
+    835,
+    713,
+    1011,
+    923
+   ],
+   "sha256": "47753641d30f51350bb5fc7be81927d682a8916d74a61db6b7081ba35d973fa0"
+  },
+  "mascot_sleep": {
+   "folder": "cutouts",
+   "size": [
+    250,
+    135
+   ],
+   "sheet_box": [
+    1020,
+    783,
+    1270,
+    918
+   ],
+   "sha256": "d688a84fd217ec7b9e0769672e25441ae0adae0b9e2649a4aabf18580b8df1a9"
+  },
+  "mascot_lookup": {
+   "folder": "cutouts",
+   "size": [
+    197,
+    197
+   ],
+   "sheet_box": [
+    1289,
+    731,
+    1486,
+    928
+   ],
+   "sha256": "6099bbea139873040c28d4931d5c64912d383df46e15474f21ddffc4a468971e"
+  },
+  "fx_star_a": {
+   "folder": "cutouts-fx",
+   "size": [
+    40,
+    39
+   ],
+   "sheet_box": [
+    1021,
+    187,
+    1061,
+    226
+   ],
+   "sha256": "841c60b3f331ad20a384e9ef0fee77a5b240b9d80a9e8eea2696462f19970b0c"
+  },
+  "fx_cheer_rays": {
+   "folder": "cutouts-fx",
+   "size": [
+    242,
+    94
+   ],
+   "sheet_box": [
+    1234,
+    171,
+    1476,
+    265
+   ],
+   "sha256": "1e95f4f04b835a33ddc3462b7af44d3f00206a6f97843c16ee7e49bb85640bc5"
+  },
+  "fx_hearts": {
+   "folder": "cutouts-fx",
+   "size": [
+    248,
+    81
+   ],
+   "sheet_box": [
+    973,
+    446,
+    1221,
+    527
+   ],
+   "sha256": "d461351d10857e0f045e95331925e56510b29c36aaee30f20f378618c861deac"
+  },
+  "fx_phone_lines": {
+   "folder": "cutouts-fx",
+   "size": [
+    39,
+    38
+   ],
+   "sheet_box": [
+    986,
+    709,
+    1025,
+    747
+   ],
+   "sha256": "c16c56fdaead7692373302758990266778e279e215eb02938ac97defc30939aa"
+  },
+  "fx_zzz": {
+   "folder": "cutouts-fx",
+   "size": [
+    56,
+    56
+   ],
+   "sheet_box": [
+    1189,
+    731,
+    1245,
+    787
+   ],
+   "sha256": "c9a372ced6bdf36f287965dbba7db52c2ae2581299648f254c2ccfec61f26542"
+  },
+  "fx_star_b": {
+   "folder": "cutouts-fx",
+   "size": [
+    46,
+    48
+   ],
+   "sheet_box": [
+    1427,
+    687,
+    1473,
+    735
+   ],
+   "sha256": "088654d794b5889138e238fe6c6b716886759741a21270c8a68af66bff32e684"
+  }
+ }
+}

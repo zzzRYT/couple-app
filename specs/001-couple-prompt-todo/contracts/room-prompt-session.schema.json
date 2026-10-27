@@ -16,7 +16,7 @@
     "heartbeatAt": { "type": ["string", "null"], "format": "date-time" },
     "expiresAt": { "type": "string", "format": "date-time" },
     "releasedAt": { "type": ["string", "null"], "format": "date-time" },
-    "releaseReason": { "type": ["string", "null"], "enum": ["confirm", "cancel", "undo", "expired", null] },
+    "releaseReason": { "type": ["string", "null"], "enum": ["confirm", "cancel", "expired", null] },
     "takeoverCount": { "type": "integer", "minimum": 0 }
   }
 }
