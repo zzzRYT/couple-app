@@ -260,7 +260,7 @@ export const tokens = {
     "mascot": {
       "status": "master created by the owner with a generative-AI chat tool (tool, date, prompts: owner to supply, optional); used as-is, no illustrator redo; weak copyright protection accepted by the owner; similarity check and legal review recommended before release, not blockers",
       "source": "design/mascot/source/mascot-source.png",
-      "nameToken": "모피",
+      "nameToken": "아루미",
       "poses": [
         {
           "id": "mascot_wave_main",

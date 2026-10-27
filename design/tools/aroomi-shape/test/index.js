@@ -1,4 +1,4 @@
-// Entry point for `node --test design/tools/mopi-shape/test/`.
+// Entry point for `node --test design/tools/aroomi-shape/test/`.
 // Node 22 treats a directory argument as a module path (older versions scanned the directory), so this file
 // loads every *.test.mjs next to it. Do not combine it with the glob form (`test/*.test.mjs`) in one run.
 'use strict';

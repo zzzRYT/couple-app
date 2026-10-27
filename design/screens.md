@@ -15,8 +15,8 @@
 - **이동**: 앱 첫 실행 → 소개 1~3 → 시작하기 → S02. 이미 계정이 있어요 → S02. 재실행(로그아웃 후) → 최근 사용한 방법 강조된 로그인.
 - 연령: 가입 시작 화면의 약관 줄이 "계속하면 만 14세 이상이며 아래 내용에 동의하는 것으로 봐요"라고 해요(최소 연령 14세는 결정, 정확한 문구는 법무 검토 필요). 연령은 이 문구로만 확인하고 생년월일을 묻지 않아요(가정).
 - 스토어 정책 문구 자리는 약관 링크 아래 한 줄이에요(법무 확정 후 교체).
-- 소개 1장 맨 위에 앱 이름(모피루)과 슬로건("Our little world, together.")을 보여 줘요(`brand.tagline`, 영어 원문만 결정이라 세 언어 모두 영어). 글자 크기 130% 이상에서는 이 묶음을 숨겨요.
-- 소개 3의 캐릭터 이름은 모피예요(일본어 표기까지 소유자 승인).
+- 소개 1장 맨 위에 앱 이름(아룸)과 슬로건("Our little world, together.")을 보여 줘요(`brand.tagline`, 영어 원문만 결정이라 세 언어 모두 영어). 글자 크기 130% 이상에서는 이 묶음을 숨겨요.
+- 소개 3의 캐릭터 이름은 아루미예요(일본어 표기는 초안(G4 원어민 검수 전)).
 - 탭 바 없음(탭 구조 앞의 흐름).
 - **긴 문구·언어 사례**: 영어 "Count the days you've had together"처럼 제목이 길어도 두 줄로 줄바꿈돼요. 일본어 본문은 line-break: strict.
 
@@ -175,7 +175,7 @@
 | `S07-partner` | 상대가 방을 바꿈 (실시간 반영) | `sample.partner` `room.partnerChanged` `a11y.pose.lookup` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
 | `S07-recover` | 장면 데이터 복구 오류 | `room.recover.title` `room.recover.body` `room.recover.action` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
 | `S07-hidden` | 날짜 위젯을 방에서 숨긴 경우 | `room.ddayHidden` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
-| `S07-no-mascot` | 모피가 방에서 빠진 방 · 고정 컨트롤 "모피 다시 부르기" | `room.mascot.recall` `room.mascot.missing` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S07-no-mascot` | 아루미가 방에서 빠진 방 · 고정 컨트롤 "아루미 다시 부르기" | `room.mascot.recall` `room.mascot.missing` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
 | `S07-protect` | 보호 영역 표시 (측정값에서 계산) | `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·ko·200% |
 | `S07-gen-room` | 생성 장식이 들어간 방 (배경 조각 2 + 말풍선 틀) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
 | `S07-obj-detail` | 생성 장식을 누르면 · 장식 상세 시트 (신고하기 · 방 전체 신고) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` `obj.detail.kind.bubble` `sample.partner` `gen.lib.by` `obj.report` `obj.report.scene` `common.close` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
@@ -404,7 +404,7 @@
 ## S28 마일스톤 축하 · 기념 방 꾸미기 제안
 
 - **캔버스 보드**: `S28-milestone`
-- **목적**: 함께한 날이 50일·100일·200일·300일·500일·1000일이거나 주년(함께한 날짜와 같은 달력 날짜)이면, 앱을 열었을 때 마스코트(모피)가 홈 카드와 방 말풍선으로 축하하고 앱이 준비한 기념 방 꾸미기 제안을 기존 미리 보기 → 적용 흐름으로 볼 수 있어요. 옵트인 기기 예약 알림(오전 9시)도 받을 수 있어요(서버 푸시 없음). 고정 문구(AI 호출 없음), 자동 적용 없음.
+- **목적**: 함께한 날이 50일·100일·200일·300일·500일·1000일이거나 주년(함께한 날짜와 같은 달력 날짜)이면, 앱을 열었을 때 마스코트(아루미)가 홈 카드와 방 말풍선으로 축하하고 앱이 준비한 기념 방 꾸미기 제안을 기존 미리 보기 → 적용 흐름으로 볼 수 있어요. 옵트인 기기 예약 알림(오전 9시)도 받을 수 있어요(서버 푸시 없음). 고정 문구(AI 호출 없음), 자동 적용 없음.
 - **이동**: 앱 열기(또는 알림을 눌러 열기) → 홈 카드(닫기 / 기념 방 꾸미기 보기) → 첫 카드를 닫은 뒤 알림 사전 안내 시트(알림 켜기 / 다음에) → OS 권한 창 · 방 탭 말풍선(닫기) + 하단 제안 입구 → 점유 시작 → 미리 보기(S09, "{라벨} 제안" 뱃지) → 적용 확인("적용한 뒤에는 되돌릴 수 없어요") → 적용. 상대가 점유 중이면 입구가 막히고 이유를 알려요.
 - 마일스톤 목록·규칙(7일 안에 처음 열면 늦은 축하, 커플당 한 번, 구성원마다 한 번씩, 날짜 수정 규칙)은 보드 아래쪽 표에 있어요. 모두 **제안값**이고 결정권자가 조정할 수 있어요.
 - 마스코트 포즈는 기존 `cheer`(신나게 인사)만 써요. 통통 뛰기(2.4초)와 반짝임(1.4초)은 앱 고정 동작이고 동작 줄이기에서는 정지해요.
@@ -483,7 +483,7 @@
 
 ## 캐릭터 섹션 (C01~C07)
 
-마스코트(소유자가 생성형 AI 도구로 만든 원본을 가공한 캐릭터)는 화면 안에 퍼뜨리지 않고 **독립 보드 7장**에 모았어요: C01 캐릭터 개요 · C02 제스처 시트(11개 제스처를 원본/가공본으로 1:1) · C03 팔레트·해부·규칙 · C04 배경·크기 · C05 하모나이즈 vs 원본 · **C06 앱 아이콘**(모피 얼굴 아이콘 후보 3개와 추천안 세트, 파일은 `icon/`) · **C07 벡터 버전**(자동 트레이스한 SVG 11포즈와 아이콘 얼굴, 파일은 `mascot/vector/`). 파일은 `mascot/`.
+마스코트(소유자가 생성형 AI 도구로 만든 원본을 가공한 캐릭터)는 화면 안에 퍼뜨리지 않고 **독립 보드 7장**에 모았어요: C01 캐릭터 개요 · C02 제스처 시트(11개 제스처를 원본/가공본으로 1:1) · C03 팔레트·해부·규칙 · C04 배경·크기 · C05 하모나이즈 vs 원본 · **C06 앱 아이콘**(아루미 얼굴 아이콘 후보 3개와 추천안 세트, 파일은 `icon/`) · **C07 벡터 버전**(자동 트레이스한 SVG 11포즈와 아이콘 얼굴, 파일은 `mascot/vector/`). 파일은 `mascot/`.
 
 **캐릭터가 나오는 화면(현재 두 곳)**
 

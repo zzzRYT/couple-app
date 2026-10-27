@@ -1,4 +1,4 @@
-// mopi-shape-v1 validator (zero dependencies).
+// aroomi-shape-v1 validator (zero dependencies).
 //
 // A document is DATA: a restricted flat shape list. Nothing in it is ever executed or interpreted as markup.
 // Entry points:
@@ -11,7 +11,7 @@
 // Normative structural limits are mirrored by specs/001-couple-prompt-todo/contracts/generated-object.schema.json.
 // Cross-field rules (palette allowlist, coordinate range vs viewBox, containment, contrast, complexity) live only here.
 
-export const FORMAT = 'mopi-shape-v1';
+export const FORMAT = 'aroomi-shape-v1';
 
 export const LIMITS = Object.freeze({
   maxBytes: 12 * 1024,

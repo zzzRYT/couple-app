@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "format": "mopi-shape-v1",
+  "format": "aroomi-shape-v1",
   "kind": "background_piece",
   "layerHint": "wall",
   "label": "<script>alert(1)</script>",

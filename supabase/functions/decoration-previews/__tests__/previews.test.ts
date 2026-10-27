@@ -99,7 +99,7 @@ Deno.test('⑤ the model never receives dates, emails, ids or invite codes', asy
 });
 Deno.test('⑥ asking to change the mascot is rejected before the model', async () => {
   const r = await room();
-  for (const prompt of ['마스코트 옷을 바꿔 줘', 'change the mascot color', 'マスコットの表情を変えて', '아루미를 새로 그려 줘']) {
+  for (const prompt of ['마스코트 옷을 바꿔 줘', 'change the mascot color', 'マスコットの表情を変えて', 'アルーミの色を変えて', '아루미를 새로 그려 줘']) {
     const res = await r.preview(prompt);
     assertEquals([res.status, res.body.error.code], [422, 'UNSUPPORTED_REQUEST'], prompt);
   }

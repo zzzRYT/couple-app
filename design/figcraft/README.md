@@ -10,7 +10,7 @@ Claude Design 캔버스를 **인터넷·Claude 없이 로컬에서 편하게 보
 
 ## 어디에 있나
 
-- 만든 파일(로컬): `~/Documents/Mopiru-design/mopiru-design.figcraft`
+- 만든 파일(로컬): `~/Documents/Aroom-design/aroom-design.figcraft`
 - **저장소에는 `.figcraft` 파일을 넣지 않았어요**(크기가 15MB를 넘어요). 저장소는 공개이고 그림은 소유자가 생성형 AI 도구로 만든 마스코트 마스터에서 파생된 것이라(권리 상태는 `../mascot/README.md`), 큰 이미지 묶음을 올리지 않고 아래 스크립트로 언제든 다시 만들어요.
 
 ## 열기
@@ -21,7 +21,7 @@ FigCraft 앱(https://github.com/storytold/figcraft/releases, macOS는 `figcraft-
 
 ```
 cd design/tools/figcraft-sync && npm ci
-node sync-figcraft.mjs --cli /path/to/figcraft-cli          # → ~/Documents/Mopiru-design/mopiru-design.figcraft
+node sync-figcraft.mjs --cli /path/to/figcraft-cli          # → ~/Documents/Aroom-design/aroom-design.figcraft
 ```
 
 필요한 것: Node 20+, Google Chrome(기본 경로 `/Applications/Google Chrome.app/…`, 다르면 `--chrome`), **공식 릴리스의 `figcraft-cli`**(아래), 인터넷(보드가 Google Fonts를 불러와요). 옵션: `--out`(출력 파일), `--scale`(기본 2, 선명도), `--quality`(기본 85), `--only S06,S28`(일부만, 시험용), `--work`(작업 폴더 유지). 스크립트는 `design/canvas/project/*.dc.html` + `canvas.json` 순서를 읽고, 보드의 마스코트 그림 주소(`/_blob/…`)는 `design/canvas/blob-map.json`으로 `design/mascot/` 파일에 이어요. 끝에 문서를 다시 열어 페이지·프레임 수를 세고 프레임 3개를 PNG로 내보내 보는 점검 결과를 JSON으로 출력해요.

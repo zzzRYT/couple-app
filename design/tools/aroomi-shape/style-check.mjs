@@ -1,4 +1,4 @@
-// Style-conformance helper for mopi-shape-v1 documents (zero dependencies).
+// Style-conformance helper for aroomi-shape-v1 documents (zero dependencies).
 //
 // Computes simple geometric/color heuristics and a conformance score 0..1 against the house style described in
 // design/reference-library/style-spec.md. It measures STYLE CLOSENESS ONLY (flat pastel fills, outlined silhouette,
@@ -82,7 +82,7 @@ function countSpikes(vertRuns, closedPolys) {
 
 const clamp01 = v => Math.max(0, Math.min(1, v));
 
-/** doc must be a valid mopi-shape-v1 document. Returns { score, pass, hardFails, metrics }. */
+/** doc must be a valid aroomi-shape-v1 document. Returns { score, pass, hardFails, metrics }. */
 export function styleCheck(doc) {
   const v = validateGeneratedObject(doc);
   if (!v.ok) throw new Error(`styleCheck needs a valid document (${v.errors[0].code})`);

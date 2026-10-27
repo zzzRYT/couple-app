@@ -11,7 +11,7 @@ function largest() {
   for (let i = 0; i < 37; i++) shapes.push({ t: i % 2 ? 'rect' : 'ellipse', fill: 1 + (i % 3), stroke: i % 3 === 0, ...(i % 2 ? { x: 10 + (i % 8) * 60, y: 380 + (i % 3) * 20, w: 30.55, h: 20.25, rx: 4.5 } : { cx: 30 + (i % 9) * 55.55, cy: 450, rx: 12.25, ry: 8.75 }) });
   shapes.push({ t: 'path', fill: 1, stroke: true, d: 'M20 20' + 'C30.55 10.25 40.75 40.5 50.25 30.75'.repeat(1) + 'L60.5 20.5Q70.25 10.5 80.5 20.25'.repeat(1) + 'L90 30'.repeat(40) + 'Z' });
   shapes.push({ t: 'poly', fill: 2, stroke: false, pts: Array.from({ length: 24 }, (_, i) => [450 + Math.round(40 * Math.cos(i / 24 * 6.2832) * 100) / 100, 400 + Math.round(40 * Math.sin(i / 24 * 6.2832) * 100) / 100]) });
-  return { schemaVersion: 1, format: 'mopi-shape-v1', kind: 'bubble_frame', label: 'Largest bubble', viewBox: { w: 512, h: 512 }, anchor: { x: 0.5, y: 0.9 }, palette: ['#FFF4DF', '#F4B79B', '#A8C6A0', '#AACBE2'], shapes, textArea: { x: 100, y: 100, w: 300, h: 160 }, textFill: 0, tail: { x: 256, y: 500 } };
+  return { schemaVersion: 1, format: 'aroomi-shape-v1', kind: 'bubble_frame', label: 'Largest bubble', viewBox: { w: 512, h: 512 }, anchor: { x: 0.5, y: 0.9 }, palette: ['#FFF4DF', '#F4B79B', '#A8C6A0', '#AACBE2'], shapes, textArea: { x: 100, y: 100, w: 300, h: 160 }, textFill: 0, tail: { x: 256, y: 500 } };
 }
 
 const median = a => [...a].sort((x, y) => x - y)[Math.floor(a.length / 2)];

@@ -96,7 +96,7 @@
 프롬프트로 만든 새 2D 벡터 장식. 커플 전용이며 다른 커플에게 절대 보이지 않는다.
 
 - `id` (UUID PK), `space_id`, `kind`: `background_piece | bubble_frame | prop`, `layer_hint?`: `wall | floor | backdrop | window_view`(배경 조각), `floor | wall | shelf`(소품), 말풍선 틀은 없음
-- `label` (1~24자; 한글·영문·가나·숫자·공백·`. , ' -`만, URL·`@`·`<`·`>`·연속 5자리 이상 숫자 금지), `schema_version` (1), `format` (`mopi-shape-v1`)
+- `label` (1~24자; 한글·영문·가나·숫자·공백·`. , ' -`만, URL·`@`·`<`·`>`·연속 5자리 이상 숫자 금지), `schema_version` (1), `format` (`aroomi-shape-v1`)
 - `document` (JSONB: 검증·정규화된 도형 목록 — `contracts/generated-object.schema.json`. 도형 ≤40, JSON ≤12KB, viewBox ≤512, 채움색 ≤4가지, 팔레트 허용목록. 원본 모델 출력은 저장하지 않는다), `doc_sha256`, `validator_version`, `style_reference_version` (기준 라이브러리 버전), `style_score?` (스타일 적합도 0~1)
 - `status`: `candidate | active | deleted | removed_by_operator` (아래 상태 전이), `parent_id?` (고쳐 만든 경우 이전 행)
 - `created_by_user_id`, `source_request_id` (`DecorationRequest`), `model_id?`, `created_at`, `activated_at?`, `deleted_at?`, `removed_at?`, `removed_reason?` (운영자만 읽음)

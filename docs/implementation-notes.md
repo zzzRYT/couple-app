@@ -31,4 +31,4 @@ App-side notes are in `docs/implementation-notes-app.md`.
 - **Preview validity** is 30 minutes (`preview_ttl_seconds`), an assumption; the lease still has to be held to apply.
 - **Edge runtime imports**: the runtime has no sloppy imports, so `packages/scene-contract` now uses explicit `.ts` import paths (`allowImportingTsExtensions` in `tsconfig.base.json`), and `supabase/functions/deno.json` maps Ajv for every function (`config.toml`). `lifecycle-sweep` checks the service-role key itself (`verify_jwt = false`).
 - **Lint gate (T008)**: see the app notes; `no-restricted-syntax` selectors now enforce FR-019.
-- **Rename**: the steer renaming Mopiru/Mopi to Aroom/Aroomi is applied to code identifiers (identity placeholders, workspace name). Generated i18n resources and tokens are left as is until the design-source rename PR lands; regenerate them then.
+- **Rename**: the steer renaming Mopiru/Mopi to Aroom/Aroomi is applied to code identifiers (identity placeholders, workspace name). After the design-source rename (PR #5) merged, the i18n resources, tokens, scene-contract schemas and catalog were regenerated from the renamed sources.
