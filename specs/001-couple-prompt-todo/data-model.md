@@ -10,8 +10,10 @@
 - `created_at`, `updated_at`
 - `ui_theme`: `system | light | dark` (기본 `system`, 사용자별 앱 모양 설정; API `PATCH /profile/preferences`의 `uiTheme`).
 - `locale`, `time_zone` (선택적 개인 설정). `locale`은 앱 언어 재정의를 저장하며 비어 있으면 기기 언어를 사용한다. V1 지원 언어는 `ko-KR`, `en-US`, `ja-JP`다. 커플 방의 시간대는 room theme document에 저장한다.
+- `status`: `active | deleting | shell` (2026-10-27 7차 답변, 가정, 기본 `active`). `deleting` = 계정 삭제가 접수되어 접근이 막힌 상태, `shell` = 계정 삭제가 끝난 뒤 **개인 필드가 모두 null인 껍데기**(아래 규칙). `deleted_at?` (계정 삭제 접수 시각; 껍데기 전환 후에도 남는 유일한 시각 정보). 모든 서버 함수는 요청마다 `status = 'active'`를 확인한다(발급된 JWT가 만료 전이어도 거절, FR-071).
 - 공급자 식별자는 Auth 공급자 저장소가 관리하며 앱 도메인 데이터나 AI 문맥에 복제하지 않는다.
 - 사용자 개인 설정은 공유 장면/프롬프트가 변경할 수 없다.
+- **껍데기 프로필 규칙(계정 삭제, FR-071)**: `user_id`는 `auth.users`에 **외래 키를 걸지 않는다**(걸면 인증 사용자 삭제가 막히거나 연쇄 삭제로 구성원 행이 지워진다). 계정 삭제 접수 때 `locale`·`time_zone`·`ui_theme`(와 이름·별명 필드가 있다면 그것)을 비우고 인증 사용자가 삭제된 뒤 `status = shell`로 바꾼다. 껍데기는 종료된 공간의 `space_member`·`*_user_id`가 가리키는 동안만 남고, `purge_expired_spaces()`가 어떤 `space_member`도 가리키지 않게 된 `shell` 프로필을 지운다. 계정 삭제가 끝나는 시점(`finish_account_deletion`)에 이미 가리키는 구성원 행이 없으면(공간이 없었거나 이미 퍼지됨) 껍데기를 만들지 않고 프로필 행을 바로 지운다. 같은 로그인으로 재가입하면 새 인증 사용자·새 `user_id`이고 껍데기와 이어지지 않는다.
 
 ### CoupleSpace
 
@@ -20,7 +22,7 @@
 - `anniversary_date` (날짜; AI로 보내지 않음)
 - `created_at`, `updated_at`, `ended_at?`, `purge_after?` (= `ended_at` + 내부 보관 30일, 서버 설정값. **이용자에게 보이거나 API로 나가지 않는다**)
 - `generation_blocked_until?` (운영자가 이 커플의 새 장식 생성을 막은 기한 또는 무기한 표시; 남용 대응, FR-066), `generation_blocked_reason?` (운영자만 읽음)
-- `ended_reason?`: `ended | disconnect | account_deletion` (종료할 때만 채워진다. `disconnect` = "연결 끊기"(API `block`), `account_deletion`은 계정 삭제 가정으로 계정 삭제 기능이 설계되기 전에는 쓰이지 않는다), `ended_by_user_id?` (종료·연결 끊기를 한 사용자). 종료 관련 열(`ended_at`, `purge_after`, `ended_reason`, `ended_by_user_id`)은 한 번 채워지면 바뀌지 않는다(복구 없음).
+- `ended_reason?`: `ended | disconnect | account_deletion` (종료할 때만 채워진다. `disconnect` = "연결 끊기"(API `block`), `account_deletion` = 계정 삭제(US10, FR-072; `ended_by_user_id` = 삭제한 사용자의 `user_id`로, 사용자가 껍데기가 되어도 완전 삭제까지 이 값이 유지된다)), `ended_by_user_id?` (종료·연결 끊기를 한 사용자). 종료 관련 열(`ended_at`, `purge_after`, `ended_reason`, `ended_by_user_id`)은 한 번 채워지면 바뀌지 않는다(복구 없음).
 - 활성 공간은 최대 두 구성원만 가진다. 종료 요청 시 같은 트랜잭션에서 `status = ended`로 바꿔 즉시 초대/AI/편집/조회를 막는다. 모든 RLS와 서버 함수는 `status = 'active'`인 공간만 존재하는 것으로 본다(종료된 공간을 이용자 호출이 읽는 경로는 없다).
 - `purge_after`가 지나면 예약 작업(`purge_expired_spaces()`, 아래 "완전 삭제 작업")이 공간 관련 모든 행과 홈 커버 사진 객체를 완전히 지운다.
 
@@ -33,6 +35,7 @@
 - `ai_consent_state`: 사용자 단위 `not_given | granted | revoked`
 - `ai_consent_at?`, `ai_consent_text_version?`, `ai_consent_revoked_at?`
 - 공간에 속한 해당 사용자만 구성원 데이터와 동의를 읽을 수 있다.
+- `user_id`는 `UserProfile(user_id)`를 `ON DELETE RESTRICT`로 참조한다(껍데기 프로필이 남아 있는 동안 유지). 계정 삭제 접수 때 이 사용자의 **모든** 구성원 행(종료된 공간 포함)에서 `ai_consent_*` 열을 비운다(기본 가정: 동의 기록은 계정과 함께 삭제. 법률 검토가 최소 로그를 요구하면 식별 불가한 형태로 보관, Open Decisions 27).
 
 ### Invitation
 
@@ -181,14 +184,24 @@
 
 ### SpaceEndNotice (종료 알림, 테이블 `space_end_notice`)
 
-- `user_id`, `kind`: `ended | disconnect`, `by_user_id` (응답의 `by: me | partner`는 읽는 사람 기준으로 서버가 계산), `at`, `acked_at?`, `space_id` (서버 내부 참조만; **API로 나가지 않는다**)
+- `user_id`, `kind`: `ended | disconnect | account_deleted`, `by_user_id` (응답의 `by: me | partner`는 읽는 사람 기준으로 서버가 계산), `at`, `acked_at?`, `space_id` (서버 내부 참조만; **API로 나가지 않는다**)
 - 공간이 종료될 때 두 구성원 각자에게 한 행씩 만든다. `GET /spaces/mine`의 `ended`는 확인하지 않은 가장 최근 행 하나의 `{ kind, by, at }`만 돌려준다(여럿이면 가장 최근 하나, 가정). `POST /spaces/mine/ended/ack`가 `acked_at`을 채운다(멱등).
+- `kind = account_deleted`는 **남은 상대에게만** 한 행을 만든다(삭제한 본인은 로그아웃되므로 행을 만들지 않고, 혼자 있던 공간은 알림 행이 없다). 앱 문구는 이름 없이 "상대가 계정을 삭제했어요"(`end.byPartnerDeleted`)이며 응답의 `by`는 항상 `partner`다. `by_user_id`는 서버 내부 값이고 API로 나가지 않는다.
 - 공간 데이터·사용할 수 있는 공간 식별자·삭제 일정을 담지 않는다. 공간의 완전 삭제 때 함께 지운다(늦어도 그때까지). RLS: 본인 행만 읽고, 쓰기는 서버 함수만.
+
+### AccountDeletion (계정 삭제 요청, 테이블 `account_deletion`, 2026-10-27 7차 답변 · 가정)
+
+계정 삭제 상태 기계의 진행 기록. 서버 전용이며 **개인 내용이 없다**.
+
+- `user_id` (PK; `UserProfile`과 같은 UUID. 외래 키 없음), `state`: `requested | space_ended | provider_revoked | auth_deleted | done` (**마지막으로 끝난 단계**), `provider`: `kakao | apple | email` (재인증·가입에 쓴 공급자), `requested_at`, `updated_at`, `attempts` (현재 단계의 연속 실패 횟수), `last_error_code?` (내용 없는 코드, 메시지·토큰 없음)
+- `provider_credential_enc?` (Apple 전용, 서버 전용 암호화 열: 인증 코드를 교환한 토큰을 revoke 재시도를 위해 **최대 24시간**만 보관, revoke 성공 또는 시간 초과 때 null; 로그·오류·API에 나가지 않음. 대안은 동기 한 번만 시도하는 것, plan.md)
+- RLS: 클라이언트 접근 없음(읽기·쓰기 모두 거부). 쓰기와 읽기는 서버 함수(service-role)만. 클라이언트는 이 상태를 조회하지 못한다(로그아웃 상태이므로, 계약에 상태 조회 API 없음).
+- 상태 전이는 단계마다 기록하고 멱등이다. `done`인 행은 감사 목적으로 남겨 두지 않는다 — 껍데기 프로필이 지워질 때(또는 `done` 후 정해진 기간 뒤) 함께 지운다(가정). 같은 사용자의 중복 요청은 `user_id` PK로 하나의 행에 모인다.
 
 ### SpaceLifecycleEvent
 
 - `id`, `space_id`, `event_type`: `ended | disconnected | deletion_started | deletion_completed | cover_changed | cover_removed | milestone_preset_previewed | milestone_preset_applied | generated_object_applied | generated_object_deleted | generated_object_removed | generation_blocked | report_reviewed` (마일스톤 두 종류는 정형 속성만: `milestone_key`, 생성·신고 이벤트는 객체·신고 ID와 종류만)
-- `actor_user_id`, `occurred_at`, `metadata` (개인 내용을 넣지 않는 정형 속성)
+- `actor_user_id`, `occurred_at`, `metadata` (개인 내용을 넣지 않는 정형 속성). `actor_user_id`는 외래 키가 없고, 해당 사용자의 껍데기 프로필이 지워질 때 null로 바꾼다(가정)
 - `disconnected`는 "연결 끊기"(API `block`)로 공간이 종료된 경우이고 `ended`와 같은 상태 전이를 만든다(`ended_reason: disconnect`).
 - 공간 종료와 완전 삭제의 시작·완료를 **내용 없이** 감사한다. 이 이벤트는 공간 행이 지워진 뒤에도 남을 수 있도록 `space_id`를 외래 키 없이 보관한다(개인 내용 없음). 최소 이벤트 보관기간/법적 예외는 개인정보 검토 후 결정한다. `generation_block` 지문(개인정보 없음)은 공간이 지워져도 남긴다.
 
@@ -197,10 +210,19 @@
 ```text
 CoupleSpace: active --end by either member--> ended (ended_reason=ended, purge_after=ended_at+30일[내부])
 active --disconnect(block) by either member--> ended (ended_reason=disconnect, ended_by=호출자)
-active --계정 삭제(가정, 설계 전)--> ended (ended_reason=account_deletion)
+active --계정 삭제(7차 답변, FR-072)--> ended (ended_reason=account_deletion, ended_by=삭제한 사용자; 상대에게만 알림 account_deleted)
+(이미 ended이거나 행이 없는 공간에는 종료 처리가 아무 일도 하지 않는다 — no-op, 공간 행 잠금 하나로 직렬화)
 ended --purge_after 경과 + 예약 작업 성공--> (행 없음; 저장소 파일 먼저, 그다음 모든 행)
 ended --예약 작업 실패--> ended (그대로 보이지 않음, 다음 실행에서 재시도)
   (ended에서 active로 돌아가는 전이는 없다 — 복구 없음)
+
+AccountDeletion: (없음) --DELETE /account 접수(한 트랜잭션: 사용자 deleting·개인 필드 비움·활성 공간 종료·초대 폐기·점유 해제·세션 무효)--> requested --같은 트랜잭션 끝--> space_ended
+space_ended --공급자 해제 성공(Apple revoke / Kakao unlink / 이메일은 건너뜀)--> provider_revoked
+provider_revoked --Supabase deleteUser 성공--> auth_deleted
+auth_deleted --껍데기 전환·보관 자격 삭제--> done
+각 단계 실패 --> 같은 상태에 머묾(attempts+1, 백오프 재시도, 예약 작업이 이어서 처리)
+UserProfile: active --계정 삭제 접수--> deleting --finish_account_deletion--> shell --마지막 참조 공간 완전 삭제--> (행 없음)
+  (deleting/shell에서 active로 돌아가는 전이는 없다. 같은 로그인의 재가입은 새 user_id)
 
 GeneratedObject: (없음) --생성 성공--> candidate --적용 확인(같은 트랜잭션)--> active
 candidate --취소/만료/되돌림 24시간 뒤--> deleted
@@ -239,6 +261,9 @@ queued/generated --invalid result/provider failure--> rejected/failed
 - 한 사용자(`user_id`)는 **활성** 공간의 `SpaceMember`를 하나만 가진다(FR-057): 부분 고유 인덱스 `unique (user_id) where space_active`. 종료된 공간의 구성원 행은 `space_active = false`이므로 새 공간 생성·초대 수락을 막지 않는다(종료 직후 바로 가능). 종료·연결 끊기는 공간 `status`와 두 구성원의 `space_active`를 한 트랜잭션에서 바꾸며 이 열을 다시 true로 되돌리는 전이는 없다. 같은 사용자의 동시 요청은 사용자 단위 어드바이저리 락(`pg_advisory_xact_lock(hashtext(user_id))`)으로 직렬화한다.
 - **종료 접근 차단(FR-023)**: 모든 읽기·쓰기 RLS와 서버 함수는 공간 `status = 'active'`를 조건에 둔다. 종료된 공간에 대한 호출은 비구성원과 구분되지 않게 `404`로 거절한다(예외: 종료 알림 `GET /spaces/mine`·`POST /spaces/mine/ended/ack`는 공간이 아니라 사용자 기준이다). Storage 정책도 같은 조건이다.
 - **완전 삭제 작업(`purge_expired_spaces()`, 내부 예약 작업, 클라이언트 API 아님; FR-024)**: `status = 'ended' and purge_after <= now()`인 공간마다 ① Storage 객체(홈 커버 현재 객체와 `pending_delete[]`)를 먼저 지우고(없으면 성공으로 본다) ② 한 트랜잭션에서 그 공간의 모든 행을 지운다: `CoupleSpace`, `SpaceMember`, `Invitation`, `RoomTheme`과 버전, `DecorationRequest`, `PromptSession`과 `PromptMessage`, `HomeCoverPhoto`, `MilestoneCelebration`·`MilestoneSeen`, `GeneratedObject`, `GenerationAttempt`, 그 공간의 `Report`(기본 가정; Open Decisions 21), 일일 요청 계수 행, `SpaceEndNotice`, `SpaceLifecycleEvent`의 개인 내용 있는 `metadata`. 공간 단위로 멱등이고 재시도에 안전하다. 실패하면 공간은 `ended` 그대로(이미 보이지 않음)여서 부분 삭제로 보이는 상태가 없다. `deletion_started`/`deletion_completed` 이벤트만 내용 없이 남기고 `GenerationBlock` 지문은 지우지 않는다. 한 번 실행에서 처리할 공간 수는 상한을 두어 오래 걸리는 실행을 피한다.
+- **계정 삭제 접수(`begin_account_deletion(user_id)`, FR-071~FR-073)**: 한 사용자에 대해 사용자 단위 어드바이저리 락 안에서 한 트랜잭션으로 ① `UserProfile.status = deleting`, 개인 필드와 모든 구성원 행의 `ai_consent_*` 비움 ② 활성 공간이 있으면 그 **공간 행을 잠그고** `end_space`(`ended_reason = account_deletion`, 두 구성원 `space_active = false`, 상대의 `SpaceEndNotice(kind = account_deleted)`) — 이미 `ended`이거나 퍼지된 공간이면 아무 일도 하지 않는다(알림 이유는 먼저 성공한 쪽이 정한다) ③ 이 사용자의 `active` 초대를 `revoked` ④ 프롬프트 세션 점유 해제(`released`, `release_reason = account_deletion`)와 진행 중 `DecorationRequest`(`queued`)를 `cancelled`로 ⑤ 이 사용자의 세션 무효화(서버 쪽). 어느 단계든 실패하면 전체를 되돌리고 `202`를 내지 않는다.
+- **껍데기 정리**: `purge_expired_spaces()`는 공간 행을 지운 같은 트랜잭션에서 `status = 'shell'`이고 `space_member`에 남은 참조가 없는 `UserProfile`(과 그 `AccountDeletion` 행)을 지운다. 한 사용자가 여러 종료된 공간을 가질 수 있으므로 마지막 공간이 지워질 때 껍데기가 사라진다.
+- **상태 확인**: 모든 서버 함수는 `UserProfile.status = 'active'`를 요청마다 확인한다. `deleting`/`shell`이면 `401`(변경 요청에는 `409 ACCOUNT_DELETING` 가능, 계약 참조). 공간이 없는 사용자 단위 RLS(`/profile/preferences` 등)도 같은 조건을 둔다.
 - 후보/confirm은 `base_version_number`를 검사한다. 오래된 제안은 적용하지 않고 최신 테마로 재요청을 요구한다.
 - scene document의 `objects.length ≤ 16`, `texts.length ≤ 3`; 각 노드는 스키마의 범위 제한을 만족해야 한다.
 - `PromptSession`은 공간당 하나만 `occupied` 상태일 수 있다. heartbeat는 최근 사용자 활동이 있을 때만 `expires_at`을 갱신한다. 세션 만료 후 takeover는 만료된 session ID와 예상 owner를 조건으로 원자적으로 새 owner에게 양도한다.
@@ -252,3 +277,10 @@ queued/generated --invalid result/provider failure--> rejected/failed
 - 커플이 쓴 장면 문구는 입력된 원문 그대로 저장한다. 화면 UI 문자열은 번역 키를 사용하고 D-day, 날짜, 숫자 형식은 현재 locale로 렌더링한다.
 - 보호 영역은 네이티브 화면의 실제 뷰 측정과 사용자의 글자 크기 설정에서 계산한다. 서버는 기준 viewport에서도 확인하고, 기기 렌더 직전에 클라이언트가 같은 규칙으로 재검사한다.
 - Room theme validator와 대비 검사는 방 theme mode·저장된 IANA timezone, UI light/dark preference의 조합을 사용한다. timezone 변경은 새 RoomThemeVersion을 만들고 두 구성원에게 동기화한다.
+
+## 보관·삭제 정리 (계정 삭제 포함, 2026-10-27 · 가정)
+
+- **즉시 삭제·익명화(계정 삭제 접수 때)**: 로그인 식별자(Supabase 인증 사용자는 공급자 해제 뒤 삭제), 프로필 개인 필드, AI 처리 동의 기록, 대기 초대 코드(폐기). 로컬 알림 예약은 기기 전용이라 서버에 없다.
+- **내부에 최대 30일 남는 것**: 활성이었던 공간의 모든 데이터(`purge_after`까지), 그 공간 구성원 행이 가리키는 껍데기 프로필(개인 필드 없음), 상대의 종료 알림. 모두 클라이언트가 읽을 수 없다.
+- **완전 삭제 때 함께 지움**: 공간의 모든 행과 Storage 객체, 그 공간의 신고(기본 가정, 연기 없음), 생성 시도 기록, 껍데기 프로필과 `AccountDeletion` 행.
+- **남기는 것**: `generation_block` 지문(개인정보 없음), 내용 없는 `deletion_started`/`deletion_completed` 이벤트. 최소 동의 로그나 재가입 차단용 식별자 보관은 두지 않았다(열린 질문, `spec.md` Open Decisions 25·27).

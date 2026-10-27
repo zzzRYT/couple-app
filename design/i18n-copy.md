@@ -2,7 +2,7 @@
 
 > 이 문서는 디자인 원본에서 자동으로 만든 표예요. 구현은 **키만 코드에 쓰고** 텍스트는 번역 리소스(`ko-KR`, `en-US`, `ja-JP`)로 둬요. `{name}` 형태는 보간 변수예요. 달력·할 일·가격을 떠올리게 하는 표현과(마일스톤 알림 문구는 예외)(홈 배경 사진 한 장 말고는) 사진 기능 표현은 쓰지 않았어요. 일본어·영어 문구는 디자이너가 쓴 초안이라 **원어민 검수**가 필요해요(handoff.md).
 
-- 총 키 수: **623**
+- 총 키 수: **640**
 - 사용자가 입력한 방 문구와 프롬프트는 번역하지 않고 입력한 그대로 저장·표시해요.
 - 서버 오류는 언어 중립 코드(`VERSION_CONFLICT` 등)만 오고, 앱이 아래 키로 문구를 골라요: `VERSION_CONFLICT`→`preview.conflict.*`·`undo.conflict.*`, `QUOTA_REACHED`→`prompt.quota.*`, `CONSENT_REQUIRED`→`prompt.consent.need`, `SESSION_OCCUPIED`→`prompt.partner`, `SESSION_EXPIRED`→`prompt.idle.me.*`, `INVITE_EXPIRED`→`join.expired.*`, `INVITE_USED`→`join.used.*`, `SPACE_FULL`→`join.full.*`, `ALREADY_IN_SPACE`→`join.hasSpace.*`, `GENERATION_REFUSED`(`category`별)→`gen.refuse.*`(`ip`→`gen.refuse.ip`, `people`, `unsafe`, `personal`, `photo_like`→`gen.refuse.photo`, `off_purpose`·`injection`→`gen.refuse.purpose`), `GENERATION_FAILED`→`gen.fail.*`, `GENERATION_DISABLED`→`gen.disabled.*`, `LIBRARY_FULL`→`gen.lib.full`, `REPORT_RATE_LIMITED`→`report.obj.limit`, `UNSUPPORTED_REQUEST`→`prompt.unsupported.*`, `BRAND_REQUEST`→`prompt.brand.*`, `AUTH_EXPIRED`→`sys.login.*`. (코드 이름은 계약 문서 `contracts/api.md`의 이름을 확인해서 맞춰야 해요.)
 
@@ -415,6 +415,8 @@
 | `set.support` | 문의 · 신고 | Contact and reports | お問い合わせ・通報 |
 | `set.end` | 공간 종료 | End space | スペースを終了 |
 | `set.end.help` | 종료하면 함께 쓰던 데이터가 삭제돼요. 되돌릴 수 없어요. | Ending deletes the data you shared. This can't be undone. | 終了すると、いっしょに使っていたデータが削除されます。元に戻せません。 |
+| `set.account.delete` | 계정 삭제 | Delete account | アカウントを削除 |
+| `set.account.delete.sub` | 되돌릴 수 없어요 | This can't be undone | 元に戻せません |
 | `set.loading` | 설정을 불러오는 중이에요 | Loading settings | 設定を読み込んでいます |
 | `set.err.title` | 설정을 불러오지 못했어요 | Couldn't load settings | 設定を読み込めませんでした |
 | `set.err.body` | 인터넷 연결을 확인하고 다시 시도해 주세요. | Check your internet connection and try again. | インターネット接続を確認して、もう一度お試しください。 |
@@ -443,9 +445,31 @@
 | `end.done.body` | 함께 쓰던 데이터는 삭제돼요. 새 공간을 시작할 수 있어요. | The data you shared will be deleted. You can start a new space. | いっしょに使っていたデータは削除されます。新しいスペースを始められます。 |
 | `end.byPartner` | {name}님이 공간을 종료했어요 | {name} ended the space | {name}さんがスペースを終了しました |
 | `end.byPartnerDisconnect` | {name}님이 연결을 끊었어요 | {name} disconnected | {name}さんがつながりを終了しました |
+| `end.byPartnerDeleted` | 상대가 계정을 삭제했어요 | Your partner deleted their account | 相手がアカウントを削除しました |
 | `end.newSpace` | 새 공간 시작하기 | Start a new space | 新しいスペースを始める |
 | `end.err.title` | 종료하지 못했어요 | Couldn't end the space | 終了できませんでした |
 | `end.err.body` | 공간은 그대로예요. 다시 시도해 주세요. | The space is unchanged. Please try again. | スペースはそのままです。もう一度お試しください。 |
+
+## 계정 삭제 (US10 · P1, 2026-10-27 가정)
+
+영어·일본어는 원어민 검수 전 초안이에요. 확인 체크 문구는 `end.check`를 같이 써요. 재로그인 화면은 `login.*`를 그대로 써요.
+
+| 키 | 한국어 | English | 日本語 |
+|---|---|---|---|
+| `acct.delete.title` | 계정을 삭제할까요? | Delete your account? | アカウントを削除しますか？ |
+| `acct.delete.lead` | 삭제하면 바로 로그아웃되고, 되돌릴 수 없어요. | You'll be signed out right away, and this can't be undone. | すぐにログアウトされ、元に戻せません。 |
+| `acct.delete.b1` | 내 계정과 프로필 정보가 삭제돼요 | Your account and profile information are deleted | アカウントとプロフィール情報が削除されます |
+| `acct.delete.b2` | 함께 쓰는 공간이 있다면 종료돼요. 두 사람 모두 들어갈 수 없고 방·사진·장식이 삭제돼요 | If you share a space, it ends. Neither of you can open it, and the room, photos and decorations are deleted | 共有中のスペースがある場合は終了します。ふたりとも入れなくなり、部屋・写真・飾りが削除されます |
+| `acct.delete.b3` | 같은 계정으로 다시 가입해도 이전 내용은 돌아오지 않아요 | Signing up again with the same login won't bring anything back | 同じアカウントで登録し直しても、以前の内容は戻りません |
+| `acct.delete.confirm` | 계정 삭제하기 | Delete account | アカウントを削除する |
+| `acct.delete.reauth.title` | 본인 확인이 필요해요 | Please confirm it's you | 本人確認が必要です |
+| `acct.delete.reauth.body` | 계정을 지키기 위해 한 번 더 로그인해 주세요. | For your safety, please sign in once more. | 安全のため、もう一度ログインしてください。 |
+| `acct.delete.reauth.fail` | 본인 확인에 실패했어요. 다시 시도해 주세요. | We couldn't confirm it's you. Please try again. | 本人確認に失敗しました。もう一度お試しください。 |
+| `acct.delete.progress` | 계정을 삭제하는 중이에요 | Deleting your account | アカウントを削除しています |
+| `acct.delete.done` | 계정을 삭제했어요 | Your account was deleted | アカウントを削除しました |
+| `acct.delete.offline` | 인터넷에 연결되어야 계정을 삭제할 수 있어요 | You need an internet connection to delete your account | アカウントの削除にはインターネット接続が必要です |
+| `acct.delete.fail.title` | 삭제하지 못했어요 | Couldn't delete it | 削除できませんでした |
+| `acct.delete.fail.body` | 아직 아무것도 지워지지 않았어요. 잠시 뒤 다시 시도해 주세요. | Nothing was deleted yet. Please try again in a moment. | まだ何も削除されていません。しばらくしてからもう一度お試しください。 |
 
 ## S15 신고·연결 끊기
 

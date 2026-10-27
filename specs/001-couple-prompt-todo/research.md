@@ -202,7 +202,7 @@ iOS는 대기 중인 로컬 알림을 앱당 64개로 제한한다고 알려져 
 3. 해외 AI 동의(FR-016)는 프롬프트 전송을 이미 다루지만, 입력 정책·2차 검사 호출과 남용 대응용 보관(30일)을 안내문·처리방침에 더해야 한다.
 4. D.3 때문에 "AI 결과는 틀릴 수 있어요" 안내 문구(기존 출시 전 확인 항목)는 생성 장식에도 필요하다.
 5. 만 14세 이상 이용자와 미성년자 가이드의 관계는 미확인이므로 연령·모더레이션 설계(입력 정책의 성적·폭력·자해 거절, 신고)를 보수적으로 둔다.
-6. 5.1.1(v)(계정 삭제) 때문에 앱 안 계정 삭제 기능을 출시 전에 설계해야 한다. 이번 변경에서는 설계하지 않았고, 가정은 계정 삭제가 활성 공간을 `ended_reason = account_deletion`으로 종료(소프트 삭제 → 내부 완전 삭제)하고 개인 프로필·동의 기록을 법률 검토에 따라 삭제하는 것이다(`spec.md` Decided 36). 로그인 수단별(특히 Apple 로그인) 삭제 절차의 세부 요건은 읽은 문서에서 확인하지 못했다(미확인).
+6. 5.1.1(v)(계정 삭제) 때문에 앱 안 계정 삭제 기능을 출시 전에 설계해야 한다. 같은 날 후속으로 설계했다(`spec.md` User Story 10, Decided 41~46, 아래 10장): 계정 삭제가 활성 공간을 `ended_reason = account_deletion`으로 종료(소프트 삭제 → 내부 완전 삭제)하고 개인 프로필·동의 기록을 삭제한다(동의 기록 보관은 법률 검토). 로그인 수단별(특히 Apple 로그인) 삭제 절차의 세부 요건은 읽은 문서에서 확인하지 못했다(미확인).
 7. 개인정보 처리방침·스토어 데이터 안전 입력란은 실제 동작("공간 종료 후 최대 30일 서버 내부 보관 뒤 삭제, 이용자 직접 복구 없음")과 어긋나지 않게 적어야 한다. 앱 화면에는 기간을 쓰지 않지만 법적 문서에는 어떻게 쓸지 문구는 법률 검토 대상이다. 운영자 지원 복구는 약속하지 않는다.
 
 ### 9.4 레드팀·평가
@@ -212,3 +212,41 @@ iOS는 대기 중인 로컬 알림을 앱당 64개로 제한한다고 알려져 
 단계별 표와 최악 상한은 plan.md "생성 오브젝트". 요약: Haiku 기준 성공 1회 약 $0.0022(최악 $0.0043), 커플·일 약 $0.0066, 시도 30회 남용 상한 약 $0.13/커플·일, Sonnet 승급 성공 1회 약 $0.033. 모두 접근일(2026-10-24) 가격표와 추정 토큰 수로 계산한 **추정**이며 측정으로 대체해야 한다.
 
 출처(접근 2026-10-27, 조사 보조의 페이지 요약 기준): [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/), [Apple 연령 등급 정의](https://developer.apple.com/help/app-store-connect/reference/app-information/age-ratings-values-and-definitions), [Google Play AI-Generated Content](https://support.google.com/googleplay/android-developer/answer/13985936), [Google Play User Generated Content](https://support.google.com/googleplay/android-developer/answer/9876937), [Google Play 콘텐츠 등급](https://support.google.com/googleplay/android-developer/answer/9859655), [Anthropic Usage Policy](https://www.anthropic.com/legal/aup), [Anthropic 미성년자 가이드](https://support.claude.com/en/articles/9307344-responsible-use-of-anthropic-s-models-guidelines-for-organizations-serving-minors), [Anthropic Commercial Terms](https://www.anthropic.com/legal/commercial-terms), [U.S. Copyright Office AI](https://www.copyright.gov/ai/).
+
+## 10. 계정 삭제: 비트윈·썸원 비교와 스토어 요구 (2026-10-27)
+
+소유자의 결정("계정 삭제도 추가하자, 계정 삭제 시 방 제거는 썸원·비트윈 같은 연동 앱을 참고해 정책을 정하자")을 위한 조사다. 조사 보조가 **공식 페이지만** 읽었고(약관·개인정보 처리방침·도움말·FAQ·스토어 정책 문서), 페이지 요약 도구를 거쳤으므로 인용은 원문과 대조해야 한다. 앱 안에서만 보이는 내용은 **UNVERIFIED**로 적었고 추측하지 않았다. 법률 의견이 아니다. 접근일 2026-10-27.
+
+### 10.1 비교표
+
+| 항목 | 비트윈(VCNC) | 썸원(SumOne, 모니모니) | 우리 현재 설계(2026-10-27, 가정) | 차이·메모 |
+|---|---|---|---|---|
+| 탈퇴 경로 | 앱 설정·도움말의 "내 계정삭제(탈퇴)하기"에서 요청, 약관 제24조①은 고객센터 탈퇴 절차를 말함. 웹 진행 화면은 **UNVERIFIED** ([개인정보 처리방침](https://between.us/policy/privacy/?lang=ko), [약관](https://between.us/policy/terms/?lang=ko)) | 앱 안: 커플 > 환경설정 > 나의 썸원 정보 > 썸원 탈퇴하기. 약관 제12조①은 즉시 처리 ([방침](https://sumone.co/privacy/), [약관](https://sumone.co/terms/)) | 설정 > 계정 삭제(앱 안, 재로그인 확인) | 둘 다 앱에서 시작. 우리는 앱 안에서 끝낸다 |
+| 탈퇴 전제 | **연결을 먼저 끊어야만** 계정 삭제 가능("비트윈 계정을 삭제하기 위해서는 상대방과의 연결을 끊어야만 합니다", [도움말](https://help.between.us/api/v2/help_center/ko/articles/115010436408.json)) | 연결 끊기 없이도 탈퇴 가능한 것으로 읽히나 명시 문장은 **UNVERIFIED** | 연결 끊기와 계정 삭제를 한 번에 처리(활성 공간이 있으면 같이 종료) | 비트윈은 두 단계(끊기 → 삭제). 우리는 끊기 단계 없이 곧바로 종료 |
+| 탈퇴 시 데이터 | 계정 삭제 시 비트윈의 모든 데이터가 **즉시 삭제**, 같은 주소로 재가입해도 복구 안 됨(같은 도움말, 수정 2024-03-12) | "탈퇴 시 모든 내역이 삭제"되고 두 사람 모두 탈퇴하면 영구 복구 불가([FAQ](https://sumone.co/faq/)) | 개인 정보는 즉시 삭제·익명화, 공유 공간은 즉시 접근 불가 + 서버가 내부적으로 30일 뒤 완전 삭제 | 비트윈은 즉시 삭제. 썸원은 탈퇴 뒤 30일간 "식별할 수 없는 상태로 보관"(방침). 우리는 썸원과 비슷한 내부 보관 |
+| 복구 | 연결 끊기 후 **31일**(플러스 90일) 안에 재연결하면 복구, 계정 삭제 뒤에는 복구 불가([도움말](https://help.between.us/api/v2/help_center/ko/articles/115006148087.json)). 약관 제30조⑤는 30일로 적어 안내(31일)와 숫자가 다름 | 연결 끊기 후 기본 30일(골드 90일) 복구, 두 사람 모두 탈퇴하면 영구 복구 불가. 한 명만 탈퇴한 경우의 규칙은 **UNVERIFIED** | **복구 없음**(소유자 결정), 앱은 기간을 말하지 않음 | 두 앱 모두 이용자에게 보이는 복구 기간이 있다. 우리는 의도적으로 뺐다 |
+| 상대가 받는 안내 | 연결 끊기 시 상대에게 알림과 안내 메일이 감([도움말](https://help.between.us/api/v2/help_center/ko/articles/115006099587.json)). 탈퇴 직전 안내 문구는 **UNVERIFIED**(탈퇴가 연결 끊기 뒤에만 가능하기 때문) | 연결 끊기는 별도 알림이 없고 상대의 이름 표시가 "나의 그대"로 바뀜. 탈퇴 시 안내는 **UNVERIFIED**(앱 안) | 앱을 열 때 종료 안내 한 번: "상대가 계정을 삭제했어요"(이름·사유 없이), 서버 푸시는 없음 | 비트윈은 푸시·메일, 썸원은 표시만. 우리는 서버 푸시가 없어 앱을 열 때 보임 |
+| 상대의 열람·내보내기 | 연결을 끊으면 두 사람 모두 공유 자료를 볼 수 없다. 백업은 구매자만 받는다([도움말](https://help.between.us/api/v2/help_center/ko/articles/115006148087.json)) | 상대가 쓴 글·공유 사진의 처리는 **UNVERIFIED**(앱 안) | 두 사람 모두 즉시 접근 불가, 내보내기 없음(V1) | 데이터 내보내기는 이번 범위 밖(열린 질문) |
+| 보관·법정 보존 | 탈퇴 시 지체 없이 파기, 부정 이용 기록 1년 보관(재가입 방지), 법령상 필요한 기간 보존([방침](https://between.us/policy/privacy/?lang=ko)). 방침 한국어판에서 "30일 보관" 문구는 찾지 못함 | 회원 정보 탈퇴 후 30일, 접속 기록 3개월 등 법정 보존([방침](https://sumone.co/privacy/)); 최신성은 **UNVERIFIED** | 공간은 30일 뒤 완전 삭제, 개인정보 처리방침 문구는 법률 검토 | 법정 보존 항목은 법률 검토 |
+| 재가입 | 같은 주소로 재가입해도 기존 데이터 복구 안 됨 | 30일 동안 같은 ID로 재가입 불가(방침) | 곧바로 재가입 가능, 새 빈 계정 | 썸원은 재가입을 막는다. 우리는 막지 않는다(열린 질문) |
+| 스토어 표기 | 스토어 등록 정보는 열어 보지 못함(**UNVERIFIED**) | Play 데이터 보안: "데이터 삭제를 요청할 수 있음", 별도 삭제 URL 없이 방침 링크만([Play](https://play.google.com/store/apps/datasafety?id=com.sumone&hl=ko)) | 앱 밖 삭제 안내 페이지(소유자가 `mopiru.jinjinstar.com`에 만듦) | Play는 웹 링크를 요구하므로 썸원 표기만 따르면 부족할 수 있음 |
+
+앱 식별: 썸원은 Google Play 검색에서 "썸원 SumOne : 커플 다이어리, 디데이"(개발자 monymony corp., `com.sumone`)를 확인했고 약관 푸터가 MonyMony Corp.이다. 같은 이름의 "Somone" 앱은 찾지 못했다.
+
+### 10.2 스토어와 로그인 공급자 요구
+
+- **Apple** [App Review Guidelines 5.1.1(v)](https://developer.apple.com/app-store/review/guidelines/): "If your app supports account creation, you must also offer account deletion within the app." [계정 삭제 안내 페이지](https://developer.apple.com/support/offering-account-deletion-in-your-app/): 찾기 쉬워야 하고(보통 계정 설정), 계정 기록과 관련 개인 데이터 **전체를 삭제**하는 것을 제공해야 하며(일시 비활성화만으로는 불충분), 삭제 의사를 확인하는 단계는 적절하되 지나치게 어려우면 안 되고, 웹으로 이어질 때는 해당 페이지로 직접 링크, 이메일·전화·채팅 지원을 요구하는 흐름은 고도 규제 산업만 허용. 처리에 시간이 걸리면 알리고, **법적으로 보관해야 하는 정보가 있으면 무엇이 보관되는지 알려야** 한다. 다른 사람과 공유한 사용자 생성 콘텐츠도 계정과 함께 삭제되길 기대한다고 적혀 있다. 즉시 삭제 옵션과 함께라면 삭제 예약도 허용된다. **Sign in with Apple**을 지원하면 계정 삭제 때 REST API로 **토큰을 revoke**해야 한다(가이드라인·[2022-05-24 개발자 뉴스](https://developer.apple.com/news/?id=12m75xbj)). 토큰 해제 API 문서 본문은 받지 못했다(**UNVERIFIED**).
+- **Google Play** [계정 삭제 요구사항](https://support.google.com/googleplay/android-developer/answer/13327111?hl=ko): 앱 안에서 계정과 관련 데이터를 삭제하는 경로를 눈에 띄게 제공하고, **앱 밖 웹 링크**도 제공해 데이터 보안 양식에 입력해야 하며(링크는 앱 또는 개발자 이름을 참조), 보안·사기 방지·규정 준수 등 정당한 사유의 보관은 가능하지만 보관 관행을 명확히 알려야 한다. 유예 기간 규정은 한국어 페이지에 없다.
+- **Kakao** [REST API 연결 끊기](http://developers.kakao.com/docs/ko/kakaologin/rest-api)·[공통 가이드](http://developers.kakao.com/docs/ko/kakaologin/common): `POST https://kapi.kakao.com/v1/user/unlink`로 동의를 철회하고 토큰을 폐기하며, 탈퇴 과정에 연결 해제 요청을 포함해야 하고, 해제 결과를 받은 뒤 회원 탈퇴 처리하라고 한다. 앱별 `user_id`도 개인정보로 보고 탈퇴 시 파기하라고 한다.
+- **Supabase** [`auth.admin.deleteUser`](https://supabase.com/docs/reference/javascript/auth-admin-deleteuser): `service_role` 키가 필요하고, `shouldSoftDelete` 기본값은 false(true면 되돌릴 수 없는 auth 소프트 삭제), 공개 테이블이 `auth.users`를 참조할 때는 `on delete cascade`를 권장하며 **Storage 객체의 소유자인 사용자는 삭제할 수 없다**. 삭제해도 기존 세션이 자동으로 로그아웃되지는 않는다([사용자 데이터 가이드](https://supabase.com/docs/guides/auth/managing-user-data)).
+- Google 로그인 revoke 가이드는 확인하지 못했다(**UNVERIFIED**; V1 로그인은 카카오·Apple·이메일).
+
+### 10.3 설계에 주는 함의 (사실 정리, 법률 의견 아님)
+
+1. 두 앱 모두 연결을 끊으면 공유 자료가 이용자에게 보이지 않고 일정 기간 복구가 가능하다. 우리가 복구를 뺀 것은 의도된 차이이고, 이 점을 문구에서 숨기지 않는다(앱은 기간·복구를 말하지 않지만 개인정보 처리방침은 실제 동작을 써야 한다).
+2. **Apple은 공유 사용자 생성 콘텐츠도 계정과 함께 지워지길 기대하고, 법적으로 보관하는 정보는 알리라고 한다.** 우리 설계는 공유 공간을 **즉시 접근 불가 + 내부적으로 30일 뒤 삭제**로 두므로, 이 30일 내부 보관이 "법적 보관"이 아니라 운영상 보관이라는 점과 그 안내가 심사·방침에서 문제가 될 수 있다(법률·심사 확인 항목, G18). 대안으로 **계정 삭제만 공유 공간을 즉시 완전 삭제**하는 선택지가 있고(비트윈은 즉시 삭제, 썸원은 30일 비식별 보관), 소유자가 정하도록 열어 둔다.
+3. 로그인 공급자 정리는 설계 단계다: Apple 토큰 revoke(재인증 때 받은 인증 코드로), Kakao unlink(서버 비밀 키), 그 뒤 Supabase 사용자 삭제. 삭제 뒤에도 기존 JWT는 만료 전까지 유효하므로 서버는 요청마다 계정 상태를 확인해야 하고, Storage 객체가 사용자 소유이면 `deleteUser`가 막힌다(우리는 서버 함수가 서비스 권한으로 올리게 한다).
+4. 상대에게 어떤 안내가 가는지는 두 앱 모두 공식 문장으로 정하지 않은 부분이 있어(비트윈은 탈퇴 전 연결 끊기 안내 메일, 썸원은 표시 변화) 우리는 이름 없이 사실만 알리는 문구를 가정으로 정했다.
+5. 비트윈은 계정 삭제 전에 연결 끊기를 요구한다. 우리가 한 번에 처리하는 것은 더 짧은 흐름이지만, **실수 삭제를 막는 장치는 재로그인과 결과 설명 체크뿐**이다(유예·복구 없음). 유예 삭제("지금 삭제" 옵션과 함께)는 Apple이 허용하므로 열린 질문으로 남긴다.
+
+**확인하지 못한 것**: 비트윈 도움말 HTML 직접 접근(403, 공개 JSON으로 대체) · 비트윈 스토어 등록 정보 · 비트윈의 탈퇴 웹 단계 화면과 연결 끊기 알림 문구 전문 · 썸원 Play·App Store 상세 페이지 · 썸원이 한 명 탈퇴할 때 남은 사람의 화면·공유 콘텐츠 처리 · 썸원 방침의 최신성 · Apple 토큰 해제 API 문서 본문 · Google 로그인 revoke · Apple 가이드라인 100,000자 이후.

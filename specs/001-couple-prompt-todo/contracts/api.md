@@ -4,7 +4,7 @@
 
 ## 공통 응답 / 오류
 
-- JSON UTF-8. 성공은 2xx, 잘못된 입력은 `400`, 미인증은 `401`, 권한 없음은 정보 누설 없는 `403`, stale version은 `409`, 한도 초과는 `429`, 일시적 장애는 `503`. 이미 다른 **활성** 공간에 속한 사용자의 가입·생성 시도는 `409 ALREADY_IN_SPACE`. 생성·신고 확장(2026-10-27, 가정)의 오류: `422 GENERATION_REFUSED`(입력 정책 거절, `category` 필드는 언어 중립 코드: `ip | people | unsafe | personal | photo_like | off_purpose | injection`), `503 GENERATION_FAILED`(검증·2차 검사·제공자 실패; `retryable: true`, 횟수를 쓰지 않음), `503 GENERATION_DISABLED`(킬 스위치), `409 LIBRARY_FULL`, `429 RATE_LIMITED`(남용 한도·쿨다운, `retryAfterSeconds`), `429 REPORT_RATE_LIMITED`. **종료된 공간(`ended`)을 대상으로 한 모든 공간 호출은 존재하지 않는 공간이나 비구성원과 구별되지 않는 `404`로 거절한다**(2026-10-27 5차 답변, 가정: 복구 기능이 없으므로 복구 관련 오류 코드는 없다). 종료된 공간에 대해 클라이언트가 읽을 수 있는 것은 `GET /spaces/mine`의 `ended` 알림뿐이다.
+- JSON UTF-8. 성공은 2xx, 잘못된 입력은 `400`, 미인증은 `401`, 권한 없음은 정보 누설 없는 `403`, stale version은 `409`, 한도 초과는 `429`, 일시적 장애는 `503`. 이미 다른 **활성** 공간에 속한 사용자의 가입·생성 시도는 `409 ALREADY_IN_SPACE`. 생성·신고 확장(2026-10-27, 가정)의 오류: `422 GENERATION_REFUSED`(입력 정책 거절, `category` 필드는 언어 중립 코드: `ip | people | unsafe | personal | photo_like | off_purpose | injection`), `503 GENERATION_FAILED`(검증·2차 검사·제공자 실패; `retryable: true`, 횟수를 쓰지 않음), `503 GENERATION_DISABLED`(킬 스위치), `409 LIBRARY_FULL`, `429 RATE_LIMITED`(남용 한도·쿨다운, `retryAfterSeconds`), `429 REPORT_RATE_LIMITED`. 계정 삭제(2026-10-27 7차 답변, 가정)의 오류: `401 REAUTH_REQUIRED`(`DELETE /account`에 최근 재인증이 없음), `409 ACCOUNT_DELETING`(삭제가 접수된 계정의 변경 요청). 계정 삭제가 접수된 사용자는 **모든 요청에서 서버가 계정 상태를 확인**해 `401`(읽기 포함)을 받고, 앱은 `401`과 `409 ACCOUNT_DELETING`을 모두 "로컬 로그아웃"으로 처리한다(아래 "계정"). **종료된 공간(`ended`)을 대상으로 한 모든 공간 호출은 존재하지 않는 공간이나 비구성원과 구별되지 않는 `404`로 거절한다**(2026-10-27 5차 답변, 가정: 복구 기능이 없으므로 복구 관련 오류 코드는 없다). 종료된 공간에 대해 클라이언트가 읽을 수 있는 것은 `GET /spaces/mine`의 `ended` 알림뿐이다.
 - 오류 형태: `{ "error": { "code": "VERSION_CONFLICT", "retryable": true } }`. `code`는 언어 중립 안정 코드이며 앱이 현재 locale의 번역 리소스에서 사용자 메시지를 찾는다.
 - 오류 응답에 사용자 표시용 자연어 문구나 locale별 메시지 키를 넣지 않고 원문 프롬프트를 되풀이하지 않는다. 화면·설정·오류 문구는 앱 번역 리소스에서 제공한다.
 - 모든 변경 요청은 `Idempotency-Key` UUID를 받아 중복 tap/retry로 이중 적용되지 않게 한다.
@@ -43,7 +43,7 @@
 
 ### `GET /spaces/mine`
 
-(제안 · 일관성 점검에서 찾은 빈칸을 메운 것, 2026-10-27 5차 답변으로 개정 · 가정) 앱을 열 때 호출자가 어느 공간으로 들어갈지 정한다. 응답 200: `{ "active": { "spaceId": "uuid" } | null, "ended": { "kind": "ended" | "disconnect", "by": "me" | "partner", "at": "RFC3339" } | null }`. `active`는 호출자의 활성 공간 하나(없으면 null). `ended`는 **종료 알림**이다: 호출자가 아직 확인하지 않은 가장 최근 종료 하나(없으면 null; 여럿이면 가장 최근 하나만, 가정). `ended`에는 **공간 데이터도, 사용할 수 있는 공간 식별자도, 삭제 일정도 없고**, 클라이언트가 종료된 공간에 대해 읽을 수 있는 유일한 정보다. `by`는 종료·연결 끊기를 한 사람이 호출자(`me`)인지 상대(`partner`)인지다. 앱은 `active`가 있으면 그 공간으로 열고, 없고 `ended`가 있으면 종료 화면(S14)을, 둘 다 없으면 공간 만들기(S03)·초대 코드 입력(S05)을 연다. `active`와 `ended`가 둘 다 있으면(종료 직후 새 공간을 시작한 경우) 활성 공간으로 열고 `ended` 안내는 한 번 보인 뒤 확인으로 지운다.
+(제안 · 일관성 점검에서 찾은 빈칸을 메운 것, 2026-10-27 5차 답변으로 개정 · 가정) 앱을 열 때 호출자가 어느 공간으로 들어갈지 정한다. 응답 200: `{ "active": { "spaceId": "uuid" } | null, "ended": { "kind": "ended" | "disconnect" | "account_deleted", "by": "me" | "partner", "at": "RFC3339" } | null }`. `active`는 호출자의 활성 공간 하나(없으면 null). `ended`는 **종료 알림**이다: 호출자가 아직 확인하지 않은 가장 최근 종료 하나(없으면 null; 여럿이면 가장 최근 하나만, 가정). `ended`에는 **공간 데이터도, 사용할 수 있는 공간 식별자도, 삭제 일정도 없고**, 클라이언트가 종료된 공간에 대해 읽을 수 있는 유일한 정보다. `by`는 종료·연결 끊기를 한 사람이 호출자(`me`)인지 상대(`partner`)인지다. `kind = account_deleted`는 상대가 계정을 삭제해 공간이 끝난 경우이며 `by`는 항상 `partner`이고 **삭제한 사람의 이름·식별자는 어디에도 없다**(앱 문구 "상대가 계정을 삭제했어요", 키 `end.byPartnerDeleted`). 삭제한 본인은 로그아웃되므로 이 알림을 받지 않는다. 앱은 `active`가 있으면 그 공간으로 열고, 없고 `ended`가 있으면 종료 화면(S14)을, 둘 다 없으면 공간 만들기(S03)·초대 코드 입력(S05)을 연다. `active`와 `ended`가 둘 다 있으면(종료 직후 새 공간을 시작한 경우) 활성 공간으로 열고 `ended` 안내는 한 번 보인 뒤 확인으로 지운다.
 
 ### `POST /spaces/mine/ended/ack`
 
@@ -217,11 +217,11 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 
 ## 공간 종료 (소프트 삭제 · 복구 없음)
 
-(2026-10-27 5차 답변, 가정, `spec.md` Decided 33~36) 이용자용 복구 API는 없다.
+(2026-10-27 5차 답변, 가정, `spec.md` Decided 33~35) 이용자용 복구 API는 없다.
 
 ### `POST /spaces/{spaceId}/end`
 
-공간 구성원 중 누구나 호출 가능. `{ "confirm": true }` + `Idempotency-Key`. 한 트랜잭션에서 공간 `status`를 `ended`로 바꾸고(`ended_at`, 내부 `purge_after`, `ended_reason = ended`, `ended_by_user_id`), 두 구성원의 `space_active`를 false로 바꾸고, 두 구성원의 종료 알림을 만든다. 초대·AI·편집·조회를 **즉시** 모두 막는다(두 구성원 모두 스냅샷·프롬프트·생성 장식·홈 커버·마일스톤·신고·실시간 구독이 끊긴다). 응답 200: `{ "status": "ended" }`. **삭제 일정이나 기간은 응답에 없다.** 이미 종료된 공간(또는 상대가 먼저 종료한 공간)에 호출하면 `404`이고 앱은 종료 알림(`GET /spaces/mine`)으로 이동한다. 이후 호출자는 곧바로 새 공간을 만들거나 초대를 수락할 수 있다.
+공간 구성원 중 누구나 호출 가능. `{ "confirm": true }` + `Idempotency-Key`. 한 트랜잭션에서 공간 `status`를 `ended`로 바꾸고(`ended_at`, 내부 `purge_after`, `ended_reason = ended`, `ended_by_user_id`), 두 구성원의 `space_active`를 false로 바꾸고, 두 구성원의 종료 알림을 만든다. 초대·AI·편집·조회를 **즉시** 모두 막는다(두 구성원 모두 스냅샷·프롬프트·생성 장식·홈 커버·마일스톤·신고·실시간 구독이 끊긴다). 응답 200: `{ "status": "ended" }`. **삭제 일정이나 기간은 응답에 없다.** 이미 종료된 공간(또는 상대가 먼저 종료한 공간)에 호출하면 `404`이고 앱은 종료 알림(`GET /spaces/mine`)으로 이동한다. 이후 호출자는 곧바로 새 공간을 만들거나 초대를 수락할 수 있다. 계정 삭제(`DELETE /account`)도 같은 서버 함수(`end_space`)로 활성 공간을 종료한다(`ended_reason = account_deletion`).
 
 ## 신고와 연결 끊기 (FR-059)
 
@@ -245,6 +245,23 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 
 **화면 이름은 "연결 끊기"(예전 "차단")이고 엔드포인트 이름은 `block`을 유지한다**(계약 이름을 불필요하게 바꾸지 않기 위해). 구성원이 호출한다. `{ "confirm": true }`. 상대의 접근을 즉시 끊고 공간을 종료한다(`POST /end`와 같은 소프트 삭제, 종료 이유 `disconnect`, `ended_by_user_id` = 호출자). 복구는 없다. 이 호출은 신고와 별개이고 신고를 만들지 않는다. 응답은 `/end`와 같다(200 `{ "status": "ended" }`, 일정 없음)이며 앱은 확인 창에서 이 결과를 미리 알린다.
 
+## 계정 (삭제, 2026-10-27 7차 답변 · 가정, FR-070~FR-074)
+
+### `DELETE /account`
+
+호출자 본인의 계정을 삭제한다(되돌릴 수 없음). 요청: `{ "confirm": true, "reauth": { "provider": "kakao" | "apple" | "email", "authorizationCode?": "string" } }` + `Idempotency-Key`. `authorizationCode`는 `provider = apple`일 때 필수다(재인증 때 Sign in with Apple로 받은 일회용 코드; 서버가 토큰으로 바꿔 revoke에 쓴다). 일부 클라이언트·프록시가 DELETE 본문을 버릴 수 있으면 같은 계약을 `POST /account/deletion`으로 매핑한다(구현에서 정한다).
+
+서버는 ① 호출자의 **최근 재인증**(최근 로그인 시각, 기본 5분, 가정; 인증 토큰의 인증 방법 시각을 확인하며 구현 전에 확인) ② `reauth.provider`가 계정의 로그인 공급자와 일치함 ③ Apple이면 코드 교환 성공을 확인한 뒤, 한 트랜잭션(`begin_account_deletion`)으로 접수한다(사용자 `deleting`, 활성 공간 종료 `account_deletion`, 대기 초대 폐기, 점유·열린 세션 해제와 생성 요청 폐기, 세션 무효화, 개인 필드·동의 기록 삭제). 이후 단계(공급자 해제 → 인증 사용자 삭제 → 껍데기 전환)는 서버가 이어서 처리한다(아래 "내부 작업").
+
+- 응답 `202`: `{ "state": "requested" }` — "접수됨"을 뜻하는 고정 값이며 내부 진행 단계를 알려 주지 않는다. 클라이언트는 **응답을 받으면 바로 로컬에서 로그아웃**하고(세션·예약 알림 전체 취소·로컬 캐시 삭제) 로그인 화면으로 간다. **접수 뒤에는 진행 상태를 묻는 API가 없다**(로그아웃 상태이므로).
+- `400`: `confirm`이 true가 아님, 알 수 없는 `provider`, Apple인데 `authorizationCode` 없음.
+- `401 REAUTH_REQUIRED`: 최근 재인증이 없음·만료·공급자 불일치·Apple 코드 교환 실패. 아무것도 바뀌지 않는다. 앱은 본인 확인 단계로 돌아간다.
+- `409 ACCOUNT_DELETING`: 삭제가 이미 접수된 계정이 **다른 변경 요청**(`POST`/`PUT`/`PATCH`/`DELETE`)을 보낸 경우(발급된 토큰이 아직 유효한 짧은 시간). 같은 계정의 `DELETE /account` 재시도(같은 `Idempotency-Key` 또는 이미 `deleting`)는 오류가 아니라 `202`를 돌려준다(멱등).
+- 접수 전 서버·네트워크 오류는 `503` 등 일반 오류이고 아무것도 바뀌지 않는다(앱: `acct.delete.fail.*`). 오프라인에서는 호출하지 않는다.
+- **접수 뒤 이 사용자의 다른 모든 호출은 `401`**이다: 세션·리프레시 토큰이 서버에서 무효가 되고, 이미 발급된 JWT가 만료 전이어도 서버가 요청마다 `UserProfile.status`를 확인해 거절한다(읽기 포함). 위 `409 ACCOUNT_DELETING`은 변경 요청이 접수 트랜잭션과 겹쳐 사용자 락을 늦게 잡은 경우의 정확한 응답이다. 앱은 둘 다 로컬 로그아웃으로 처리한다.
+- 상대의 공간은 접수와 같은 순간에 종료된다: 상대의 모든 공간 호출은 종료된 공간으로서 `404`이고 `GET /spaces/mine`의 `ended`가 `{ "kind": "account_deleted", "by": "partner", "at": … }`가 된다.
+- 개인정보: 요청·응답·로그에 인증 코드·토큰·이메일을 남기지 않는다.
+
 ## 내부 작업 (클라이언트 API 아님)
 
 앱·anon 키로 호출할 수 없는 서버 전용 예약 작업이다. 위 운영자 내부 계약과 같이 service-role 서버 함수로만 돈다.
@@ -256,6 +273,13 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 - 내용 없는 `deletion_started`/`deletion_completed` 이벤트만 남긴다. `generation_block` 지문(개인정보 없음)은 지우지 않는다. 신고 행을 증거로 오래 둘지는 열린 질문(기본 가정: 함께 삭제, `spec.md` Open Decisions 21).
 - `purge_after`는 서버 설정값(종료 + 30일)이며 어떤 API 응답에도 나가지 않는다.
 
+### 계정 삭제 실행기 (Edge Function `lifecycle-sweep` 확장 + `account` 함수의 백그라운드 단계)
+
+- `DELETE /account` 핸들러는 접수(`begin_account_deletion`)까지 동기로 끝내고 `202`를 낸 뒤 나머지 단계를 백그라운드로 이어 간다. 안전망으로 `lifecycle-sweep`이 주기적으로(기본 15분, 서버 설정값 가정) `account_deletion.state != done`인 행을 **지수 백오프**로 다시 실행한다(단계: `space_ended` → 공급자 해제 → `provider_revoked` → `deleteUser` → `auth_deleted` → 껍데기 전환 → `done`). 단계마다 `state`·`attempts`·`last_error_code`만 기록하고 서버 재시작 후에도 그 상태에서 이어서 끝낸다(멱등: 이미 해제된 공급자 연결, 이미 지워진 인증 사용자는 성공으로 본다).
+- **공급자 해제 재시도**: Apple은 `provider_credential_enc`(최대 24시간)로 revoke를 재시도하고 시간 초과·반복 실패는 내용 없는 운영 경고만 남긴다. 카카오는 인증 사용자 identity에서 대상 ID를 읽어 unlink를 재시도한다(`deleteUser`가 그 뒤 단계라서 identity가 남아 있다). 계속 실패해도 계정은 이미 접근 불가이며 이용자에게 보이는 상태는 바뀌지 않는다.
+- **껍데기 정리**: `purge_expired_spaces()`가 공간 행을 지운 같은 트랜잭션에서 어떤 구성원 행도 가리키지 않게 된 `shell` 프로필과 그 `account_deletion` 행을 지운다.
+- 서비스 키는 서버 함수에만 있다. Apple 서비스 키·카카오 앱 비밀 키는 서버 비밀 저장소에만 두고 로그·응답에 넣지 않는다.
+
 ## 실시간 업데이트
 
-채널은 인증 주체가 구성원인 `space_id`만 구독 가능하다. 홈 커버 변경은 `cover_version`과 변경 종류(`changed | removed`)만 알리고 상대가 서명된 URL을 다시 요청한다. 이벤트 payload에는 현재 테마 버전 ID/번호, 변경 종류, 변경자, 시각, session owner/expiry, message/preview ID만 둔다. prompt/AI 출력 본문과 개인 식별자는 broadcast에 넣지 않는다. 두 구성원은 권한검사된 conversation API로 shared text/preview를 읽는다. 탈퇴/종료/삭제/토큰 만료 시 구독을 끊는다.
+채널은 인증 주체가 구성원인 `space_id`만 구독 가능하다. 홈 커버 변경은 `cover_version`과 변경 종류(`changed | removed`)만 알리고 상대가 서명된 URL을 다시 요청한다. 이벤트 payload에는 현재 테마 버전 ID/번호, 변경 종류, 변경자, 시각, session owner/expiry, message/preview ID만 둔다. prompt/AI 출력 본문과 개인 식별자는 broadcast에 넣지 않는다. 두 구성원은 권한검사된 conversation API로 shared text/preview를 읽는다. 탈퇴/종료/삭제/토큰 만료/계정 삭제 접수(세션 무효화) 시 구독을 끊는다.

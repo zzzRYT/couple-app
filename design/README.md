@@ -23,7 +23,7 @@
 | [`reference-library/`](reference-library/README.md) | **기준 라이브러리(P2 생성 장식)**: AI가 새 배경 조각·말풍선 틀·방 소품을 만들 때 스타일 앵커로 주는 앱 소유 레퍼런스 14개(JSON, **자리표시 그림**)·스타일 규칙·소유자 승인 체크리스트·미리 보기·대비 시트. 검증기·렌더러는 `tools/mopi-shape/` | 디자인·구현 |
 | [`assets-sketch/`](assets-sketch/) | 일반 오브젝트 **자리표시 스케치** SVG 19개(최종 그림이 아니에요) | 일러스트레이터 |
 | [`canvas/`](canvas/README.md) | Claude Design 캔버스 원본 파일(`project/*.dc.html`, `canvas.json`). 보드 S00~S28(S11·S17·S25 없음) | 디자인 |
-| [`exports/`](exports/) | 주요 화면 PNG 68장(화면 @2x + 보드)(움직임은 정지 프레임) | 모두 |
+| [`exports/`](exports/) | 주요 화면 PNG 71장(화면 @2x + 보드)(움직임은 정지 프레임) | 모두 |
 | [`later/history/`](later/history/README.md) | **V1 이후 · 기록 포함 버전(1차에서는 쓰지 않아요)**: 보류했지만 채택하면 바로 쓸 수 있게 준비한 기록 설계(화면·문구·4탭 바·적용 시 되돌릴 목록). V1 수치에 들어가지 않아요 | 디자인·기획 |
 | [`tools/mopi-shape/`](tools/mopi-shape/README.md) | 생성 장식 형식(`mopi-shape-v1`)의 의존성 없는 검증기·결정적 SVG 렌더러·스타일 적합도 검사와 테스트(`node --test`), 서버·앱 검증기의 참고 구현 | 구현 |
 | [`tools/contrast-check.mjs`](tools/contrast-check.mjs) | 토큰의 핵심 대비 쌍을 다시 확인하는 의존성 없는 스크립트 | 구현 |

@@ -4,13 +4,13 @@ description: "프롬프트로 꾸미는 커플 D-day와 우리 방 — 구현 �
 
 # Tasks: 프롬프트로 꾸미는 커플 D-day와 우리 방
 
-**입력**: `specs/001-couple-prompt-todo/`의 `spec.md`(사용자 스토리·FR-001~FR-069), `plan.md`(기술 맥락·저장소 구조), `data-model.md`, `contracts/api.md`와 `contracts/*.schema.json` 5개(+ 형식 샘플 `contracts/samples/`), `ai-guardrails.md`, 기준 라이브러리 `design/reference-library/`, `research.md`, `quickstart.md`, 디자인 `design/`(`tokens.json`, `i18n-copy.md` 623키, `assets-manifest.csv`, `assets-sketch/`, `mascot/`, `components.md`, `interaction-notes.md`, `screens.md`)
+**입력**: `specs/001-couple-prompt-todo/`의 `spec.md`(사용자 스토리·FR-001~FR-074), `plan.md`(기술 맥락·저장소 구조), `data-model.md`, `contracts/api.md`와 `contracts/*.schema.json` 5개(+ 형식 샘플 `contracts/samples/`), `ai-guardrails.md`, 기준 라이브러리 `design/reference-library/`, `research.md`, `quickstart.md`, 디자인 `design/`(`tokens.json`, `i18n-copy.md` 640키, `assets-manifest.csv`, `assets-sketch/`, `mascot/`, `components.md`, `interaction-notes.md`, `screens.md`)
 
 **전제**: 이 문서는 **문서만**이다. 저장소에는 아직 앱 코드가 없고, 이 태스크 목록이 구현의 시작점이다. 구현은 나중에 codex 작업자가 이 파일만 보고 실행한다.
 
 **테스트**: **요청됨** — 계획과 `quickstart.md`가 정한 검증 흐름(계약 테스트, RLS, 점유·멱등, 장면 검증, 마일스톤 계산, 알림 예약, 하루 3회, 생성 장식·가드레일·신고, 한 공간 규칙, 14세 문구, 연결 끊기, 세션 안 되돌리기, 마스코트 되살림)은 **각 스토리에서 구현보다 먼저 쓰고 실패를 확인**한다.
 
-**구성**: 사용자 스토리별 단계(P1 → P2), 각 단계는 독립적으로 구현·검증할 수 있다. 스토리 번호는 `spec.md`의 User Story 1~9이다.
+**구성**: 사용자 스토리별 단계(P1 → P2), 각 단계는 독립적으로 구현·검증할 수 있다. 스토리 번호는 `spec.md`의 User Story 1~10이다.
 
 ## 요약
 
@@ -27,9 +27,10 @@ description: "프롬프트로 꾸미는 커플 D-day와 우리 방 — 구현 �
 | Phase 9: User Story 7 — 마일스톤 축하와 옵트인 기기 예약 알림 (P2) | 13 | 5 |
 | Phase 10: User Story 8 — 프롬프트로 새 배경·말풍선·소품 장식 만들기 (P2, MVP 바로 다음 단계) | 22 | 9 |
 | Phase 11: User Story 9 — 생성된 장식·방 신고하기 (P2, US8과 함께 출시) | 6 | 3 |
-| Phase 12: Polish & Cross-Cutting (구현 마무리, 출시 게이트와 별개) | 8 | 8 |
-| Phase 13: 출시 게이트 (구현을 막지 않는다 — 출시 전에 사람이 닫는다) | 18 | 18 |
-| **합계** | **176** | **92** |
+| Phase 12: User Story 10 — 계정 삭제 (P1, 출시 필수 · MVP 컷에는 없음) | 8 | 5 |
+| Phase 13: Polish & Cross-Cutting (구현 마무리, 출시 게이트와 별개) | 8 | 8 |
+| Phase 14: 출시 게이트 (구현을 막지 않는다 — 출시 전에 사람이 닫는다) | 18 | 18 |
+| **합계** | **184** | **97** |
 
 - 각 스토리의 **독립 테스트**와 **체크포인트**는 해당 단계 머리에 있다.
 - **MVP 컷 라인**: Phase 1~5(설정·기반·US1·US4·US2). 자세한 내용은 아래 "구현 전략".
@@ -72,24 +73,24 @@ docs/                         구현 문서·점검표·게이트 기록
 
 | 게이트 | 내용 | 영향받는 태스크(자리표시로 진행) | 닫는 태스크 |
 |---|---|---|---|
-| G1 법률 검토 | 연령 문구, 해외 AI 보관 기간, 사진 개인정보, 알림, UGC, AI 오류 가능 고지 | T038, T047, T081, 번역 키 값 | T159 |
-| G2 이름 확인 | 상표·스토어 이름·도메인·bundle ID | T005, T006 | T160 |
-| G3 스토어 규칙 | 글자 수·심사·연령 등급·UGC·연결 끊기+신고·알림 메모 | T101, T122 | T161 |
-| G4 원어민 검수 | 영어·일본어 문구 | T024 | T162 |
-| G5 카카오·Apple 에셋 | 공식 SDK/에셋 | T048, T046 | T163 |
-| G6 글꼴 크기 실측 | 9파일 vs 최소 구성 | T027, T157 | T164 |
-| G7 에셋 최종 포맷·그림 | PNG-8/WebP, 18개 오브젝트 납품 | T029 | T165 |
-| G8 AI 약관·비용·승급 | 포함 크레딧의 공개 앱 사용 문의, Usage Policy, 유료 전환, 승급 기준 | T071, T077 | T166 |
-| G9 서버 푸시 | 로컬 알림으로 충분한지 | T121 | T167 |
-| G10 지원 이메일 | 공개 주소 필요(아직 없음) | T005, T097 | T168 |
-| G11 닮음 검사 | 마스코트·아이콘(권장, 비차단) | T029 | T169 |
-| G12 계정·운영 | 개인 계정, Supabase 무료 정지 동작 | T004, T006 | T170 |
-| G13 기준 라이브러리 승인 | 자리표시 레퍼런스의 최종 세트·스타일 승인 | T134, T130 | T171 |
-| G14 생성 콘텐츠 스토어 규칙 | Apple 1.2·Google Play AI 생성 콘텐츠·연령 등급·심사 노트 | T150, T135 | T172 |
-| G15 약관·개인정보·법률(생성) | 약관·처리방침·AI 결과 권리·표시 의무 | T143, T135 | T173 |
-| G16 Anthropic 사용 정책(생성) | 시행 중·개정판 본문, 14세 이상 이용자 | T071, T135 | T174 |
-| G17 생성 품질·실제 모델 평가 | SC-008, 품질·비용 측정, 옵션 B 후퇴 결정, 운영 담당·응답 시간 | T144, T135 | T175 |
-| G18 계정 삭제 | 스토어 필수 기능, 스펙에 없음 | T102 | T176 |
+| G1 법률 검토 | 연령 문구, 해외 AI 보관 기간, 사진 개인정보, 알림, UGC, AI 오류 가능 고지 | T038, T047, T081, 번역 키 값 | T167 |
+| G2 이름 확인 | 상표·스토어 이름·도메인·bundle ID | T005, T006 | T168 |
+| G3 스토어 규칙 | 글자 수·심사·연령 등급·UGC·연결 끊기+신고·알림 메모 | T101, T122 | T169 |
+| G4 원어민 검수 | 영어·일본어 문구 | T024 | T170 |
+| G5 카카오·Apple 에셋 | 공식 SDK/에셋 | T048, T046 | T171 |
+| G6 글꼴 크기 실측 | 9파일 vs 최소 구성 | T027, T165 | T172 |
+| G7 에셋 최종 포맷·그림 | PNG-8/WebP, 18개 오브젝트 납품 | T029 | T173 |
+| G8 AI 약관·비용·승급 | 포함 크레딧의 공개 앱 사용 문의, Usage Policy, 유료 전환, 승급 기준 | T071, T077 | T174 |
+| G9 서버 푸시 | 로컬 알림으로 충분한지 | T121 | T175 |
+| G10 지원 이메일 | 공개 주소 필요(아직 없음) | T005, T097 | T176 |
+| G11 닮음 검사 | 마스코트·아이콘(권장, 비차단) | T029 | T177 |
+| G12 계정·운영 | 개인 계정, Supabase 무료 정지 동작 | T004, T006 | T178 |
+| G13 기준 라이브러리 승인 | 자리표시 레퍼런스의 최종 세트·스타일 승인 | T134, T130 | T179 |
+| G14 생성 콘텐츠 스토어 규칙 | Apple 1.2·Google Play AI 생성 콘텐츠·연령 등급·심사 노트 | T150, T135 | T180 |
+| G15 약관·개인정보·법률(생성) | 약관·처리방침·AI 결과 권리·표시 의무 | T143, T135 | T181 |
+| G16 Anthropic 사용 정책(생성) | 시행 중·개정판 본문, 14세 이상 이용자 | T071, T135 | T182 |
+| G17 생성 품질·실제 모델 평가 | SC-008, 품질·비용 측정, 옵션 B 후퇴 결정, 운영 담당·응답 시간 | T144, T135 | T183 |
+| G18 계정 삭제 출시 점검 | 처리방침·Apple 심사 노트·Google 데이터 보안 양식과 웹 삭제 링크·Kakao unlink·앱 밖 요청 절차 | T158, T156, T157 | T184 |
 
 ---
 
@@ -134,7 +135,7 @@ docs/                         구현 문서·점검표·게이트 기록
 
 ### 2-C. 앱 뼈대 (`apps/mobile`)
 
-- [ ] T023 [P] 테스트 먼저: `apps/mobile/src/i18n/__tests__/locales.test.ts` — `ko`·`en`·`ja` 리소스가 **같은 키 집합(623개)**을 가지고, 빈 값이 없고, `{name}` 같은 보간 변수가 세 언어에서 일치하며, `design/i18n-copy.md`의 키 수 표기("총 키 수: **623**")와 같다 → 수락: 구현 전에는 실패.
+- [ ] T023 [P] 테스트 먼저: `apps/mobile/src/i18n/__tests__/locales.test.ts` — `ko`·`en`·`ja` 리소스가 **같은 키 집합(640개)**을 가지고, 빈 값이 없고, `{name}` 같은 보간 변수가 세 언어에서 일치하며, `design/i18n-copy.md`의 키 수 표기("총 키 수: **640**")와 같다 → 수락: 구현 전에는 실패.
 - [ ] T024 `tools/i18n/import-design-copy.mjs`: `design/i18n-copy.md`의 표(`| \`키\` | ko | en | ja |`)를 읽어 `apps/mobile/src/i18n/locales/{ko-KR,en-US,ja-JP}.json`과 타입 `apps/mobile/src/i18n/keys.d.ts`를 생성. 키 이름은 바꾸지 않는다(`report.block*`·`prompt.quota.body` 포함 — 화면 이름이 '연결 끊기'로 바뀌어도 키는 유지). 영어·일본어는 **원어민 검수 전 초안**(G4) 표시를 `locales/README.md`에 적는다 → 수락: T023이 통과한다.
 - [ ] T025 `apps/mobile/src/i18n/index.ts`: `expo-localization`으로 기기 언어를 읽고 `i18next`+`react-i18next` 초기화, 앱 내 언어 선택이 기기 언어보다 우선(`user_profile.locale`과 `expo-secure-store`/AsyncStorage에 저장), 날짜·숫자는 `Intl`, D-day 문구는 메시지 리소스 → 수락: `apps/mobile/src/i18n/__tests__/setup.test.ts`가 기기 언어 `ja-JP`에서 시작→앱에서 `ko-KR` 선택→문자열이 바뀌는지 단언한다.
 - [ ] T026 `tools/tokens/build-tokens.mjs`로 `design/tokens.json`에서 `apps/mobile/src/theme/tokens.ts`(색·글꼴·간격·안전 영역·방 낮/밤 × 앱 light/dark × 고대비 8조합) 생성. 대비 검증은 `design/tools/contrast-check.mjs`를 호출하는 테스트 `apps/mobile/src/theme/__tests__/contrast.test.ts` → 수락: "229 pairs checked, 0 failures"에 해당하는 결과를 단언한다.
@@ -290,11 +291,11 @@ docs/                         구현 문서·점검표·게이트 기록
 - [ ] T091 [P] [US5] `supabase/functions/spaces/__tests__/block.test.ts`: `POST /spaces/{id}/block`(**화면 이름은 연결 끊기, 엔드포인트 이름은 `block` 유지**) 호출 시 공간이 즉시 `ended`(종료 이유 `disconnect`, 이벤트 `disconnected`)가 되고, **상대의 읽기·쓰기가 즉시 막히며**(RLS), 상대의 종료 알림은 `kind:'disconnect', by:'partner'`, 호출자는 `by:'me'`, 신고 행은 만들어지지 않음, 비구성원은 403, 응답에 기간·삭제 예정일 없음 → 수락: 구현 전 실패.
 - [ ] T092 [P] [US5] `supabase/tests/purge.test.sql`(pgTAP)과 `supabase/functions/lifecycle-sweep/__tests__/purge.test.ts`(고정 시계, Storage 모의): ① `purge_after` 직전에는 그대로, 직후에는 완전 삭제(시간대 영향 없음) ② 삭제 범위: 공간·구성원·초대·방 테마·버전·요청·점유 세션·대화·홈 커버 행과 **Storage 객체(현재 사진 + 삭제 대기 목록)**·`generated_object`·`generation_attempt`·신고 행·마일스톤·종료 알림·일일 계수·예약 — 개인 정보 없는 `generation_block` 지문은 유지(가정) ③ 재실행해도 결과 동일(멱등) ④ **부분 삭제 없음**: Storage 단계에 실패를 주입하면 행은 그대로 `ended`로 남고 다음 실행에서 재시도, DB 단계에 실패를 주입하면 트랜잭션이 롤백되고 재시도되며, 어느 경우에도 클라이언트에 일부만 보이는 상태가 없음 ⑤ 완료 이벤트는 개인 내용 없이 `deletion_started`/`deletion_completed`만 ⑥ 종료되지 않은 공간과 `purge_after` 전의 공간은 건드리지 않음 ⑦ 한 공간의 삭제 실패가 다른 공간의 삭제를 막지 않음 ⑧ 종료한 두 사람이 이후 새 공간에 있어도 이전 공간 삭제가 새 공간 데이터를 건드리지 않음 → 수락: 구현 전 실패.
 - [ ] T093 [P] [US5] `supabase/functions/reports/__tests__/reports.test.ts`: `POST /spaces/{id}/reports`(`target: partner|shared_text|room_scene`, `reason: harass|inappropriate|privacy|other`, `detail?`, `messageId?`) 201, **홈 커버 사진은 대상이 아니다**(대상 값 거절), 신고자 본인만 자기 신고를 읽음, 처리 결과를 앱에 알리지 않음, 연결 끊기 없이도 접수 → 수락: 구현 전 실패.
-- [ ] T094 [P] [US5] `apps/mobile/src/features/lifecycle/__tests__/lifecycle.test.tsx`: 설정의 "공간 종료" 확인 단계(`end.body`·`end.b1~b3`·`set.end.help`: **일수·복구 언급 없음**), 종료 안내 화면(`end.done.*`, "새 공간 시작하기" → 공간 만들기·초대 코드 입력, **복구 버튼·날짜·남은 일수·진행 막대 없음**), 상대가 종료했거나 연결을 끊은 경우의 안내(`end.byPartner`/`end.byPartnerDisconnect` + `end.done.body`), 안내를 확인하면 다시 보이지 않음, **연결 끊기 확인 다이얼로그가 `report.block.body`("연결을 끊으면 ○○님은 이 공간의 방과 대화를 볼 수 없고, 이 공간이 종료돼요. 함께 쓰던 데이터는 삭제돼요")를 확인 전에 보여 줌**, **번역 리소스 검사: 종료·연결 끊기 키(`end.*`, `set.end.*`, `report.block*`)에 '복구'·'restore'·'30일'·'days' 같은 보관 기간·복구 문구가 없음**(허용 예외: 프롬프트 보관 안내 `consent.keep.body`, 장면 불러오기 `room.recover.*`), 신고 흐름(대상→이유→자세한 내용(선택)→제출 성공/실패·입력 유지), 대화 메시지 ⋯ → "이 메시지 신고" 시트, 신고 대상 목록에 사진 없음 → 수락: 구현 전 실패.
+- [ ] T094 [P] [US5] `apps/mobile/src/features/lifecycle/__tests__/lifecycle.test.tsx`: 설정의 "공간 종료" 확인 단계(`end.body`·`end.b1~b3`·`set.end.help`: **일수·복구 언급 없음**), 종료 안내 화면(`end.done.*`, "새 공간 시작하기" → 공간 만들기·초대 코드 입력, **복구 버튼·날짜·남은 일수·진행 막대 없음**), 상대가 종료했거나 연결을 끊거나 계정을 삭제한 경우의 안내(`end.byPartner`/`end.byPartnerDisconnect`/`end.byPartnerDeleted`(이름 없이) + `end.done.body`), 안내를 확인하면 다시 보이지 않음, **연결 끊기 확인 다이얼로그가 `report.block.body`("연결을 끊으면 ○○님은 이 공간의 방과 대화를 볼 수 없고, 이 공간이 종료돼요. 함께 쓰던 데이터는 삭제돼요")를 확인 전에 보여 줌**, **번역 리소스 검사: 종료·연결 끊기 키(`end.*`, `set.end.*`, `report.block*`)에 '복구'·'restore'·'30일'·'days' 같은 보관 기간·복구 문구가 없음**(허용 예외: 프롬프트 보관 안내 `consent.keep.body`, 장면 불러오기 `room.recover.*`), 신고 흐름(대상→이유→자세한 내용(선택)→제출 성공/실패·입력 유지), 대화 메시지 ⋯ → "이 메시지 신고" 시트, 신고 대상 목록에 사진 없음 → 수락: 구현 전 실패.
 
 ### 서버 구현
 
-- [ ] T095 [US5] `supabase/migrations/20261101000700_lifecycle_report.sql`: `report`(`id`, `space_id`, `reporter_user_id`, `target` check in (`partner`,`shared_text`,`room_scene`), `reason` check in (`harass`,`inappropriate`,`privacy`,`other`), `detail`, `message_id`, `created_at`, `status` check in (`received`,`reviewed`); RLS: 신고자 본인 읽기), RPC `end_space(space_id, reason)`(`ended|disconnect|account_deletion`; `status='ended'`, `ended_at`, `purge_after` = now + 30일(설정값), `ended_reason`, `ended_by_user_id` = 호출자, 두 구성원 `space_active=false`를 **같은 트랜잭션**에서, 진행 중 `prompt_session` 해제, 활성 `invitation` 폐기, 두 구성원의 `space_end_notice` 생성), `space_end_notice`(`user_id`, `kind` check in (`ended`,`disconnect`), `by_user_id`, `at`, `acked_at`, 구성원당 최신 한 행만 의미; RLS: 본인 읽기; 공간 데이터·삭제 예정일을 담지 않음), `purge_expired_spaces()`(공간 단위 멱등 배치: `purge_after <= now`인 공간마다 Storage 객체를 먼저 지우고 한 트랜잭션에서 모든 관련 행을 삭제, 실패하면 `ended`로 남겨 재시도) → 수락: T090·T092의 DB 부분이 통과한다.
+- [ ] T095 [US5] `supabase/migrations/20261101000700_lifecycle_report.sql`: `report`(`id`, `space_id`, `reporter_user_id`, `target` check in (`partner`,`shared_text`,`room_scene`), `reason` check in (`harass`,`inappropriate`,`privacy`,`other`), `detail`, `message_id`, `created_at`, `status` check in (`received`,`reviewed`); RLS: 신고자 본인 읽기), RPC `end_space(space_id, reason)`(`ended|disconnect|account_deletion`; `status='ended'`, `ended_at`, `purge_after` = now + 30일(설정값), `ended_reason`, `ended_by_user_id` = 호출자, 두 구성원 `space_active=false`를 **같은 트랜잭션**에서, 진행 중 `prompt_session` 해제, 활성 `invitation` 폐기, 두 구성원의 `space_end_notice` 생성), `space_end_notice`(`user_id`, `kind` check in (`ended`,`disconnect`,`account_deleted`), `by_user_id`, `at`, `acked_at`, 구성원당 최신 한 행만 의미; RLS: 본인 읽기; 공간 데이터·삭제 예정일을 담지 않음), `purge_expired_spaces()`(공간 단위 멱등 배치: `purge_after <= now`인 공간마다 Storage 객체를 먼저 지우고 한 트랜잭션에서 모든 관련 행을 삭제, 실패하면 `ended`로 남겨 재시도) → 수락: T090·T092의 DB 부분이 통과한다.
 - [ ] T096 [US5] `supabase/functions/spaces/index.ts`에 `POST /spaces/{id}/end`(`{confirm:true}`, 응답 200 `{status:'ended'}`), `POST /spaces/{id}/block`(`{confirm:true}`; 응답은 `/end`와 같음), `POST /spaces/mine/ended/ack`(204, 멱등)와 `GET /spaces/mine`의 `ended` 알림을 추가한다. **복구 엔드포인트는 없다** → 수락: T090·T091가 통과한다.
 - [ ] T097 [P] [US5] `supabase/functions/reports/index.ts`: `POST /spaces/{id}/reports` 구현 → 수락: T093가 통과한다. 신고 연락처 **공개 지원 이메일은 아직 없다(G10)** — 응답·화면에 임의 주소를 넣지 않는다.
 - [ ] T098 [US5] `supabase/functions/lifecycle-sweep/index.ts`에 `purge_expired_spaces()` 호출(스케줄: 하루 1회 이상, 재실행 가능)과 `deletion_started`/`deletion_completed` 이벤트 기록을 추가(T076 확장) → 수락: T092가 통과한다.
@@ -302,9 +303,9 @@ docs/                         구현 문서·점검표·게이트 기록
 ### 앱 구현
 
 - [ ] T099 [US5] `apps/mobile/src/app/settings/end-space.tsx`, `apps/mobile/src/features/lifecycle/EndSpaceScreen.tsx`: 공간 종료(2단계 확인; 결과는 "삭제되고 되돌릴 수 없음"이며 **기간·복구를 말하지 않는다**) → 수락: T094의 종료 확인 부분이 통과한다.
-- [ ] T100 [US5] `apps/mobile/src/features/lifecycle/EndedScreen.tsx`: 종료 안내 화면 3가지(내가 종료 / 상대가 종료 / 상대가 연결을 끊음; 본문 `end.done.body`)와 **"새 공간 시작하기"**(`end.newSpace`: 공간 만들기·초대 코드 입력으로 이동하면서 `POST /spaces/mine/ended/ack` 호출). 앱을 열 때 `GET /spaces/mine`에서 활성 공간이 없고 `ended` 알림이 있으면 이 화면을 먼저 보인다. 복구 버튼·날짜·남은 일수는 없다 → 수락: T094의 종료 안내 부분이 통과한다.
+- [ ] T100 [US5] `apps/mobile/src/features/lifecycle/EndedScreen.tsx`: 종료 안내 화면 3가지(내가 종료 / 상대가 종료 / 상대가 연결을 끊음 / **상대가 계정을 삭제함**(`end.byPartnerDeleted`, 이름 없이); 본문 `end.done.body`)와 **"새 공간 시작하기"**(`end.newSpace`: 공간 만들기·초대 코드 입력으로 이동하면서 `POST /spaces/mine/ended/ack` 호출). 앱을 열 때 `GET /spaces/mine`에서 활성 공간이 없고 `ended` 알림이 있으면 이 화면을 먼저 보인다. 복구 버튼·날짜·남은 일수는 없다 → 수락: T094의 종료 안내 부분이 통과한다.
 - [ ] T101 [US5] `apps/mobile/src/app/settings/report.tsx`, `apps/mobile/src/features/report/ReportScreen.tsx`, `apps/mobile/src/features/report/DisconnectDialog.tsx`: 화면 제목 **"신고 · 연결 끊기"**(`report.title`), 신고 흐름과 별개 버튼 "○○님과 연결 끊기"(`report.block`, 위험 외곽선 버튼), 확인 다이얼로그(`report.block.title/body/confirm`), 성공 후 종료 상태 화면, 대화 메시지 신고 시트. 키 이름은 `report.block*` 그대로(번역 문구만 '연결 끊기') → 수락: T094의 연결 끊기·신고 부분이 통과한다.
-- [ ] T102 [US5] 설정 탭의 계정·방 섹션 항목 연결(`apps/mobile/src/features/settings/`): 문의·신고(푸시), 공간 종료, AI 처리 동의 관리(푸시, 탭 바 숨김) — 되돌리기 어렵거나 중요한 작업 흐름은 탭 바를 숨긴다(`design/interaction-notes.md` §2) → 수락: 라우트 테스트가 해당 화면에서 탭 바 숨김을 단언.
+- [ ] T102 [US5] 설정 탭의 계정·방 섹션 항목 연결(`apps/mobile/src/features/settings/`): 문의·신고(푸시), 공간 종료, **계정 삭제**(위험 구역, 푸시, 탭 바 숨김), AI 처리 동의 관리(푸시, 탭 바 숨김) — 되돌리기 어렵거나 중요한 작업 흐름은 탭 바를 숨긴다(`design/interaction-notes.md` §2) → 수락: 라우트 테스트가 해당 화면에서 탭 바 숨김을 단언.
 
 **체크포인트**: US5는 US1~US4 위에서 단독 검증 가능. **계정 삭제**는 스펙에 아직 없는 기능이다(스토어 규칙상 필요, 출시 게이트 G18).
 
@@ -433,47 +434,76 @@ docs/                         구현 문서·점검표·게이트 기록
 
 ---
 
-## Phase 12: Polish & Cross-Cutting (구현 마무리, 출시 게이트와 별개)
+## Phase 12: User Story 10 — 계정 삭제 (P1, 출시 필수 · MVP 컷에는 없음)
 
-- [ ] T151 [P] 모든 공유 테이블에 대한 RLS 총점검 `supabase/tests/rls_all.test.sql`: A·B 구성원, C 제3자로 `space_member`, `invitation`, `room_*`, `decoration_request`, `prompt_*`, `home_cover_photo`, `milestone_*`, `report`, `generated_object`, `generation_attempt`, `generation_block`, `app_config`, Storage `home-covers`, Realtime 채널을 순회해 읽기/쓰기/구독 거부를 단언 → 수락: 통과.
-- [ ] T152 [P] 로그·오류 allowlist 총점검 `supabase/functions/_shared/__tests__/log_allowlist.test.ts`: 모든 Edge Function을 mock 입력으로 실행해 키·프롬프트 원문·서명 URL·초대 코드·모델 출력이 로그/오류에 없음을 단언, `gitleaks` CI 통과 → 수락: 통과.
-- [ ] T153 [P] 접근성 총점검 `apps/mobile/src/__tests__/a11y.test.tsx`: 모든 라우트에서 터치 ≥44pt, 접근성 이름, 큰 글자 130%/200%, 동작 줄이기 정지, 마스코트 낭독 한 번 → 수락: 통과.
-- [ ] T154 [P] 리뷰용 고정 샘플 공간 `supabase/seed/review_space.sql`과 `docs/review-account.md`: 반복 사용 가능한 고정 샘플 장면, 신고/연결 끊기 경로 포함. **실제 초대 코드를 포함하지 않는다**(`quickstart.md` 준비 3번). 샘플 장면에는 기준 라이브러리에서 고른 생성 장식 예시 1~2개와 신고 경로를 넣는다(US8·US9 이후). 심사 노트 초안(고정 렌더러는 데이터만 처리) → 수락: 시드 적용 후 리뷰 계정으로 방·신고·연결 끊기 화면이 열린다.
-- [ ] T155 [P] 실기기 점검표 `docs/device-checklist.md`(실행은 사람): 안전 영역 값(iOS 47/34, Android 32/24 가정), 시스템 탭 바·키보드·공유 시트, 스크린 리더 낭독, dynamic type, 화면 회전, 사진 선택기 권한 팝업 없음·HEIC, 알림 권한 흐름과 알림 배너 실제 모양, 통통·반짝임·되살림 움직임, Kakao·Apple·이메일 redirect(EAS 내부 빌드), 아이콘 29px 가독성(A는 29px에서 "경계") → 수락: 항목별 합격/불합격 기록 칸이 있다.
-- [ ] T156 [P] quickstart 검증 실행 `docs/validation-report.md`: `specs/001-couple-prompt-todo/quickstart.md`의 A, A2~A7, B~G 시나리오를 자동 테스트와 수동 단계로 구분해 결과 기록. SC-001~005와 SC-008(실제 모델)·SC-010은 별도 제품 계측·평가라 "미측정"으로 둔다(SC-001~003은 PoC 동안 측정하지 않기로 결정·가정, Decided 26)(저장소 검사 통과를 사용자 성공 기준 입증으로 표시하지 않는다) → 수락: 보고서에 시나리오별 상태가 있다.
-- [ ] T157 [P] EAS `preview` 내부 배포 빌드 한 번(iOS·Android) 성공 확인과 SDK 58 / RN 0.88 / Skia 호환 행렬 고정(`docs/compat-matrix.md`), 번들 크기 실측 기록(**글꼴 크기 실측은 G6의 입력**) → 수락: 빌드 링크·크기 기록.
-- [ ] T158 [P] `README.md`(루트)와 `docs/architecture.md`: 저장소 구조·실행 방법·테스트 명령·비밀 규칙·게이트 목록 링크. `design/README.md`/`handoff.md`의 구현 포인터는 이미 있으므로 구현 결과로 달라진 점만 반영 → 수락: 새 기여자가 README만으로 로컬에서 앱과 Supabase 로컬 스택을 띄운다.
+**목표**: 계정이 있는 앱은 앱 안에서 계정 삭제를 제공해야 한다(Apple 5.1.1(v), Google Play 계정 삭제 요구). 삭제하면 **즉시 로그아웃**되고 계정·프로필·로그인 식별자가 지워진다. 활성 공간이 있으면 공간 종료·연결 끊기와 같은 **소프트 삭제**로 종료되어 두 사람 모두 즉시 접근할 수 없고 서버가 내부적으로 30일 뒤 완전히 삭제한다(복구 없음, 앱은 기간을 말하지 않음). 상대에게는 이름 없이 "상대가 계정을 삭제했어요"가 종료 안내로 보인다(결정·가정 `spec.md` Decided 41~). (FR-070~FR-074, SC-011)
+
+**MVP와 출시**: P1이지만 데모 가능한 조각(Phase 1~5)에는 넣지 않는다. 그러나 **이 단계가 없으면 스토어 심사와 공개 출시가 막힌다**(출시 게이트 G18). US1(계정·공간)과 US5(소프트 삭제·퍼지) 위에서 만들고, 공개 출시 전에 반드시 끝낸다.
+
+**독립 테스트**: 활성 공간이 있는/없는 사용자, 초대 대기 중인 사용자, 점유 중인 사용자의 삭제, 공급자(Apple·Kakao) 해제 모의, 같은 계정으로 즉시 재가입, 퍼지와의 경합, 단계 중 서버 재시작을 고정 시계와 모의 공급자로 검증한다.
+
+### 테스트 먼저
+
+- [ ] T151 [P] [US10] `supabase/functions/account/__tests__/delete.test.ts`와 `supabase/tests/account_deletion.test.sql`: ① 재인증(최근 5분 이내, 가정)이 없으면 `401 REAUTH_REQUIRED`, 있으면 `202` ② **공간이 없거나 초대 대기 중인** 사용자: 대기 초대 코드 폐기, 계정 삭제 완료 ③ **활성 공간이 있는** 사용자: 같은 트랜잭션에서 공간 `ended`(`ended_reason=account_deletion`, `ended_by_user_id`), **남은 상대에게만** 종료 알림 `kind=account_deleted`(**이름·사유 외 정보 없음**, 삭제한 본인에게는 알림 없음, 혼자였던 공간은 알림 없음), 두 사람 접근 즉시 차단, `purge_after` +30일, 점유·열린 프롬프트 세션 해제와 진행 중 생성 요청 폐기 ④ 다른 기기를 포함한 **모든 세션·리프레시 토큰 무효** ⑤ 개인 데이터: **접수 트랜잭션에서** 프로필 개인 필드·동의 기록(법률 검토 전 기본값: 삭제)을 비우고 로그인 식별자는 마지막 단계에서 삭제하며, 종료된 공간의 구성원 행이 가리키는 `user_profile`은 개인 필드가 비워진 **껍데기**로 남았다가 마지막 참조 공간이 퍼지될 때 삭제 ⑥ 같은 이메일·소셜 계정으로 바로 다시 가입하면 **새 `user_id`의 빈 계정**(이전 공간·데이터 없음, 로그인 식별자 연결 없음) ⑦ 멱등: 같은 요청 재시도·이미 삭제 중이면 같은 결과 ⑧ 접수된 뒤 그 사용자의 모든 호출은 `401`이고 `409 ACCOUNT_DELETING`은 접수 트랜잭션과 겹친 변경 요청에만 쓰이며(앱은 둘 다 로컬 로그아웃으로 처리, `202` 본문은 고정 `{state:'requested'}`) ⑨ **이미 발급된 JWT는 만료 전이어도 서버가 요청마다 계정 상태를 확인해 거부**(`401`) ⑩ 서버 업로드 Storage 객체(홈 사진)가 사용자 소유가 아니어서 **`deleteUser`가 Storage 소유 때문에 막히지 않음** → 수락: 구현 전 실패.
+- [ ] T152 [P] [US10] `supabase/functions/account/__tests__/providers.test.ts`(공급자 모의): ① **Apple**: 재인증 때 받은 `authorizationCode`를 서버가 **접수 트랜잭션 앞에서** 토큰으로 바꾸고(교환 실패면 아무것도 바뀌지 않고 `401 REAUTH_REQUIRED`) 그 뒤 **revoke** 호출(성공 확인 전에는 `provider_revoked` 단계를 끝내지 않음, 재시도를 위해 교환한 토큰을 암호화해 최대 24시간만 보관하고 로그에는 없음) ② **Kakao**: 연결 해제(unlink) API를 서버 비밀 키로 호출 ③ 이메일 계정: 공급자 단계 없음 ④ 공급자 호출 실패는 지수 백오프로 재시도하고(최대 횟수는 설정값) 그동안 계정은 이미 로그아웃·접근 불가이며, 계속 실패하면 개인정보 없는 운영 경고 로그만 남김 ⑤ 키·토큰·코드가 로그·오류에 없음 → 수락: 구현 전 실패.
+- [ ] T153 [P] [US10] `supabase/tests/account_deletion_race.test.sql`: ① 계정 삭제와 퍼지가 같은 공간에서 동시에 실행돼도 한 번만 처리(같은 행 잠금), 이미 `ended`이거나 퍼지된 공간에서는 `end_space`가 아무 일도 하지 않음 ② 한쪽이 계정을 지우는 동시에 상대가 종료·연결 끊기를 눌러도 공간은 한 번만 종료되고 종료 알림은 먼저 성공한 쪽의 이유를 따름 ③ 단계 중간(공간 종료 후·공급자 해제 전·인증 삭제 전)에 서버가 죽어도 재시작 때 `account_deletion.state`에서 이어서 끝냄 ④ 상대 계정 삭제로 `ended`된 공간에서 남은 한 사람이 바로 새 공간을 만들 수 있음 → 수락: 구현 전 실패.
+- [ ] T154 [P] [US10] `apps/mobile/src/features/account/__tests__/delete.test.tsx`: 설정 > 위험 구역에 "계정 삭제"(`set.account.delete`) 행 → 결과 설명(`acct.delete.*`, 체크 전엔 버튼 비활성) → 본인 확인(카카오·Apple·이메일 재로그인, 기존 로그인 UI 재사용) → 진행·실패(`acct.delete.fail.*`, 아무것도 지워지지 않음)·본인 확인 실패·**오프라인은 요청을 보내지 않고 안내만(큐 없음)**, 성공하면 즉시 로그아웃·**로컬 예약 알림 전부 취소·로컬 캐시(공간·사진·장식·임시 파일) 삭제**·로그인 화면 + `acct.delete.done`, 상대 기기에서 종료 안내 `end.byPartnerDeleted`(이름 없음), 번역 리소스 검사에 `acct.*`·`end.byPartnerDeleted` 포함(기간·복구 문구 없음), 접근성(터치 ≥44pt, 큰 글자) → 수락: 구현 전 실패.
+
+### 서버 구현
+
+- [ ] T155 [US10] `supabase/migrations/20261101001100_account_deletion.sql`: `user_profile.status` check in (`active`,`deleting`,`shell`)와 `deleted_at`, `account_deletion`(`user_id` PK, `state`(마지막으로 끝난 단계) check in (`requested`,`space_ended`,`provider_revoked`,`auth_deleted`,`done`), `provider` check in (`kakao`,`apple`,`email`), `requested_at`, `updated_at`, `attempts`, `last_error_code`, `provider_credential_enc?`(Apple revoke 재시도용 암호화 토큰, 서버 전용, 최대 24시간); **개인 내용 없음**, RLS: 클라이언트 접근 없음), `space_end_notice.kind`의 `account_deleted`와 `end_space`의 `account_deletion` 이유는 T095에 이미 포함, 함수 `begin_account_deletion(user_id)`(한 트랜잭션: 상태 `deleting`, **개인 필드·동의 기록 비우기**, 활성 공간 종료, 초대 폐기, 점유·세션 해제, 세션 무효화)·`finish_account_deletion(user_id)`(껍데기 전환과 보관 자격 삭제), FK 규칙(`user_profile.user_id`는 `auth.users`에 FK 없음, 다른 테이블의 `*_user_id`는 `user_profile`을 `ON DELETE RESTRICT`로 참조, 공간이 없던 사용자는 껍데기 없이 프로필 행을 바로 삭제, `SpaceLifecycleEvent.actor_user_id`는 껍데기 삭제 때 null), `purge_expired_spaces()` 확장(참조가 없어진 `shell` 프로필 삭제) → 수락: T151·T153의 DB 부분이 통과한다.
+- [ ] T156 [US10] `supabase/functions/account/index.ts`와 `supabase/functions/_shared/providers/{apple,kakao}.ts`: `DELETE /account`(`{confirm:true, reauth:{provider, authorizationCode?}}` + `Idempotency-Key`; 응답 `202 {state:'requested'}`(고정), 오류 `401 REAUTH_REQUIRED`·`409 ACCOUNT_DELETING`·`400`; 일부 프록시가 DELETE 본문을 버리면 `POST /account/deletion` 대안 사용), 단계 실행기(요청 → 공간 종료 → 공급자 해제(Apple revoke, Kakao unlink) → 인증 삭제(Supabase admin deleteUser) → 완료)를 단계마다 `account_deletion.state`에 기록하며 재시작·재시도 안전하게, T098의 스케줄 작업(삭제 실행기는 15분 주기, 설정값 가정)이 멈춘 단계를 이어서 처리, 공급자 키는 서버 비밀. **구현 때 확인할 것(미확인)**: Supabase에 사용자 ID로 전체 세션을 끊는 관리 API가 없어 `auth.sessions` 직접 삭제를 쓸지, 재인증 "최근 5분"을 JWT의 `amr` 시각으로 확인할 수 있는지, Kakao admin 키 unlink와 Apple revoke의 요청 형식·"이미 해제됨" 오류 → 수락: T151·T152·T153가 통과한다.
+- [ ] T157 [P] [US10] `docs/account-deletion-web.md`: 소유자가 `mopiru.jinjinstar.com`에 만들 **계정 삭제 안내 웹 페이지**(Google Play가 요구하는 앱 밖 링크, 한국어·영어·일본어 본문: 앱에서 삭제하는 방법, 삭제되는 것·남는 것, 앱을 쓸 수 없을 때의 요청 방법) + 앱 밖 삭제 요청 처리 절차(운영 런북 `docs/operator-review-runbook.md`에 절 추가; 본인 확인 방법은 법률·운영 검토 전 가정: 가입에 쓴 이메일로 회신). **공개 지원 이메일은 아직 없어 G10이 필요하고 URL은 소유자가 만든다** → 수락: 문서가 있고 페이지에 들어갈 본문이 3개 언어로 있다.
+
+### 앱 구현
+
+- [ ] T158 [US10] `apps/mobile/src/app/settings/delete-account.tsx`, `apps/mobile/src/features/account/`: 설정 위험 구역의 "계정 삭제" 행(T102에 연결), 결과 설명·체크·재로그인·진행·실패·오프라인 상태(`acct.delete.*`), 성공 뒤 로컬 정리(세션·예약 알림 취소·캐시 삭제)와 로그인 화면 이동, 상대 종료 안내(`end.byPartnerDeleted`는 T100) → 수락: T154가 통과한다.
+
+**체크포인트**: US10은 US1·US5 위에서 단독 검증 가능. **공개 출시는 이 단계와 게이트 G18 확인 없이는 못 한다.**
 
 ---
 
-## Phase 13: 출시 게이트 (구현을 막지 않는다 — 출시 전에 사람이 닫는다)
+## Phase 13: Polish & Cross-Cutting (구현 마무리, 출시 게이트와 별개)
+
+- [ ] T159 [P] 모든 공유 테이블에 대한 RLS 총점검 `supabase/tests/rls_all.test.sql`: A·B 구성원, C 제3자로 `space_member`, `invitation`, `room_*`, `decoration_request`, `prompt_*`, `home_cover_photo`, `milestone_*`, `report`, `generated_object`, `generation_attempt`, `generation_block`, `app_config`, `account_deletion`, `space_end_notice`, Storage `home-covers`, Realtime 채널을 순회해 읽기/쓰기/구독 거부를 단언 → 수락: 통과.
+- [ ] T160 [P] 로그·오류 allowlist 총점검 `supabase/functions/_shared/__tests__/log_allowlist.test.ts`: 모든 Edge Function을 mock 입력으로 실행해 키·프롬프트 원문·서명 URL·초대 코드·모델 출력이 로그/오류에 없음을 단언, `gitleaks` CI 통과 → 수락: 통과.
+- [ ] T161 [P] 접근성 총점검 `apps/mobile/src/__tests__/a11y.test.tsx`: 모든 라우트에서 터치 ≥44pt, 접근성 이름, 큰 글자 130%/200%, 동작 줄이기 정지, 마스코트 낭독 한 번 → 수락: 통과.
+- [ ] T162 [P] 리뷰용 고정 샘플 공간 `supabase/seed/review_space.sql`과 `docs/review-account.md`: 반복 사용 가능한 고정 샘플 장면, 신고/연결 끊기 경로 포함. **실제 초대 코드를 포함하지 않는다**(`quickstart.md` 준비 3번). 샘플 장면에는 기준 라이브러리에서 고른 생성 장식 예시 1~2개와 신고 경로를 넣는다(US8·US9 이후). 심사 노트 초안(고정 렌더러는 데이터만 처리) → 수락: 시드 적용 후 리뷰 계정으로 방·신고·연결 끊기 화면이 열린다.
+- [ ] T163 [P] 실기기 점검표 `docs/device-checklist.md`(실행은 사람): 안전 영역 값(iOS 47/34, Android 32/24 가정), 시스템 탭 바·키보드·공유 시트, 스크린 리더 낭독, dynamic type, 화면 회전, 사진 선택기 권한 팝업 없음·HEIC, 알림 권한 흐름과 알림 배너 실제 모양, 통통·반짝임·되살림 움직임, Kakao·Apple·이메일 redirect(EAS 내부 빌드), 아이콘 29px 가독성(A는 29px에서 "경계") → 수락: 항목별 합격/불합격 기록 칸이 있다.
+- [ ] T164 [P] quickstart 검증 실행 `docs/validation-report.md`: `specs/001-couple-prompt-todo/quickstart.md`의 A, A2~A7, B~H 시나리오를 자동 테스트와 수동 단계로 구분해 결과 기록. SC-001~005와 SC-008(실제 모델)·SC-010은 별도 제품 계측·평가라 "미측정"으로 둔다(SC-001~003은 PoC 동안 측정하지 않기로 결정·가정, Decided 26)(저장소 검사 통과를 사용자 성공 기준 입증으로 표시하지 않는다) → 수락: 보고서에 시나리오별 상태가 있다.
+- [ ] T165 [P] EAS `preview` 내부 배포 빌드 한 번(iOS·Android) 성공 확인과 SDK 58 / RN 0.88 / Skia 호환 행렬 고정(`docs/compat-matrix.md`), 번들 크기 실측 기록(**글꼴 크기 실측은 G6의 입력**) → 수락: 빌드 링크·크기 기록.
+- [ ] T166 [P] `README.md`(루트)와 `docs/architecture.md`: 저장소 구조·실행 방법·테스트 명령·비밀 규칙·게이트 목록 링크. `design/README.md`/`handoff.md`의 구현 포인터는 이미 있으므로 구현 결과로 달라진 점만 반영 → 수락: 새 기여자가 README만으로 로컬에서 앱과 Supabase 로컬 스택을 띄운다.
+
+---
+
+## Phase 14: 출시 게이트 (구현을 막지 않는다 — 출시 전에 사람이 닫는다)
 
 > 위 구현 태스크는 **자리표시 값으로 끝까지 진행할 수 있다.** 아래 게이트는 코드가 아니라 확인·결정·검수 항목이고 모두 [P]다. 닫히기 전에는 **스토어 등록·공개 출시만** 막힌다.
 
-- [ ] T159 [P] **G1 법률 검토**: **보관·삭제 문구**(개인정보 처리방침과 스토어 데이터 안전 양식에 "공간이 종료되면 서버가 내부적으로 최대 30일 보관한 뒤 삭제하며 이용자가 직접 복구할 수 없다"는 사실을 어떻게 쓸지), **운영자 도움 복원을 요청 시 약속할지 여부(V1에서는 약속하지 않음)**, 연령 문구("만 14세 이상") 최종 표현, 해외 AI 처리 동의와 **보관 기간 문구**(`[법무 확인 후 입력]`), 사진 개인정보 처리방침 최종 문구와 국외 처리 범위, 알림, 스토어 UGC 설명, AI 표시 의무, 꾸밈 결과의 개인적·비상업적 이용 허용과 소유권 비보장 문구(FR-025, 이용약관), "AI 제안이 틀릴 수 있다" 앱 안 안내 문구(Commercial Terms D.3; 현재 화면·키에는 없음 — 결정되면 `apps/mobile/src/i18n/locales/*.json`에 키 추가) → 닫는 방법: 법률 의견 기록을 `docs/legal/`에 저장하고 해당 번역 키 값 교체.
-- [ ] T160 [P] **G2 이름 확인**: 상표(모피루/Mopiru/モピル, 모피/Mopi/モピ), 앱스토어·Google Play 이름 사용 가능 여부, 도메인 `mopiru.jinjinstar.com` 생성, 한국어 '모피'(털가죽) 맥락. **확인 전에는 bundle ID `com.jinjinstar.mopiru`를 스토어에 등록하지 않는다** → 닫는 방법: T005의 `PLACEHOLDER: false`와 최종 값, `docs/name-clearance.md`.
-- [ ] T161 [P] **G3 스토어 규칙 재확인**: 이름(30자 안팎)·부제 글자 수와 심사 규칙, 스토어 연령 등급 설문(최소 연령 14세와 일치), **"연결 끊기 + 신고"가 악성 이용자 차단·신고 기대를 충족하는지**, 사진 UGC 설명, 알림 심사 메모(사용자가 켠 로컬 알림, 마케팅 아님, 토큰 저장 없음), 신고 연락처 → 닫는 방법: `docs/store-submission.md`에 확인 결과.
-- [ ] T162 [P] **G4 원어민 검수**: 영어·일본어 전체 문구(특히 'Disconnect'·'つながりを終了' 초안, 일본어 표기 モピル·モピ) → 닫는 방법: 검수본을 T024 입력(`design/i18n-copy.md`)에 반영하고 재생성.
-- [ ] T163 [P] **G5 카카오·Apple 공식 에셋/SDK**: T048의 자리표시 버튼을 공식 SDK·에셋으로 교체 → 닫는 방법: 교체 PR과 EAS 내부 빌드에서 redirect 확인.
-- [ ] T164 [P] **G6 글꼴 번들 크기 실측**: T157의 실측으로 9파일(≈16.4MB 압축 전)/최소 구성(≈10MB) 중 선택, `OFL` 고지 포함 확인 → 닫는 방법: T027 갱신.
-- [ ] T165 [P] **G7 에셋 최종 포맷**: PNG-8 또는 WebP 무손실 결정, 일러스트레이터가 18개 일반 오브젝트 최종 그림을 납품(자리표시 스케치 교체, `design/assets-spec.md` §9) → 닫는 방법: T029 재실행과 manifest 갱신.
-- [ ] T166 [P] **G8 AI 이용 약관·비용·승급 기준**: ① 크레딧 연결 때 보이는 프로그램 약관 원문과 현재 Commercial Terms를 읽고 포함 크레딧을 공개 소비자 앱에 써도 되는지 Anthropic 지원팀에 **서면 문의**(답 전에는 PoC 전용) ② 만 14세 이상 사용자 앱의 Usage Policy 확인 ③ **유료 API 크레딧/결제 설정으로 전환**(포함 크레딧은 주기마다 소멸하고 잔액 0이면 요청 정지), workspace 지출 한도·커플당 하루 3회 재확인 ④ T077 실측 평가로 Haiku→Sonnet 승급 기준 결정(T071의 `AI_ESCALATE_TO_SONNET` 규칙으로 반영) → 닫는 방법: `docs/ai-terms.md`.
-- [ ] T167 [P] **G9 서버 푸시 필요 여부**: 기기 로컬 알림으로 충분한지 사용 후 결정(더하면 토큰 저장·서버 예약·APNs/FCM 키·처리방침 항목 필요) → 닫는 방법: 결정 기록, 필요 시 새 스펙.
-- [ ] T168 [P] **G10 공개 지원 이메일**: 소유자가 주소를 만든다(임의로 만들지 않는다). 신고 화면·스토어 등록·개인정보 처리방침에 반영 → 닫는 방법: T005의 `supportEmail`과 `report.contact` 번역 값.
-- [ ] T169 [P] **G11 마스코트·아이콘 닮음 검사와 법률 검토**(출시 전 권장, 출시를 막지 않음): 마스코트 마스터(소유자가 생성형 AI 도구로 만든 원본)의 유사성 검사, 선택 생성 기록(도구 이름·날짜·프롬프트: owner to supply), 아이콘 A 29px 가독성(경계) 실기기 확인 → 닫는 방법: 기록을 `design/mascot/README.md`에 반영.
-- [ ] T170 [P] **G12 개인 개발자 계정과 Supabase 운영 설정**: Apple·Google Play 개인 계정 등록(스토어 판매자 이름이 개인 이름, 법인 이전은 가능하나 절차 필요), Supabase 무료 프로젝트의 비활동 일시 정지 동작 확인과 서울 리전 유지, 운영 요금제 결정 → 닫는 방법: `docs/accounts.md`.
-- [ ] T171 [P] **G13 기준 라이브러리 최종 승인**: 소유자가 `design/reference-library/approval-checklist.md`로 최종 레퍼런스 세트(배경 6·말풍선 4 이상)를 승인(스타일 일관성·제3자 작품과 닮지 않음(역이미지 검색)·권리/출처 기록·낮밤 방에서의 가독성), 일러스트레이터 납품 또는 자체 제작 확정 → 닫는 방법: 승인 서명과 T134의 번들 재생성(`style_reference_version` 증가), T130 통과.
-- [ ] T172 [P] **G14 생성 콘텐츠 스토어 규칙**: Apple App Review 1.2·5.1.2(i)·연령 등급 설문(AI/UGC 문항 포함), Google Play AI-Generated Content·UGC·콘텐츠 등급(IARC)·Data safety를 **현재 공식 문서**로 다시 확인(`research.md` 9.2의 미확인 항목), "연결 끊기 + 신고"가 차단·신고 기대를 충족하는지, 심사 노트(생성 장식은 데이터이고 고정 렌더러가 그림, 신고·운영 제거·킬 스위치) → 닫는 방법: 확인 기록과 심사 노트 최종본.
-- [ ] T173 [P] **G15 약관·개인정보·법률(생성 장식)**: 이용약관(프롬프트 책임·앱의 제거 권한·결과 비보증·소유권 비보장·AI 오류 가능), 개인정보 처리방침(AI 처리, 남용 대응용 프롬프트·판정 기록 30일), AI 결과물 권리와 표시 의무("새로 만든 장식" 표시가 충분한지, AI 배지 불필요 결정과의 관계)의 **법률 검토**, 연령 등급 설문 갱신 → 닫는 방법: 최종 문구를 번역 값과 T143에 반영.
-- [ ] T174 [P] **G16 Anthropic 사용 정책(생성 콘텐츠)**: 현재 시행 중인 Usage Policy 본문과 2026-11-12 시행 개정판을 영어 원문으로 읽고 생성 장식 서비스·만 14세 이상 이용자(미성년자 가이드 적용 여부)·소비자 대상 고지 요건을 확인하며 G8의 지원팀 서면 문의에 이 항목을 포함 → 닫는 방법: 확인 기록(`research.md` 9.2 갱신).
-- [ ] T175 [P] **G17 생성 품질·가드레일 실제 모델 평가와 운영 결정**: T144을 실제 키로 실행해 SC-008(거절 100%·허용 ≥90%)·검증 실패율·재시도율·스타일 일관성·평균 토큰·실비용을 측정하고 Sonnet 승급 필요 여부를 정하며, 품질이 모자라면 **옵션 B(매개변수형 템플릿)로 후퇴**할지 결정한다. 신고 처리 담당자·목표 응답 시간·킬 스위치 권한자·렌더 이미지 기반 2차 검사 도입 여부를 소유자가 정한다 → 닫는 방법: `docs/validation-report.md`에 결과, 결정 기록.
-- [ ] T176 [P] **G18 계정 삭제 기능(스토어 필수)**: Apple 5.1.1(v)는 계정을 만들 수 있는 앱이 앱 안에서 계정 삭제를 제공해야 한다고 한다(`research.md` 9.2). 스펙에 이 기능이 없으므로 먼저 설계(어디서·무엇이 지워지는지·활성 공간이 있을 때의 처리 — 가정: 그 공간을 `account_deletion`으로 종료하고 상대에게는 "공간을 종료했어요")하고 구현·테스트 태스크를 만든다 → 닫는 방법: 설계 문서와 태스크 추가, 구현 후 확인.
+- [ ] T167 [P] **G1 법률 검토**: **보관·삭제 문구**(개인정보 처리방침과 스토어 데이터 안전 양식에 "공간이 종료되면 서버가 내부적으로 최대 30일 보관한 뒤 삭제하며 이용자가 직접 복구할 수 없다"는 사실을 어떻게 쓸지), **운영자 도움 복원을 요청 시 약속할지 여부(V1에서는 약속하지 않음)**, 연령 문구("만 14세 이상") 최종 표현, 해외 AI 처리 동의와 **보관 기간 문구**(`[법무 확인 후 입력]`), 사진 개인정보 처리방침 최종 문구와 국외 처리 범위, 알림, 스토어 UGC 설명, AI 표시 의무, 꾸밈 결과의 개인적·비상업적 이용 허용과 소유권 비보장 문구(FR-025, 이용약관), "AI 제안이 틀릴 수 있다" 앱 안 안내 문구(Commercial Terms D.3; 현재 화면·키에는 없음 — 결정되면 `apps/mobile/src/i18n/locales/*.json`에 키 추가) → 닫는 방법: 법률 의견 기록을 `docs/legal/`에 저장하고 해당 번역 키 값 교체.
+- [ ] T168 [P] **G2 이름 확인**: 상표(모피루/Mopiru/モピル, 모피/Mopi/モピ), 앱스토어·Google Play 이름 사용 가능 여부, 도메인 `mopiru.jinjinstar.com` 생성, 한국어 '모피'(털가죽) 맥락. **확인 전에는 bundle ID `com.jinjinstar.mopiru`를 스토어에 등록하지 않는다** → 닫는 방법: T005의 `PLACEHOLDER: false`와 최종 값, `docs/name-clearance.md`.
+- [ ] T169 [P] **G3 스토어 규칙 재확인**: 이름(30자 안팎)·부제 글자 수와 심사 규칙, 스토어 연령 등급 설문(최소 연령 14세와 일치), **"연결 끊기 + 신고"가 악성 이용자 차단·신고 기대를 충족하는지**, 사진 UGC 설명, 알림 심사 메모(사용자가 켠 로컬 알림, 마케팅 아님, 토큰 저장 없음), 신고 연락처 → 닫는 방법: `docs/store-submission.md`에 확인 결과.
+- [ ] T170 [P] **G4 원어민 검수**: 영어·일본어 전체 문구(특히 'Disconnect'·'つながりを終了' 초안, 일본어 표기 モピル·モピ) → 닫는 방법: 검수본을 T024 입력(`design/i18n-copy.md`)에 반영하고 재생성.
+- [ ] T171 [P] **G5 카카오·Apple 공식 에셋/SDK**: T048의 자리표시 버튼을 공식 SDK·에셋으로 교체 → 닫는 방법: 교체 PR과 EAS 내부 빌드에서 redirect 확인.
+- [ ] T172 [P] **G6 글꼴 번들 크기 실측**: T165의 실측으로 9파일(≈16.4MB 압축 전)/최소 구성(≈10MB) 중 선택, `OFL` 고지 포함 확인 → 닫는 방법: T027 갱신.
+- [ ] T173 [P] **G7 에셋 최종 포맷**: PNG-8 또는 WebP 무손실 결정, 일러스트레이터가 18개 일반 오브젝트 최종 그림을 납품(자리표시 스케치 교체, `design/assets-spec.md` §9) → 닫는 방법: T029 재실행과 manifest 갱신.
+- [ ] T174 [P] **G8 AI 이용 약관·비용·승급 기준**: ① 크레딧 연결 때 보이는 프로그램 약관 원문과 현재 Commercial Terms를 읽고 포함 크레딧을 공개 소비자 앱에 써도 되는지 Anthropic 지원팀에 **서면 문의**(답 전에는 PoC 전용) ② 만 14세 이상 사용자 앱의 Usage Policy 확인 ③ **유료 API 크레딧/결제 설정으로 전환**(포함 크레딧은 주기마다 소멸하고 잔액 0이면 요청 정지), workspace 지출 한도·커플당 하루 3회 재확인 ④ T077 실측 평가로 Haiku→Sonnet 승급 기준 결정(T071의 `AI_ESCALATE_TO_SONNET` 규칙으로 반영) → 닫는 방법: `docs/ai-terms.md`.
+- [ ] T175 [P] **G9 서버 푸시 필요 여부**: 기기 로컬 알림으로 충분한지 사용 후 결정(더하면 토큰 저장·서버 예약·APNs/FCM 키·처리방침 항목 필요) → 닫는 방법: 결정 기록, 필요 시 새 스펙.
+- [ ] T176 [P] **G10 공개 지원 이메일**: 소유자가 주소를 만든다(임의로 만들지 않는다). 신고 화면·스토어 등록·개인정보 처리방침에 반영 → 닫는 방법: T005의 `supportEmail`과 `report.contact` 번역 값.
+- [ ] T177 [P] **G11 마스코트·아이콘 닮음 검사와 법률 검토**(출시 전 권장, 출시를 막지 않음): 마스코트 마스터(소유자가 생성형 AI 도구로 만든 원본)의 유사성 검사, 선택 생성 기록(도구 이름·날짜·프롬프트: owner to supply), 아이콘 A 29px 가독성(경계) 실기기 확인 → 닫는 방법: 기록을 `design/mascot/README.md`에 반영.
+- [ ] T178 [P] **G12 개인 개발자 계정과 Supabase 운영 설정**: Apple·Google Play 개인 계정 등록(스토어 판매자 이름이 개인 이름, 법인 이전은 가능하나 절차 필요), Supabase 무료 프로젝트의 비활동 일시 정지 동작 확인과 서울 리전 유지, 운영 요금제 결정 → 닫는 방법: `docs/accounts.md`.
+- [ ] T179 [P] **G13 기준 라이브러리 최종 승인**: 소유자가 `design/reference-library/approval-checklist.md`로 최종 레퍼런스 세트(배경 6·말풍선 4 이상)를 승인(스타일 일관성·제3자 작품과 닮지 않음(역이미지 검색)·권리/출처 기록·낮밤 방에서의 가독성), 일러스트레이터 납품 또는 자체 제작 확정 → 닫는 방법: 승인 서명과 T134의 번들 재생성(`style_reference_version` 증가), T130 통과.
+- [ ] T180 [P] **G14 생성 콘텐츠 스토어 규칙**: Apple App Review 1.2·5.1.2(i)·연령 등급 설문(AI/UGC 문항 포함), Google Play AI-Generated Content·UGC·콘텐츠 등급(IARC)·Data safety를 **현재 공식 문서**로 다시 확인(`research.md` 9.2의 미확인 항목), "연결 끊기 + 신고"가 차단·신고 기대를 충족하는지, 심사 노트(생성 장식은 데이터이고 고정 렌더러가 그림, 신고·운영 제거·킬 스위치) → 닫는 방법: 확인 기록과 심사 노트 최종본.
+- [ ] T181 [P] **G15 약관·개인정보·법률(생성 장식)**: 이용약관(프롬프트 책임·앱의 제거 권한·결과 비보증·소유권 비보장·AI 오류 가능), 개인정보 처리방침(AI 처리, 남용 대응용 프롬프트·판정 기록 30일), AI 결과물 권리와 표시 의무("새로 만든 장식" 표시가 충분한지, AI 배지 불필요 결정과의 관계)의 **법률 검토**, 연령 등급 설문 갱신 → 닫는 방법: 최종 문구를 번역 값과 T143에 반영.
+- [ ] T182 [P] **G16 Anthropic 사용 정책(생성 콘텐츠)**: 현재 시행 중인 Usage Policy 본문과 2026-11-12 시행 개정판을 영어 원문으로 읽고 생성 장식 서비스·만 14세 이상 이용자(미성년자 가이드 적용 여부)·소비자 대상 고지 요건을 확인하며 G8의 지원팀 서면 문의에 이 항목을 포함 → 닫는 방법: 확인 기록(`research.md` 9.2 갱신).
+- [ ] T183 [P] **G17 생성 품질·가드레일 실제 모델 평가와 운영 결정**: T144을 실제 키로 실행해 SC-008(거절 100%·허용 ≥90%)·검증 실패율·재시도율·스타일 일관성·평균 토큰·실비용을 측정하고 Sonnet 승급 필요 여부를 정하며, 품질이 모자라면 **옵션 B(매개변수형 템플릿)로 후퇴**할지 결정한다. 신고 처리 담당자·목표 응답 시간·킬 스위치 권한자·렌더 이미지 기반 2차 검사 도입 여부를 소유자가 정한다 → 닫는 방법: `docs/validation-report.md`에 결과, 결정 기록.
+- [ ] T184 [P] **G18 계정 삭제 출시 점검**: 기능은 US10(T158·T156)으로 설계했다(결정·가정 `spec.md` Decided 41~). 남은 확인: ① 개인정보 처리방침에 계정 삭제 시 삭제·익명화되는 항목, 공간 종료 뒤 내부 보관(최대 30일)과 이용자 직접 복구 불가, 동의 기록·남용 방지 기록의 보관을 쓰는 법률 검토 ② **Apple** 심사 노트(계정 삭제 위치: 설정 > 계정 삭제, 재로그인 확인, Sign in with Apple 토큰 해제)와 App Privacy 항목 ③ **Google Play** 데이터 보안(Data safety) 양식의 삭제 항목과 **앱 밖 삭제 링크**(T157의 페이지를 소유자가 `mopiru.jinjinstar.com`에 만들어 URL 입력) ④ Kakao 연결 해제 API 사용 승인 범위와 서버 비밀 키 준비 ⑤ 앱 밖 삭제 요청의 본인 확인·응답 절차 승인 → 닫는 방법: 확인 기록과 심사 노트·양식 최종본, 페이지 URL을 T005에 반영.
 
 ---
 
 ## FR → 태스크 대응표
 
-모든 기능 요구사항(FR-001~FR-069, 72개 항목)이 하나 이상의 태스크로 구현·검증된다. 사용자 성공 기준 SC-001~SC-005와 SC-010(생성 장식 운영)은 별도 계측·평가이며 전용 측정 태스크가 없다(SC-008은 `tools/ai/eval-generation.mjs`와 G17이 맡는다. SC-001~003은 PoC 동안 측정하지 않기로 결정·가정, `spec.md` Decided 26).
+모든 기능 요구사항(FR-001~FR-074, 77개 항목)이 하나 이상의 태스크로 구현·검증된다. 사용자 성공 기준 SC-001~SC-005와 SC-010(생성 장식 운영)은 별도 계측·평가이며 전용 측정 태스크가 없다(SC-008은 `tools/ai/eval-generation.mjs`와 G17이 맡는다. SC-001~003은 PoC 동안 측정하지 않기로 결정·가정, `spec.md` Decided 26).
 
 | FR | 태스크 |
 |---|---|
@@ -481,7 +511,7 @@ docs/                         구현 문서·점검표·게이트 기록
 | FR-002 | T036, T043, T049 |
 | FR-003 | T035, T040, T041, T044, T050 |
 | FR-004 | T035, T040, T044, T053 |
-| FR-005 | T018, T020, T151 |
+| FR-005 | T018, T020, T159 |
 | FR-006 | T037, T052, T043 |
 | FR-007 | T037, T052 |
 | FR-008 | T067, T080 |
@@ -504,7 +534,7 @@ docs/                         구현 문서·점검표·게이트 기록
 | FR-022 | T090, T096, T099, T100 |
 | FR-023 | T090, T092, T096, T100 |
 | FR-024 | T092, T098 |
-| FR-025 | T159 |
+| FR-025 | T167 |
 | FR-026 | T065, T078, T014 |
 | FR-027 | T080, T014 |
 | FR-028 | T022, T061, T072, T082, T126 |
@@ -543,12 +573,17 @@ docs/                         구현 문서·점검표·게이트 기록
 | FR-061 | T123, T132, T140, T129 |
 | FR-062 | T131, T127, T136, T142, T138 |
 | FR-063 | T124, T126, T137, T140 |
-| FR-064 | T130, T134, T171 |
+| FR-064 | T130, T134, T179 |
 | FR-065 | T125, T133, T141 |
-| FR-066 | T126, T128, T133, T139, T144, T175 |
+| FR-066 | T126, T128, T133, T139, T144, T183 |
 | FR-067 | T145, T146, T147, T148, T149, T150 |
-| FR-068 | T143, T173, T172 |
+| FR-068 | T143, T181, T180 |
 | FR-069 | T090, T094, T096, T100 |
+| FR-070 | T154, T158, T151 |
+| FR-071 | T151, T155, T154 |
+| FR-072 | T151, T153, T155, T095 |
+| FR-073 | T152, T156, T153 |
+| FR-074 | T157, T184, T167 |
 
 
 ---
@@ -586,9 +621,9 @@ docs/                         구현 문서·점검표·게이트 기록
 
 1. **MVP 데모**: Phase 1~5 (위).
 2. **P1 완성**: + US3(Phase 6) — 언어·방 낮/밤·앱 모양 설정.
-3. **V1 완성**: + US5·US6·US7(Phase 7~9) + Polish(Phase 12).
+3. **V1 완성**: + US5·US6·US7(Phase 7~9) + Polish(Phase 13). **공개 출시에는 US10(계정 삭제, Phase 12, P1)이 필수**다(스토어 요구, 게이트 G18); 데모 가능한 MVP 컷에는 들어가지 않는다.
 4. **생성 장식 포함 V1**: + US8·US9(Phase 10~11, 둘이 함께 출시).
-5. **출시**: + 게이트 G1~G18(Phase 13)을 사람이 닫은 뒤.
+5. **출시**: + 게이트 G1~G18(Phase 14)을 사람이 닫은 뒤.
 
 **P2 우선순위 권고**: US8(새 배경·말풍선 장식 생성)은 **MVP 바로 다음 단계**다. US2·US4에만 의존하므로 MVP 직후 US3과 나란히 시작할 수 있고, 소유자가 앞당기고 싶으면 US5~US7보다 먼저 한다. 단 US9(신고)가 US5의 `report` 테이블(T095)을 쓰므로 US8을 먼저 하면 T095의 `report` 부분과 T097를 함께 당겨야 하고, **US8은 US9 없이 공개 출시하지 않는다**.
 
@@ -603,7 +638,7 @@ docs/                         구현 문서·점검표·게이트 기록
 - ~~**Q1 복구 대기 중에도 새 공간(가정)**~~ — **대체됨**: 복구가 없으므로 "복구 막힘" 규칙도 없다. 종료한 공간은 소프트 삭제라 "한 공간만"에 세어지지 않아 **종료 직후 새 공간**은 그대로 가능하다(T090 ③, T019).
 - ~~**Q2 연결 끊기 뒤 복구는 끊은 사람만(가정)**~~ — **대체됨**: 복구 기능 자체가 없다.
 - **Q3 → 순환 로더의 창문은 로더 전용(가정)**: 카탈로그 24개 그대로, `obj_decor_window`는 만들지 않는다. 반영: T034.
-- **Q4 → SC-001~003 수치는 그대로, PoC 동안 측정하지 않는다(가정)**: 측정 태스크를 만들지 않는다. 반영: T156, T077(fixture와 모의 실행만, 목표 달성 판정은 하지 않음).
+- **Q4 → SC-001~003 수치는 그대로, PoC 동안 측정하지 않는다(가정)**: 측정 태스크를 만들지 않는다. 반영: T164, T077(fixture와 모의 실행만, 목표 달성 판정은 하지 않음).
 
 ## 결정된 질문 2 (2026-10-27, 소유자의 추가 답변 · 해석은 가정)
 
@@ -618,7 +653,7 @@ docs/                         구현 문서·점검표·게이트 기록
 
 ## 열린 질문 (가정으로 구현하는 작은 것 — 소유자가 바꾸면 따른다)
 
-- **R-계정 삭제**: 스펙에 계정 삭제 기능이 없다(스토어 규칙상 필요, Apple 5.1.1(v)). 가정: 계정 삭제는 그 사람의 활성 공간을 `ended_reason=account_deletion`으로 종료한다. 설계·구현은 출시 게이트 G18.
+- **R-계정 삭제(US10로 설계됨)**: 계정 삭제는 P1로 넣었다(결정·가정 `spec.md` Decided 41~46). 남은 열린 질문은 유예 삭제 옵션(cooling-off), 상대 안내 문구 대안(이름 없는 사실 vs 중립), 같은 계정 즉시 재가입 허용(썸원은 30일 막음), 계정 삭제 때 공간을 30일 대신 즉시 완전 삭제할지, 동의 기록 보관, 신고 증거 보관(퍼지 보류), 앱 밖 요청의 본인 확인이다.
 - **R-신고 증거 보관**: 신고 행은 공간과 함께 완전 삭제하는 것으로 가정했다. 남용 대응 증거를 더 보관할지는 열린 질문(`spec.md` Open Decisions).
 - **R-생성 장식**: 마일스톤 방 말풍선에 생성 틀 적용 여부(지금 앱 고정) · 기준 라이브러리 최종 그림 승인·제작 주체(G13) · 렌더 이미지 기반 2차 검사와 신고 처리 담당·응답 시간(G17) · 프롬프트·판정 보관 30일.
-- 출시 게이트 G1~G18(Phase 13)은 별개로 계속 열려 있다.
+- 출시 게이트 G1~G18(Phase 14)은 별개로 계속 열려 있다.
