@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "format": "mopi-shape-v1",
+  "kind": "prop",
+  "layerHint": "shelf",
+  "label": "Book stack",
+  "viewBox": {"w": 128, "h": 96},
+  "anchor": {"x": 0.5, "y": 1},
+  "palette": ["#D98B63", "#A8C6A0", "#FFF4DF"],
+  "shapes": [
+    {"t": "rect", "fill": 0, "stroke": true, "x": 10, "y": 62, "w": 104, "h": 22, "rx": 6},
+    {"t": "rect", "fill": 2, "stroke": false, "x": 98, "y": 67, "w": 8, "h": 12, "rx": 3},
+    {"t": "rect", "fill": 1, "stroke": true, "x": 22, "y": 40, "w": 86, "h": 22, "rx": 6},
+    {"t": "rect", "fill": 2, "stroke": false, "x": 94, "y": 45, "w": 8, "h": 12, "rx": 3},
+    {"t": "rect", "fill": 0, "stroke": true, "x": 14, "y": 18, "w": 94, "h": 22, "rx": 6},
+    {"t": "rect", "fill": 2, "stroke": false, "x": 86, "y": 23, "w": 8, "h": 12, "rx": 3}
+  ]
+}

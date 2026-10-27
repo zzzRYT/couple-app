@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "format": "mopi-shape-v1",
+  "kind": "bubble_frame",
+  "label": "Box bubble",
+  "viewBox": {"w": 128, "h": 96},
+  "anchor": {"x": 0.2, "y": 0.95},
+  "palette": ["#F7D98B"],
+  "shapes": [
+    {"t": "poly", "fill": 0, "stroke": true, "pts": [[16,10], [112,10], [120,18], [120,62], [112,70], [44,70], [24,88], [28,70], [16,70], [8,62], [8,18]]}
+  ],
+  "textArea": {"x": 24, "y": 22, "w": 80, "h": 36},
+  "textFill": 0,
+  "tail": {"x": 24, "y": 88}
+}

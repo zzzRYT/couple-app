@@ -2,9 +2,9 @@
 
 > 이 문서는 디자인 원본에서 자동으로 만든 표예요. 구현은 **키만 코드에 쓰고** 텍스트는 번역 리소스(`ko-KR`, `en-US`, `ja-JP`)로 둬요. `{name}` 형태는 보간 변수예요. 달력·할 일·가격을 떠올리게 하는 표현과(마일스톤 알림 문구는 예외)(홈 배경 사진 한 장 말고는) 사진 기능 표현은 쓰지 않았어요. 일본어·영어 문구는 디자이너가 쓴 초안이라 **원어민 검수**가 필요해요(handoff.md).
 
-- 총 키 수: **587**
+- 총 키 수: **623**
 - 사용자가 입력한 방 문구와 프롬프트는 번역하지 않고 입력한 그대로 저장·표시해요.
-- 서버 오류는 언어 중립 코드(`VERSION_CONFLICT` 등)만 오고, 앱이 아래 키로 문구를 골라요: `VERSION_CONFLICT`→`preview.conflict.*`·`undo.conflict.*`, `QUOTA_REACHED`→`prompt.quota.*`, `CONSENT_REQUIRED`→`prompt.consent.need`, `SESSION_OCCUPIED`→`prompt.partner`, `SESSION_EXPIRED`→`prompt.idle.me.*`, `INVITE_EXPIRED`→`join.expired.*`, `INVITE_USED`→`join.used.*`, `SPACE_FULL`→`join.full.*`, `ALREADY_IN_SPACE`→`join.hasSpace.*`, `RESTORE_BLOCKED_OTHER_SPACE`→`end.restore.blocked.*`, `UNSUPPORTED_REQUEST`→`prompt.unsupported.*`, `BRAND_REQUEST`→`prompt.brand.*`, `AUTH_EXPIRED`→`sys.login.*`. (코드 이름은 계약 문서 `contracts/api.md`의 이름을 확인해서 맞춰야 해요.)
+- 서버 오류는 언어 중립 코드(`VERSION_CONFLICT` 등)만 오고, 앱이 아래 키로 문구를 골라요: `VERSION_CONFLICT`→`preview.conflict.*`·`undo.conflict.*`, `QUOTA_REACHED`→`prompt.quota.*`, `CONSENT_REQUIRED`→`prompt.consent.need`, `SESSION_OCCUPIED`→`prompt.partner`, `SESSION_EXPIRED`→`prompt.idle.me.*`, `INVITE_EXPIRED`→`join.expired.*`, `INVITE_USED`→`join.used.*`, `SPACE_FULL`→`join.full.*`, `ALREADY_IN_SPACE`→`join.hasSpace.*`, `GENERATION_REFUSED`(`category`별)→`gen.refuse.*`(`ip`→`gen.refuse.ip`, `people`, `unsafe`, `personal`, `photo_like`→`gen.refuse.photo`, `off_purpose`·`injection`→`gen.refuse.purpose`), `GENERATION_FAILED`→`gen.fail.*`, `GENERATION_DISABLED`→`gen.disabled.*`, `LIBRARY_FULL`→`gen.lib.full`, `REPORT_RATE_LIMITED`→`report.obj.limit`, `UNSUPPORTED_REQUEST`→`prompt.unsupported.*`, `BRAND_REQUEST`→`prompt.brand.*`, `AUTH_EXPIRED`→`sys.login.*`. (코드 이름은 계약 문서 `contracts/api.md`의 이름을 확인해서 맞춰야 해요.)
 
 ## 샘플 데이터(사용자가 입력하는 값 · 번역하지 않음)
 
@@ -255,7 +255,7 @@
 | `prompt.sending` | 만드는 중이에요 | Working on it | 作成中です |
 | `prompt.left` | 오늘 {n}번 더 꾸밀 수 있어요 | {n} more tries today | 今日はあと{n}回試せます |
 | `prompt.quota.title` | 오늘 꾸미기를 모두 썼어요 | You've used all of today's tries | 今日の回数を使い切りました |
-| `prompt.quota.body` | 하루 5번까지 쓸 수 있어요. 내일 다시 이어서 꾸밀 수 있고, 지금 방은 그대로예요. | You can decorate up to 5 times a day. Pick it up again tomorrow — the room stays as it is. | 1日5回まで使えます。明日また続けられます。今の部屋はそのままです。 |
+| `prompt.quota.body` | 하루 3번까지 쓸 수 있어요. 만들어지지 못했거나 거절된 요청은 세지 않아요. 내일 다시 이어서 꾸밀 수 있고, 지금 방은 그대로예요. | You can decorate up to 3 times a day. Requests that fail or are declined don't count. Pick it up again tomorrow — the room stays as it is. | 1日3回まで使えます。作れなかったリクエストや断られたリクエストは数えません。明日また続けられます。今の部屋はそのままです。 |
 | `prompt.consent.need` | 꾸미려면 해외 AI 처리에 동의해야 해요 | To decorate, you need to agree to overseas AI processing | 飾るには、海外でのAI処理への同意が必要です |
 | `prompt.consent.action` | 안내 보기 | View details | 詳細を見る |
 | `prompt.offline` | 인터넷에 연결되어야 꾸밀 수 있어요 | You need an internet connection to decorate | 飾るにはインターネット接続が必要です |
@@ -414,7 +414,7 @@
 | `set.privacy` | 개인정보 처리방침 | Privacy Policy | プライバシーポリシー |
 | `set.support` | 문의 · 신고 | Contact and reports | お問い合わせ・通報 |
 | `set.end` | 공간 종료 | End space | スペースを終了 |
-| `set.end.help` | 종료 후 30일 동안은 복구할 수 있어요. | You can restore it for 30 days after ending. | 終了後30日間は復元できます。 |
+| `set.end.help` | 종료하면 함께 쓰던 데이터가 삭제돼요. 되돌릴 수 없어요. | Ending deletes the data you shared. This can't be undone. | 終了すると、いっしょに使っていたデータが削除されます。元に戻せません。 |
 | `set.loading` | 설정을 불러오는 중이에요 | Loading settings | 設定を読み込んでいます |
 | `set.err.title` | 설정을 불러오지 못했어요 | Couldn't load settings | 設定を読み込めませんでした |
 | `set.err.body` | 인터넷 연결을 확인하고 다시 시도해 주세요. | Check your internet connection and try again. | インターネット接続を確認して、もう一度お試しください。 |
@@ -426,40 +426,24 @@
 | `set.cover.on` | 설정됨 | Set | 設定済み |
 | `set.cover.off` | 없음 | None | なし |
 
-## S14 공간 종료·복구
+## S14 공간 종료
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
 | `end.title` | 공간을 종료할까요? | End this space? | スペースを終了しますか？ |
-| `end.body` | 종료하면 두 사람 모두 D-day와 방에 들어갈 수 없어요. {date}까지 30일 동안 보관되고, 그 안에 복구할 수 있어요. 그 뒤에는 모두 삭제돼요. | Once ended, neither of you can open the day count or the room. Everything is kept for 30 days, until {date}, and you can restore it before then. After that, it's all deleted. | 終了すると、ふたりとも日数表示と部屋に入れなくなります。{date}までの30日間は保管され、その間は復元できます。それ以降はすべて削除されます。 |
-| `end.date` | 2026년 11월 23일 | November 23, 2026 | 2026年11月23日 |
+| `end.body` | 종료하면 두 사람 모두 D-day와 방에 들어갈 수 없어요. 함께 쓰던 방·사진·장식은 삭제되고 되돌릴 수 없어요. | Once ended, neither of you can open the day count or the room. The room, photos and decorations you shared will be deleted and can't be brought back. | 終了すると、ふたりとも日数表示と部屋に入れなくなります。いっしょに使っていた部屋・写真・飾りは削除され、元に戻せません。 |
 | `end.b1` | 두 사람 모두 접근이 중단돼요 | Both of you lose access | ふたりともアクセスできなくなります |
-| `end.b2` | {date}까지는 복구할 수 있어요 | You can restore it until {date} | {date}までは復元できます |
-| `end.b3` | 그 뒤에는 삭제되고 되돌릴 수 없어요 | After that it's deleted for good | それ以降は削除され、元に戻せません |
+| `end.b2` | 방·사진·장식이 삭제돼요 | The room, photos and decorations are deleted | 部屋・写真・飾りが削除されます |
+| `end.b3` | 삭제된 내용은 되돌릴 수 없어요 | Deleted content can't be brought back | 削除された内容は元に戻せません |
 | `end.check` | 내용을 확인했어요 | I understand | 内容を確認しました |
 | `end.confirm` | 공간 종료하기 | End space | スペースを終了する |
 | `end.cancel` | 취소 | Cancel | キャンセル |
 | `end.progress` | 종료하는 중이에요 | Ending your space | 終了しています |
 | `end.done.title` | 공간을 종료했어요 | Space ended | スペースを終了しました |
-| `end.done.body` | {date}까지 복구할 수 있어요. 그 뒤에는 모든 내용이 삭제돼요. | You can restore it until {date}. After that, everything is deleted. | {date}まで復元できます。それ以降はすべて削除されます。 |
-| `end.left` | 복구 기한까지 {n}일 남았어요 | {n} days left to restore | 復元期限まであと{n}日 |
+| `end.done.body` | 함께 쓰던 데이터는 삭제돼요. 새 공간을 시작할 수 있어요. | The data you shared will be deleted. You can start a new space. | いっしょに使っていたデータは削除されます。新しいスペースを始められます。 |
 | `end.byPartner` | {name}님이 공간을 종료했어요 | {name} ended the space | {name}さんがスペースを終了しました |
 | `end.byPartnerDisconnect` | {name}님이 연결을 끊었어요 | {name} disconnected | {name}さんがつながりを終了しました |
-| `end.onlyDisconnector` | 복구는 연결을 끊은 사람만 할 수 있어요. {date}까지 보관된 뒤에는 모두 삭제돼요. | Only the person who disconnected can restore it. Everything is kept until {date}, then deleted. | 復元できるのはつながりを終了した本人だけです。{date}まで保管され、その後はすべて削除されます。 |
 | `end.newSpace` | 새 공간 시작하기 | Start a new space | 新しいスペースを始める |
-| `end.newSpace.note` | 새 공간을 써도 이 공간은 {date}까지 보관돼요. 다만 다른 공간을 쓰는 동안에는 복구할 수 없어요. | Using a new space doesn't delete this one; it's kept until {date}. But you can't restore it while you're using another space. | 新しいスペースを使っても、このスペースは{date}まで保管されます。ただし、別のスペースを使っている間は復元できません。 |
-| `end.restore.blocked.title` | 지금은 복구할 수 없어요 | You can't restore it right now | 今は復元できません |
-| `end.restore.blocked.body` | 두 사람 중 한 명이 지금 다른 공간을 쓰고 있어요. 한 번에 하나의 공간만 쓸 수 있어서, 그 공간을 종료한 뒤 {date} 전에 다시 시도해 주세요. | One of you is using another space right now. You can only use one space at a time, so end that space and try again before {date}. | おふたりのどちらかが、いま別のスペースを使っています。スペースは一度にひとつしか使えないため、そのスペースを終了してから{date}までにもう一度お試しください。 |
-| `end.restore` | 공간 복구하기 | Restore space | スペースを復元する |
-| `end.restore.title` | 공간을 복구할까요? | Restore this space? | スペースを復元しますか？ |
-| `end.restore.body` | D-day와 방이 종료 전 모습으로 돌아오고, 두 사람 모두 다시 들어갈 수 있어요. | The day count and room come back as they were, and both of you can open them again. | 日数表示と部屋が終了前の状態に戻り、ふたりとも再び入れるようになります。 |
-| `end.restore.progress` | 복구하는 중이에요 | Restoring | 復元しています |
-| `end.restore.done` | 공간을 복구했어요 | Space restored | スペースを復元しました |
-| `end.restore.fail.title` | 복구하지 못했어요 | Couldn't restore it | 復元できませんでした |
-| `end.restore.fail.body` | 잠시 후 다시 시도해 주세요. 복구 기한은 {date}까지예요. | Try again in a moment. You can restore it until {date}. | しばらくしてからもう一度お試しください。復元期限は{date}までです。 |
-| `end.expired.title` | 복구 기간이 지났어요 | The restore period has ended | 復元期間が終了しました |
-| `end.expired.body` | 30일이 지나 공간과 방 데이터가 삭제됐어요. 새 공간을 만들 수 있어요. | After 30 days, the space and room data were deleted. You can create a new space. | 30日が過ぎ、スペースと部屋のデータは削除されました。新しいスペースを作れます。 |
-| `end.expired.action` | 새 공간 만들기 | Create a new space | 新しいスペースを作る |
 | `end.err.title` | 종료하지 못했어요 | Couldn't end the space | 終了できませんでした |
 | `end.err.body` | 공간은 그대로예요. 다시 시도해 주세요. | The space is unchanged. Please try again. | スペースはそのままです。もう一度お試しください。 |
 
@@ -488,11 +472,79 @@
 | `report.contact` | 문의: [지원 이메일] | Contact: [support email] | お問い合わせ：[サポートメール] |
 | `report.block` | {name}님과 연결 끊기 | Disconnect from {name} | {name}さんとのつながりを終了 |
 | `report.block.title` | {name}님과 연결을 끊을까요? | Disconnect from {name}? | {name}さんとのつながりを終了しますか？ |
-| `report.block.body` | 연결을 끊으면 {name}님은 이 공간의 방과 대화를 볼 수 없고, 이 공간이 종료돼요. 30일 안({date}까지)에는 복구할 수 있어요. | If you disconnect, {name} can no longer see this space's room or conversation, and the space ends. You have 30 days (until {date}) to restore it. | つながりを終了すると、{name}さんはこのスペースの部屋と会話を見られなくなり、スペースは終了します。30日以内（{date}まで）は復元できます。 |
+| `report.block.body` | 연결을 끊으면 {name}님은 이 공간의 방과 대화를 볼 수 없고, 이 공간이 종료돼요. 함께 쓰던 데이터는 삭제돼요. | If you disconnect, {name} can no longer see this space's room or conversation, and the space ends. The data you shared will be deleted. | つながりを終了すると、{name}さんはこのスペースの部屋や会話を見られなくなり、スペースが終了します。いっしょに使っていたデータは削除されます。 |
 | `report.block.confirm` | 연결 끊기 | Disconnect | つながりを終了する |
 | `report.block.done` | 연결을 끊었어요 | Disconnected | つながりを終了しました |
 | `report.msg.menu` | 이 메시지 신고 | Report this message | このメッセージを通報 |
 | `report.msg.menu.cancel` | 닫기 | Close | 閉じる |
+
+## 생성 장식(US8 · P2, 2026-10-27 가정)
+
+영어·일본어는 원어민 검수 전 초안이에요. 거절 문구는 무엇이 안 되는지와 이유를 짧게 말하고 허용되는 대안을 권해요(`ai-guardrails.md` 2.3).
+
+| 키 | 한국어 | English | 日本語 |
+|---|---|---|---|
+| `gen.refuse.title` | 이 장식은 만들 수 없어요 | We can't make that decoration | その飾りは作れません |
+| `gen.refuse.ip` | 이미 있는 캐릭터·브랜드·로고나 다른 사람의 작품을 닮은 그림은 만들 수 없어요. 저작권 문제가 생길 수 있어서예요. 대신 '연한 노란 별 무늬 벽 장식'처럼 모양과 색으로 말해 주세요. | We can't make art that copies existing characters, brands, logos or someone else's work, because it could cause copyright problems. Try describing shapes and colors instead, like "a wall piece with soft yellow stars." | 既存のキャラクター・ブランド・ロゴ、他の人の作品に似た絵は作れません。著作権の問題になるおそれがあるためです。「やわらかな黄色い星柄の壁飾り」のように、形と色で伝えてみてください。 |
+| `gen.refuse.people` | 실제 사람이나 유명인이 나오는 그림은 만들 수 없어요. 대신 '구름 사이로 달이 보이는 창밖 풍경'처럼 풍경이나 무늬로 말해 주세요. | We can't make pictures of real people or celebrities. Try a scene or pattern instead, like "a window view with the moon between clouds." | 実在の人物や有名人の絵は作れません。「雲の間に月が見える窓の外の景色」のように、風景や模様で伝えてみてください。 |
+| `gen.refuse.unsafe` | 성적이거나 폭력적이거나 누군가를 해치거나 차별하는 내용은 만들 수 없어요. 포근한 분위기의 장식으로 다시 말해 주세요. | We can't make anything sexual, violent, hateful or harmful. Try describing something cozy instead. | 性的・暴力的・差別的な内容や、誰かを傷つける内容は作れません。ほっとするような飾りで言い直してみてください。 |
+| `gen.refuse.personal` | 전화번호, 주소, 링크, QR 코드나 글자가 많은 그림은 만들 수 없어요. 글자는 방의 짧은 문구로 따로 넣을 수 있어요. | We can't make pictures with phone numbers, addresses, links, QR codes or lots of text. You can add short text to the room separately. | 電話番号・住所・リンク・QRコード・文字の多い絵は作れません。文字は部屋の短い文として別に入れられます。 |
+| `gen.refuse.photo` | 사진처럼 실제 같은 이미지는 만들 수 없어요. 모피의 세계처럼 부드러운 손그림 느낌으로 말해 주세요. | We can't make realistic, photo-like images. Describe something soft and hand-drawn, like Mopi's world. | 写真のようにリアルな画像は作れません。モピの世界のような、やわらかな手描き風で伝えてみてください。 |
+| `gen.refuse.purpose` | 배경, 말풍선, 작은 방 소품 장식만 만들 수 있어요. 캐릭터는 만들 수 없고, 모피는 바꿀 수 없어요. '벽 아래 물결 띠'나 '동그란 쿠션'처럼 말해 주세요. | We can only make backgrounds, speech-bubble frames and small room props. We can't make characters, and Mopi can't be changed. Try something like "a wavy band along the wall" or "a round cushion." | 作れるのは背景、吹き出しの飾り、小さな部屋の小物だけです。キャラクターは作れず、モピも変えられません。「壁の下の波模様の帯」や「丸いクッション」のように伝えてみてください。 |
+| `gen.refuse.note` | 이번 요청은 오늘 횟수에 들어가지 않았어요. | This request didn't count toward today's limit. | このリクエストは今日の回数に含まれていません。 |
+| `gen.refuse.action` | 다시 말해 보기 | Try again | 言い直す |
+| `gen.fail.title` | 이번에는 만들지 못했어요 | We couldn't make it this time | 今回は作れませんでした |
+| `gen.fail.body` | 잠시 뒤 다시 말해 주세요. 방은 그대로예요. 오늘 횟수는 쓰지 않았어요. | Please try again in a moment. The room is unchanged, and this didn't use up today's limit. | しばらくしてからもう一度お試しください。部屋はそのままで、今日の回数も使っていません。 |
+| `gen.disabled.title` | 새 장식 만들기를 잠시 쉬어요 | New decorations are taking a break | 新しい飾り作りはお休み中です |
+| `gen.disabled.body` | 이미 만든 장식과 다른 꾸미기는 그대로 쓸 수 있어요. 나중에 다시 와 주세요. | You can still use the decorations you made and the other ways to decorate. Please check back later. | すでに作った飾りやほかの飾り付けはそのまま使えます。またあとで来てください。 |
+| `gen.badge` | 새로 만든 장식 | New decoration | 新しい飾り |
+| `gen.preview.count` | 새로 만든 장식 {n}개 | {n} new decorations | 新しい飾り{n}個 |
+| `gen.lib.title` | 우리 장식 | Our decorations | ふたりの飾り |
+| `gen.lib.count` | {n}/{max} | {n}/{max} | {n}/{max} |
+| `gen.lib.empty` | 아직 만든 장식이 없어요. 꾸미기에서 '벽 장식을 만들어 줘'처럼 말해 보세요. | No decorations yet. Try asking, like "make me a wall decoration." | まだ飾りがありません。「壁の飾りを作って」のように話しかけてみてください。 |
+| `gen.lib.by` | {name}님이 만들었어요 | Made by {name} | {name}さんが作りました |
+| `gen.lib.byMe` | 내가 만들었어요 | Made by you | あなたが作りました |
+| `gen.lib.use` | 다시 쓰기 | Use again | もう一度使う |
+| `gen.lib.chip` | ‘{label}’ 놓기 | Place "{label}" | 「{label}」を置く |
+| `gen.lib.delete` | 지우기 | Delete | 削除 |
+| `gen.lib.delete.title` | 이 장식을 지울까요? | Delete this decoration? | この飾りを削除しますか？ |
+| `gen.lib.delete.body` | 보관함에서 지우면 다시 찾을 수 없어요. | It will be gone from your collection and can't be brought back. | コレクションから消えて、元に戻せません。 |
+| `gen.lib.delete.confirm` | 지우기 | Delete | 削除する |
+| `gen.lib.delete.inuse` | 지금 방에 놓여 있어요. 지우면 방에서도 사라져요. | It's in the room right now. Deleting it removes it from the room too. | いま部屋に置かれています。削除すると部屋からも消えます。 |
+| `gen.lib.full` | 보관함이 가득 찼어요. 쓰지 않는 장식을 지워 주세요. | Your collection is full. Please delete decorations you don't use. | コレクションがいっぱいです。使っていない飾りを削除してください。 |
+
+## 장식 상세 · 신고 상태(US9 · P2)
+
+| 키 | 한국어 | English | 日本語 |
+|---|---|---|---|
+| `obj.detail.kind.bg` | 배경 장식 | Background decoration | 背景の飾り |
+| `obj.detail.kind.bubble` | 말풍선 틀 | Speech-bubble frame | 吹き出しの枠 |
+| `obj.detail.kind.prop` | 방 소품 | Room prop | 部屋の小物 |
+| `obj.report` | 신고하기 | Report | 報告する |
+| `obj.report.scene` | 방 전체 신고 | Report the whole room | 部屋全体を報告 |
+| `obj.reported` | 신고했어요 · 접수됨 | Reported · received | 報告しました・受付済み |
+| `obj.reviewed` | 검토를 마쳤어요 | Review finished | 確認が完了しました |
+| `obj.hidden.note` | 내 화면에서만 숨겼어요. | Hidden on your screen only. | あなたの画面でだけ非表示にしました。 |
+| `obj.removed.notice` | 검토 결과 이 장식은 방에서 빠졌어요. | After review, this decoration was removed from the room. | 確認の結果、この飾りは部屋から外されました。 |
+
+## 장식 신고(US9 · P2)
+
+| 키 | 한국어 | English | 日本語 |
+|---|---|---|---|
+| `report.obj.title` | 장식 신고 | Report a decoration | 飾りの報告 |
+| `report.obj.lead` | 어떤 점이 문제인가요? | What's wrong with it? | どんな点が問題ですか？ |
+| `report.obj.reason.copyright` | 다른 사람의 그림·캐릭터·브랜드를 닮았어요 | It looks like someone else's art, a character or a brand | 他の人の絵・キャラクター・ブランドに似ています |
+| `report.obj.reason.offensive` | 불쾌하거나 성적·폭력적이에요 | It's offensive, sexual or violent | 不快、または性的・暴力的です |
+| `report.obj.reason.personal` | 개인정보가 들어 있어요 | It contains personal information | 個人情報が含まれています |
+| `report.obj.reason.other` | 기타 | Something else | その他 |
+| `report.obj.note` | 자세한 내용(선택) | Details (optional) | 詳しい内容（任意） |
+| `report.obj.note.hint` | 상대에게는 보이지 않아요. | Your partner won't see this. | 相手には表示されません。 |
+| `report.obj.send` | 신고 보내기 | Send report | 報告を送る |
+| `report.obj.done.title` | 신고를 접수했어요 | Report received | 報告を受け付けました |
+| `report.obj.done.body` | 이 장식은 내 화면에서 숨겼어요. 검토 뒤에 방에서 빼기로 하면 두 사람 화면 모두에서 사라져요. | We've hidden this decoration on your screen. If it's removed after review, it will disappear for both of you. | この飾りはあなたの画面で非表示にしました。確認の結果外すことになった場合は、ふたりの画面から消えます。 |
+| `report.obj.fail.title` | 보내지 못했어요 | Couldn't send the report | 送れませんでした |
+| `report.obj.fail.body` | 입력한 내용은 그대로예요. 잠시 뒤 다시 시도해 주세요. | What you wrote is still here. Please try again in a moment. | 入力した内容はそのままです。しばらくしてからもう一度お試しください。 |
+| `report.obj.limit` | 오늘은 신고를 더 보낼 수 없어요. 내일 다시 시도해 주세요. | You can't send more reports today. Please try again tomorrow. | 今日はこれ以上報告できません。明日もう一度お試しください。 |
 
 ## S16 공통 상태
 
@@ -569,6 +621,7 @@
 | `a11y.cover.change` | 홈 배경 사진 바꾸기 | Change the home background photo | ホームの背景写真を変更 |
 | `a11y.cover.photo` | 우리가 올린 배경 사진 | Background photo you shared | ふたりで設定した背景写真 |
 | `a11y.cover.crop` | 사진 자르기 영역 | Photo crop area | 写真の切り抜き範囲 |
+| `a11y.gen.open` | {label} 장식 정보 열기 | Open details for {label} | {label}の詳細を開く |
 
 ## 탭 이름(시스템 탭 바)
 

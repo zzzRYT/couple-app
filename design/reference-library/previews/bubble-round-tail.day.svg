@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-12 -12 152 120" width="304" height="240">
+<title>Round bubble</title>
+<rect x="-12" y="-12" width="152" height="120" fill="#FBF1E3"/>
+<path d="M36 68Q34 82 22 90Q46 88 62 74Z" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="11.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M119.9 42C119.87 48.99 115.23 57.19 108.81 62.93C102.39 68.66 91.74 74.18 81.39 76.4C71.04 78.62 57.08 78.47 46.7 76.23C36.32 73.99 25.64 68.67 19.11 62.97C12.59 57.26 7.7 49.05 7.56 42C7.42 34.95 11.78 26.39 18.28 20.65C24.78 14.9 36.1 9.61 46.58 7.53C57.05 5.44 70.72 5.88 81.12 8.13C91.52 10.37 102.49 15.36 108.96 21C115.42 26.65 119.93 35.01 119.9 42Z" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="11.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M111 23.1C97.5 14.1 103.8 5.1 111 11.4C118.2 5.1 124.5 14.1 111 23.1Z" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="11.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M36 68Q34 82 22 90Q46 88 62 74Z" fill="#FFF4DF" transform="translate(2.6 2)"/>
+<path d="M36 68Q34 82 22 90Q46 88 62 74Z" fill="none" stroke="#4A3426" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M119.9 42C119.87 48.99 115.23 57.19 108.81 62.93C102.39 68.66 91.74 74.18 81.39 76.4C71.04 78.62 57.08 78.47 46.7 76.23C36.32 73.99 25.64 68.67 19.11 62.97C12.59 57.26 7.7 49.05 7.56 42C7.42 34.95 11.78 26.39 18.28 20.65C24.78 14.9 36.1 9.61 46.58 7.53C57.05 5.44 70.72 5.88 81.12 8.13C91.52 10.37 102.49 15.36 108.96 21C115.42 26.65 119.93 35.01 119.9 42Z" fill="#FFF4DF" transform="translate(2.6 2)"/>
+<path d="M119.9 42C119.87 48.99 115.23 57.19 108.81 62.93C102.39 68.66 91.74 74.18 81.39 76.4C71.04 78.62 57.08 78.47 46.7 76.23C36.32 73.99 25.64 68.67 19.11 62.97C12.59 57.26 7.7 49.05 7.56 42C7.42 34.95 11.78 26.39 18.28 20.65C24.78 14.9 36.1 9.61 46.58 7.53C57.05 5.44 70.72 5.88 81.12 8.13C91.52 10.37 102.49 15.36 108.96 21C115.42 26.65 119.93 35.01 119.9 42Z" fill="none" stroke="#4A3426" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="64" cy="42" rx="46" ry="28" fill="#FFF4DF" transform="translate(2.6 2)"/>
+<path d="M111 23.1C97.5 14.1 103.8 5.1 111 11.4C118.2 5.1 124.5 14.1 111 23.1Z" fill="#F2A7B4" transform="translate(2.6 2)"/>
+<path d="M111 23.1C97.5 14.1 103.8 5.1 111 11.4C118.2 5.1 124.5 14.1 111 23.1Z" fill="none" stroke="#4A3426" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

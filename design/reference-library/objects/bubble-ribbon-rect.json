@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "format": "mopi-shape-v1",
+  "kind": "bubble_frame",
+  "label": "Ribbon bubble",
+  "viewBox": {"w": 128, "h": 96},
+  "anchor": {"x": 0.84, "y": 0.94},
+  "palette": ["#FFF4DF", "#F2A7B4", "#E88A9B"],
+  "shapes": [
+    {"t": "path", "fill": 0, "stroke": true, "d": "M82 66Q92 82 108 91Q98 78 100 64Z"},
+    {"t": "rect", "fill": 0, "stroke": true, "x": 8, "y": 12, "w": 112, "h": 60, "rx": 16},
+    {"t": "path", "fill": 1, "stroke": true, "d": "M21 13C21 9.76 13.88 4.18 11 4C8.12 3.82 5 8.76 5 12C5 15.24 8.12 21.82 11 22C13.88 22.18 21 16.24 21 13Z"},
+    {"t": "path", "fill": 1, "stroke": true, "d": "M23 13C23 9.94 29.94 5.18 33 5C36.06 4.82 40 8.94 40 12C40 15.06 36.06 21.82 33 22C29.94 22.18 23 16.06 23 13Z"},
+    {"t": "ellipse", "fill": 2, "stroke": true, "cx": 22, "cy": 13, "rx": 5, "ry": 5.5}
+  ],
+  "textArea": {"x": 26, "y": 27, "w": 76, "h": 36},
+  "textFill": 0,
+  "tail": {"x": 108, "y": 91}
+}

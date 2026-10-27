@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "format": "mopi-shape-v1",
+  "kind": "background_piece",
+  "layerHint": "window_view",
+  "label": "Sun window",
+  "viewBox": {"w": 128, "h": 128},
+  "anchor": {"x": 0.5, "y": 0.5},
+  "palette": ["#C99A6B", "#AACBE2", "#F7D98B"],
+  "shapes": [
+    {"t": "rect", "fill": 0, "stroke": true, "x": 12, "y": 12, "w": 104, "h": 104, "rx": 12},
+    {"t": "rect", "fill": 1, "stroke": true, "x": 28, "y": 28, "w": 72, "h": 72, "rx": 6},
+    {"t": "ellipse", "fill": 2, "stroke": true, "cx": 78, "cy": 52, "rx": 12, "ry": 12}
+  ]
+}

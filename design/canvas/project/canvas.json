@@ -71,7 +71,7 @@
     },
     "S00-overview.dc.html": {
       "expand": "fill",
-      "h": 1998,
+      "h": 2099,
       "title": "S00 단계 2 개요",
       "w": 1760,
       "x": 0,
@@ -176,7 +176,7 @@
     "S14-end-space.dc.html": {
       "expand": "fill",
       "h": 8000,
-      "title": "S14 공간 종료 · 복구",
+      "title": "S14 공간 종료",
       "w": 1760,
       "x": 3680,
       "y": 46020
@@ -231,7 +231,7 @@
     },
     "S22-components.dc.html": {
       "expand": "fill",
-      "h": 7661,
+      "h": 7700,
       "title": "S22 컴포넌트",
       "w": 1760,
       "x": 3680,

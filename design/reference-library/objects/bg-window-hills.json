@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "format": "mopi-shape-v1",
+  "kind": "background_piece",
+  "layerHint": "window_view",
+  "label": "Hill window",
+  "viewBox": {"w": 160, "h": 128},
+  "anchor": {"x": 0.5, "y": 0.5},
+  "palette": ["#C99A6B", "#AACBE2", "#A8C6A0", "#F7D98B"],
+  "shapes": [
+    {"t": "rect", "fill": 0, "stroke": true, "x": 14, "y": 8, "w": 132, "h": 100, "rx": 14},
+    {"t": "rect", "fill": 1, "stroke": true, "x": 30, "y": 24, "w": 100, "h": 70, "rx": 6},
+    {"t": "ellipse", "fill": 3, "stroke": true, "cx": 102, "cy": 44, "rx": 12, "ry": 11.5},
+    {"t": "path", "fill": 2, "stroke": true, "d": "M30 70C48 52 74 52 92 64C106 72 120 68 130 62L130 88Q130 94 124 94L36 94Q30 94 30 88Z"},
+    {"t": "path", "fill": 2, "stroke": true, "d": "M30 82C52 72 70 76 88 84C104 90 118 84 130 78L130 88Q130 94 124 94L36 94Q30 94 30 88Z"},
+    {"t": "rect", "fill": 0, "stroke": true, "x": 74, "y": 24, "w": 12, "h": 70, "rx": 3},
+    {"t": "rect", "fill": 0, "stroke": true, "x": 6, "y": 104, "w": 148, "h": 18, "rx": 7}
+  ]
+}

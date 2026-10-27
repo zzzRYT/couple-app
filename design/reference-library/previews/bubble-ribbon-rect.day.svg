@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-12 -12 152 120" width="304" height="240">
+<title>Ribbon bubble</title>
+<rect x="-12" y="-12" width="152" height="120" fill="#FBF1E3"/>
+<path d="M82 66Q92 82 108 91Q98 78 100 64Z" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="11.6" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="8" y="12" width="112" height="60" rx="16" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="11.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M21 13C21 9.76 13.88 4.18 11 4C8.12 3.82 5 8.76 5 12C5 15.24 8.12 21.82 11 22C13.88 22.18 21 16.24 21 13Z" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="11.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M23 13C23 9.94 29.94 5.18 33 5C36.06 4.82 40 8.94 40 12C40 15.06 36.06 21.82 33 22C29.94 22.18 23 16.06 23 13Z" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="11.6" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="22" cy="13" rx="5" ry="5.5" fill="#FFF4DF" stroke="#FFF4DF" stroke-width="11.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M82 66Q92 82 108 91Q98 78 100 64Z" fill="#FFF4DF" transform="translate(2.6 2)"/>
+<path d="M82 66Q92 82 108 91Q98 78 100 64Z" fill="none" stroke="#4A3426" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="8" y="12" width="112" height="60" rx="16" fill="#FFF4DF" transform="translate(2.6 2)"/>
+<rect x="8" y="12" width="112" height="60" rx="16" fill="none" stroke="#4A3426" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M21 13C21 9.76 13.88 4.18 11 4C8.12 3.82 5 8.76 5 12C5 15.24 8.12 21.82 11 22C13.88 22.18 21 16.24 21 13Z" fill="#F2A7B4" transform="translate(2.6 2)"/>
+<path d="M21 13C21 9.76 13.88 4.18 11 4C8.12 3.82 5 8.76 5 12C5 15.24 8.12 21.82 11 22C13.88 22.18 21 16.24 21 13Z" fill="none" stroke="#4A3426" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M23 13C23 9.94 29.94 5.18 33 5C36.06 4.82 40 8.94 40 12C40 15.06 36.06 21.82 33 22C29.94 22.18 23 16.06 23 13Z" fill="#F2A7B4" transform="translate(2.6 2)"/>
+<path d="M23 13C23 9.94 29.94 5.18 33 5C36.06 4.82 40 8.94 40 12C40 15.06 36.06 21.82 33 22C29.94 22.18 23 16.06 23 13Z" fill="none" stroke="#4A3426" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="22" cy="13" rx="5" ry="5.5" fill="#E88A9B" transform="translate(2.6 2)"/>
+<ellipse cx="22" cy="13" rx="5" ry="5.5" fill="none" stroke="#4A3426" stroke-width="4.8" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

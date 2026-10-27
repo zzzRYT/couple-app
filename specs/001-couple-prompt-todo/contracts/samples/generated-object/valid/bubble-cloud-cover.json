@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "format": "mopi-shape-v1",
+  "kind": "bubble_frame",
+  "label": "Cloud bubble",
+  "viewBox": {"w": 128, "h": 96},
+  "anchor": {"x": 0.2, "y": 0.95},
+  "palette": ["#E6F0F7", "#AACBE2"],
+  "shapes": [
+    {"t": "path", "fill": 0, "stroke": true, "d": "M14 44Q8 16 38 18Q50 2 72 12Q98 4 108 26Q126 34 112 56Q114 80 86 78Q68 90 50 78Q18 80 14 44Z"},
+    {"t": "ellipse", "fill": 0, "stroke": false, "cx": 62, "cy": 44, "rx": 44, "ry": 28}
+  ],
+  "textArea": {"x": 38, "y": 31, "w": 52, "h": 26},
+  "textFill": 0
+}

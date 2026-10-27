@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "format": "mopi-shape-v1",
+  "kind": "background_piece",
+  "layerHint": "wall",
+  "label": "DONT rainbow",
+  "viewBox": {"w": 128, "h": 128},
+  "anchor": {"x": 0.5, "y": 0.5},
+  "palette": ["#F2A7B4", "#A8C6A0", "#AACBE2", "#C9B8E8"],
+  "shapes": [
+    {"t": "path", "fill": 0, "stroke": true, "d": "M118.41 64C118.58 76.91 116.61 94.54 111.82 103.16C107.02 111.79 101.94 113.51 89.63 115.75C77.32 117.98 49.98 118.87 37.95 116.59C25.93 114.32 22.18 110.86 17.48 102.1C12.79 93.33 10 76.86 9.8 64C9.6 51.14 11.56 33.63 16.28 24.92C21 16.21 25.78 14.11 38.12 11.76C50.47 9.4 78.23 8.5 90.34 10.82C102.45 13.14 106.11 16.82 110.79 25.68C115.47 34.54 118.24 51.09 118.41 64Z"},
+    {"t": "rect", "fill": 1, "stroke": false, "x": 26, "y": 22, "w": 13, "h": 84, "rx": 5},
+    {"t": "rect", "fill": 2, "stroke": false, "x": 56, "y": 22, "w": 13, "h": 84, "rx": 5},
+    {"t": "rect", "fill": 3, "stroke": false, "x": 86, "y": 22, "w": 13, "h": 84, "rx": 5},
+    {"t": "ellipse", "fill": 2, "stroke": false, "cx": 45, "cy": 34, "rx": 5.5, "ry": 5.5},
+    {"t": "ellipse", "fill": 3, "stroke": false, "cx": 77, "cy": 34, "rx": 5.5, "ry": 5.5},
+    {"t": "ellipse", "fill": 1, "stroke": false, "cx": 109, "cy": 34, "rx": 5.5, "ry": 5.5},
+    {"t": "ellipse", "fill": 2, "stroke": false, "cx": 46, "cy": 64, "rx": 5.5, "ry": 5.5},
+    {"t": "ellipse", "fill": 3, "stroke": false, "cx": 78, "cy": 64, "rx": 5.5, "ry": 5.5},
+    {"t": "ellipse", "fill": 1, "stroke": false, "cx": 105, "cy": 64, "rx": 5.5, "ry": 5.5},
+    {"t": "ellipse", "fill": 2, "stroke": false, "cx": 47, "cy": 94, "rx": 5.5, "ry": 5.5},
+    {"t": "ellipse", "fill": 3, "stroke": false, "cx": 79, "cy": 94, "rx": 5.5, "ry": 5.5},
+    {"t": "ellipse", "fill": 1, "stroke": false, "cx": 106, "cy": 94, "rx": 5.5, "ry": 5.5}
+  ]
+}

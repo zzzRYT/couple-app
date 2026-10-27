@@ -54,7 +54,7 @@ Firestore 모바일 SDK의 오프라인 캐시와 실시간 리스너는 강점�
 
 ## 3. 장면, 테마 버전, 서버·클라이언트 검증
 
-**결정 — 고정 요구사항:** 장면 문서는 카탈로그 2D 오브젝트와 짧은 텍스트로 제한한다. 생성 이미지, SVG 문자열, URL, 컴포넌트 트리, 스크립트, 이벤트 핸들러를 허용하지 않는다. D-day는 별도 의미 뷰 모델로 저장·표시되며 장면 캔버스에 포함하지 않는다.
+**결정 — 고정 요구사항:** 장면 문서는 카탈로그 2D 오브젝트, **검증된 생성 오브젝트에 대한 참조**(P2, `gen:<uuid>`; 도형 데이터는 장면에 넣지 않는다), 짧은 텍스트로 제한한다. 생성 이미지(래스터), SVG 문자열, URL, 컴포넌트 트리, 스크립트, 이벤트 핸들러를 허용하지 않는다. (생성 장식 자체는 허용목록 JSON 도형 목록으로만, 9장.) D-day는 별도 의미 뷰 모델로 저장·표시되며 장면 캔버스에 포함하지 않는다.
 
 **제안:** 문서는 `schemaVersion`, `canvasProfile`, `objects[]`, `texts[]`를 갖는다. 노드는 `assetId`, 정규화 중심점/크기, 회전, 순서, 투명도만 허용한다. `assetId`는 서버 관리 카탈로그와 정확히 일치해야 한다. 텍스트는 UTF-8 유효성, 길이, 줄 수, 금칙 제어 문자, 대비와 최소 글자 크기 정책을 검사한다. D-day 표현은 `RoomPresentation`에 위치·크기·허용 팔레트·스타일 preset·표시 여부만 담고, 날짜 값은 `CoupleSpace.anniversaryDate`에서 계산한다.
 
@@ -70,11 +70,11 @@ Firestore 모바일 SDK의 오프라인 캐시와 실시간 리스너는 강점�
 
 ## 4. AI 호출 흐름, 모델, 비용
 
-**흐름 제안:** 구성원이 prompt-session lease acquire → 서버가 한 명의 owner만 허용하고 상대에게 owner/expiry presence 전달 → owner가 prompt 입력 → 서버가 권한·동의·하루 5회 한도 검사 후 AI 구조화 출력 요청 → JSON Schema·정책·카탈로그·좌표/보호영역 검사 → shared conversation에 prompt/preview를 저장하고 둘에게 ID 기반 Realtime 이벤트 전달 → 상대는 live read-only로 대화/preview 확인, owner만 confirm/cancel/(열린 대화 안) undo → 서버가 session owner + expected version + idempotency를 transaction에서 검사, 적용 시 snapshot 저장과 lease release를 원자화. 활성 활동 heartbeat를 3분 idle 만료로 제한해 앱 종료 시 takeover가 가능하게 한다.
+**흐름 제안:** 구성원이 prompt-session lease acquire → 서버가 한 명의 owner만 허용하고 상대에게 owner/expiry presence 전달 → owner가 prompt 입력 → 서버가 권한·동의·하루 3회 한도(성공한 미리 보기만 셈)·입력 정책 검사 후 AI 구조화 출력 요청 → JSON Schema·정책·카탈로그·좌표/보호영역 검사 → shared conversation에 prompt/preview를 저장하고 둘에게 ID 기반 Realtime 이벤트 전달 → 상대는 live read-only로 대화/preview 확인, owner만 confirm/cancel/(열린 대화 안) undo → 서버가 session owner + expected version + idempotency를 transaction에서 검사, 적용 시 snapshot 저장과 lease release를 원자화. 활성 활동 heartbeat를 3분 idle 만료로 제한해 앱 종료 시 takeover가 가능하게 한다.
 
 모델에는 날짜 원본, 이메일, 카카오 식별자, 초대 코드, 계정 세부를 보내지 않는다. 프롬프트 속 지시를 시스템 명령으로 승격하지 않고, 모델에는 도구·네트워크·DB 권한을 주지 않는다. 입력/출력 문자열을 로그에 남기지 않으며 키나 원문이 포함되지 않도록 로그 필드를 allowlist로 정한다. 동의는 사용자별로 기록하되 두 사람 모두 자신의 동의를 해야 AI가 호출되게 하는 방식을 권장한다(캡틴 확인). 동의 철회는 이후 요청을 차단한다.
 
-**결정 — 소유자 승인:** Anthropic Haiku 5.5를 기본으로 하고, 품질 실패 사례에 한해 Sonnet 5.5로 제한 승급한다. 개발·PoC는 소유자의 Claude Max 요금제에 포함된 월 API 크레딧을 서버의 Console API 키로 쓴다(8장). 두 모델은 공식 가격표에서 각 $0.10/$0.50 및 $2/$10 per MTok(입력/출력, Haiku ≤100K 입력)이다. 예산 예시: 신규 입력 1,500 토큰 + 캐시 읽기 3,000 토큰 + 출력 1,000 토큰이면 Haiku 약 **$0.00068/요청**, Sonnet 약 **$0.0133/요청**이다. 커플당 하루 10회 전부 사용 시 약 $0.0068 / $0.133 per couple-day다. retry 1회, 캐시 쓰기, 세금, 저장소/전송, Anthropic 크레딧 조건은 제외했다. 실제 프롬프트 30개와 앱 렌더 결과로 승급 기준·지연·실비용을 측정한다. 비용은 사용자가 결제하는 상품이 아니다.
+**결정 — 소유자 승인:** Anthropic Haiku 5.5를 기본으로 하고, 품질 실패 사례에 한해 Sonnet 5.5로 제한 승급한다. 개발·PoC는 소유자의 Claude Max 요금제에 포함된 월 API 크레딧을 서버의 Console API 키로 쓴다(8장). 두 모델은 공식 가격표에서 각 $0.10/$0.50 및 $2/$10 per MTok(입력/출력, Haiku ≤100K 입력)이다. 예산 예시: 신규 입력 1,500 토큰 + 캐시 읽기 3,000 토큰 + 출력 1,000 토큰이면 Haiku 약 **$0.00068/요청**, Sonnet 약 **$0.0133/요청**이다. **카탈로그 배치만 하는 요청** 기준으로 커플당 하루 3회 전부 사용 시 약 $0.0020 / $0.040 per couple-day다(2026-10-27에 하루 한도를 10회→5회→3회로 줄이며 다시 계산). 새 장식 생성 요청의 비용 모델은 plan.md "생성 오브젝트" 표와 9.5. retry 1회, 캐시 쓰기, 세금, 저장소/전송, Anthropic 크레딧 조건은 제외했다. 실제 프롬프트 30개와 앱 렌더 결과로 승급 기준·지연·실비용을 측정한다. 비용은 사용자가 결제하는 상품이 아니다.
 
 **안전:** OWASP LLM Prompt Injection 대응으로 출력 형식 강제, 최소 권한, 신뢰 불가 입력 분리, 모델 바깥 검증과 사람 확인을 사용한다. 단어 필터만으로 인젝션/위해 콘텐츠 차단이 보장된다고 보지 않는다. 위협 사례를 시스템/사용자 메시지 경계, 상대가 만든 장면 텍스트, 브랜드/실존 인물 요청, 자해·성적·폭력 요청 등으로 나눠 차단 규칙을 정한다. V1은 이미지 생성/공개 갤러리가 없지만 공유 UGC인 짧은 문구와 신고/차단 요구는 남는다. Apple 1.2의 필터·신고·대응·차단·연락처 요구와 Google Play UGC·AI 콘텐츠 정책의 출시 시점 문구를 재검토한다.
 
@@ -84,13 +84,15 @@ Firestore 모바일 SDK의 오프라인 캐시와 실시간 리스너는 강점�
 
 카카오/Apple OAuth와 이메일 로그인은 Supabase Auth 제안과 맞는다. 소셜 callback은 Expo universal link/deep link로 처리한다. 이메일은 짧은 수명의 링크/OTP 정책과 재전송 제한을 둔다. 초대 코드는 무작위 고엔트로피 값의 해시만 저장하며 원문은 발급 순간에 한 번만 보여 준다. 만료 시각과 consumed_at을 DB에서 원자적으로 검사한다. 공유 공간은 정확히 두 사용자만 허용하는 고유 제약과 RLS를 갖는다. 초대 수락으로 다른 사람의 기존 공간에 몰래 연결되는 것을 막고, 가입/수락 전 공간 구성원을 보여 주며 확인을 받는다.
 
-종료 요청은 즉시 `recovery_pending` 상태로 바꾸고 초대·편집·AI 요청을 차단한다. 종료 이벤트, 종료자, 만료 시각을 저장한다. 보통의 종료는 30일 내 어느 기존 멤버든 복구를 요청할 수 있다. **연결 끊기**로 끝난 공간은 연결을 끊은 사람만 복구할 수 있고 상대 동의는 필요하지 않다(가정, `spec.md` Decided 24). 복구 대기 중에도 새 공간을 만들 수 있고("한 공간만"은 활성 공간만 센다), 복구하는 순간 두 사람 중 누구라도 다른 활성 공간에 있으면 복구는 거절한다(가정, Decided 23) — 한 사용자의 활성 공간이 둘이 되는 상태를 DB가 허용하지 않게 하는 것이 이유다. 만료 후 사용자 프롬프트·장면·버전·초대·동의 이력을 포함한 복구 대상 데이터를 제거하고 삭제 결과를 감사한다. 법정 보존이 필요한 최소 거래/보안 기록 범위는 법률 검토한다.
+종료(2026-10-27 5차 답변으로 개정, 가정): **이용자용 복구 기능은 두지 않고 소프트 삭제 + 내부 완전 삭제**로 한다. 종료 요청은 한 트랜잭션에서 공간 `status`를 `ended`로 바꾸고 두 구성원의 `space_active`를 false로 바꿔 초대·편집·AI 요청·조회를 즉시 모두 막는다. 종료 이벤트, 종료자, 종료 이유, 내부 삭제 예정 시각(`purge_after`)을 저장한다. 종료된 공간은 모든 클라이언트 호출에서 존재하지 않는 공간처럼 보이고(RLS가 `status = active`를 조건으로 둔다), 클라이언트가 읽을 수 있는 것은 종료 알림(종류·누가·언제)뿐이다. "한 공간만"은 활성 공간만 세므로 종료 직후 새 공간을 만들 수 있다. 앱은 보관 기간이나 복구를 알리지 않는다(`spec.md` Decided 33~35). 이전 설계(30일 복구, 연결 끊기 복구 권한, 복구 시 다른 활성 공간 차단; 이전 Decided 23·24)는 복구 기능이 없어져 무효다.
 
-초대 코드는 24시간에 만료되고 재발급 시 기존 미사용 코드를 무효화한다. 공간의 초대 수락은 DB transaction에서 한 번만 소비한다. 취소/만료 후보는 24시간 뒤 삭제하고, 적용된 prompt 원문과 대화 메시지는 30일 뒤 삭제하며, 종료된 공간은 30일 복구 기간 뒤 복구 대상 데이터를 삭제한다. 계정/동의 이력의 법적 삭제 범위와 공간 복구 경계는 법률 검토 후 세부화한다.
+**완전 삭제 작업 설계 노트**: 내부 예약 서버 작업(예: Supabase 스케줄러가 Edge Function `lifecycle-sweep`을 주기 호출, 함수는 `purge_expired_spaces()`를 실행)이 `status = 'ended' and purge_after <= now()`인 공간을 **공간 단위로** 처리한다. ① Storage 객체(홈 커버 현재 객체와 삭제 대기 목록)를 **먼저** 지운다 — 행을 먼저 지우면 경로를 잃어 객체가 고아가 되기 때문이다. 이미 없는 객체는 성공으로 본다. ② 그다음 한 DB 트랜잭션에서 그 공간의 모든 행을 지운다. 어느 단계가 실패해도 공간은 `ended`로 남아 이미 보이지 않으므로 부분 삭제로 보이는 상태가 없고 다음 실행이 같은 순서로 재시도한다(멱등). 실행 중복에 대비해 공간 행을 `for update skip locked` 같은 잠금으로 잡는다(구현 선택). 내용 없는 `deletion_started`/`deletion_completed` 이벤트만 남기고, 개인정보가 없는 `generation_block` 지문은 지우지 않는다. 신고 행을 증거로 오래 둘지는 열린 질문이다(기본 가정: 함께 삭제, `spec.md` Open Decisions 21). 내부 보관 30일은 서버 설정값이며 이용자에게 알리지 않는다. 법적 문서에 실제 동작을 어떻게 적을지, 운영자가 요청받아 복구해 줄지(V1에서는 약속하지 않음)는 법률 검토 대상이다(Open Decisions 22). 법정 보존이 필요한 최소 거래/보안 기록 범위도 법률 검토한다.
+
+초대 코드는 24시간에 만료되고 재발급 시 기존 미사용 코드를 무효화한다. 공간의 초대 수락은 DB transaction에서 한 번만 소비한다. 취소/만료 후보는 24시간 뒤 삭제하고, 적용된 prompt 원문과 대화 메시지는 30일 뒤 삭제하며, 종료된 공간은 내부 보관 30일 뒤 예약 작업이 완전히 삭제한다. 계정/동의 이력의 법적 삭제 범위와 삭제 경계는 법률 검토 후 세부화한다.
 
 ## 6. 오프라인, 캐시, 에셋 권리
 
-오프라인에서는 마지막 서버 확정 장면/표현과 D-day를 읽기 전용으로 보여 준다. 확인되지 않은 preview는 앱 재시작 후 폐기하고, 복구 작업은 서버 연결과 최신 버전 확인이 필요하다. 프롬프트·confirm·invite·end/recover는 온라인 전용이다. 카탈로그는 버전 있는 manifest와 checksum을 갖고 앱 번들에 기본 세트를 포함해 첫 실행도 오프라인 렌더가 가능하도록 한다. 이후 manifest 갱신은 앱 검증 경로를 거치고 임의 URL을 문서가 직접 참조하지 않는다. 캐시는 LRU/용량 제한을 두며 장면 참조가 남은 에셋을 먼저 제거하지 않는다.
+오프라인에서는 마지막 서버 확정 장면/표현과 D-day를 읽기 전용으로 보여 준다. 확인되지 않은 preview는 앱 재시작 후 폐기하고, 서버 상태를 바꾸는 작업은 서버 연결과 최신 버전 확인이 필요하다. 프롬프트·confirm·invite·end는 온라인 전용이다. 카탈로그는 버전 있는 manifest와 checksum을 갖고 앱 번들에 기본 세트를 포함해 첫 실행도 오프라인 렌더가 가능하도록 한다. 이후 manifest 갱신은 앱 검증 경로를 거치고 임의 URL을 문서가 직접 참조하지 않는다. 캐시는 LRU/용량 제한을 두며 장면 참조가 남은 에셋을 먼저 제거하지 않는다.
 
 초기 24~36개 2D 오브젝트는 직접 의뢰한 그림 또는 CC0/상업 사용을 허용하는 명시적 라이선스를 우선한다. 계약서에는 앱 번들·캐시 전달·수정·홍보 이미지 사용권을 쓴다. CC BY는 앱 내 크레딧을 포함하고, share-alike·비상업·재배포 제한 스톡은 별도 법률 승인 전 채택하지 않는다. 각 에셋 레코드에 ID, 제작자, 원본 URL/계약, 라이선스 버전, 저작권/출처 표시, 포함 앱 버전, 파일 checksum, 크기, 포맷, 폐기 상태를 둔다.
 
@@ -104,7 +106,7 @@ EAS Build/Submit에서 iOS/Android 내부 QA 빌드를 만든 뒤 TestFlight 및
 
 리뷰 제출은 스토어가 요구하는 신고·차단·연락처·부적절 콘텐츠 대응 동작을 설명하고, 검토자가 즉시 로그인할 수 있는 리뷰 계정과 **사전 고정 샘플 방**을 제공한다. 리뷰 메모에는 화면 데이터가 서버에서 내려와도 앱에 미리 컴파일된 고정 렌더러가 허용된 데이터만 표시하며 새 코드·스크립트·기능을 다운로드하지 않는다고 설명한다. Apple/Google의 정책상 1:1 비공개 공간이 예외라고 가정하지 않는다. 앱 설명 및 첫 AI 호출 전에 해외 제3자 처리 동의 UI를 보여 준다. 국내 AI 기본법 표시 요건과 AI 사용 고지 위치는 법률 검토 후 정한다. 내부 provenance 기록은 UI 배지 요구의 대체로 법적 준수를 보장하지 않는다.
 
-검증 전략: JSON Schema 자체와 알 수 없는 필드 거부, 16/3 수량 경계, 정규화 좌표 경계, 허용 ID/폐기 ID, 회전 경계 상자, 2개 이상의 종횡비 및 동적 글자 크기 보호 영역, 최소 글자 대비/줄 수를 단위 테스트한다. 서버/클라이언트 공통 fixture로 검증 결과 동일성을 보장한다. 통합 테스트는 RLS에서 본인 공간/상대 공간/제3자 시도, 초대 만료·재사용, 두 confirm race, API timeout/유효하지 않은 모델 출력, 동의 철회, 10회 초과, 30일 보관/삭제를 다룬다. 테스트/스냅샷에 실제 키나 실제 사용자 프롬프트를 넣지 않는다.
+검증 전략: JSON Schema 자체와 알 수 없는 필드 거부, 16/3 수량 경계, 정규화 좌표 경계, 허용 ID/폐기 ID, 회전 경계 상자, 2개 이상의 종횡비 및 동적 글자 크기 보호 영역, 최소 글자 대비/줄 수를 단위 테스트한다. 서버/클라이언트 공통 fixture로 검증 결과 동일성을 보장한다. 통합 테스트는 RLS에서 본인 공간/상대 공간/제3자 시도, 초대 만료·재사용, 두 confirm race, API timeout/유효하지 않은 모델 출력, 동의 철회, 하루 3회 초과(4번째 성공 요청), 거절·실패가 횟수를 쓰지 않음, 30일 보관/삭제를 다룬다. 테스트/스냅샷에 실제 키나 실제 사용자 프롬프트를 넣지 않는다.
 
 출처(접근 2026-10-24): [EAS 가격](https://expo.dev/pricing), [EAS 계획](https://docs.expo.dev/billing/plans/), [Apple Developer Program](https://developer.apple.com/programs), [Google Play Console 등록](https://support.google.com/googleplay/android-developer/answer/6112435?hl=en), [Google Play 앱 콘텐츠 등급](https://support.google.com/googleplay/android-developer/answer/9859655?hl=en), [한국 AI 기본법 제31조](https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1031810715), [AI 기본법 시행령 제23조](https://www.law.go.kr/LSW/lsSideInfoP.do?docCls=jo&joBrNo=00&joNo=0023&lsiSeq=288781&urlMode=lsScJoRltInfoR).
 
@@ -150,6 +152,63 @@ iOS는 대기 중인 로컬 알림을 앱당 64개로 제한한다고 알려져 
 | 카카오 로그인 | 카카오 디벨로퍼 앱, 사업자/개인 정책 검토, Redirect URI 및 동의항목 | 카카오 정책에 따라 확인; 계정과 앱을 소유자가 생성 |
 | Apple 로그인 | Services ID/앱 ID, redirect domain | Apple 계정과 개발자 프로그램 소유자 필요 |
 | 에셋 제작 | 24–36개(현재 디자인은 24개: 방 안 마스코트 6 + 오브젝트 18) 권리 확정 원본과 제작 계약. 마스코트는 AI 생성 원본(그대로 사용, 닮음 검사·법률 검토는 출시 전 권장)과 일러스트레이터 재작업 | 범위·작가 견적 필요(현재 산정 불가) |
-| 스토어 정책 운영 | 신고 접수 **공개 지원 이메일(아직 없음)**, 연결 끊기·신고 대응 운영자, 연령 등급(만 14세)/UGC 분류·법률 검토 | 운영 인력/법률 비용 산정 필요 |
+| 예약 작업(공간 완전 삭제) | Supabase 안에서 주기 실행(예: pg_cron 또는 Supabase의 예약 호출)으로 `lifecycle-sweep`을 부르는 설정과 service-role 비밀의 서버 보관(5장). 무료 플랜 프로젝트가 비활동으로 일시 정지되면 예약 작업도 멈추므로 배포 전에 확인 | 추가 비용 없음으로 가정(미확인) |
+| 스토어 정책 운영 | 신고 접수 **공개 지원 이메일(아직 없음)**, 연결 끊기·신고 대응 운영자, 연령 등급(만 14세)/UGC 분류·법률 검토, 앱 안 계정 삭제 설계(Apple 5.1.1(v), 출시 전 필수) | 운영 인력/법률 비용 산정 필요 |
 
 가격은 접근일 기준 공식 페이지 또는 일반 도메인 범위의 참고치며, 실제 결제 전 소유자가 지역 통화·세금·사업자 조건을 확인해야 한다. [Squarespace 도메인 가격 안내](https://domains.squarespace.com/blog/how-much-does-a-domain-name-cost) (접근 2026-10-24)에서는 `.com` 일반 범위가 연 $10–20이라고 제시한다.
+
+## 9. 생성 오브젝트: 형식, 정책 확인, 위험 (2026-10-27)
+
+소유자의 4차 답변(프롬프트로 새 배경·말풍선 장식을 만들어 커플별로 저장, 하루 3회, 신고, 가드레일, 기준 레퍼런스)을 해석한 설계의 근거다. 해석은 모두 가정이다(`spec.md` Decided 27~32). 아래 9.2의 정책 확인은 조사 보조가 2026-10-27에 공식 페이지를 읽은 결과이고, **페이지 요약 도구를 거쳤으므로 인용은 원문과 대조해야 한다**. 법률 의견이 아니다.
+
+### 9.1 형식 비교
+
+| 안 | 장점 | 단점 | 판단 |
+|---|---|---|---|
+| **허용목록 JSON 도형 목록**(`mopi-shape-v1`) | 모든 값을 서버가 좌표·색·개수 단위로 검사·정규화, 코드·참조가 형식에 없음, 결정적 렌더, 프롬프트에 레퍼런스를 넣기 쉬움 | 모델이 이 형식으로 아름다운 그림을 낼지 불확실, 표현력이 SVG보다 좁음 | **권장(가정)** |
+| 안전한 SVG 부분집합 | 사람이 읽기 쉽고 모델이 SVG에 익숙 | 부분집합 파서를 직접 만들어야 하고 예외 문법·스타일·참조 공격면 관리 필요 | 대안 |
+| 매개변수형 템플릿(옵션 B) | 가장 안전하고 품질이 예측 가능 | "새로 만든다"는 느낌이 약함, 템플릿을 사람이 만들어야 함 | **후퇴 경로** |
+| 래스터 이미지 생성 | 표현력 | 사진 같은 이미지·권리·크기·검수 위험, 이전 결정(사진·래스터 생성 제외)과 충돌 | 제외 |
+
+한계(정직하게): 형식과 검증기가 막는 것은 **안전성**(코드·참조·범위·팔레트·복잡도)이지 **아름다움**이나 **저작권 비침해**가 아니다. 레퍼런스 기반 few-shot이 Haiku급 모델에서 일관된 결과를 내는지는 측정하지 않았다(첫 스프린트에서 30개 프롬프트로 측정, 실패 시 옵션 B).
+
+### 9.2 스토어·정책 확인 (읽은 문서와 확인 못한 것)
+
+**Apple** — [App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/)("Last Updated: October 16, 2026")
+- 1.2: "Apps that enable users to create, generate, upload, share, or otherwise contribute content present particular challenges, including intellectual property infringement, nonconsensual intimate imagery, and anonymous bullying. This includes social media, user-generated content platforms, and AI content creation apps." 그런 앱은 ① 부적절한 자료 필터링 방법 ② 부적절한 콘텐츠를 신고하는 수단과 제때의 응답 ③ 악성 이용자 차단 ④ 공개된 연락처를 갖춰야 한다고 한다. 위반 콘텐츠를 제거할 책임은 개발자에게 있다.
+- 1.2에는 비공개·소수 사용 콘텐츠의 예외가 **글에 없다**. 심사가 두 사람 공간에 1.2를 적용하는지는 **글로는 알 수 없다(미확인)** — 이 프로젝트는 "1:1 비공개 공간이 예외라고 가정하지 않는다"는 기존 방침(7장)을 유지한다.
+- 5.1.2(i): 개인 데이터를 제3자(제3자 AI 포함)와 공유하는 곳을 분명히 공개하고 **명시적 허가**를 받아야 한다(→ 기존 해외 AI 동의, FR-016). 5.1.1(i) 개인정보 처리방침에 수집·사용·보관·삭제 설명. **5.1.1(v): "If your app supports account creation, you must also offer account deletion within the app."** (앱 안 계정 삭제; 이 앱은 카카오·Apple·이메일로 계정 생성을 지원하므로 해당하고 **현재 설계에는 계정 삭제 기능이 없다** → 출시 전 설계 필수 항목, `spec.md` Open Decisions 20). 2.3.6 연령 등급 설문은 정직하게.
+- 연령 등급([Age ratings values and definitions](https://developer.apple.com/help/app-store-connect/reference/app-information/age-ratings-values-and-definitions)): 등급 구간 4+, 9+, 13+, 16+, 18+. "User-generated content"와 "Messaging and chat"이 능력 항목으로 정의된다. 한국의 GRAC 별도 등급은 게임·엔터테인먼트 카테고리에만 해당한다고 적혀 있다. **AI 생성 콘텐츠를 직접 묻는 설문 항목은 읽은 부분에서 확인하지 못했다(미확인; 질문지 본문이 길어 일부만 읽음).**
+
+**Google Play**
+- [AI-Generated Content 정책](https://support.google.com/googleplay/android-developer/answer/13985936): AI 생성 콘텐츠는 "created by generative AI models based on user prompts"로 정의되고, 이를 만드는 앱은 기존 Play 개발자 정책(제한 콘텐츠·기만 행위 등)을 지켜야 하며 "must contain in-app user reporting or flagging features"(앱을 나가지 않고 불쾌한 콘텐츠를 신고)를 갖춰야 한다. 범위·예외·집행의 세부는 1차 페이지에서 확인하지 못했다(**미확인**).
+- [User Generated Content 정책](https://support.google.com/googleplay/android-developer/answer/9876937): 콘텐츠 작성 전 약관 동의, 콘텐츠 유형에 맞는 모더레이션, **앱 안에서 부적절한 UGC와 이용자를 신고·차단하는 시스템**을 요구하고, 1:1 상호작용 기능은 앱 안 차단을 제공해야 한다. 비공개 콘텐츠의 예외는 글에 없다. **"연결 끊기"가 "차단"으로 인정되는지는 어느 문서에도 없다(미확인)** — 출시 전 확인 항목.
+- 콘텐츠 등급(IARC) 설문의 UGC·AI 항목 문구는 Play Console 안에서만 보여 **확인하지 못했다**. Data safety 문서는 이번에 읽지 않았다.
+
+**Anthropic**
+- [Usage Policy](https://www.anthropic.com/legal/aup): 읽은 페이지에는 **"Effective: Nov 12, 2026"**(2026-10-08 발표 개정판; 오늘 기준 아직 시행 전)이 적혀 있었고 한국어로만 받아 영어 인용·절 번호는 없다. **현재 시행 중인 본문은 확인하지 못했다(미확인).** 읽은 판의 내용: 미성년자(만 18세 미만, 관할 무관)를 위협하는 콘텐츠·아동성착취물(AI 생성 포함) 금지, 개인정보·신원 침해 금지, 제3자 지적재산권 침해·오용 금지, 실존 인물·단체 사칭 금지(명백한 패러디·풍자·소설 제외), 소비자 대상 챗봇은 AI임을 알려야 함(챗봇 대상 문구라 장식 생성기에 적용되는지는 글에 없음), 미성년자에게 직접 제공하는 API 연동 제품은 별도 가이드라인과 법을 따라야 함, 준수 책임은 운영자에게 있음. 하위 이용자 신고·모더레이션을 의무화하는 문구는 찾지 못했다.
+- [미성년자를 대상으로 하는 조직을 위한 가이드](https://support.claude.com/en/articles/9307344-responsible-use-of-anthropic-s-models-guidelines-for-organizations-serving-minors)(2026-03-16): 연령 확인과 콘텐츠 모더레이션·필터링을 권장하고 아동 안전·개인정보 법 준수 책임을 조직에 둔다. **만 14세 이상 이용자가 있지만 미성년자 전용이 아닌 앱에도 해당하는지는 글에 없다(미확인).**
+- [Commercial Terms](https://www.anthropic.com/legal/commercial-terms)(Effective Jun 17, 2025): B 고객이 Outputs를 소유하고 Anthropic은 자기 권리(있다면)를 양도한다. D.2 Usage Policy 준수, D.3 Outputs 적합성 평가와 **사실적 주장은 확인 없이 믿지 말라고 이용자에게 알릴 의무**, D.5 계정 활동 책임, L.1 입력 권리 보증, L.2 정확성 비보증, K.1/K.3 유료 이용의 IP 면책(상표의 상업적 이용 등 제외). 연령·미성년자 조항은 없다.
+
+**AI 결과물의 소유권·저작권**
+- Apple·Google·Anthropic 어느 문서도 이용자의 소유권이나 비침해를 보장하지 않는다(Commercial Terms는 Anthropic의 권리를 양도한다고만 한다).
+- 일반 참고(미국 자료이며 한국 법이 아니고 법률 의견이 아님): U.S. Copyright Office의 [Copyright and Artificial Intelligence](https://www.copyright.gov/ai/) Part 2: Copyrightability(2025-01-29 발표). PDF 본문은 읽지 못했고 검색 발췌만 봤다 — 프롬프트만으로는 충분한 인간의 통제로 보기 어렵고, 저작권은 인간이 쓴 요소나 선택·배열·수정에 미치되 순수 AI 생성물에는 미치지 않는다는 취지(**원문 대조 필요**). 그래서 약관과 안내는 소유권·비침해를 약속하지 않는다(FR-025·FR-068).
+
+**확인하지 못한 것(출시 전에 사람이 확인)**: 현재 시행 중인 Anthropic Usage Policy 영어 본문과 절 번호 · Apple 연령 등급 설문의 AI 항목 · Apple 심사가 두 사람 비공개 공간에 1.2를 적용하는지 · Play 콘텐츠 등급(IARC) 설문 문구와 Data safety 문서 · Google AI 생성 콘텐츠 정책의 범위·집행 세부 · Anthropic 미성년자 가이드의 적용 범위 · Copyright Office 보고서 PDF 원문 · 스토어가 "연결 끊기"를 "차단"으로 인정하는지 · Apple 5.1.1(v)의 로그인 수단별(Apple 로그인 포함) 계정 삭제 세부 요건 · 공간 종료 후 내부 보관을 개인정보 처리방침·스토어 데이터 안전 입력란에 어떻게 적어야 하는지.
+
+### 9.3 설계에 주는 함의 (사실 기반, 법률 판단 아님)
+1. 신고 수단은 선택이 아니라 스토어가 글로 요구하는 최소한이다 → US9(신고)를 US8과 **함께** 출시한다(FR-067).
+2. 이미 있는 "연결 끊기"가 "차단"으로 받아들여지는지 미확인이므로 심사 메모에 기능 설명을 쓰고 출시 전에 확인한다.
+3. 해외 AI 동의(FR-016)는 프롬프트 전송을 이미 다루지만, 입력 정책·2차 검사 호출과 남용 대응용 보관(30일)을 안내문·처리방침에 더해야 한다.
+4. D.3 때문에 "AI 결과는 틀릴 수 있어요" 안내 문구(기존 출시 전 확인 항목)는 생성 장식에도 필요하다.
+5. 만 14세 이상 이용자와 미성년자 가이드의 관계는 미확인이므로 연령·모더레이션 설계(입력 정책의 성적·폭력·자해 거절, 신고)를 보수적으로 둔다.
+6. 5.1.1(v)(계정 삭제) 때문에 앱 안 계정 삭제 기능을 출시 전에 설계해야 한다. 이번 변경에서는 설계하지 않았고, 가정은 계정 삭제가 활성 공간을 `ended_reason = account_deletion`으로 종료(소프트 삭제 → 내부 완전 삭제)하고 개인 프로필·동의 기록을 법률 검토에 따라 삭제하는 것이다(`spec.md` Decided 36). 로그인 수단별(특히 Apple 로그인) 삭제 절차의 세부 요건은 읽은 문서에서 확인하지 못했다(미확인).
+7. 개인정보 처리방침·스토어 데이터 안전 입력란은 실제 동작("공간 종료 후 최대 30일 서버 내부 보관 뒤 삭제, 이용자 직접 복구 없음")과 어긋나지 않게 적어야 한다. 앱 화면에는 기간을 쓰지 않지만 법적 문서에는 어떻게 쓸지 문구는 법률 검토 대상이다. 운영자 지원 복구는 약속하지 않는다.
+
+### 9.4 레드팀·평가
+`ai-guardrails.md` 부록 A의 36개 이상 프롬프트(범주별 거절 대상·허용 대상·경계 사례)를 모의 모델 계약 테스트와 실제 모델 평가(게이트 G17)에 쓴다. 실제 모델 평가는 PoC 크레딧으로 하고 결과(거절율·허용율·검증 실패율·재시도율·평균 토큰·비용)를 `docs/validation-report.md`에 적는다.
+
+### 9.5 비용
+단계별 표와 최악 상한은 plan.md "생성 오브젝트". 요약: Haiku 기준 성공 1회 약 $0.0022(최악 $0.0043), 커플·일 약 $0.0066, 시도 30회 남용 상한 약 $0.13/커플·일, Sonnet 승급 성공 1회 약 $0.033. 모두 접근일(2026-10-24) 가격표와 추정 토큰 수로 계산한 **추정**이며 측정으로 대체해야 한다.
+
+출처(접근 2026-10-27, 조사 보조의 페이지 요약 기준): [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/), [Apple 연령 등급 정의](https://developer.apple.com/help/app-store-connect/reference/app-information/age-ratings-values-and-definitions), [Google Play AI-Generated Content](https://support.google.com/googleplay/android-developer/answer/13985936), [Google Play User Generated Content](https://support.google.com/googleplay/android-developer/answer/9876937), [Google Play 콘텐츠 등급](https://support.google.com/googleplay/android-developer/answer/9859655), [Anthropic Usage Policy](https://www.anthropic.com/legal/aup), [Anthropic 미성년자 가이드](https://support.claude.com/en/articles/9307344-responsible-use-of-anthropic-s-models-guidelines-for-organizations-serving-minors), [Anthropic Commercial Terms](https://www.anthropic.com/legal/commercial-terms), [U.S. Copyright Office AI](https://www.copyright.gov/ai/).

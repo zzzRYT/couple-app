@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "format": "mopi-shape-v1",
+  "kind": "prop",
+  "label": "Pouf",
+  "viewBox": {"w": 96, "h": 96},
+  "anchor": {"x": 0.5, "y": 1},
+  "palette": ["#F4B79B", "#FFF4DF"],
+  "shapes": [
+    {"t": "ellipse", "fill": 0, "stroke": true, "cx": 48, "cy": 62, "rx": 38, "ry": 24},
+    {"t": "rect", "fill": 1, "stroke": false, "x": 38, "y": 40, "w": 20, "h": 8, "rx": 4}
+  ]
+}
