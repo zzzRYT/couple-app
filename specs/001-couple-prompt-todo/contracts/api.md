@@ -13,7 +13,7 @@
 
 ## Auth / 초대
 
-인증 방식은 카카오·Apple OAuth 및 이메일 OTP(6자리 코드가 기본)/magic link(허용)로 Supabase Auth에 위임한다. 최소 연령 만 14세는 가입 시작 화면의 확인 문구로 알리고 서버는 생년월일을 받지 않는다(FR-058, 가정). OAuth redirect는 Expo universal link로 복귀한다.
+인증 방식은 OAuth로 Supabase Auth에 위임한다. 2026-10-27 소유자 결정: 제품 로그인은 Sign in with Apple만(iOS 네이티브 id token → `signInWithIdToken`, 해시 nonce), 카카오는 비활성으로 보류, 이메일 OTP는 제품에서 제거하고 개발 빌드·로컬 스택 전용 테스트 로그인으로만 둔다(가정). API 계약은 Supabase 세션 JWT만 받으므로 공급자가 바뀌어도 바뀌지 않는다. 최소 연령 만 14세는 가입 시작 화면의 확인 문구로 알리고 서버는 생년월일을 받지 않는다(FR-058, 가정). OAuth redirect는 Expo universal link로 복귀한다.
 
 ### `POST /spaces`
 

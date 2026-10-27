@@ -4,15 +4,16 @@
 
 ## A. MVP 데모를 실제 환경에서 돌리기 위해 (지금 병렬로)
 
-1. **Supabase 원격 프로젝트 만들기** — 개인 계정, 리전 Seoul `ap-northeast-2`, 무료 플랜(비활동 시 일시 정지됨). 만든 뒤 프로젝트 URL과 publishable(anon) 키만 앱 설정에 쓰고, service-role 키는 어디에도 붙이지 않는다. 마이그레이션 적용은 준비되면 `supabase link` → `supabase db push`로 소유자가 실행한다.
-2. **Claude Console API 키** — Claude Max 요금제 포함 월 크레딧에 연결된 **Console API 키**(채팅 로그인·Claude Code 토큰 아님). 이 프로젝트 전용 Console workspace를 만들고 지출 한도를 건다. 키는 `supabase secrets set ANTHROPIC_API_KEY=…`로만 넣는다.
-3. **초대 코드 pepper 비밀** — 임의의 긴 무작위 문자열을 만들어 `supabase secrets set INVITE_CODE_PEPPER=…`로 넣는다(초대 코드 해시용, 원격 프로젝트마다 하나).
-4. **Expo 계정과 EAS** — Expo 계정을 만들고 `eas login` → `apps/mobile`에서 `eas init`으로 프로젝트 ID를 받는다. 무료 플랜 한도는 월 15 iOS + 15 Android 빌드. `development` 프로필로 내부 개발 클라이언트를 빌드해 두 기기에 설치한다(스토어 제출은 하지 않는다).
-5. **이메일 OTP 발송 설정(원격)** — 원격 Supabase Auth에서 이메일 OTP 6자리를 켜고, 필요하면 SMTP를 연결한다(무료 기본 메일은 발송 한도가 낮음). 로컬에서는 Mailpit(`http://127.0.0.1:54324`)으로 확인된다.
-6. **카카오 로그인 앱** — Kakao Developers 앱 생성, REST API 키·Client Secret, Redirect URI(`https://<project>.supabase.co/auth/v1/callback`), 동의항목 설정 후 Supabase Auth의 Kakao 공급자에 입력. 자세한 순서는 `docs/auth-setup.md`.
-7. **Apple 로그인** — Apple Developer 계정, Services ID·Key(.p8)·redirect domain 설정 후 Supabase Auth의 Apple 공급자에 입력. `.p8` 파일은 저장소에 넣지 않는다.
-8. **원격 배포(준비되면)** — `supabase db push`로 마이그레이션 적용 → 카탈로그 시드 1회 적재(`psql "<원격 DB URL>" -f supabase/seed/catalog.sql`, `db push`는 시드를 돌리지 않음) → `supabase functions deploy`로 8개 함수 배포 → `lifecycle-sweep`을 하루 1회 이상 부르는 스케줄(pg_cron 또는 Supabase 스케줄, service-role 키로 호출) 설정.
-9. **두 기기 실측** — 개발 클라이언트로 두 기기(또는 에뮬레이터 2대)에서 초대 → 수락 → 같은 D-day → 점유 → 프롬프트 → 미리 보기 → 적용 → 양쪽 같은 방을 확인한다. 이 PR은 이 실기기·실서비스 확인을 하지 않았다.
+로그인은 2026-10-27 결정대로 **Sign in with Apple만** 연다(카카오 보류, 이메일은 개발 빌드 전용 테스트 로그인).
+
+1. ~~Expo 계정과 EAS 프로젝트~~ — 완료: `@zzzryt/aroom` 생성·연결(projectId `99310e9a-4aee-4116-b9da-b6a26460f7e3`, `apps/mobile/src/config/identity.ts`).
+2. **Apple Developer Program 가입 → App ID `com.jinjinstar.aroom.dev` 등록(Sign In with Apple capability) → `eas device:create`로 iPhone 등록** — `docs/apple-sign-in-setup.md` 1장. 운영 ID `com.jinjinstar.aroom`은 이름 확인(G2) 전 등록 금지.
+3. **Supabase 원격 프로젝트 만들기**(개인 계정, Seoul, 무료) → `supabase link` → `db push` → 카탈로그 시드 1회 → `functions deploy` → `lifecycle-sweep` 하루 1회 예약 — `docs/remote-supabase-setup.md`.
+4. **Supabase Apple 공급자 켜기**, Client IDs = `com.jinjinstar.aroom.dev` — `docs/apple-sign-in-setup.md` 2장. 개발 빌드의 이메일 테스트 로그인을 원격에서 쓰려면 개발용 프로젝트에서만 Email 공급자를 켜 둔다.
+5. **서버 비밀**: `supabase secrets set INVITE_CODE_PEPPER=…`, `supabase secrets set ANTHROPIC_API_KEY=…`(Claude Max 포함 크레딧에 연결된 Console API 키, 전용 workspace에 지출 한도).
+6. **앱에 원격 값 넣기**: `eas env:create`로 `EXPO_PUBLIC_SUPABASE_URL`·`EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`(publishable 키만), 로컬 개발은 `apps/mobile/.env.local`.
+7. **개발 빌드 설치와 실측**: `eas build --profile development --platform ios` → 등록된 iPhone에 설치 → `npx expo start --dev-client` → Apple 로그인 → 두 번째 기기(다른 Apple ID 또는 이메일 테스트 로그인)로 초대 수락 → 같은 D-day → 점유 → 프롬프트 → 미리 보기 → 적용 → 양쪽 같은 방. 이 PR은 실기기·실서비스 확인을 하지 않았다.
+8. **결정 확인**: 개발 빌드 전용 이메일 테스트 로그인을 남길지(가정). 원하지 않으면 알려 주면 지운다.
 
 ## B. 출시 전에 소유자가 닫는 게이트 (구현을 막지 않음)
 
@@ -22,7 +23,7 @@
 - **G2 이름 확인**(T168): 상표 Aroom/아룸 (이전 이름 Mopiru/모피루), 스토어 이름, 도메인 `aroom.jinjinstar.com`, bundle ID. 확인 전에는 스토어에 등록하지 않는다.
 - **G3 스토어 규칙**(T169): 글자 수·연령 등급 설문·"연결 끊기 + 신고"·알림 심사 메모.
 - **G4 원어민 검수**(T170): 영어·일본어 문구 전체.
-- **G5 카카오·Apple 공식 SDK/에셋**(T171): 자리표시 버튼 교체.
+- **G5 카카오 공식 SDK/에셋**(T171): 카카오를 다시 켤 때 자리표시 버튼 교체(Apple은 이미 공식 버튼).
 - **G6 글꼴 번들 크기 실측**(T172): EAS 산출물로 9파일/최소 구성 선택.
 - **G7 에셋 최종 그림·포맷**(T173): 일러스트레이터가 일반 오브젝트 18개 최종 그림 납품, PNG-8/WebP 결정.
 - **G8 AI 약관·비용·승급**(T174): 포함 크레딧의 공개 앱 사용 가능 여부를 Anthropic에 서면 문의, 유료 크레딧 전환, Haiku→Sonnet 승급 기준.
