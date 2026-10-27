@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://couple-app.invalid/contracts/room-theme-v1.schema.json",
+  "title": "Couple Room Theme v1",
+  "description": "Shared room day/night variants. Interface light/dark mode is a separate per-user preference.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "mode", "timeZone", "day", "night"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "mode": { "type": "string", "enum": ["day", "night", "follow_time"], "default": "follow_time" },
+    "timeZone": { "type": "string", "minLength": 1, "maxLength": 64, "description": "Valid IANA timezone; initialized from the space creator and editable in room settings." },
+    "day": { "$ref": "#/$defs/variant" },
+    "night": { "$ref": "#/$defs/variant" }
+  },
+  "$defs": {
+    "variant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["backgroundToken", "paletteToken", "assetVariants"],
+      "properties": {
+        "backgroundToken": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$" },
+        "paletteToken": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$" },
+        "assetVariants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["assetId", "variantId"],
+            "properties": {
+              "assetId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" },
+              "variantId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

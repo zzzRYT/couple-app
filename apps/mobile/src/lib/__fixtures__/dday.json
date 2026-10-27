@@ -1,0 +1,22 @@
+{
+  "cases": [
+    { "name": "anniversary day is day 1", "anniversary": "2026-10-27", "now": "2026-10-27T03:00:00Z", "timeZone": "Asia/Seoul", "expect": { "ok": true, "dayCount": 1 } },
+    { "name": "Seoul one second before midnight", "anniversary": "2026-10-01", "now": "2026-10-27T14:59:59Z", "timeZone": "Asia/Seoul", "expect": { "ok": true, "dayCount": 27 } },
+    { "name": "Seoul at midnight", "anniversary": "2026-10-01", "now": "2026-10-27T15:00:00Z", "timeZone": "Asia/Seoul", "expect": { "ok": true, "dayCount": 28 } },
+    { "name": "Los Angeles one second before midnight", "anniversary": "2026-10-01", "now": "2026-10-28T06:59:59Z", "timeZone": "America/Los_Angeles", "expect": { "ok": true, "dayCount": 27 } },
+    { "name": "Los Angeles at midnight", "anniversary": "2026-10-01", "now": "2026-10-28T07:00:00Z", "timeZone": "America/Los_Angeles", "expect": { "ok": true, "dayCount": 28 } },
+    { "name": "Los Angeles across the DST change", "anniversary": "2026-10-31", "now": "2026-11-02T07:59:59Z", "timeZone": "America/Los_Angeles", "expect": { "ok": true, "dayCount": 2 } },
+    { "name": "long relationship", "anniversary": "2025-06-29", "now": "2026-10-27T03:00:00Z", "timeZone": "Asia/Seoul", "expect": { "ok": true, "dayCount": 486 } },
+    { "name": "today in Seoul is still tomorrow in Los Angeles", "anniversary": "2026-10-27", "now": "2026-10-27T03:00:00Z", "timeZone": "America/Los_Angeles", "expect": { "ok": false, "code": "FUTURE_DATE" } },
+    { "name": "future date", "anniversary": "2026-12-01", "now": "2026-10-27T03:00:00Z", "timeZone": "Asia/Seoul", "expect": { "ok": false, "code": "FUTURE_DATE" } },
+    { "name": "nonexistent February 30", "anniversary": "2026-02-30", "now": "2026-10-27T03:00:00Z", "timeZone": "Asia/Seoul", "expect": { "ok": false, "code": "INVALID_DATE" } },
+    { "name": "nonexistent month", "anniversary": "2026-13-01", "now": "2026-10-27T03:00:00Z", "timeZone": "Asia/Seoul", "expect": { "ok": false, "code": "INVALID_DATE" } },
+    { "name": "malformed value", "anniversary": "2026/10/01", "now": "2026-10-27T03:00:00Z", "timeZone": "Asia/Seoul", "expect": { "ok": false, "code": "INVALID_DATE" } },
+    { "name": "leap day", "anniversary": "2024-02-29", "now": "2024-03-01T03:00:00Z", "timeZone": "Asia/Seoul", "expect": { "ok": true, "dayCount": 2 } }
+  ],
+  "messages": [
+    { "locale": "ko-KR", "dayCount": 486, "anniversary": "2025-06-29", "count": "486일째", "date": "2025년 6월 29일" },
+    { "locale": "en-US", "dayCount": 486, "anniversary": "2025-06-29", "count": "Day 486", "date": "June 29, 2025" },
+    { "locale": "ja-JP", "dayCount": 486, "anniversary": "2025-06-29", "count": "486日目", "date": "2025年6月29日" }
+  ]
+}

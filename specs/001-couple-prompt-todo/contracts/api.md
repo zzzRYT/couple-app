@@ -8,16 +8,18 @@
 - 오류 형태: `{ "error": { "code": "VERSION_CONFLICT", "retryable": true } }`. `code`는 언어 중립 안정 코드이며 앱이 현재 locale의 번역 리소스에서 사용자 메시지를 찾는다.
 - 오류 응답에 사용자 표시용 자연어 문구나 locale별 메시지 키를 넣지 않고 원문 프롬프트를 되풀이하지 않는다. 화면·설정·오류 문구는 앱 번역 리소스에서 제공한다.
 - 모든 변경 요청은 `Idempotency-Key` UUID를 받아 중복 tap/retry로 이중 적용되지 않게 한다.
+- 구현 중 추가한 공통 코드(2026-10-27): `400 INVALID_REQUEST`, `401 UNAUTHORIZED`, `404 NOT_FOUND`, `403 CONSENT_REQUIRED`(두 구성원 동의 전 AI 요청), `409 SESSION_EXPIRED`(만료된 점유의 heartbeat·요청). `409 SESSION_OCCUPIED` 오류 본문에는 `ownerUserId`, `expiresAt`이 함께 온다.
+- Edge Function 매핑: 앱은 `/functions/v1/{함수}{논리 경로}`를 호출한다. 함수는 `spaces`, `invitations`, `profile`, `prompt-session`, `ai-consent`, `decoration-previews`, `room`이다(`apps/mobile/src/lib/routes.ts`).
 
 ## Auth / 초대
 
-인증 방식은 카카오·Apple OAuth 및 이메일 OTP(6자리 코드가 기본)/magic link(허용)로 Supabase Auth에 위임한다. 최소 연령 만 14세는 가입 시작 화면의 확인 문구로 알리고 서버는 생년월일을 받지 않는다(FR-058, 가정). OAuth redirect는 Expo universal link로 복귀한다.
+인증 방식은 OAuth로 Supabase Auth에 위임한다. 2026-10-27 소유자 결정: 제품 로그인은 Sign in with Apple만(iOS 네이티브 id token → `signInWithIdToken`, 해시 nonce), 카카오는 비활성으로 보류, 이메일 OTP는 제품에서 제거하고 개발 빌드·로컬 스택 전용 테스트 로그인으로만 둔다(가정). API 계약은 Supabase 세션 JWT만 받으므로 공급자가 바뀌어도 바뀌지 않는다. 최소 연령 만 14세는 가입 시작 화면의 확인 문구로 알리고 서버는 생년월일을 받지 않는다(FR-058, 가정). OAuth redirect는 Expo universal link로 복귀한다.
 
 ### `POST /spaces`
 
 공간 및 첫 구성원을 하나의 트랜잭션으로 만든다. **한 사용자는 한 번에 하나의 공간에만 속한다(FR-057)**: 이미 **활성** 공간의 구성원이면 `409 ALREADY_IN_SPACE`로 거절한다. **종료된 공간은 소프트 삭제되어 세지 않으므로** 그 사용자는 종료 직후 바로 새 공간을 만들 수 있다(가정, `spec.md` Decided 33).
 
-요청: `{ "anniversaryDate": "YYYY-MM-DD" }`
+요청: `{ "anniversaryDate": "YYYY-MM-DD", "timeZone": "Asia/Seoul" }` (`timeZone`은 생성자 기기의 IANA 시간대로 방 시간대의 초기값이다; 구현 중 추가, 2026-10-27. 형식이 틀리거나 미래 날짜·없는 시간대는 `400 INVALID_REQUEST`)
 
 응답 201: `{ "spaceId": "uuid", "status": "active", "memberCount": 1, "anniversaryDate": "YYYY-MM-DD" }`
 
@@ -38,6 +40,12 @@
 서버는 해시 대조, 미만료·미사용, 대상 공간 활성·멤버 1명 조건과 **호출한 사용자가 다른 활성 공간의 구성원이 아님**(종료된 공간은 세지 않는다)을 원자적으로 확인하고 가입 후 코드를 즉시 소비한다. 사용자가 이미 다른 활성 공간에 있으면 `409 ALREADY_IN_SPACE`로 거절하고 **코드는 소모하지 않는다**(공간에서 나온 뒤 같은 코드로 다시 시도할 수 있다). 코드 형식은 8자(4-4 표시), 혼동 문자(0/O, 1/I) 제외.
 
 응답 200: `{ "spaceId": "uuid", "status": "active", "memberCount": 2 }`.
+
+초대 실패 코드(구현 중 확정, 2026-10-27; `design/i18n-copy.md`의 대응 표와 같은 이름): `404 INVITE_INVALID`(없는·폐기된·위조 코드), `410 INVITE_EXPIRED`, `409 INVITE_USED`, `409 SPACE_FULL`(이미 두 사람), `409 ALREADY_IN_SPACE`, `429 RATE_LIMITED`(`retryAfterSeconds`, `unlockAt`; 사용자당 시간당 실패 10회, 서버 설정값). 잠금 동안에는 올바른 코드도 거절한다.
+
+### `POST /invitations/preview`
+
+(구현 중 추가, 2026-10-27) 요청: `{ "code": "..." }`. 코드를 소비하지 않고 수락 전 확인 화면(`join.found.*`)에 필요한 값만 돌려준다. 응답 200: `{ "anniversaryDate": "YYYY-MM-DD", "memberCount": 1 }`. 오류와 시도 제한은 `accept`와 같다. 데이터 모델에 표시 이름이 없으므로 상대 이름은 돌려주지 않는다.
 
 ## D-day 및 조회
 

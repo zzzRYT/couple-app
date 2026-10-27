@@ -1,0 +1,10 @@
+node_modules/
+.env*
+!.env.example
+supabase/.temp/
+*.figcraft
+*.keystore
+*.p8
+.expo/
+dist/
+coverage/

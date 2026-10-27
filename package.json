@@ -1,0 +1,24 @@
+{
+  "name": "aroom-workspace",
+  "private": true,
+  "packageManager": "pnpm@10.18.2",
+  "scripts": {
+    "lint": "eslint apps/mobile/src packages/scene-contract/src packages/scene-contract/tests",
+    "typecheck": "tsc -p apps/mobile --noEmit && tsc -p packages/scene-contract --noEmit"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@expo/eas-json": "^26.0.0",
+    "@types/node": "^26.6.5",
+    "csv-parse": "^7.0.3",
+    "eslint": "^9.39.5",
+    "eslint-plugin-i18next": "^6.1.5",
+    "eslint-plugin-react-native": "^5.0.0",
+    "fontkit": "^2.0.4",
+    "pg": "^8.23.1",
+    "prettier": "^3.9.10",
+    "sharp": "^0.35.5",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.72.1"
+  }
+}
