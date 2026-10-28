@@ -596,3 +596,6 @@
 
 - 배치가 앱 정의 고정 지점에 제한되지 않고 커플별로 달라질 수 있다는 제품 방향은 정해졌다. 배치 계산과 제안의 구체적인 방식은 진행 중인 연구를 참고해 디자인 단계에서 결정한다.
 - 마스코트와 일반 오브젝트별 저작권·상표 검토(마스코트 원본은 소유자가 생성형 AI 대화 도구로 만든 마스터를 그대로 쓰기로 했고 약한 저작권 보호 위험을 받아들였다. 닮음 검사와 법률 검토는 출시 전 권장 항목이며 출시를 막지 않고, 생성 기록(도구 이름·날짜·프롬프트)은 소유자가 제공하는 선택 항목이다), 방/페이지별 표시 표현, 폰트 family의 최종 선택, 시간대 자동 전환 UX, prompt session idle timeout과 비점유자 UI는 구현/디자인 전에 구체화한다.
+
+### Invite links (assumptions, 2026-10)
+An invitation may be shared as `https://arroom.jinjinstar.com/i/XXXX-XXXX` and as a text code. The URL is a bearer secret for the same 24-hour, one-use lifetime as the code; never log it or add it to analytics. Installed apps open the invite flow, retain a pending code across authentication, and check it before the existing confirmation. An existing space follows the one-space rule. Uninstalled recipients see a localized copy/install page and can paste after installation. Store URLs and real deferred linking are future decisions.

@@ -291,3 +291,6 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 ## 실시간 업데이트
 
 채널은 인증 주체가 구성원인 `space_id`만 구독 가능하다. 홈 커버 변경은 `cover_version`과 변경 종류(`changed | removed`)만 알리고 상대가 서명된 URL을 다시 요청한다. 이벤트 payload에는 현재 테마 버전 ID/번호, 변경 종류, 변경자, 시각, session owner/expiry, message/preview ID만 둔다. prompt/AI 출력 본문과 개인 식별자는 broadcast에 넣지 않는다. 두 구성원은 권한검사된 conversation API로 shared text/preview를 읽는다. 탈퇴/종료/삭제/토큰 만료/계정 삭제 접수(세션 무효화) 시 구독을 끊는다.
+
+### Invite URL contract (assumption)
+`https://aroom.jinjinstar.com/i/<4-4 code>` and `aroom://invite/<4-4 code>` carry the existing invitation secret, not a new API token. The existing preview and accept endpoints remain authoritative for expiry, usage and membership. URLs are sensitive and must not be sent to analytics or logged.

@@ -108,7 +108,7 @@
   "invite.share": "코드 공유하기",
   "invite.copy": "코드 복사",
   "invite.copied": "복사했어요",
-  "invite.shareMsg": "우리 공간에 와 줘요. 초대 코드: {code} (24시간 안에 입력해 주세요)",
+  "invite.shareMsg": "우리 공간에 와 줘요. {link} 초대 코드: {code} (24시간 안에 입력해 주세요)",
   "invite.shareSheet.title": "공유",
   "invite.shareCancelled": "공유를 취소했어요. 코드는 그대로 쓸 수 있어요.",
   "invite.reissue": "새 코드 만들기",

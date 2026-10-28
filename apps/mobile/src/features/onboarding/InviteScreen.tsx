@@ -50,7 +50,7 @@ export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion
   const expired = left <= 0;
   const minutes = Math.max(0, Math.ceil(left / 60_000));
   async function share() {
-    const result = await Share.share({ message: t('invite.shareMsg', { code }) }).catch(() => null);
+    const result = await Share.share({ message: t('invite.shareMsg', { code, link: `https://aroom.jinjinstar.com/i/${code}` }) }).catch(() => null);
     setNotice(result?.action === Share.dismissedAction || result === null ? t('invite.shareCancelled') : null);
   }
   const expiresAt = new Intl.DateTimeFormat(i18n.language, { month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(invite.expiresAt));
