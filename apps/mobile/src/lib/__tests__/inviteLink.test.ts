@@ -1,4 +1,4 @@
-import { parseInvite, peekPendingInvite, savePendingInvite, takePendingInvite } from '../inviteLink';
+import { clearPendingInvite, parseInvite, peekPendingInvite, savePendingInvite, takePendingInvite } from '../inviteLink';
 
 test('only accepts complete codes and trusted invite URLs', () => {
   expect(parseInvite('https://aroom.jinjinstar.com/i/ab12-cd34')).toBe('AB12CD34');
@@ -13,5 +13,11 @@ test('pending invitation survives reads until consumed', async () => {
   await savePendingInvite('AB12-CD34', storage);
   expect(await peekPendingInvite(storage)).toBe('AB12CD34');
   expect(await takePendingInvite(storage)).toBe('AB12CD34');
+  expect(await peekPendingInvite(storage)).toBeNull();
+});
+test('clearing removes a pending invitation', async () => {
+  let value: string | null = 'AB12CD34';
+  const storage = { getItemAsync: jest.fn(async () => value), setItemAsync: jest.fn(), deleteItemAsync: jest.fn(async () => { value = null; }) };
+  await clearPendingInvite(storage);
   expect(await peekPendingInvite(storage)).toBeNull();
 });

@@ -5,7 +5,7 @@ import { EmailCodeScreen } from '../EmailCodeScreen';
 import type { AuthPort } from '../authPort';
 import type { AuthOptions } from '../../../config/auth';
 function port(overrides: Partial<AuthPort> = {}): AuthPort {
-  return { apple: jest.fn().mockResolvedValue('ok'), oauth: jest.fn().mockResolvedValue('ok'), sendCode: jest.fn().mockResolvedValue('ok'), verifyCode: jest.fn().mockResolvedValue('ok'), ...overrides };
+  return { apple: jest.fn().mockResolvedValue('ok'), oauth: jest.fn().mockResolvedValue('ok'), sendCode: jest.fn().mockResolvedValue('ok'), verifyCode: jest.fn().mockResolvedValue('ok'), signOut: jest.fn().mockResolvedValue(undefined), ...overrides };
 }
 const product: AuthOptions = { apple: 'native', kakao: false, devEmail: false };
 const devBuild: AuthOptions = { ...product, devEmail: true };

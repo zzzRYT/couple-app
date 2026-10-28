@@ -50,5 +50,9 @@ export function supabaseAuth(client: Supabase): AuthPort {
       if (limited) return limited;
       return /expired/i.test(error.message) ? 'expired' : 'wrong';
     },
+    async signOut() {
+      const { error } = await client.auth.signOut({ scope: 'local' });
+      if (error) throw error;
+    },
   };
 }
