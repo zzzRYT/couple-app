@@ -13,3 +13,9 @@ Static HTML, CSS and a small shared contact script; no build step. The privacy a
 Set `supportEmail` in `contact.js` to the approved public address. It fills every contact line; the HTML retains a visible placeholder when JavaScript is unavailable. Update those fallback placeholders too when the address is approved so the contact is accessible without JavaScript. Review the external request instructions in all three languages when the process is approved. Update all localized pages together after policy review.
 
 Pages: `/`, `/support/`, `/privacy/`, `/delete-account/`; English under `/en/` and Japanese under `/ja/` with the same paths. Preview with `python3 -m http.server --directory site 8000`.
+
+## Invite links
+
+`/i/<code>` is rewritten to the local invite page. The URL and code are bearer secrets, valid for 24 hours and one use; do not enable request-path analytics or logging for this route, and do not send the URL to third parties. Cloudflare access logs must also be configured accordingly. Store destinations are deliberately null in `i/invite.js`; set both to the real HTTPS listing URLs once available. Copy/paste is the fresh-install fallback; carrying a code through install automatically would require a separate deferred deep-link provider and product/privacy decision.
+
+The owner must enable Associated Domains for `com.jinjinstar.aroom.dev` in Apple team `43ZASDF2J7`; register and enable it for the production ID only after the name check. Deploy the association files before testing Universal Links. Replace the placeholder in `.well-known/assetlinks.json` with the SHA-256 fingerprint of the actual release signing certificate (including the Play App Signing certificate if applicable), e.g. `keytool -list -v -keystore <release-keystore>`, and add entries for any separately signed development package. Verify association endpoints over HTTPS with JSON content type and no redirect. The placeholder intentionally cannot verify Android links.

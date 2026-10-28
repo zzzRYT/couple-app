@@ -108,7 +108,7 @@
   "invite.share": "Share code",
   "invite.copy": "Copy code",
   "invite.copied": "Copied",
-  "invite.shareMsg": "Come join our space. Invite code: {code} (use it within 24 hours)",
+  "invite.shareMsg": "Come join our space. {link} Invite code: {code} (use it within 24 hours)",
   "invite.shareSheet.title": "Share",
   "invite.shareCancelled": "Sharing was canceled. The code still works.",
   "invite.reissue": "Create a new code",
