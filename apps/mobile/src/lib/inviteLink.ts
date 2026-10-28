@@ -21,3 +21,6 @@ export async function peekPendingInvite(storage: Storage = SecureStore): Promise
   const code = await storage.getItemAsync(KEY);
   return code ? parseInvite(code) : null;
 }
+export async function clearPendingInvite(storage: Storage = SecureStore): Promise<void> {
+  await storage.deleteItemAsync(KEY);
+}

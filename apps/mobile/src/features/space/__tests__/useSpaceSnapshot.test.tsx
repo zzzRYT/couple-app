@@ -45,3 +45,13 @@ it('refetches on foreground and keeps the last snapshot read-only when offline',
   expect(snapshot).toHaveBeenCalledTimes(2);
   expect(hook.result.current.state.snapshot?.space.spaceId).toBe('space-1');
 });
+
+it('reset drops the cached snapshot and entry so another account starts clean', async () => {
+  const server = fakeServer();
+  const hook = await renderHook(() => useSpaceSnapshot({ client: server.clientFor(), realtime: server.realtime }));
+  await waitFor(() => expect(hook.result.current.state.snapshot).not.toBeNull());
+  await act(async () => { hook.result.current.reset(); });
+  expect(hook.result.current.entry).toBe('loading');
+  expect(hook.result.current.spaceId).toBeNull();
+  expect(hook.result.current.state.snapshot).toBeNull();
+});

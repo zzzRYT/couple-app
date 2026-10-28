@@ -4,9 +4,10 @@ import type { Snapshot } from '../../lib/client';
 import { isNetworkError, type RealtimePort } from '../../lib/realtime';
 import type { SpaceState } from './types';
 const OFFLINE_RETRY_MS = 15_000;
+const initialState: SpaceState = { status: 'loading', snapshot: null, offline: false, lastSyncedAt: null };
 /** Fetches the snapshot on open, on foreground, on Realtime hints and periodically while offline; the last good copy stays readable. */
 export function useSnapshotSync(spaceId: string | null, fetchSnapshot: (spaceId: string) => Promise<Snapshot>, realtime: RealtimePort, onGone?: () => void) {
-  const [state, setState] = useState<SpaceState>({ status: 'loading', snapshot: null, offline: false, lastSyncedAt: null });
+  const [state, setState] = useState<SpaceState>(initialState);
   const fetchRef = useRef(fetchSnapshot);
   fetchRef.current = fetchSnapshot;
   const goneRef = useRef(onGone);
@@ -33,5 +34,6 @@ export function useSnapshotSync(spaceId: string | null, fetchSnapshot: (spaceId:
     const timer = setInterval(() => { void refresh(); }, OFFLINE_RETRY_MS);
     return () => clearInterval(timer);
   }, [state.offline, refresh]);
-  return { state, refresh };
+  const reset = useCallback(() => setState(initialState), []);
+  return { state, refresh, reset };
 }

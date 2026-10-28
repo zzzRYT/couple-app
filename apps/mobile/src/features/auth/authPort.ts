@@ -10,5 +10,7 @@ export type AuthPort = {
   /** Development-only email test login. */
   sendCode(email: string): Promise<'ok' | { rateLimitedMinutes: number } | 'error'>;
   verifyCode(email: string, code: string): Promise<VerifyResult>;
+  /** Clears the local Supabase session on this device only. */
+  signOut(): Promise<void>;
 };
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -22,7 +22,9 @@ export function useSpaceSnapshot({ client, realtime }: Deps) {
     }
   }, []);
   const fetchSnapshot = useCallback((id: string) => clientRef.current.snapshot(id), []);
-  const { state, refresh } = useSnapshotSync(spaceId, fetchSnapshot, realtime, () => { void resolveEntry(); });
+  const { state, refresh, reset: resetSnapshot } = useSnapshotSync(spaceId, fetchSnapshot, realtime, () => { void resolveEntry(); });
   useEffect(() => { void resolveEntry(); }, [resolveEntry]);
-  return { entry, ended, spaceId, state, refresh, reload: resolveEntry };
+  /** Drops every cached space/room value so the next account never sees the previous one's data. */
+  const reset = useCallback(() => { setEntry('loading'); setEnded(null); setSpaceId(null); resetSnapshot(); }, [resetSnapshot]);
+  return { entry, ended, spaceId, state, refresh, reload: resolveEntry, reset };
 }
