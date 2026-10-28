@@ -237,6 +237,8 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 
 구성원이 호출한다. `{ "target": "partner" | "shared_text" | "room_scene" | "generated_object", "reason": "harass" | "inappropriate" | "privacy" | "copyright" | "other", "detail?": "string(≤200)", "messageId?": "uuid", "objectId?": "uuid" }`. `target=generated_object`이면 `objectId`가 필요하고(같은 공간의 장식이 아니면 `404`) 사유는 `copyright | inappropriate | privacy | other`만 쓴다. 응답 201: `{ "reportId": "uuid", "hiddenForReporter": true|false }`(생성 장식 신고는 true: 신고자의 읽기에서 그 장식이 바로 걸러진다. 상대의 읽기는 운영 검토 전까지 그대로다). 같은 사용자의 같은 장식 신고는 멱등(기존 신고를 돌려준다). 사용자당 하루 10건을 넘으면 `429 REPORT_RATE_LIMITED`(가정). 홈 커버 사진은 신고 대상이 아니다(Open Decisions 12). 신고 접수·처리는 운영 연락처(공개 지원 이메일, 아직 없음)와 PoC의 수동 검토(`docs/operator-review-runbook.md`)로 이어진다.
 
+구현 메모(US5): 지금은 `target = partner | shared_text | room_scene`, `reason = harass | inappropriate | privacy | other`만 받는다(`generated_object`·`copyright`는 US9에서 확장). 응답은 `201 { reportId, hiddenForReporter: false }`이다. `messageId`는 `shared_text`에서만 허용되고 같은 공간의 메시지여야 한다(아니면 `404`). 하루 한도는 사용자당 최근 24시간 10건(서버 설정 `report_daily_limit`)이고 넘으면 `429 REPORT_RATE_LIMITED`(재시도 불가). 비구성원·종료된 공간은 둘 다 `404`다(위 공통 규칙대로 비구성원과 구별되지 않는다). 신고자는 RLS로 자기 신고만 읽는다.
+
 ### `GET /spaces/{spaceId}/reports/mine`
 
 호출자 본인의 신고만 `[{ reportId, target, objectId?, status: "received" | "reviewed", outcome: null | "removed" | "kept", createdAt, notified: boolean }]`로 돌려준다(상대의 신고·사유·메모는 절대 노출하지 않는다). 앱은 이 값으로 장식 상세의 "신고했어요 · 접수됨 / 검토를 마쳤어요" 상태를 그린다.
@@ -251,7 +253,7 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 
 ### `POST /spaces/{spaceId}/block`
 
-**화면 이름은 "연결 끊기"(예전 "차단")이고 엔드포인트 이름은 `block`을 유지한다**(계약 이름을 불필요하게 바꾸지 않기 위해). 구성원이 호출한다. `{ "confirm": true }`. 상대의 접근을 즉시 끊고 공간을 종료한다(`POST /end`와 같은 소프트 삭제, 종료 이유 `disconnect`, `ended_by_user_id` = 호출자). 복구는 없다. 이 호출은 신고와 별개이고 신고를 만들지 않는다. 응답은 `/end`와 같다(200 `{ "status": "ended" }`, 일정 없음)이며 앱은 확인 창에서 이 결과를 미리 알린다.
+**화면 이름은 "연결 끊기"(예전 "차단")이고 엔드포인트 이름은 `block`을 유지한다**(계약 이름을 불필요하게 바꾸지 않기 위해). 구성원이 호출한다. `{ "confirm": true }`. 상대의 접근을 즉시 끊고 공간을 종료한다(`POST /end`와 같은 소프트 삭제, 종료 이유 `disconnect`, `ended_by_user_id` = 호출자). 복구는 없다. 이 호출은 신고와 별개이고 신고를 만들지 않는다. 응답은 `/end`와 같다(200 `{ "status": "ended" }`, 일정 없음)이며 앱은 확인 창에서 이 결과를 미리 알린다. 비구성원은 다른 모든 호출처럼 `404`이다(태스크 T091의 "403" 대신 공통 규칙을 따른다). 종료 순간 같은 비공개 채널로 `member` 이벤트 `{ kind: 'ended' }`가 나가 상대 앱이 바로 새로고침하고 종료 안내로 이동한다.
 
 ## 계정 (삭제, 2026-10-27 7차 답변 · 가정, FR-070~FR-074)
 
@@ -277,8 +279,9 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 ### 완전 삭제 작업 `purge_expired_spaces()` (Edge Function `lifecycle-sweep`)
 
 - 스케줄러가 주기적으로(최소 하루 1회) 호출한다. `status = 'ended' and purge_after <= now()`인 공간마다 **공간 단위로** ① Storage 객체(홈 커버 현재 객체와 삭제 대기 목록)를 먼저 지우고 ② 그 공간의 모든 행(공간·구성원·초대·방 테마와 버전·꾸밈 요청·프롬프트 세션과 메시지·홈 커버 사진·마일스톤·생성 장식·생성 시도·그 공간의 신고·일일 요청 행·종료 알림)을 한 트랜잭션으로 지운다.
+- 구현(US5): DB 쪽은 `due_purge_spaces(at)`(대상 목록) → `mark_purge_started` → (Edge Function이 Storage 객체를 비공개 버킷 `home-cover`의 `<spaceId>/…` 접두사로 찾아 지움) → `purge_space(spaceId, at)`(한 트랜잭션, 기한 전이면 `false`)로 나뉜다. Storage는 SQL 밖이라 단일 `purge_expired_spaces()` 대신 이 순서를 `lifecycle-sweep`이 돌린다. 한 번에 최대 50개 공간이고, 한 공간의 실패는 다른 공간을 막지 않는다. 방 버전 불변 트리거는 `purge_space` 안에서만 해제된다. 응답: 기존 정리 결과에 `purged`, `failed`가 더해진다. **스케줄은 아직 걸지 않았다**(소유자 결정 대기).
 - 멱등이고 재시도에 안전하다. 실패하면 공간은 `ended` 그대로(이미 클라이언트에 보이지 않음) 남아 다음 실행에서 다시 시도한다. 부분적으로 삭제되어 보이는 상태는 없다.
-- 내용 없는 `deletion_started`/`deletion_completed` 이벤트만 남긴다. `generation_block` 지문(개인정보 없음)은 지우지 않는다. 신고 행을 증거로 오래 둘지는 열린 질문(기본 가정: 함께 삭제, `spec.md` Open Decisions 21).
+- 내용 없는 `deletion_started`/`deletion_completed` 이벤트만 남긴다(`space_lifecycle_event.space_id`의 외래 키를 없애 공간이 지워진 뒤에도 남고, 삭제 때 앞선 `ended` 이벤트의 `actor_user_id`와 `metadata`도 비운다). `generation_block` 지문(개인정보 없음)은 지우지 않는다. 신고 행을 증거로 오래 둘지는 열린 질문(기본 가정: 함께 삭제, `spec.md` Open Decisions 21).
 - `purge_after`는 서버 설정값(종료 + 30일)이며 어떤 API 응답에도 나가지 않는다.
 
 ### 계정 삭제 실행기 (Edge Function `lifecycle-sweep` 확장 + `account` 함수의 백그라운드 단계)

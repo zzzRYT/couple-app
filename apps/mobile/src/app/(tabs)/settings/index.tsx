@@ -13,5 +13,5 @@ export default function SettingsRoute() {
     await logout({ auth, releaseSession: client.release, clearPendingInvite, resetSpace: reset, snapshot: state.snapshot, userId });
     router.replace({ pathname: '/login', params: lastUsed ? { lastUsed } : {} });
   };
-  return <SettingsScreen onLogout={onLogout} />;
+  return <SettingsScreen onLogout={onLogout} onOpenReport={() => router.push('/settings/report')} onOpenEndSpace={() => router.push('/settings/end-space')} />;
 }

@@ -34,10 +34,13 @@ function noticeFor(error: unknown): Notice {
   }
 }
 /** S08 shared prompt panel: one owner types, requests and applies; the partner watches read-only. Offline requests are never queued. */
-export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpenConsent, onClose, onApplied, renderScene, clock, settings = defaultSessionSettings }: {
+export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpenConsent, onClose, onApplied, renderScene, clock, settings = defaultSessionSettings, onReportMessage }: {
   client: PanelClient; snapshot: Snapshot; online: boolean; refreshToken?: number; onOpenConsent: () => void; onClose?: () => void; onApplied?: (version: number) => void;
   renderScene?: (scene: SceneDocument) => ReactNode; clock?: () => number; settings?: SessionSettings;
+  /** Opens the report flow for a partner's message; omit to hide the message menu. */
+  onReportMessage?: (messageId: string) => void;
 }) {
+  const [menuFor, setMenuFor] = useState<string | null>(null);
   const color = useAppColor();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
@@ -121,6 +124,7 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
         {conversation?.messages.length ? conversation.messages.map((message) => (
           <View key={message.id} style={{ alignSelf: message.authorUserId === me ? 'flex-end' : 'flex-start', padding: 8, backgroundColor: message.kind === 'status' ? 'transparent' : color.surface, borderWidth: message.kind === 'status' ? 0 : 1, borderColor: color.divider }}>
             <Text style={{ color: message.kind === 'status' ? color.text2 : color.text }}>{message.kind === 'preview' && !message.bodyText ? t('prompt.msg.status.preview') : message.bodyText}</Text>
+            {onReportMessage && message.kind === 'user_prompt' && message.authorUserId && message.authorUserId !== me && <Button label="⋯" variant="ghost" accessibilityLabel={t('report.msg.menu')} onPress={() => setMenuFor(message.id)} />}
           </View>
         )) : <Text style={{ color: color.text2 }}>{t('prompt.history.empty')}</Text>}
         {preview && !applied && <View style={{ gap: 8, borderWidth: 2, borderColor: color.line, borderRadius: tokens.radius.card, padding: tokens.spacing[1] }}>
@@ -140,6 +144,10 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
         </View>}
       </View>
       </ScrollView>
+      <Dialog visible={menuFor !== null} title={t('report.msg.menu')} onClose={() => setMenuFor(null)}>
+        <Button label={t('report.msg.menu')} onPress={() => { const id = menuFor; setMenuFor(null); if (id && onReportMessage) onReportMessage(id); }} />
+        <Button label={t('report.msg.menu.cancel')} variant="ghost" onPress={() => setMenuFor(null)} />
+      </Dialog>
       <View style={{ padding: tokens.spacing[3], paddingBottom: Math.max(insets.bottom, tokens.spacing[3]), gap: tokens.spacing[1], borderTopWidth: 1, borderColor: color.divider }}>
         {status === 'partner' && <Text style={{ color: color.text2 }}>{t('prompt.input.partner', { name: partner })}</Text>}
         {busy === 'sending' && <CycleLoader label={t('prompt.sending')} />}

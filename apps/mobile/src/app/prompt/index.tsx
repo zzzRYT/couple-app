@@ -18,6 +18,6 @@ export default function PromptRoute() {
   if (!state.snapshot) return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><CycleLoader label={t('common.loading')} /></View>;
   const mini = estimateLayout(180, 260, 1, 'ios');
   return <PromptPanel client={client} snapshot={state.snapshot} online={!state.offline} refreshToken={token}
-    onOpenConsent={() => router.push('/prompt/consent')} onClose={() => router.back()} onApplied={() => { void refresh(); router.back(); }}
+    onOpenConsent={() => router.push('/prompt/consent')} onReportMessage={(messageId) => router.push({ pathname: '/settings/report', params: { messageId } })} onClose={() => router.back()} onApplied={() => { void refresh(); router.back(); }}
     renderScene={(scene) => <RoomScene scene={scene} mode="day" layout={{ ...mini, safeTop: 0, safeBottom: 0, tabBarHeight: 0, toolbar: { x: 0, y: 0, width: 0, height: 0 } }} compact />} />;
 }

@@ -57,7 +57,7 @@ it('maps the session provider to a highlightable login method', () => {
 
 it('asks for confirmation before signing out', async () => {
   const onLogout = jest.fn().mockResolvedValue(undefined);
-  const screen = await renderWithI18n(<SettingsScreen onLogout={onLogout} />);
+  const screen = await renderWithI18n(<SettingsScreen onLogout={onLogout} onOpenReport={jest.fn()} onOpenEndSpace={jest.fn()} />);
   await fireEvent.press(screen.getByRole('button', { name: screen.t('set.logout') }));
   expect(screen.getByText(screen.t('set.logout.title'))).toBeTruthy();
   expect(onLogout).not.toHaveBeenCalled();
@@ -67,7 +67,7 @@ it('asks for confirmation before signing out', async () => {
 
 it('signs out after confirming and shows an error when it fails', async () => {
   const onLogout = jest.fn().mockRejectedValueOnce(new Error('x')).mockResolvedValue(undefined);
-  const screen = await renderWithI18n(<SettingsScreen onLogout={onLogout} />);
+  const screen = await renderWithI18n(<SettingsScreen onLogout={onLogout} onOpenReport={jest.fn()} onOpenEndSpace={jest.fn()} />);
   await fireEvent.press(screen.getByRole('button', { name: screen.t('set.logout') }));
   const buttons = () => screen.getAllByRole('button', { name: screen.t('set.logout') });
   await fireEvent.press(buttons().at(-1)!);
