@@ -31,7 +31,11 @@ export function RoomScene({ scene, mode, layout, compact = false, reducedMotion,
   const mascot = placed.objects.find((node) => node.assetId === 'app_mascot');
   return (
     <View testID="room-scene" style={{ width: layout.width, height: layout.height, backgroundColor: room.wall, overflow: 'hidden' }}>
-      <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: layout.height * 0.32, backgroundColor: room.floor }} />
+      <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: layout.height * (1 - tokens.layout.floorLineRatio), backgroundColor: room.floor }} />
+      <View pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={{ position: 'absolute', left: layout.width * 0.58, top: layout.height * 0.16, width: layout.width * 0.28, height: layout.height * 0.20, borderWidth: tokens.border.outline.normal, borderColor: room.line, borderTopLeftRadius: layout.width * 0.14, borderTopRightRadius: layout.width * 0.14, overflow: 'hidden', backgroundColor: room.sky }}>
+        <View style={{ position: 'absolute', top: 0, bottom: 0, left: '50%', width: tokens.border.outline.normal, backgroundColor: room.line }} />
+        <View style={{ position: 'absolute', left: 0, right: 0, top: '60%', height: tokens.border.outline.normal, backgroundColor: room.line }} />
+      </View>
       <View testID="room-decor" pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={{ position: 'absolute', left: 0, top: 0, width: layout.width, height: layout.height }}>
         <Canvas style={{ width: layout.width, height: layout.height }}>
           {decorations.map((node, index) => <Decoration key={`${node.assetId}-${index}`} node={node} mode={mode} layout={layout} />)}

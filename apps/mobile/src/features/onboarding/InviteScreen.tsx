@@ -1,12 +1,13 @@
+import { useAppColor } from '../../theme/useAppColor';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, Share, Text, View } from 'react-native';
+import { Animated, Share, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Banner, Button, Dialog } from '../../ui/components';
 import { CycleLoader } from '../../ui/CycleLoader';
 import { useReducedMotion } from '../../ui/motion';
 import { catalogImages } from '../../scene/catalogImages';
 import { tokens } from '../../theme/tokens';
-const color = tokens.color.app.light.normal;
+
 const EXPIRING_MS = 30 * 60_000;
 type Invitation = { code: string; expiresAt: string };
 export const formatInviteCode = (code: string) => { const clean = code.replace(/[^0-9a-z]/gi, '').toUpperCase(); return `${clean.slice(0, 4)}-${clean.slice(4, 8)}`; };
@@ -21,9 +22,10 @@ function FloatingLetter({ reduced }: { reduced: boolean }) {
   return <Animated.Image source={catalogImages.obj_keep_letter} style={{ width: 56, height: 56, transform: [{ translateY: lift }] }} />;
 }
 /** S04 invite. The raw code exists only in component state for display/share and is never logged. */
-export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion, memberCount = 1, onJoined, onLater }: {
-  createInvitation: () => Promise<Invitation>; clock?: () => number; reducedMotion?: boolean; memberCount?: number; onJoined?: () => void; onLater?: () => void;
+export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion, memberCount = 1, onJoined, onLater, copyCode }: {
+  createInvitation: () => Promise<Invitation>; clock?: () => number; reducedMotion?: boolean; memberCount?: number; onJoined?: () => void; onLater?: () => void; copyCode?: (code: string) => Promise<boolean>;
 }) {
+  const color = useAppColor();
   const { t, i18n } = useTranslation();
   const systemReduced = useReducedMotion();
   const [invite, setInvite] = useState<Invitation | null>(null);
@@ -40,10 +42,10 @@ export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion
   useEffect(() => { if (memberCount >= 2) onJoined?.(); }, [memberCount, onJoined]);
   if (status === 'loading') return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: color.bg }}><CycleLoader label={t('invite.generating')} /><Text style={{ color: color.text }}>{t('invite.generating')}</Text></View>;
   if (status === 'error' || !invite) {
-    return <View style={{ flex: 1, padding: 24, gap: 12, backgroundColor: color.bg }}>
+    return <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2] }}>
       <Banner kind="danger" text={t('invite.err.title')} /><Text style={{ color: color.text2 }}>{t('invite.err.body')}</Text>
       <Button label={t('common.retry')} onPress={() => void load()} />
-    </View>;
+    </ScrollView>;
   }
   const code = formatInviteCode(invite.code);
   const left = Date.parse(invite.expiresAt) - now;
@@ -55,7 +57,7 @@ export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion
   }
   const expiresAt = new Intl.DateTimeFormat(i18n.language, { month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(invite.expiresAt));
   return (
-    <View style={{ flex: 1, padding: 24, gap: 12, backgroundColor: color.bg }}>
+    <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2] }}>
       <Text accessibilityRole="header" style={{ color: color.text, fontSize: 20 }}>{t('invite.title')}</Text>
       <Text style={{ color: color.text2 }}>{t('invite.body')}</Text>
       {expired ? <View style={{ gap: 4 }}><Banner kind="warn" text={t('invite.expired.title')} /><Text style={{ color: color.text2 }}>{t('invite.expired.body')}</Text></View> : <View style={{ gap: 4 }}>
@@ -64,6 +66,7 @@ export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion
         <Text style={{ color: color.text2 }}>{t('invite.once')}</Text>
         {left <= EXPIRING_MS ? <Banner kind="warn" text={t('invite.expiring', { m: minutes })} /> : <Text style={{ color: color.text2 }}>{t('invite.expires', { h: Math.floor(minutes / 60), m: minutes % 60 })}</Text>}
         <Text style={{ color: color.text2 }}>{t('invite.expiresAt', { date: expiresAt })}</Text>
+        {copyCode && <Button label={t('invite.copy')} accessibilityLabel={t('a11y.copy')} variant="secondary" onPress={() => { void copyCode(code).then((copied) => setNotice(t(copied ? 'invite.copied' : 'invite.err.title'))).catch(() => setNotice(t('invite.err.title'))); }} />}
         <Button label={t('invite.share')} accessibilityLabel={t('a11y.share')} onPress={() => void share()} />
       </View>}
       {notice && <Banner text={notice} />}
@@ -79,6 +82,6 @@ export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion
         <Button label={t('common.confirm')} onPress={() => { setConfirmReissue(false); void load(); }} />
         <Button label={t('common.cancel')} variant="ghost" onPress={() => setConfirmReissue(false)} />
       </Dialog>
-    </View>
+    </ScrollView>
   );
 }

@@ -76,3 +76,10 @@ it('disables decorating offline with a read-only banner', async () => {
   expect(screen.getByText(screen.t('room.offline'))).toBeTruthy();
   expect(screen.getByRole('button', { name: screen.t('a11y.decorate') }).props.accessibilityState.disabled).toBe(true);
 });
+
+
+it('keeps a stored widget below the toolbar when their frames overlap', async () => {
+  const screen = await room(ready());
+  const widget = screen.getByTestId('dday-widget');
+  expect(widget.props.style.top).toBeGreaterThanOrEqual(layout.toolbar.y + layout.toolbar.height);
+});
