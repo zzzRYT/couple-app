@@ -451,6 +451,9 @@ import_map = "./functions/deno.json"
 [functions.room]
 import_map = "./functions/deno.json"
 
+[functions.reports]
+import_map = "./functions/deno.json"
+
 [functions.lifecycle-sweep]
 import_map = "./functions/deno.json"
 verify_jwt = false

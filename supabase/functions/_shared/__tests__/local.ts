@@ -23,6 +23,11 @@ export async function service(): Promise<SupabaseClient> {
   const env = await localEnv();
   return createClient(env.url, env.serviceKey, { auth: { persistSession: false, autoRefreshToken: false } });
 }
+/** A client that acts as the user through RLS (anon key + the user's token), the way the app's own queries would. */
+export async function userClient(user: TestUser): Promise<SupabaseClient> {
+  const env = await localEnv();
+  return createClient(env.url, env.anonKey, { global: { headers: { Authorization: `Bearer ${user.token}` } }, auth: { persistSession: false, autoRefreshToken: false } });
+}
 export async function localDeps(overrides: Partial<Deps> = {}): Promise<Deps> {
   const client = await service();
   return { db: rpcDb(client), verifier: clientVerifier(client), idempotency: tableIdempotencyStore(client), ...overrides };
