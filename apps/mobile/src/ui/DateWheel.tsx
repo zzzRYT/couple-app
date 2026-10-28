@@ -1,7 +1,7 @@
+import { useAppColor } from '../theme/useAppColor';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme/tokens';
-const color = tokens.color.app.light.normal;
+
 const ROW = 44;
 export type DateParts = { year: number; month: number; day: number };
 export const toIsoDate = ({ year, month, day }: DateParts) => `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -10,6 +10,7 @@ export function fromIsoDate(value: string): DateParts {
   return { year: year!, month: month!, day: day! };
 }
 function Column({ field, values, selected, unit, onChange }: { field: keyof DateParts; values: number[]; selected: number; unit: string; onChange: (value: number) => void }) {
+  const color = useAppColor();
   const index = values.indexOf(selected);
   const step = (delta: number) => { const next = values[index + delta]; if (next !== undefined) onChange(next); };
   return (
@@ -28,6 +29,7 @@ function Column({ field, values, selected, unit, onChange }: { field: keyof Date
 }
 /** Three-column wheel (not a calendar). Days always list 1-31 so impossible dates are reported by validation instead of silently clamped. */
 export function DateWheel({ value, onChange, maxYear }: { value: DateParts; onChange: (value: DateParts) => void; maxYear: number }) {
+  const color = useAppColor();
   const { t } = useTranslation();
   const range = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i);
   return (

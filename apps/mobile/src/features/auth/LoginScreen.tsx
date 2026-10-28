@@ -1,5 +1,6 @@
+import { useAppColor } from '../../theme/useAppColor';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Banner, Button, TextField } from '../../ui/components';
 import { CycleLoader } from '../../ui/CycleLoader';
@@ -8,10 +9,11 @@ import { authOptions as defaultOptions, type AuthOptions } from '../../config/au
 import { AppleButton } from './AppleButton';
 import { ProviderButton } from './ProviderButton';
 import { EMAIL_PATTERN, type AuthPort, type Provider } from './authPort';
-const color = tokens.color.app.light.normal;
+
 type OAuthProvider = 'kakao' | 'apple';
 type State = { kind: 'choose' } | { kind: 'redirect'; provider: OAuthProvider } | { kind: 'cancelled' | 'error'; provider: OAuthProvider } | { kind: 'email'; invalid: boolean; sending: boolean; failed: boolean };
 export function LoginScreen({ auth, lastUsed, onDone, onEmail, options = defaultOptions }: { auth: AuthPort; lastUsed?: Provider; onDone: () => void; onEmail: (email: string) => void; options?: AuthOptions }) {
+  const color = useAppColor();
   const { t } = useTranslation();
   const [state, setState] = useState<State>({ kind: 'choose' });
   const [email, setEmail] = useState('');
@@ -37,7 +39,7 @@ export function LoginScreen({ auth, lastUsed, onDone, onEmail, options = default
     </View>;
   }
   return (
-    <View style={{ flex: 1, padding: 24, gap: 12, backgroundColor: color.bg }}>
+    <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2] }}>
       <Text accessibilityRole="header" style={{ color: color.text, fontSize: 20 }}>{t('login.title')}</Text>
       {(state.kind === 'cancelled' || state.kind === 'error') && <View style={{ gap: 8 }}>
         <Banner kind={state.kind === 'error' ? 'danger' : 'info'} text={t(`login.${state.kind}.title`)} />
@@ -61,6 +63,6 @@ export function LoginScreen({ auth, lastUsed, onDone, onEmail, options = default
         {/* Development builds only (EXPO_PUBLIC_DEV_EMAIL_LOGIN); never part of the product sign-in. */}
         {options.devEmail && <Button label={t('login.email')} variant="ghost" onPress={() => setState({ kind: 'email', invalid: false, sending: false, failed: false })} />}
       </View>}
-    </View>
+    </ScrollView>
   );
 }

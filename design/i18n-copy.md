@@ -2,7 +2,7 @@
 
 > 이 문서는 디자인 원본에서 자동으로 만든 표예요. 구현은 **키만 코드에 쓰고** 텍스트는 번역 리소스(`ko-KR`, `en-US`, `ja-JP`)로 둬요. `{name}` 형태는 보간 변수예요. 달력·할 일·가격을 떠올리게 하는 표현과(마일스톤 알림 문구는 예외)(홈 배경 사진 한 장 말고는) 사진 기능 표현은 쓰지 않았어요. 일본어·영어 문구는 디자이너가 쓴 초안이라 **원어민 검수**가 필요해요(handoff.md).
 
-- 총 키 수: **640**
+- 총 키 수: **642**
 - 사용자가 입력한 방 문구와 프롬프트는 번역하지 않고 입력한 그대로 저장·표시해요.
 - 서버 오류는 언어 중립 코드(`VERSION_CONFLICT` 등)만 오고, 앱이 아래 키로 문구를 골라요: `VERSION_CONFLICT`→`preview.conflict.*`·`undo.conflict.*`, `QUOTA_REACHED`→`prompt.quota.*`, `CONSENT_REQUIRED`→`prompt.consent.need`, `SESSION_OCCUPIED`→`prompt.partner`, `SESSION_EXPIRED`→`prompt.idle.me.*`, `INVITE_EXPIRED`→`join.expired.*`, `INVITE_USED`→`join.used.*`, `SPACE_FULL`→`join.full.*`, `ALREADY_IN_SPACE`→`join.hasSpace.*`, `GENERATION_REFUSED`(`category`별)→`gen.refuse.*`(`ip`→`gen.refuse.ip`, `people`, `unsafe`, `personal`, `photo_like`→`gen.refuse.photo`, `off_purpose`·`injection`→`gen.refuse.purpose`), `GENERATION_FAILED`→`gen.fail.*`, `GENERATION_DISABLED`→`gen.disabled.*`, `LIBRARY_FULL`→`gen.lib.full`, `REPORT_RATE_LIMITED`→`report.obj.limit`, `UNSUPPORTED_REQUEST`→`prompt.unsupported.*`, `BRAND_REQUEST`→`prompt.brand.*`, `AUTH_EXPIRED`→`sys.login.*`. (코드 이름은 계약 문서 `contracts/api.md`의 이름을 확인해서 맞춰야 해요.)
 
@@ -123,6 +123,8 @@
 
 | 키 | 한국어 | English | 日本語 |
 |---|---|---|---|
+| `space.choice.title` | 우리 공간을 시작해요 | Start your space | ふたりのスペースを始めましょう |
+| `space.choice.body` | 새 공간을 만들거나 상대에게 받은 초대 코드로 참여할 수 있어요. | Create a new space or join with an invitation code from your partner. | 新しく作るか、パートナーからの招待コードで参加できます。 |
 | `space.title` | 함께한 날짜를 알려 주세요 | When did you two get together? | ふたりが一緒になった日を教えてください |
 | `space.body` | 이 날짜부터 함께한 일수를 세어요. 나중에 설정에서 고칠 수 있어요. | We'll count the days from this date. You can change it later in Settings. | この日から一緒に過ごした日数を数えます。あとで設定から変更できます。 |
 | `space.date.label` | 함께한 날짜 | Date you got together | 一緒になった日 |
@@ -256,7 +258,7 @@
 | `prompt.left` | 오늘 {n}번 더 꾸밀 수 있어요 | {n} more tries today | 今日はあと{n}回試せます |
 | `prompt.quota.title` | 오늘 꾸미기를 모두 썼어요 | You've used all of today's tries | 今日の回数を使い切りました |
 | `prompt.quota.body` | 하루 3번까지 쓸 수 있어요. 만들어지지 못했거나 거절된 요청은 세지 않아요. 내일 다시 이어서 꾸밀 수 있고, 지금 방은 그대로예요. | You can decorate up to 3 times a day. Requests that fail or are declined don't count. Pick it up again tomorrow — the room stays as it is. | 1日3回まで使えます。作れなかったリクエストや断られたリクエストは数えません。明日また続けられます。今の部屋はそのままです。 |
-| `prompt.consent.need` | 꾸미려면 해외 AI 처리에 동의해야 해요 | To decorate, you need to agree to overseas AI processing | 飾るには、海外でのAI処理への同意が必要です |
+| `prompt.consent.need` | 꾸미려면 두 사람 모두 해외 AI 처리에 동의해야 해요 | Both partners must agree to overseas AI processing before decorating | 飾るには、ふたりとも海外でのAI処理に同意する必要があります |
 | `prompt.consent.action` | 안내 보기 | View details | 詳細を見る |
 | `prompt.offline` | 인터넷에 연결되어야 꾸밀 수 있어요 | You need an internet connection to decorate | 飾るにはインターネット接続が必要です |
 | `prompt.unsupported.title` | 이 요청은 만들 수 없어요 | I can't make that | このリクエストは作れません |

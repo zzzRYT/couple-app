@@ -51,3 +51,12 @@ it('shows the waiting state and leaves when the partner has joined', async () =>
   await screen.rerender(<InviteScreen createInvitation={createInvitation} clock={() => clock} reducedMotion memberCount={2} onJoined={onJoined} />);
   expect(onJoined).toHaveBeenCalled();
 });
+
+
+it('copies the displayed invitation code', async () => {
+  const copyCode = jest.fn().mockResolvedValue(true);
+  const screen = await renderWithI18n(<InviteScreen createInvitation={jest.fn().mockResolvedValue(invitation('AAAABBBB'))} clock={() => clock} reducedMotion copyCode={copyCode} />);
+  await fireEvent.press(await screen.findByRole('button', { name: screen.t('a11y.copy') }));
+  expect(copyCode).toHaveBeenCalledWith('AAAA-BBBB');
+  expect(await screen.findByText(screen.t('invite.copied'))).toBeTruthy();
+});

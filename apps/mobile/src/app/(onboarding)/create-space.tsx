@@ -11,5 +11,5 @@ export default function CreateSpaceRoute() {
   const timeZone = getCalendars()[0]?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
   return <CreateSpaceScreen createSpace={client.createSpace} now={now} timeZone={timeZone}
     onCreated={(spaceId) => { void reload(); router.replace({ pathname: '/invite', params: { spaceId } }); }}
-    onOpenSpace={() => { void reload(); router.replace('/'); }} />;
+    onBack={() => router.back()} onOpenSpace={() => { void reload(); router.replace('/'); }} />;
 }

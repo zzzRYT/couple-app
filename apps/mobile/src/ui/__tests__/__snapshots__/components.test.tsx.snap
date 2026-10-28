@@ -6,8 +6,11 @@ exports[`renders each shared primitive and names its actions 1`] = `
     accessibilityLabel="Status"
     style={
       {
+        "alignSelf": "flex-start",
+        "backgroundColor": "#F3E0C4",
+        "borderRadius": 999,
         "justifyContent": "center",
-        "minHeight": 44,
+        "minHeight": 48,
         "paddingHorizontal": 12,
       }
     }
@@ -26,8 +29,11 @@ exports[`renders each shared primitive and names its actions 1`] = `
     accessibilityLabel="Owner"
     style={
       {
+        "alignSelf": "flex-start",
+        "backgroundColor": "#F3E0C4",
+        "borderRadius": 999,
         "justifyContent": "center",
-        "minHeight": 44,
+        "minHeight": 48,
         "paddingHorizontal": 12,
       }
     }
@@ -48,6 +54,7 @@ exports[`renders each shared primitive and names its actions 1`] = `
     style={
       {
         "backgroundColor": "#E1EDF5",
+        "borderRadius": 16,
         "padding": 12,
       }
     }
@@ -78,80 +85,105 @@ exports[`renders each shared primitive and names its actions 1`] = `
     visible={true}
   >
     <View
-      accessibilityViewIsModal={true}
       style={
         {
-          "backgroundColor": "#FFF8EC",
-          "padding": 24,
+          "backgroundColor": "#00000080",
+          "flex": 1,
+          "justifyContent": "center",
+          "padding": 20,
         }
       }
     >
-      <Text
-        accessibilityRole="header"
+      <RCTScrollView
+        accessibilityViewIsModal={true}
+        contentContainerStyle={
+          {
+            "backgroundColor": "#FFF8EC",
+            "borderRadius": 28,
+            "gap": 12,
+            "padding": 24,
+          }
+        }
         style={
           {
-            "color": "#3F2D22",
+            "flexGrow": 0,
           }
         }
       >
-        Confirm
-      </Text>
-      <View
-        accessibilityLabel="OK"
-        accessibilityRole="button"
-        accessibilityState={
-          {
-            "busy": undefined,
-            "checked": undefined,
-            "disabled": false,
-            "expanded": undefined,
-            "selected": undefined,
-          }
-        }
-        accessibilityValue={
-          {
-            "max": undefined,
-            "min": undefined,
-            "now": undefined,
-            "text": undefined,
-          }
-        }
-        accessible={true}
-        collapsable={false}
-        focusable={true}
-        onBlur={[Function]}
-        onClick={[Function]}
-        onFocus={[Function]}
-        onResponderGrant={[Function]}
-        onResponderMove={[Function]}
-        onResponderRelease={[Function]}
-        onResponderTerminate={[Function]}
-        onResponderTerminationRequest={[Function]}
-        onStartShouldSetResponder={[Function]}
-        style={
-          {
-            "alignItems": "center",
-            "backgroundColor": "#B24A24",
-            "borderColor": "#FFFFFF",
-            "borderWidth": 0,
-            "justifyContent": "center",
-            "minHeight": 44,
-            "minWidth": 44,
-            "opacity": 1,
-            "paddingHorizontal": 16,
-          }
-        }
-      >
-        <Text
-          style={
-            {
-              "color": "#FFFFFF",
+        <View>
+          <Text
+            accessibilityRole="header"
+            style={
+              {
+                "color": "#3F2D22",
+                "fontSize": 20,
+              }
             }
-          }
-        >
-          OK
-        </Text>
-      </View>
+          >
+            Confirm
+          </Text>
+          <View
+            accessibilityLabel="OK"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": false,
+                "expanded": undefined,
+                "selected": undefined,
+              }
+            }
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
+            }
+            accessible={true}
+            collapsable={false}
+            focusable={true}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              {
+                "alignItems": "center",
+                "backgroundColor": "#B24A24",
+                "borderColor": "#FFFFFF",
+                "borderRadius": 16,
+                "borderWidth": 0,
+                "justifyContent": "center",
+                "minHeight": 48,
+                "minWidth": 48,
+                "opacity": 1,
+                "paddingHorizontal": 16,
+                "paddingVertical": 8,
+              }
+            }
+          >
+            <Text
+              style={
+                {
+                  "color": "#FFFFFF",
+                  "fontSize": 16,
+                  "textAlign": "center",
+                }
+              }
+            >
+              OK
+            </Text>
+          </View>
+        </View>
+      </RCTScrollView>
     </View>
   </Modal>
   <Modal
@@ -160,80 +192,105 @@ exports[`renders each shared primitive and names its actions 1`] = `
     visible={true}
   >
     <View
-      accessibilityViewIsModal={true}
       style={
         {
-          "backgroundColor": "#FFF8EC",
-          "padding": 24,
+          "backgroundColor": "#00000080",
+          "flex": 1,
+          "justifyContent": "center",
+          "padding": 20,
         }
       }
     >
-      <Text
-        accessibilityRole="header"
+      <RCTScrollView
+        accessibilityViewIsModal={true}
+        contentContainerStyle={
+          {
+            "backgroundColor": "#FFF8EC",
+            "borderRadius": 28,
+            "gap": 12,
+            "padding": 24,
+          }
+        }
         style={
           {
-            "color": "#3F2D22",
+            "flexGrow": 0,
           }
         }
       >
-        Details
-      </Text>
-      <View
-        accessibilityLabel="Open"
-        accessibilityRole="button"
-        accessibilityState={
-          {
-            "busy": undefined,
-            "checked": undefined,
-            "disabled": false,
-            "expanded": undefined,
-            "selected": undefined,
-          }
-        }
-        accessibilityValue={
-          {
-            "max": undefined,
-            "min": undefined,
-            "now": undefined,
-            "text": undefined,
-          }
-        }
-        accessible={true}
-        collapsable={false}
-        focusable={true}
-        onBlur={[Function]}
-        onClick={[Function]}
-        onFocus={[Function]}
-        onResponderGrant={[Function]}
-        onResponderMove={[Function]}
-        onResponderRelease={[Function]}
-        onResponderTerminate={[Function]}
-        onResponderTerminationRequest={[Function]}
-        onStartShouldSetResponder={[Function]}
-        style={
-          {
-            "alignItems": "center",
-            "backgroundColor": "transparent",
-            "borderColor": "#3F2D22",
-            "borderWidth": 0,
-            "justifyContent": "center",
-            "minHeight": 44,
-            "minWidth": 44,
-            "opacity": 1,
-            "paddingHorizontal": 16,
-          }
-        }
-      >
-        <Text
-          style={
-            {
-              "color": "#3F2D22",
+        <View>
+          <Text
+            accessibilityRole="header"
+            style={
+              {
+                "color": "#3F2D22",
+                "fontSize": 20,
+              }
             }
-          }
-        >
-          Open
-        </Text>
-      </View>
+          >
+            Details
+          </Text>
+          <View
+            accessibilityLabel="Open"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": false,
+                "expanded": undefined,
+                "selected": undefined,
+              }
+            }
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
+            }
+            accessible={true}
+            collapsable={false}
+            focusable={true}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              {
+                "alignItems": "center",
+                "backgroundColor": "transparent",
+                "borderColor": "#3F2D22",
+                "borderRadius": 16,
+                "borderWidth": 0,
+                "justifyContent": "center",
+                "minHeight": 48,
+                "minWidth": 48,
+                "opacity": 1,
+                "paddingHorizontal": 16,
+                "paddingVertical": 8,
+              }
+            }
+          >
+            <Text
+              style={
+                {
+                  "color": "#3F2D22",
+                  "fontSize": 16,
+                  "textAlign": "center",
+                }
+              }
+            >
+              Open
+            </Text>
+          </View>
+        </View>
+      </RCTScrollView>
     </View>
   </Modal>
 </>

@@ -21,5 +21,5 @@ export default function Index() {
   if (entry === 'error') return <View style={{ flex: 1, justifyContent: 'center', padding: 24, gap: 12 }}><Banner kind="danger" text={t('sys.server.title')} /><Button label={t('common.retry')} onPress={() => void reload()} /></View>;
   if (pending) return <Redirect href="/join" />;
   if (entry === 'active') return <Redirect href="/home" />;
-  return <Redirect href="/create-space" />;
+  return <Redirect href="/choose-space" />;
 }

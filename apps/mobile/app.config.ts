@@ -12,6 +12,7 @@ export default {
   expo: {
     name: dev ? `${APP_IDENTITY.name} (${variant})` : APP_IDENTITY.name,
     slug: APP_IDENTITY.slug,
+    userInterfaceStyle: 'automatic',
     owner: EAS_PROJECT.owner,
     scheme: dev ? ['aroom-dev', 'aroom'] : 'aroom',
     ios: { bundleIdentifier: dev ? APP_IDENTITY.devIosBundleId : APP_IDENTITY.iosBundleId, usesAppleSignIn: true, associatedDomains: ['applinks:aroom.jinjinstar.com'] },

@@ -63,6 +63,16 @@ it('reports too many attempts and network errors', async () => {
   expect(await screen.findByText(screen.t('join.err'))).toBeTruthy();
 });
 
+
+it('pastes and formats a code from the clipboard', async () => {
+  const preview = jest.fn().mockResolvedValue({ anniversaryDate: '2025-06-29' });
+  const screen = await renderWithI18n(<JoinScreen previewInvitation={preview} acceptInvitation={jest.fn()} onJoined={jest.fn()} onOpenSpace={jest.fn()} readClipboard={async () => 'k7m4 q9xp'} />);
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('join.paste') }));
+  expect(screen.getByLabelText(screen.t('join.title')).props.value).toBe('K7M4-Q9XP');
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('join.check') }));
+  expect(preview).toHaveBeenCalledWith('K7M4Q9XP');
+});
+
 it('checks a linked code automatically and shows confirmation', async () => {
   const preview = jest.fn().mockResolvedValue({ anniversaryDate: '2025-06-29' });
   const screen = await renderWithI18n(<JoinScreen previewInvitation={preview} acceptInvitation={jest.fn()} onJoined={jest.fn()} onOpenSpace={jest.fn()} initialCode="AB12CD34" />);

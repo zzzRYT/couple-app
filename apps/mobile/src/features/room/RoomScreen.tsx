@@ -1,6 +1,8 @@
+import { useAppColor } from '../../theme/useAppColor';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, Text, View, useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Banner, Button } from '../../ui/components';
 import { CycleLoader } from '../../ui/CycleLoader';
 import { RoomScene } from '../../scene/RoomScene';
@@ -11,16 +13,26 @@ import type { SpaceState } from '../space/types';
 import { DdayWidget } from './DdayWidget';
 import { partnerLabel } from '../prompt/PromptPanel';
 import { shouldAutoRecall } from './recallPolicy';
-const color = tokens.color.app.light.normal;
+
 /** S07 room: scene + native D-day widget + top toolbar with a single "decorate" action (settings, delete and leave live in the settings tab). */
 export function RoomScreen({ state, now, onDecorate, onRecall, reducedMotion, layout: layoutOverride }: {
   state: SpaceState; now: string; onDecorate: () => void; onRecall: () => Promise<unknown>; reducedMotion?: boolean; layout?: RoomLayout;
 }) {
+  const color = useAppColor();
   const { t } = useTranslation();
   const window = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const snapshot = state.snapshot;
-  const baseLayout = layoutOverride ?? estimateLayout(window.width, window.height, window.fontScale, Platform.OS === 'android' ? 'android' : 'ios');
-  const presentation = snapshot?.roomPresentation;
+  const estimated = estimateLayout(window.width, window.height, window.fontScale, Platform.OS === 'android' ? 'android' : 'ios');
+  const baseLayout = layoutOverride ?? { ...estimated, safeTop: insets.top, safeBottom: insets.bottom, toolbar: { ...estimated.toolbar, y: insets.top } };
+  const originalPresentation = snapshot?.roomPresentation;
+  // Keep the stored position, but shift the visible widget below the toolbar when a
+  // device's safe area makes the two overlap. Scene protection uses the same frame.
+  const presentation = originalPresentation && originalPresentation.visible &&
+    (originalPresentation.y - originalPresentation.height / 2) * baseLayout.height < baseLayout.toolbar.y + baseLayout.toolbar.height &&
+    (originalPresentation.y + originalPresentation.height / 2) * baseLayout.height > baseLayout.toolbar.y
+    ? { ...originalPresentation, y: (baseLayout.toolbar.y + baseLayout.toolbar.height) / baseLayout.height + originalPresentation.height / 2 }
+    : originalPresentation;
   const layout = useMemo(() => presentation?.visible
     ? { ...baseLayout, ddayWidget: { x: (presentation.x - presentation.width / 2) * baseLayout.width, y: (presentation.y - presentation.height / 2) * baseLayout.height, width: presentation.width * baseLayout.width, height: presentation.height * baseLayout.height } }
     : baseLayout, [baseLayout, presentation]);
@@ -50,7 +62,7 @@ export function RoomScreen({ state, now, onDecorate, onRecall, reducedMotion, la
             <Button label={t('room.ctl.decorate')} accessibilityLabel={t('a11y.decorate')} variant="ghost" disabled={state.offline} onPress={onDecorate} />
           </View>
         </View>
-        <DdayWidget presentation={snapshot.roomPresentation} anniversaryDate={snapshot.space.anniversaryDate} timeZone={snapshot.space.timeZone} now={now} width={layout.width} height={layout.height} />
+        <DdayWidget presentation={presentation ?? snapshot.roomPresentation} anniversaryDate={snapshot.space.anniversaryDate} timeZone={snapshot.space.timeZone} now={now} width={layout.width} height={layout.height} />
         <View style={{ position: 'absolute', left: 16, right: 16, top: layout.toolbar.y + layout.toolbar.height + 8, gap: 8, zIndex: 45 }}>
           {state.offline && <Banner kind="offline" text={t('room.offline')} />}
           {!state.offline && state.status === 'error' && <Banner kind="warn" text={t('room.syncFail.title')} />}

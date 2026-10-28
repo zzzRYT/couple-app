@@ -1,13 +1,14 @@
+import { useAppColor } from '../../theme/useAppColor';
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Banner, Button, Dialog } from '../../ui/components';
-import { tokens } from '../../theme/tokens';
-const color = tokens.color.app.light.normal;
+
 const sections = [['consent.sent.label', 'consent.sent.body'], ['consent.purpose.label', 'consent.purpose.body'], ['consent.processor.label', 'consent.processor.body'], ['consent.keep.label', 'consent.keep.body'], ['consent.couple.label', 'consent.couple.body']] as const;
 type ConsentState = 'not_given' | 'granted' | 'revoked';
 /** Overseas AI processing consent, recorded per member. The provider retention line stays a legal placeholder until gate G1. */
 export function ConsentScreen({ myState, consentedAt, hasUnappliedPreview = false, setConsent, onDone }: { myState: ConsentState; consentedAt?: string; hasUnappliedPreview?: boolean; setConsent: (state: 'granted' | 'revoked') => Promise<unknown>; onDone: () => void }) {
+  const color = useAppColor();
   const { t, i18n } = useTranslation();
   const [state, setState] = useState(myState);
   const [since, setSince] = useState(consentedAt ?? null);

@@ -40,6 +40,8 @@ it('cancels a preview and undoes within the open conversation', async () => {
   const client = panelClient({ undo: jest.fn().mockResolvedValue({ previewId: null }) }, withPreview());
   const screen = await renderWithI18n(<PromptPanel client={client} snapshot={owned()} online clock={clock} onOpenConsent={jest.fn()} />);
   await fireEvent.press(await screen.findByRole('button', { name: screen.t('a11y.undo') }));
+  expect(client.undo).not.toHaveBeenCalled();
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('undo.confirm') }));
   expect(client.undo).toHaveBeenCalledWith('space-1', 'session-1', 'preview-1');
   expect(await screen.findByText(screen.t('undo.done.title'))).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: screen.t('a11y.cancel') }));
@@ -84,4 +86,14 @@ it('explains unsupported requests', async () => {
   await fireEvent.changeText(screen.getByLabelText(screen.t('a11y.input')), 'change the mascot color');
   await fireEvent.press(screen.getByRole('button', { name: screen.t('a11y.send') }));
   expect(await screen.findByText(screen.t('prompt.unsupported.title'))).toBeTruthy();
+});
+
+
+it('waits for a partner even when the sole member has consented', async () => {
+  const client = panelClient();
+  const screen = await renderWithI18n(<PromptPanel client={client} snapshot={snapshotFixture({ memberCount: 1 })} online clock={clock} onOpenConsent={jest.fn()} />);
+  expect(screen.getByText(screen.t('main.invitePending.title'))).toBeTruthy();
+  expect(screen.getByRole('button', { name: screen.t('prompt.start') }).props.accessibilityState.disabled).toBe(true);
+  expect(screen.getByLabelText(screen.t('a11y.input')).props.editable).toBe(false);
+  expect(client.acquire).not.toHaveBeenCalled();
 });
