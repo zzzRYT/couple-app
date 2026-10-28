@@ -6,7 +6,7 @@ import { createSupabase, functionsCaller } from './supabase';
 import { supabaseAuth } from './auth';
 import { supabaseRealtime, type RealtimePort } from './realtime';
 import type { AuthPort } from '../features/auth/authPort';
-type AppValue = { client: Client; auth: AuthPort; realtime: RealtimePort; supabase: ReturnType<typeof createSupabase>; session: Session | null; userId: string | null };
+type AppValue = { client: Client; auth: AuthPort; realtime: RealtimePort; supabase: ReturnType<typeof createSupabase>; session: Session | null; sessionLoaded: boolean; userId: string | null };
 const AppContext = createContext<AppValue | null>(null);
 /** Public values only: the Supabase URL and publishable key come from EXPO_PUBLIC_* build variables, never from source. */
 export function AppProvider({ children }: { children: ReactNode }) {
@@ -16,13 +16,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const supabase = createSupabase(url, key);
     return { supabase, client: createClient(createApi(functionsCaller(supabase, url, key))), auth: supabaseAuth(supabase), realtime: supabaseRealtime(supabase) };
   }, [url, key]);
+  const [sessionLoaded, setSessionLoaded] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   useEffect(() => {
-    void value.supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    void value.supabase.auth.getSession().then(({ data }) => setSession(data.session)).finally(() => setSessionLoaded(true));
     const { data } = value.supabase.auth.onAuthStateChange((_event, next) => setSession(next));
     return () => data.subscription.unsubscribe();
   }, [value]);
-  return <AppContext.Provider value={{ ...value, session, userId: session?.user.id ?? null }}>{children}</AppContext.Provider>;
+  return <AppContext.Provider value={{ ...value, session, sessionLoaded, userId: session?.user.id ?? null }}>{children}</AppContext.Provider>;
 }
 export function useApp(): AppValue {
   const value = useContext(AppContext);

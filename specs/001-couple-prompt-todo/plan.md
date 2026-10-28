@@ -311,3 +311,6 @@ assets/catalog/               manifest, 권리 기록, 최적화된 이미지
 ## 복잡도 추적
 
 헌법 위반 없음. 별도 서비스 경계는 AI 키를 앱 밖에 두고 공유 데이터의 서버 권한을 강제하기 위해 필요하다.
+
+### Invite link implementation (assumptions, 2026-10)
+Use Universal Links and Android App Links on the public domain, plus a development custom scheme. Persist a pending code locally until the authenticated join flow consumes it. The static site supplies association files and a localized fallback with no analytics; store destinations remain disabled until known. No deferred-link SDK is included. The owner enables Associated Domains for the development Apple App ID and supplies release signing fingerprints and store URLs before release.

@@ -499,3 +499,6 @@
 ## 설명 없는 보드
 
 - **C01~C07 캐릭터 섹션**, **S18 에셋**, **S19 글꼴·토큰**, **S20 접근성**, **S21 긴 문구**, **S22 컴포넌트**, **S27 탭 구조**는 화면이 아니라 참고 보드예요: 각각 `assets-spec.md`, `tokens.json`, `contrast-report.md`, 이 문서, `components.md`, `interaction-notes.md`와 대응해요.
+
+### Invite link entry (assumption)
+Opening an invite link resumes S05 after authentication, prefilled and checking the code. The web fallback displays the code, copy control and unavailable store buttons until store URLs are configured. After installation, paste the copied code or link in S05.

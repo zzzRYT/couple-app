@@ -72,3 +72,22 @@ it('pastes and formats a code from the clipboard', async () => {
   await fireEvent.press(screen.getByRole('button', { name: screen.t('join.check') }));
   expect(preview).toHaveBeenCalledWith('K7M4Q9XP');
 });
+
+it('checks a linked code automatically and shows confirmation', async () => {
+  const preview = jest.fn().mockResolvedValue({ anniversaryDate: '2025-06-29' });
+  const screen = await renderWithI18n(<JoinScreen previewInvitation={preview} acceptInvitation={jest.fn()} onJoined={jest.fn()} onOpenSpace={jest.fn()} initialCode="AB12CD34" />);
+  expect(await screen.findByText(screen.t('join.found.heading'))).toBeTruthy();
+  expect(preview).toHaveBeenCalledWith('AB12CD34');
+  expect(preview).toHaveBeenCalledTimes(1);
+});
+it('shows the one-space message without checking an incoming code', async () => {
+  const preview = jest.fn();
+  const screen = await renderWithI18n(<JoinScreen previewInvitation={preview} acceptInvitation={jest.fn()} onJoined={jest.fn()} onOpenSpace={jest.fn()} initialCode="AB12CD34" alreadyInSpace />);
+  expect(screen.getByText(screen.t('join.hasSpace.title'))).toBeTruthy();
+  expect(preview).not.toHaveBeenCalled();
+});
+it('pastes an invite link as a code', async () => {
+  const screen = await renderWithI18n(<JoinScreen previewInvitation={jest.fn()} acceptInvitation={jest.fn()} onJoined={jest.fn()} onOpenSpace={jest.fn()} readClipboard={async () => 'https://aroom.jinjinstar.com/i/AB12-CD34'} />);
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('join.paste') }));
+  expect(screen.getByLabelText(screen.t('join.title')).props.value).toBe('AB12-CD34');
+});

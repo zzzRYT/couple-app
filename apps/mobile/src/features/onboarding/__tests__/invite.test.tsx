@@ -39,7 +39,7 @@ it('reports share cancellation and network errors', async () => {
   await fireEvent.press(screen.getByRole('button', { name: screen.t('common.retry') }));
   expect(await screen.findByText('EEEE-FFFF')).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: screen.t('a11y.share') }));
-  expect(share).toHaveBeenCalledWith({ message: screen.t('invite.shareMsg', { code: 'EEEE-FFFF' }) });
+  expect(share).toHaveBeenCalledWith({ message: screen.t('invite.shareMsg', { code: 'EEEE-FFFF', link: 'https://aroom.jinjinstar.com/i/EEEE-FFFF' }) });
   expect(await screen.findByText(screen.t('invite.shareCancelled'))).toBeTruthy();
 });
 

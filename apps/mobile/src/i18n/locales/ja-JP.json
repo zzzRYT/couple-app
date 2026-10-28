@@ -110,7 +110,7 @@
   "invite.share": "コードを共有",
   "invite.copy": "コードをコピー",
   "invite.copied": "コピーしました",
-  "invite.shareMsg": "ふたりのスペースに来てね。招待コード：{code}（24時間以内に入力してください）",
+  "invite.shareMsg": "ふたりのスペースに来てね。 {link} 招待コード：{code}（24時間以内に入力してください）",
   "invite.shareSheet.title": "共有",
   "invite.shareCancelled": "共有をキャンセルしました。コードはそのまま使えます。",
   "invite.reissue": "新しいコードを作る",

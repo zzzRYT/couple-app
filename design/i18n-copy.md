@@ -161,7 +161,7 @@
 | `invite.share` | 코드 공유하기 | Share code | コードを共有 |
 | `invite.copy` | 코드 복사 | Copy code | コードをコピー |
 | `invite.copied` | 복사했어요 | Copied | コピーしました |
-| `invite.shareMsg` | 우리 공간에 와 줘요. 초대 코드: {code} (24시간 안에 입력해 주세요) | Come join our space. Invite code: {code} (use it within 24 hours) | ふたりのスペースに来てね。招待コード：{code}（24時間以内に入力してください） |
+| `invite.shareMsg` | 우리 공간에 와 줘요. {link} 초대 코드: {code} (24시간 안에 입력해 주세요) | Come join our space. {link} Invite code: {code} (use it within 24 hours) | ふたりのスペースに来てね。 {link} 招待コード：{code}（24時間以内に入力してください） |
 | `invite.shareSheet.title` | 공유 | Share | 共有 |
 | `invite.shareCancelled` | 공유를 취소했어요. 코드는 그대로 쓸 수 있어요. | Sharing was canceled. The code still works. | 共有をキャンセルしました。コードはそのまま使えます。 |
 | `invite.reissue` | 새 코드 만들기 | Create a new code | 新しいコードを作る |
@@ -841,3 +841,6 @@
 참고: 슬로건은 온보딩 첫 장(S01 소개 1)과 로그인 선택(S02)의 이름 아래에 보여요. 글자 크기 130% 이상에서는 작업 내용에 공간을 내주려고 이름·슬로건 묶음을 숨겨요.
 
 스토어 등록 정보의 **부제**(ko "함께 꾸며가는 커플앱" / en "Decorate your world together"(초안) / ja "ふたりで飾るカップルアプリ"(초안))는 앱 화면 문구가 아니어서 이 표의 키에 넣지 않았어요(`handoff.md` §16 끝, 브랜드 슬로건과 별개).
+
+### Invite link sharing (assumption)
+`invite.shareMsg` includes both the public invite URL and the formatted code, with the existing 24-hour note, in ko/en/ja. The web fallback explains copy, install, open and paste in the browser language.
