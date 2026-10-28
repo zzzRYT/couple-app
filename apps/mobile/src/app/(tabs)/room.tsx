@@ -9,5 +9,5 @@ export default function RoomRoute() {
   const { spaceId } = useSpace();
   const room = useRoom(spaceId, { client, realtime });
   const now = useNow(1000);
-  return <RoomScreen state={room.state} now={now} onDecorate={() => router.push('/prompt')} onRecall={room.recall} />;
+  return <RoomScreen state={room.state} now={now} onDecorate={() => router.push('/prompt')} onRecall={room.recall} onRetry={room.refresh} />;
 }

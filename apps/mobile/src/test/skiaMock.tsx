@@ -6,3 +6,4 @@ export const Group = ({ children, ...props }: { children?: ReactNode }) => <View
 export const Image = (props: Record<string, unknown>) => <View testID="skia-image" {...props} />;
 export const Rect = (props: Record<string, unknown>) => <View testID="skia-rect" {...props} />;
 export const useImage = (source: unknown) => source ?? null;
+export const Path = (props: Record<string, unknown>) => <View testID="skia-path" {...props} />;

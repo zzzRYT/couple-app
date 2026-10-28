@@ -1,4 +1,6 @@
 import { fireEvent, render } from '@testing-library/react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { safeMetrics } from '../../test/render';
 import { Button, TextField, Banner, Chip, Toast, Skeleton, Dialog, BottomSheet, ListRow, OccupancyChip } from '../components';
 it('exposes labelled controls with minimum touch sizes', async () => {
   const onPress = jest.fn();
@@ -13,7 +15,7 @@ it('exposes labelled controls with minimum touch sizes', async () => {
 
 it('renders each shared primitive and names its actions', async () => {
   const noop = () => {};
-  const screen = await render(<><Chip label="Status" /><OccupancyChip label="Owner" /><Toast text="Saved" /><Skeleton label="Loading" /><Dialog visible title="Confirm" onClose={noop}><Button label="OK" onPress={noop} /></Dialog><BottomSheet visible title="Details" onClose={noop}><ListRow label="Open" onPress={noop} /></BottomSheet></>);
+  const screen = await render(<SafeAreaProvider initialMetrics={safeMetrics}><Chip label="Status" /><OccupancyChip label="Owner" /><Toast text="Saved" /><Skeleton label="Loading" /><Dialog visible title="Confirm" onClose={noop}><Button label="OK" onPress={noop} /></Dialog><BottomSheet visible title="Details" onClose={noop}><ListRow label="Open" onPress={noop} /></BottomSheet></SafeAreaProvider>);
   expect(screen.getByLabelText('Status')).toBeTruthy();
   expect(screen.getByLabelText('Owner')).toBeTruthy();
   expect(screen.getByLabelText('Loading')).toBeTruthy();

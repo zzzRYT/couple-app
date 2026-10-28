@@ -1,16 +1,18 @@
-import { ScrollView, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Button } from '../../ui/components';
-import { tokens } from '../../theme/tokens';
-import { useAppColor } from '../../theme/useAppColor';
+import { AppText, Button, Screen } from '../../ui/components';
+import { Spot } from '../../ui/Spot';
 
+/** Create-or-join entry before a space exists (no tab bar). */
 export function SpaceChoiceScreen({ onCreate, onJoin }: { onCreate: () => void; onJoin: () => void }) {
   const { t } = useTranslation();
-  const color = useAppColor();
-  return <ScrollView style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[3] }}>
-    <Text accessibilityRole="header" style={{ color: color.text, fontSize: tokens.typography.scale.heading.size }}>{t('space.choice.title')}</Text>
-    <Text style={{ color: color.text2, fontSize: tokens.typography.scale.body.size }}>{t('space.choice.body')}</Text>
-    <Button label={t('join.createSpace')} onPress={onCreate} />
-    <Button label={t('join.haveCode')} variant="secondary" onPress={onJoin} />
-  </ScrollView>;
+  return (
+    <Screen center footer={<>
+      <Button label={t('join.createSpace')} onPress={onCreate} />
+      <Button label={t('join.haveCode')} variant="secondary" onPress={onJoin} />
+    </>}>
+      <Spot kind="books" />
+      <AppText variant="title" accessibilityRole="header" align="center">{t('space.choice.title')}</AppText>
+      <AppText tone="text2" align="center">{t('space.choice.body')}</AppText>
+    </Screen>
+  );
 }

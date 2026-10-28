@@ -1,10 +1,12 @@
 import { useAppColor } from '../../theme/useAppColor';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Platform, Text, View, useWindowDimensions } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Platform, Pressable, View, useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Banner, Button } from '../../ui/components';
-import { CycleLoader } from '../../ui/CycleLoader';
+import { AppText, Banner, Button, GUTTER, Toast } from '../../ui/components';
+import { LoadingScreen } from '../../ui/CycleLoader';
+import { Icon } from '../../ui/Icon';
+import { useScreenFocused } from '../../ui/motion';
 import { RoomScene } from '../../scene/RoomScene';
 import { estimateLayout, type RoomLayout } from '../../scene/protectedZones';
 import { roomMode } from '../../scene/dayNight';
@@ -15,9 +17,10 @@ import { partnerLabel } from '../prompt/PromptPanel';
 import { shouldAutoRecall } from './recallPolicy';
 
 /** S07 room: scene + native D-day widget + top toolbar with a single "decorate" action (settings, delete and leave live in the settings tab). */
-export function RoomScreen({ state, now, onDecorate, onRecall, reducedMotion, layout: layoutOverride }: {
-  state: SpaceState; now: string; onDecorate: () => void; onRecall: () => Promise<unknown>; reducedMotion?: boolean; layout?: RoomLayout;
+export function RoomScreen({ state, now, onDecorate, onRecall, onRetry, reducedMotion, layout: layoutOverride }: {
+  state: SpaceState; now: string; onDecorate: () => void; onRecall: () => Promise<unknown>; onRetry?: () => Promise<unknown>; reducedMotion?: boolean; layout?: RoomLayout;
 }) {
+  const focused = useScreenFocused();
   const color = useAppColor();
   const { t } = useTranslation();
   const window = useWindowDimensions();
@@ -47,33 +50,54 @@ export function RoomScreen({ state, now, onDecorate, onRecall, reducedMotion, la
     tried.current = true;
     void onRecall();
   }, [snapshot, hasMascot, occupied, state.offline, onRecall]);
+  const version = snapshot?.versionNumber;
+  const lastVersion = useRef(version);
+  const [changed, setChanged] = useState(false);
+  const hideChanged = useCallback(() => setChanged(false), []);
+  useEffect(() => {
+    // §9: the partner changed the room while it is on screen; my own applies happen in the decorate sheet, which covers the room.
+    if (version !== undefined && lastVersion.current !== undefined && version > lastVersion.current && focused) setChanged(true);
+    lastVersion.current = version;
+  }, [version, focused]);
   if (!snapshot) {
-    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: color.bg }}>
-      {state.status === 'error' ? <View style={{ gap: 8, padding: 24 }}><Banner kind="danger" text={t('room.recover.title')} /><Text style={{ color: color.text2 }}>{t('room.recover.body')}</Text></View> : <><CycleLoader label={t('room.loading')} /><Text style={{ color: color.text }}>{t('room.loading')}</Text></>}
-    </View>;
+    if (state.status === 'error') {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', padding: GUTTER, gap: tokens.spacing[3], backgroundColor: color.bg }}>
+          <Banner kind="danger" text={t('room.recover.title')} body={t('room.recover.body')} action={onRetry ? { label: t('room.recover.action'), onPress: () => void onRetry() } : undefined} />
+        </View>
+      );
+    }
+    return <LoadingScreen label={t('room.loading')} />;
   }
   const mode = roomMode(snapshot.roomThemeDocument, now);
   const outline = tokens.color.roomOverlayControlOutline[mode].normal;
+  const bottom = layout.safeBottom + layout.tabBarHeight + tokens.spacing[3];
   return (
     <View style={{ flex: 1, backgroundColor: tokens.color.room[mode].wall }}>
       <RoomScene scene={snapshot.sceneDocument} mode={mode} layout={layout} reducedMotion={reducedMotion}>
-        <View accessibilityLabel={t('a11y.toolbar')} testID="room-toolbar" style={{ position: 'absolute', left: 0, right: 0, top: layout.toolbar.y, height: layout.toolbar.height, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingHorizontal: 16, zIndex: 50 }}>
-          <View style={{ borderWidth: 2, borderColor: outline, backgroundColor: color.surface }}>
-            <Button label={t('room.ctl.decorate')} accessibilityLabel={t('a11y.decorate')} variant="ghost" disabled={state.offline} onPress={onDecorate} />
-          </View>
+        <View accessibilityRole="toolbar" accessibilityLabel={t('a11y.toolbar')} testID="room-toolbar" style={{ position: 'absolute', left: GUTTER, right: GUTTER, top: layout.toolbar.y, height: layout.toolbar.height, justifyContent: 'center', zIndex: 50 }}>
+          {partnerOccupying
+            ? <Button label={t('room.watch')} icon="eye" variant="secondary" outline={outline} disabled={state.offline} onPress={onDecorate} />
+            : <Button label={t('room.ctl.decorate')} accessibilityLabel={t('a11y.decorate')} icon="sparkle" outline={outline} disabled={state.offline} onPress={onDecorate} />}
         </View>
         <DdayWidget presentation={presentation ?? snapshot.roomPresentation} anniversaryDate={snapshot.space.anniversaryDate} timeZone={snapshot.space.timeZone} now={now} width={layout.width} height={layout.height} />
-        <View style={{ position: 'absolute', left: 16, right: 16, top: layout.toolbar.y + layout.toolbar.height + 8, gap: 8, zIndex: 45 }}>
+        <View pointerEvents="box-none" style={{ position: 'absolute', left: GUTTER, right: GUTTER, bottom, gap: tokens.spacing[1], zIndex: 45 }}>
+          {changed && <Toast text={t('room.partnerChanged', { name: partnerLabel(t) })} onHide={hideChanged} />}
           {state.offline && <Banner kind="offline" text={t('room.offline')} />}
-          {!state.offline && state.status === 'error' && <Banner kind="warn" text={t('room.syncFail.title')} />}
-          {!snapshot.roomPresentation.visible && <Banner text={t('room.ddayHidden')} />}
-          {partnerOccupying && <Banner text={t('room.partnerLive', { name: partnerLabel(t) })} />}
+          {!state.offline && state.status === 'error' && <Banner kind="warn" text={t('room.syncFail.title')} body={t('room.syncFail.body')} action={onRetry ? { label: t('common.retry'), onPress: () => void onRetry() } : undefined} />}
+          {!snapshot.roomPresentation.visible && <Banner quiet text={t('room.ddayHidden')} />}
+          {partnerOccupying && <Banner icon="eye" text={t('room.partnerLive', { name: partnerLabel(t) })} />}
+          {!hasMascot && <Pressable accessibilityRole="button" accessibilityLabel={t('room.mascot.recall')} accessibilityHint={t('room.mascot.missing')} disabled={occupied || state.offline || recalling}
+            onPress={() => { setRecalling(true); void onRecall().finally(() => setRecalling(false)); }}
+            style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[2], padding: tokens.spacing[3], borderRadius: tokens.radius.card, borderWidth: tokens.border.outline.normal, borderColor: outline, backgroundColor: color.surface, opacity: occupied || state.offline ? 0.55 : pressed ? 0.85 : 1 })}>
+            <Icon name={occupied ? 'lock' : 'heart'} size={22} color={color.primary} />
+            <View style={{ flex: 1, gap: 2 }}>
+              <AppText variant="label">{t('room.mascot.recall')}</AppText>
+              <AppText variant="bodySm" tone="text2">{partnerOccupying ? t('prompt.partner', { name: partnerLabel(t) }) : t('room.mascot.missing')}</AppText>
+            </View>
+            <Icon name="forward" size={18} color={color.text2} />
+          </Pressable>}
         </View>
-        {!hasMascot && <View style={{ position: 'absolute', left: 16, right: 16, bottom: layout.safeBottom + layout.tabBarHeight + 16, gap: 4, zIndex: 45 }}>
-          <Text style={{ color: tokens.color.room[mode].line }}>{t('room.mascot.missing')}</Text>
-          {partnerOccupying && <Text style={{ color: tokens.color.room[mode].line }}>{t('prompt.partner', { name: partnerLabel(t) })}</Text>}
-          <Button label={t('room.mascot.recall')} disabled={occupied || state.offline || recalling} onPress={() => { setRecalling(true); void onRecall().finally(() => setRecalling(false)); }} />
-        </View>}
       </RoomScene>
     </View>
   );
