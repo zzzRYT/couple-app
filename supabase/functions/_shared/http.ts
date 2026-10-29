@@ -31,7 +31,8 @@ export function createHandler(routes: Route[], deps: Deps) {
     try {
       if (!match) throw new AppError('NOT_FOUND');
       const userId = await requireUser(request.headers.get('Authorization'), deps.verifier).catch(() => { throw new AppError('UNAUTHORIZED'); });
-      const text = ['GET', 'HEAD', 'DELETE'].includes(request.method) ? '' : await request.text();
+      // DELETE may carry a body (`DELETE /account`); routes that take none simply receive `{}`.
+      const text = ['GET', 'HEAD'].includes(request.method) ? '' : await request.text();
       let body: Record<string, unknown> = {};
       if (text) { try { body = JSON.parse(text); } catch { throw new AppError('INVALID_REQUEST'); } }
       if (!body || typeof body !== 'object' || Array.isArray(body)) throw new AppError('INVALID_REQUEST');

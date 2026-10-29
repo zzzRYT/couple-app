@@ -462,3 +462,8 @@ verify_jwt = false
 import_map = "./functions/deno.json"
 verify_jwt = false
 
+[functions.account]
+import_map = "./functions/deno.json"
+# The operator route authenticates with the service-role key itself; user routes verify the JWT in the function (createHandler).
+verify_jwt = false
+

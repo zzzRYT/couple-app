@@ -70,8 +70,11 @@ export async function purgeDueSpaces(db: Db, storage: SpaceStorage, at: Date): P
   return { purged, failed };
 }
 
-/** Scheduled job (pg_cron or a Supabase schedule) authenticated with the service-role key; safe to re-run. The schedule itself is not set up yet. */
-export function lifecycleSweepHandler(db: Db, serviceKey: string, storage: SpaceStorage, now: () => Date = () => new Date()) {
+/**
+ * Scheduled job (pg_cron or a Supabase schedule) authenticated with the service-role key; safe to re-run. The schedule itself is not set up yet.
+ * `resumeDeletions` continues account deletions that stopped part-way (account/runner.ts).
+ */
+export function lifecycleSweepHandler(db: Db, serviceKey: string, storage: SpaceStorage, now: () => Date = () => new Date(), resumeDeletions?: (at: Date) => Promise<{ resumed: number; pending: number }>) {
   return async (request: Request): Promise<Response> => {
     if (request.headers.get('Authorization') !== `Bearer ${serviceKey}`) return Response.json({ error: { code: 'UNAUTHORIZED', retryable: false } }, { status: 401 });
     const at = now();
@@ -79,11 +82,17 @@ export function lifecycleSweepHandler(db: Db, serviceKey: string, storage: Space
     let coverObjectsDeleted = 0;
     try { coverObjectsDeleted = await sweepHomeCoverDeletes(db, storage, at); } catch { /* cover cleanup is retried next run and must not block the purge */ }
     const purge = await purgeDueSpaces(db, storage, at);
+    const deletions = resumeDeletions ? await resumeDeletions(at) : {};
     console.log(JSON.stringify(safeLogFields({ event: 'lifecycle-sweep', status: 200 })));
-    return Response.json({ ...result, coverObjectsDeleted, ...purge });
+    return Response.json({ ...result, coverObjectsDeleted, ...purge, ...deletions });
   };
 }
 if (import.meta.main) {
   const client = serviceClient();
-  Deno.serve(lifecycleSweepHandler(rpcDb(client), Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? crypto.randomUUID(), bucketStorage(client)));
+  // Imported lazily: account/ports.ts itself imports bucketStorage from this module.
+  const { defaultDeletionPorts } = await import('../account/ports.ts');
+  const { resumeAccountDeletions } = await import('../account/runner.ts');
+  const { ports } = await defaultDeletionPorts();
+  Deno.serve(lifecycleSweepHandler(rpcDb(client), Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? crypto.randomUUID(), bucketStorage(client), undefined,
+    (at) => resumeAccountDeletions(ports, at)));
 }

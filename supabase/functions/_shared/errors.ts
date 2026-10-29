@@ -5,6 +5,7 @@ export const ERROR_CODES = [
   'MILESTONE_PASSED', 'COVER_FORMAT_UNSUPPORTED', 'COVER_TOO_LARGE', 'COVER_INVALID_IMAGE',
   'UNSUPPORTED_REQUEST', 'INVALID_CANDIDATE', 'INVITE_EXPIRED', 'INVITE_USED', 'INVITE_INVALID', 'SPACE_FULL',
   'CONSENT_REQUIRED', 'SESSION_EXPIRED', 'IN_PROGRESS', 'INVALID_REQUEST', 'NOT_FOUND', 'UNAUTHORIZED',
+  'REAUTH_REQUIRED', 'ACCOUNT_DELETING', 'PROVIDER_NOT_CONFIGURED',
 ] as const;
 export type ErrorCode = typeof ERROR_CODES[number];
 export function errorResponse(code: ErrorCode, status: number, retryable: boolean, extra: Record<string, unknown> = {}): Response {
@@ -17,7 +18,8 @@ const STATUS: Partial<Record<ErrorCode, [number, boolean]>> = {
   INVALID_CANDIDATE: [422, true], GENERATION_FAILED: [503, true], INVITE_EXPIRED: [410, false], INVITE_USED: [409, false],
   INVITE_INVALID: [404, false], SPACE_FULL: [409, false], CONSENT_REQUIRED: [403, false], INVALID_REQUEST: [400, false],
   COVER_INVALID_IMAGE: [422, false],
-  NOT_FOUND: [404, false], UNAUTHORIZED: [401, false],
+  NOT_FOUND: [404, false], UNAUTHORIZED: [401, false], REAUTH_REQUIRED: [401, false], ACCOUNT_DELETING: [409, false],
+  PROVIDER_NOT_CONFIGURED: [503, false],
 };
 export class AppError extends Error {
   constructor(readonly code: ErrorCode, readonly extra: Record<string, unknown> = {}) { super(code); }

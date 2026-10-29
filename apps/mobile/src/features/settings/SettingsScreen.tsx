@@ -17,8 +17,8 @@ const languages: { locale: Locale | null; label: string; value: string }[] = [
   { locale: 'ja-JP', label: '日本語', value: 'ja' },
 ];
 const modes: { mode: DisplayMode; key: string }[] = [{ mode: 'system', key: 'set.theme.system' }, { mode: 'light', key: 'set.theme.light' }, { mode: 'dark', key: 'set.theme.dark' }];
-/** S13 settings tab: shared room preferences, this-device preferences, app info, and existing account/space actions. */
-export function SettingsScreen({ onLogout, space, version, offline = false, onRoomMode, onTimeZone, onOpenDate, onOpenCover, onOpenConsent, onOpenReport, onOpenEndSpace }: { onLogout: () => Promise<void>; space?: SpaceRows | null; version?: string; offline?: boolean; onRoomMode?: (mode: SpaceRows['roomMode']) => Promise<void>; onTimeZone?: (timeZone: string) => Promise<void>; onOpenDate?: () => void; onOpenCover?: () => void; onOpenConsent?: () => void; onOpenReport?: () => void; onOpenEndSpace?: () => void }) {
+/** S13 settings tab: shared room preferences, this-device preferences, app info, and existing account/space actions, including deleting the account. */
+export function SettingsScreen({ onLogout, space, version, offline = false, onRoomMode, onTimeZone, onOpenDate, onOpenCover, onOpenConsent, onOpenReport, onOpenEndSpace, onOpenDeleteAccount }: { onLogout: () => Promise<void>; space?: SpaceRows | null; version?: string; offline?: boolean; onRoomMode?: (mode: SpaceRows['roomMode']) => Promise<void>; onTimeZone?: (timeZone: string) => Promise<void>; onOpenDate?: () => void; onOpenCover?: () => void; onOpenConsent?: () => void; onOpenReport?: () => void; onOpenEndSpace?: () => void; onOpenDeleteAccount?: () => void }) {
   const color = useAppColor();
   const { t } = useTranslation();
   const preferences = usePreferences();
@@ -99,12 +99,13 @@ export function SettingsScreen({ onLogout, space, version, offline = false, onRo
           {onOpenReport && <ListRow icon="mail" label={t('set.support')} onPress={onOpenReport} />}
         </Card>
       </>
-      {onOpenEndSpace && <>
+      {(onOpenEndSpace || onOpenDeleteAccount) && <>
         <SectionLabel text={t('set.sec.danger')} />
         <Card style={{ paddingVertical: tokens.spacing[0], gap: 0 }}>
-          <ListRow icon="warn" danger label={t('set.end')} onPress={onOpenEndSpace} />
+          {onOpenEndSpace && <ListRow icon="warn" danger label={t('set.end')} onPress={onOpenEndSpace} last={!onOpenDeleteAccount} />}
+          {onOpenDeleteAccount && <ListRow icon="user" danger label={t('set.account.delete')} value={t('set.account.delete.sub')} onPress={onOpenDeleteAccount} />}
         </Card>
-        <AppText variant="bodySm" tone="text2">{t('set.end.help')}</AppText>
+        {onOpenEndSpace && <AppText variant="bodySm" tone="text2">{t('set.end.help')}</AppText>}
       </>}
       <BottomSheet visible={sheet === 'language'} title={t('set.lang.sheet')} onClose={() => setSheet(null)}>
         {languages.map(({ locale, label, value }) => <ListRow key={value} label={locale ? label : t(label)} value={(preferences.locale ?? 'system') === (locale ?? 'system') ? '✓' : undefined} onPress={async () => { try { await preferences.setLocale(locale); setSheet(null); } catch { setSheet('language'); } }} />)}

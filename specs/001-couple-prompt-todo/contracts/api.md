@@ -261,17 +261,18 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 
 ### `DELETE /account`
 
-호출자 본인의 계정을 삭제한다(되돌릴 수 없음). 요청: `{ "confirm": true, "reauth": { "provider": "kakao" | "apple" | "email", "authorizationCode?": "string" } }` + `Idempotency-Key`. `authorizationCode`는 `provider = apple`일 때 필수다(재인증 때 Sign in with Apple로 받은 일회용 코드; 서버가 토큰으로 바꿔 revoke에 쓴다). 일부 클라이언트·프록시가 DELETE 본문을 버릴 수 있으면 같은 계약을 `POST /account/deletion`으로 매핑한다(구현에서 정한다).
+호출자 본인의 계정을 삭제한다(되돌릴 수 없음). 요청: `{ "confirm": true, "reauth": { "provider": "kakao" | "apple" | "email", "authorizationCode?": "string" } }` + `Idempotency-Key`. `authorizationCode`는 `provider = apple`일 때 필수다(재인증 때 Sign in with Apple로 받은 일회용 코드; 서버가 토큰으로 바꿔 revoke에 쓴다). 일부 클라이언트·프록시가 DELETE 본문을 버릴 수 있으므로 같은 계약을 `POST /account/deletion`으로도 받는다(앱은 이 경로를 쓴다, 2026-10-29 구현).
 
-서버는 ① 호출자의 **최근 재인증**(최근 로그인 시각, 기본 5분, 가정; 인증 토큰의 인증 방법 시각을 확인하며 구현 전에 확인) ② `reauth.provider`가 계정의 로그인 공급자와 일치함 ③ Apple이면 코드 교환 성공을 확인한 뒤, 한 트랜잭션(`begin_account_deletion`)으로 접수한다(사용자 `deleting`, 활성 공간 종료 `account_deletion`, 대기 초대 폐기, 점유·열린 세션 해제와 생성 요청 폐기, 세션 무효화, 개인 필드·동의 기록 삭제). 이후 단계(공급자 해제 → 인증 사용자 삭제 → 껍데기 전환)는 서버가 이어서 처리한다(아래 "내부 작업").
+서버는 ① 호출자의 **최근 재인증**(최근 로그인 시각, 기본 5분, 가정; 인증 토큰의 인증 방법 시각을 확인하며 구현 전에 확인) ② `reauth.provider`가 계정의 로그인 공급자와 일치함 ③ Apple이면 코드 교환 성공을 확인한 뒤, 한 트랜잭션(`begin_account_deletion`)으로 접수한다(사용자 `deleting`, 활성 공간 종료 `account_deletion`, 대기 초대 폐기, 점유·열린 세션 해제와 생성 요청 폐기, 세션 무효화, 개인 필드·동의 기록 삭제). 이후 단계(이 사용자가 속했던 공간의 즉시 완전 삭제 → 공급자 해제 → 인증 사용자 삭제)는 서버가 이어서 처리한다(아래 "내부 작업", Decided 47). 최근 재인증은 검증된 JWT의 `amr` 중 가장 최근 시각(없으면 `iat`)이 5분 안인지로 보고, 공급자 일치는 JWT `app_metadata.provider`로 본다.
 
 - 응답 `202`: `{ "state": "requested" }` — "접수됨"을 뜻하는 고정 값이며 내부 진행 단계를 알려 주지 않는다. 클라이언트는 **응답을 받으면 바로 로컬에서 로그아웃**하고(세션·예약 알림 전체 취소·로컬 캐시 삭제) 로그인 화면으로 간다. **접수 뒤에는 진행 상태를 묻는 API가 없다**(로그아웃 상태이므로).
 - `400`: `confirm`이 true가 아님, 알 수 없는 `provider`, Apple인데 `authorizationCode` 없음.
-- `401 REAUTH_REQUIRED`: 최근 재인증이 없음·만료·공급자 불일치·Apple 코드 교환 실패. 아무것도 바뀌지 않는다. 앱은 본인 확인 단계로 돌아간다.
-- `409 ACCOUNT_DELETING`: 삭제가 이미 접수된 계정이 **다른 변경 요청**(`POST`/`PUT`/`PATCH`/`DELETE`)을 보낸 경우(발급된 토큰이 아직 유효한 짧은 시간). 같은 계정의 `DELETE /account` 재시도(같은 `Idempotency-Key` 또는 이미 `deleting`)는 오류가 아니라 `202`를 돌려준다(멱등).
+- `401 REAUTH_REQUIRED`: 최근 재인증이 없음·만료·공급자 불일치·Apple 코드 교환 실패. 아무것도 바뀌지 않는다. 앱은 본인 확인 단계로 돌아간다(이 `401`은 세션 만료로 처리하지 않는다).
+- `503 PROVIDER_NOT_CONFIGURED`: 공급자 해제에 필요한 서버 비밀이 없음(Apple 팀 ID·키 ID·개인 키, 카카오 admin 키 또는 숨김 플래그 꺼짐). 접수 전에 거절하므로 아무것도 바뀌지 않는다(앱: `acct.delete.fail.*`).
+- `409 ACCOUNT_DELETING`: 삭제가 이미 접수된 계정이 **다른 변경 요청**(`POST`/`PUT`/`PATCH`/`DELETE`)을 보낸 경우(발급된 토큰이 아직 유효한 짧은 시간). 접수 트랜잭션 자체는 멱등이다(같은 사용자의 두 번째 접수는 같은 `{state:'requested'}`). 다만 접수 뒤의 재시도는 세션 무효화와 요청마다의 계정 확인 때문에 보통 `401`을 받는다(2026-10-29 구현). 앱은 접수 요청에 대한 `401`(`REAUTH_REQUIRED` 제외)을 로컬 로그아웃으로, `409 ACCOUNT_DELETING`을 접수 완료로 처리한다.
 - 접수 전 서버·네트워크 오류는 `503` 등 일반 오류이고 아무것도 바뀌지 않는다(앱: `acct.delete.fail.*`). 오프라인에서는 호출하지 않는다.
-- **접수 뒤 이 사용자의 다른 모든 호출은 `401`**이다: 세션·리프레시 토큰이 서버에서 무효가 되고, 이미 발급된 JWT가 만료 전이어도 서버가 요청마다 `UserProfile.status`를 확인해 거절한다(읽기 포함). 위 `409 ACCOUNT_DELETING`은 변경 요청이 접수 트랜잭션과 겹쳐 사용자 락을 늦게 잡은 경우의 정확한 응답이다. 앱은 둘 다 로컬 로그아웃으로 처리한다.
-- 상대의 공간은 접수와 같은 순간에 종료된다: 상대의 모든 공간 호출은 종료된 공간으로서 `404`이고 `GET /spaces/mine`의 `ended`가 `{ "kind": "account_deleted", "by": "partner", "at": … }`가 된다.
+- **접수 뒤 이 사용자의 다른 모든 호출은 `401`**이다: 세션·리프레시 토큰이 서버에서 무효가 되고, 이미 발급된 JWT가 만료 전이어도 서버가 요청마다 `account_deletion` 행 존재(`account_blocked`)를 확인해 거절한다(읽기 포함). 위 `409 ACCOUNT_DELETING`은 변경 요청이 접수 트랜잭션과 겹쳐 사용자 락을 늦게 잡은 경우의 정확한 응답이다. 앱은 둘 다 로컬 로그아웃으로 처리한다.
+- 상대의 공간은 접수와 같은 순간에 종료된다: 상대의 모든 공간 호출은 종료된 공간으로서 `404`이고 `GET /spaces/mine`의 `ended`가 `{ "kind": "account_deleted", "by": "partner", "at": … }`가 된다. 공간 행은 곧바로 완전 삭제되지만 이 알림은 공간 식별자·삭제한 사람 없이 남는다(Decided 47).
 - 개인정보: 요청·응답·로그에 인증 코드·토큰·이메일을 남기지 않는다.
 
 ## 내부 작업 (클라이언트 API 아님)
@@ -288,9 +289,10 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 
 ### 계정 삭제 실행기 (Edge Function `lifecycle-sweep` 확장 + `account` 함수의 백그라운드 단계)
 
-- `DELETE /account` 핸들러는 접수(`begin_account_deletion`)까지 동기로 끝내고 `202`를 낸 뒤 나머지 단계를 백그라운드로 이어 간다. 안전망으로 `lifecycle-sweep`이 주기적으로(기본 15분, 서버 설정값 가정) `account_deletion.state != done`인 행을 **지수 백오프**로 다시 실행한다(단계: `space_ended` → 공급자 해제 → `provider_revoked` → `deleteUser` → `auth_deleted` → 껍데기 전환 → `done`). 단계마다 `state`·`attempts`·`last_error_code`만 기록하고 서버 재시작 후에도 그 상태에서 이어서 끝낸다(멱등: 이미 해제된 공급자 연결, 이미 지워진 인증 사용자는 성공으로 본다).
+- `DELETE /account` 핸들러는 접수(`begin_account_deletion`)까지 동기로 끝내고 나머지 단계를 같은 요청 안에서 한 번 시도한 뒤 결과와 상관없이 `202`를 낸다. 안전망으로 `lifecycle-sweep`이 실행될 때마다 `due_account_deletions(at)`의 행을 **지수 백오프**(`next_attempt_at`, 상한은 설정값)로 다시 실행한다(단계: `requested` → 속했던 공간 즉시 완전 삭제 → `space_ended` → 공급자 해제 → `provider_revoked` → 참조 정리·프로필 삭제·`deleteUser` → `auth_deleted` → 보관 자격 삭제 → `done`). 두 실행기가 겹치지 않도록 `claim_account_deletion`이 짧은 임대(`locked_until`)를 잡고, 단계 전이는 `advance_account_deletion(user, from, to)`의 비교 후 갱신이다. 스케줄 자체는 아직 걸지 않았다(소유자 결정: 출시 전에 Vault 키 + pg_cron). 단계마다 `state`·`attempts`·`last_error_code`만 기록하고 서버 재시작 후에도 그 상태에서 이어서 끝낸다(멱등: 이미 해제된 공급자 연결, 이미 지워진 인증 사용자는 성공으로 본다).
 - **공급자 해제 재시도**: Apple은 `provider_credential_enc`(최대 24시간)로 revoke를 재시도하고 시간 초과·반복 실패는 내용 없는 운영 경고만 남긴다. 카카오는 인증 사용자 identity에서 대상 ID를 읽어 unlink를 재시도한다(`deleteUser`가 그 뒤 단계라서 identity가 남아 있다). 계속 실패해도 계정은 이미 접근 불가이며 이용자에게 보이는 상태는 바뀌지 않는다.
-- **껍데기 정리**: `purge_expired_spaces()`가 공간 행을 지운 같은 트랜잭션에서 어떤 구성원 행도 가리키지 않게 된 `shell` 프로필과 그 `account_deletion` 행을 지운다.
+- **껍데기 없음(Decided 47)**: 속했던 공간이 모두 지워진 뒤 `finish_account_deletion`이 남은 참조(`actor_user_id`·`ended_by_user_id`·알림의 `by_user_id`)를 비우고 프로필 행을 지운 다음 `deleteUser`를 부른다. `account_deletion` 행은 개인 내용 없이 `done`으로 남는다(멱등 판단용).
+- **앱 밖 요청(운영자)**: `POST /account/operator-deletion` `{ "userId": "uuid" }`는 service-role 키로만 호출한다(운영 런북). 같은 상태 기계를 `origin = operator`로 시작하며 Apple 재인증 코드가 없으므로 revoke 대신 `last_error_code = APPLE_TOKEN_UNAVAILABLE`만 남기고 다음 단계로 간다.
 - 서비스 키는 서버 함수에만 있다. Apple 서비스 키·카카오 앱 비밀 키는 서버 비밀 저장소에만 두고 로그·응답에 넣지 않는다.
 
 ## 실시간 업데이트

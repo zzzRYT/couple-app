@@ -26,7 +26,7 @@ function Legal() {
   );
 }
 /** S02: product sign-in is Sign in with Apple; the email OTP flow exists only in development builds. */
-export function LoginScreen({ auth, lastUsed, onDone, onEmail, onBack, options = defaultOptions }: { auth: AuthPort; lastUsed?: Provider; onDone: () => void; onEmail: (email: string) => void; onBack?: () => void; options?: AuthOptions }) {
+export function LoginScreen({ auth, lastUsed, onDone, onEmail, onBack, notice, options = defaultOptions }: { auth: AuthPort; lastUsed?: Provider; onDone: () => void; onEmail: (email: string) => void; onBack?: () => void; notice?: string; options?: AuthOptions }) {
   const color = useAppColor();
   const { t } = useTranslation();
   const { emphasis } = useType();
@@ -73,6 +73,7 @@ export function LoginScreen({ auth, lastUsed, onDone, onEmail, onBack, options =
         <AppText variant="caption" tone="text2" align="center">{t('brand.tagline')}</AppText>
       </View>
       <AppText variant="title" accessibilityRole="header">{t('login.title')}</AppText>
+      {notice && state.kind === 'choose' && <Banner kind="success" text={notice} />}
       {(state.kind === 'cancelled' || state.kind === 'error') && (
         <Banner kind={state.kind === 'error' ? 'danger' : 'info'} text={t(`login.${state.kind}.title`)} body={t(`login.${state.kind}.body`)} action={{ label: t('common.retry'), onPress: () => void signIn(state.provider) }} />
       )}
