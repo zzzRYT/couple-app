@@ -31,6 +31,8 @@ npx supabase secrets set ANTHROPIC_API_KEY=<Console API 키>      # 전용 works
 npx supabase functions deploy               # 12개 함수 (supabase/config.toml의 import_map 설정을 함께 씀)
 ```
 
+**출시 전 미해결: `home-cover`의 wasm 런타임 다운로드.** `home-cover`가 쓰는 `https://deno.land/x/imagescript@1.3.0/mod.ts`는 콜드 스타트마다 모듈 평가 중에 코덱 wasm 파일을 `deno.land`에서 `fetch`로 받는다. `deno.lock`은 `.js` 모듈만 고정하고 이 wasm 바이트는 고정하지도 무결성을 검사하지도 않는다. 그래서 `deno.land`가 느리거나 내려가면 `home-cover` 전체(업로드 URL·조회·확정)가 부팅하지 못하고, 실행되는 코드가 검증 없이 바뀔 수 있다. 해결 방법은 둘 중 하나이고 둘 다 새 벤더링 산출물이 생기므로 소유자 승인 뒤에 한다: (1) wasm 파일을 함수 옆에 벤더링하고 `file:` URL로 불러오기, (2) wasm을 패키지 안에 묶어 둔 다른 코덱으로 바꾸기.
+
 `lifecycle-sweep`은 하루 1회 이상 불러야 한다. 대시보드 Integrations → Cron(pg_cron)에서 HTTP 요청 작업을 만들고, `POST https://<project-ref>.supabase.co/functions/v1/lifecycle-sweep`에 `Authorization: Bearer <service-role 키>` 헤더를 단다(이 키는 대시보드 안의 작업 설정에만 둔다).
 
 점유 만료 처리(`public.expire_stale_sessions()`)는 1분마다 불러야 한다. 이 함수는 시간이 지난 점유를 `expired`로 바꾸고 상대 화면에 `session` 이벤트를 보내서, 앱이 꺼진 점유자 때문에 상대가 "이어서 꾸미기"를 늦게 보지 않게 한다. 마이그레이션은 함수만 만들고 일정은 만들지 않으므로 오너가 한 번 예약한다(대시보드 Integrations → Cron의 SQL 작업, 또는 SQL 편집기):

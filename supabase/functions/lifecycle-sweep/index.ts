@@ -64,7 +64,7 @@ export function lifecycleSweepHandler(db: Db, serviceKey: string, storage: Space
 }
 if (import.meta.main) {
   const client = serviceClient();
-  // Imported lazily: account/ports.ts itself imports bucketStorage from this module.
+  // Imported lazily so the account deletion modules load only in the deployed entry point, not when tests import the handler.
   const { defaultDeletionPorts } = await import('../account/ports.ts');
   const { resumeAccountDeletions } = await import('../account/runner.ts');
   const { ports } = await defaultDeletionPorts();

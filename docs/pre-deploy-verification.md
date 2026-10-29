@@ -24,7 +24,7 @@ PR #15(점유 리스), #16(설정·방 모드), #17(기념일 축하), #18(홈 �
 | 프롬프트 픽스처 | `deno run -A tools/ai/eval-fixtures.mjs` | 통과 |
 | 스키마·마이그레이션 규칙 | `node tools/ci/check-schemas.mjs`, `node tools/ci/check-migrations.mjs` | 통과 |
 | node 테스트 | `node --test assets/catalog/__tests__/manifest.test.mjs tools/tests/font-glyphs.test.mjs tools/tests/account-deletion.test.mjs` | pass 22 |
-| 함수 부팅(새로 추가) | `node tools/ci/check-functions-boot.mjs` | 수정 전: home-cover·lifecycle-sweep 500 `WORKER_ERROR`. 수정 후: 12개 모두 부팅(약 4초) |
+| 함수 부팅(새로 추가) | `node tools/ci/check-functions-boot.mjs` | 수정 전: home-cover·lifecycle-sweep 500 `WORKER_ERROR`. 수정 후: 통과(약 4초). 단, 이 실행은 인증 헤더 없이 불러서 `verify_jwt = true`인 9개 함수는 게이트웨이 401에서 멈췄고 실제로 부팅을 확인한 것은 `verify_jwt = false`인 3개뿐이다. 스크립트는 이후 로컬 anon 키를 붙이도록 고쳤고, 12개 전체 재실행은 CI에서 확인한다 |
 
 ## 3. 찾아서 고친 결함
 
@@ -33,7 +33,7 @@ PR #15(점유 리스), #16(설정·방 모드), #17(기념일 축하), #18(홈 �
 - 증상: `supabase functions serve`에서 `home-cover`의 모든 요청(업로드 URL·조회·확정)이 500 `WORKER_ERROR`. 로그: `Error: unsupported arch/platform: Not supported at …/imagescript/1.3.1/codecs/node/index.js`.
 - 원인: `npm:imagescript@1.3.1`의 진입점이 네이티브 `.node` 애드온을 불러온다. Edge Runtime은 네이티브 애드온을 지원하지 않는다. 로컬 `deno test`에서는 macOS용 바이너리가 그대로 로드돼서 통과했다.
 - 수정: 같은 라이브러리의 Deno 빌드(`https://deno.land/x/imagescript@1.3.0/mod.ts`, wasm만 씀)로 import를 바꿨다. `deno.lock`에 원격 모듈 해시를 고정했다. API(`Image.decode`, `crop`, `encodeJPEG`)는 같다.
-- 참고: 이 빌드는 콜드 스타트 때 wasm 파일을 `deno.land`에서 받는다. 콜드 스타트 첫 요청은 약 2~3.7초였다(아래 5장).
+- 참고: 이 빌드는 콜드 스타트 때 모듈 평가 중에 wasm 파일을 `deno.land`에서 받는다. 콜드 스타트 첫 요청은 약 2~3.7초였다(아래 5장). `deno.lock`은 `.js` 모듈만 고정하고 받아 오는 wasm 바이트는 고정·검증하지 않으므로, `deno.land`가 느리거나 내려가면 `home-cover` 전체(업로드 URL·조회·확정)가 부팅하지 못한다. 출시 전 미해결 항목으로 `docs/owner-tasks.md` D와 `docs/remote-supabase-setup.md` 4장에 남겼다.
 
 ### 3.2 lifecycle-sweep이 Edge Runtime에서 모듈 평가 중 멈춤 (P0)
 
@@ -44,7 +44,7 @@ PR #15(점유 리스), #16(설정·방 모드), #17(기념일 축하), #18(홈 �
 
 ### 3.3 재발 방지
 
-- `tools/ci/check-functions-boot.mjs`를 추가하고 CI의 `deno test` 다음 단계에 넣었다. `supabase functions serve`로 `supabase/functions`의 모든 함수를 띄우고 없는 경로를 한 번씩 불러서, 부팅된 함수의 4xx와 부팅 실패의 5xx를 구분한다. 수정 전 코드에서 두 함수를 잡고 수정 뒤에는 통과하는 것을 확인했다.
+- `tools/ci/check-functions-boot.mjs`를 추가하고 CI의 `deno test` 다음 단계에 넣었다. `supabase functions serve`로 `supabase/functions`의 모든 함수를 띄우고 없는 경로를 로컬 anon 키(`supabase status -o json`의 `ANON_KEY`)를 붙여 한 번씩 불러서, 부팅된 함수의 4xx와 부팅 실패의 5xx를 구분한다. 키가 없으면 `verify_jwt = true` 함수는 워커를 만들기 전에 게이트웨이가 401로 답해서 부팅 여부를 알 수 없다. 수정 전 코드에서 두 함수를 잡고 수정 뒤에는 통과하는 것을 확인했다.
 - `docs/remote-supabase-setup.md`의 "8개 함수"를 실제 개수인 12개로 고쳤다.
 
 ## 4. 시나리오별 결과 (HTTP, `supabase functions serve` 경유)
