@@ -10,12 +10,14 @@ export function createSupabase(url: string, publishableKey: string) {
 }
 
 /** Invoke local or owner-configured Functions without embedding credentials in source. */
-export function functionsCaller(client: ReturnType<typeof createSupabase>, url: string, publishableKey: string) {
+export function functionsCaller(client: ReturnType<typeof createSupabase>, url: string, publishableKey: string, onUnauthorized?: () => void) {
   return async (path: string, request: RequestInit): Promise<Response> => {
     const { data: { session } } = await client.auth.getSession();
     const headers = new Headers(request.headers);
     headers.set('apikey', publishableKey);
     if (session?.access_token) headers.set('Authorization', `Bearer ${session.access_token}`);
-    return fetch(`${url.replace(/\/$/, '')}/functions/v1/${path.replace(/^\//, '')}`, { ...request, headers });
+    const response = await fetch(`${url.replace(/\/$/, '')}/functions/v1/${path.replace(/^\//, '')}`, { ...request, headers });
+    if (response.status === 401 && session) onUnauthorized?.();
+    return response;
   };
 }

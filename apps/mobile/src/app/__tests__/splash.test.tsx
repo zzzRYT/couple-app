@@ -5,9 +5,8 @@ import RootLayout from '../_layout';
 jest.mock('expo-font', () => ({ useFonts: jest.fn() }));
 jest.mock('expo-splash-screen', () => ({ preventAutoHideAsync: jest.fn().mockResolvedValue(true), hideAsync: jest.fn().mockResolvedValue(true) }));
 jest.mock('expo-router', () => { const Stack = () => null; Stack.Screen = () => null; return { Stack }; });
-jest.mock('../../lib/AppContext', () => ({ AppProvider: ({ children }: { children: unknown }) => children }));
-jest.mock('../../features/space/SpaceContext', () => ({ SpaceProvider: ({ children }: { children: unknown }) => children }));
-jest.mock('../../features/lifecycle/EndedGate', () => ({ EndedGate: () => null }));
+jest.mock('../../lib/AppContext', () => ({ AppProvider: ({ children }: { children: unknown }) => children, useApp: () => ({ session: null, sessionLoaded: false, sessionExpired: false }) }));
+jest.mock('../../features/space/SpaceContext', () => ({ SpaceProvider: ({ children }: { children: unknown }) => children, useSpace: () => ({ entry: 'loading', spaceId: null, ended: null, reload: jest.fn() }) }));
 
 it('keeps the splash screen until fonts and translations are ready', async () => {
   const fonts = useFonts as jest.Mock;

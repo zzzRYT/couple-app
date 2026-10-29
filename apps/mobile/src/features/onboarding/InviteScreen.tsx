@@ -14,27 +14,42 @@ const EXPIRING_MS = 30 * 60_000;
 type Invitation = { code: string; expiresAt: string };
 export const formatInviteCode = (code: string) => { const clean = code.replace(/[^0-9a-z]/gi, '').toUpperCase(); return `${clean.slice(0, 4)}-${clean.slice(4, 8)}`; };
 /** S04 invite. The raw code exists only in component state for display/share and is never logged. Sharing or copying the code moves on to the waiting state (S04-waiting). */
-export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion, memberCount = 1, onJoined, onLater, onBack, copyCode }: {
-  createInvitation: () => Promise<Invitation>; clock?: () => number; reducedMotion?: boolean; memberCount?: number; onJoined?: () => void; onLater?: () => void; onBack?: () => void; copyCode?: (code: string) => Promise<boolean>;
+export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion, memberCount = 1, onJoined, onLater, onBack, copyCode, existingInvitationExpiresAt, onInvitationCreated }: {
+  createInvitation: () => Promise<Invitation>; clock?: () => number; reducedMotion?: boolean; memberCount?: number; onJoined?: () => void; onLater?: () => void; onBack?: () => void; copyCode?: (code: string) => Promise<boolean>; existingInvitationExpiresAt?: string | null; onInvitationCreated?: () => Promise<unknown> | void;
 }) {
   const color = useAppColor();
   const { t, i18n } = useTranslation();
   const { emphasis } = useType();
   const [invite, setInvite] = useState<Invitation | null>(null);
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error' | 'pending'>(existingInvitationExpiresAt ? 'pending' : 'loading');
   const [view, setView] = useState<'code' | 'waiting'>('code');
   const [now, setNow] = useState(clock());
   const [confirmReissue, setConfirmReissue] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const load = useCallback(async () => {
     setStatus('loading'); setNotice(null); setView('code');
-    try { setInvite(await createInvitation()); setNow(clock()); setStatus('ready'); } catch { setStatus('error'); }
-  }, [createInvitation, clock]);
-  useEffect(() => { void load(); }, [load]);
+    try { setInvite(await createInvitation()); setNow(clock()); setStatus('ready'); void Promise.resolve(onInvitationCreated?.()).catch(() => undefined); } catch { setStatus('error'); }
+  }, [createInvitation, clock, onInvitationCreated]);
+  useEffect(() => { if (memberCount >= 2) return; if (existingInvitationExpiresAt) { setStatus('pending'); setInvite(null); } else void load(); }, [load, existingInvitationExpiresAt, memberCount]);
   useEffect(() => { const timer = setInterval(() => setNow(clock()), 30_000); return () => clearInterval(timer); }, [clock]);
   useEffect(() => { if (memberCount >= 2) onJoined?.(); }, [memberCount, onJoined]);
   const hideNotice = useCallback(() => setNotice(null), []);
   if (status === 'loading') return <LoadingScreen label={t('invite.generating')} />;
+  if (status === 'pending' && existingInvitationExpiresAt) {
+    const expiresAt = new Intl.DateTimeFormat(i18n.language, { month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(existingInvitationExpiresAt));
+    const expired = Date.parse(existingInvitationExpiresAt) <= now;
+    return <Screen onBack={onBack} footer={<>
+      {onLater && <Button label={t('common.next')} variant="ghost" onPress={onLater} />}
+      <Button label={t('invite.reissue')} variant="secondary" onPress={() => setConfirmReissue(true)} />
+      <Dialog visible={confirmReissue} title={t('invite.reissue.title')} body={t('invite.reissue.body')} onClose={() => setConfirmReissue(false)}>
+        <Button label={t('common.confirm')} onPress={() => { setConfirmReissue(false); void load(); }} />
+        <Button label={t('common.cancel')} variant="ghost" onPress={() => setConfirmReissue(false)} />
+      </Dialog>
+    </>}>
+      <AppText variant="title" accessibilityRole="header">{t('invite.waiting.title')}</AppText>
+      <Banner kind={expired ? 'warn' : 'info'} icon="people" text={t('invite.waiting.body')} body={t('invite.expiresAt', { date: expiresAt })} />
+    </Screen>;
+  }
   if (status === 'error' || !invite) {
     return (
       <Screen onBack={onBack} footer={<>
@@ -77,7 +92,7 @@ export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion
   return (
     <Screen onBack={onBack} footer={<>
       {toast}
-      {expired ? <Button label={t('invite.reissue')} onPress={() => void load()} /> : <>
+        {expired ? <Button label={t('invite.reissue')} onPress={() => setConfirmReissue(true)} /> : <>
         <Button label={t('invite.share')} accessibilityLabel={t('a11y.share')} icon="share" onPress={() => void share()} />
         {copyCode && <Button label={t('invite.copy')} accessibilityLabel={t('a11y.copy')} icon="copy" variant="secondary" onPress={copy} />}
         <Button label={t('invite.reissue')} variant="ghost" onPress={() => setConfirmReissue(true)} />

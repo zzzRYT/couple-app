@@ -11,6 +11,6 @@ export default function JoinRoute() {
   const [pending, setPending] = useState<string | null | undefined>(undefined);
   useEffect(() => { void takePendingInvite().then(setPending); }, []);
   if (pending === undefined) return null;
-  return <JoinScreen initialCode={pending} alreadyInSpace={!!pending && entry === 'active'} readClipboard={Clipboard.getStringAsync} onBack={() => router.back()} previewInvitation={client.previewInvitation} acceptInvitation={client.acceptInvitation}
-    onJoined={() => { void reload(); router.replace('/home'); }} onOpenSpace={() => { void reload(); router.replace('/'); }} />;
+  return <JoinScreen initialCode={pending} alreadyInSpace={!!pending && entry === 'active'} readClipboard={Clipboard.getStringAsync} onBack={() => router.dismissTo('/choose-space')} previewInvitation={client.previewInvitation} acceptInvitation={client.acceptInvitation}
+    onJoined={() => { void reload(); }} onOpenSpace={() => { void reload(); }} />;
 }
