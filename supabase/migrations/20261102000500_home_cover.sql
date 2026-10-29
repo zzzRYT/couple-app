@@ -64,7 +64,7 @@ begin
   select * into ticket from public.home_cover_upload where id=upload and space_id=target and user_id=actor and uploaded_at is not null and consumed_at is null and expires_at>at for update;
   if not found or not public.is_space_active(target) then return jsonb_build_object('error',jsonb_build_object('code','NOT_FOUND')); end if;
   if mime <> 'image/jpeg' or size_bytes < 1 or width < 1 or height < 1 then return jsonb_build_object('error',jsonb_build_object('code','COVER_INVALID_IMAGE')); end if;
-  if crop_data is null or jsonb_typeof(crop_data) is distinct from 'object' or not (crop_data ?& array['x','y','width','height']) or jsonb_object_length(crop_data) <> 4 or
+  if crop_data is null or jsonb_typeof(crop_data) is distinct from 'object' or not (crop_data ?& array['x','y','width','height']) or crop_data - array['x','y','width','height'] <> '{}'::jsonb or
     jsonb_typeof(crop_data->'x') <> 'number' or jsonb_typeof(crop_data->'y') <> 'number' or jsonb_typeof(crop_data->'width') <> 'number' or jsonb_typeof(crop_data->'height') <> 'number' or
     (crop_data->>'x')::numeric < 0 or (crop_data->>'x')::numeric > 1 or (crop_data->>'y')::numeric < 0 or (crop_data->>'y')::numeric > 1 or
     (crop_data->>'width')::numeric <= 0 or (crop_data->>'height')::numeric <= 0 or (crop_data->>'x')::numeric+(crop_data->>'width')::numeric>1 or (crop_data->>'y')::numeric+(crop_data->>'height')::numeric>1 then
