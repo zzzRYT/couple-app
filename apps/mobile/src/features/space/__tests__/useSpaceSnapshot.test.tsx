@@ -46,6 +46,16 @@ it('refetches on foreground and keeps the last snapshot read-only when offline',
   expect(hook.result.current.state.snapshot?.space.spaceId).toBe('space-1');
 });
 
+it('catches up once when the shared channel rejoins and ignores older snapshots', async () => {
+  const realtime = memoryRealtime();
+  const snapshot = jest.fn().mockResolvedValueOnce({ ...snapshotFixture(), versionNumber: 4 }).mockResolvedValueOnce({ ...snapshotFixture(), versionNumber: 3 });
+  const hook = await renderHook(() => useSpaceSnapshot({ client: { mySpace: async () => ({ active: { spaceId: 'space-1' }, ended: null }), snapshot }, realtime }));
+  await waitFor(() => expect(hook.result.current.state.snapshot?.versionNumber).toBe(4));
+  await act(async () => { realtime.status('space-1', 'SUBSCRIBED'); });
+  await waitFor(() => expect(snapshot).toHaveBeenCalledTimes(2));
+  expect(hook.result.current.state.snapshot?.versionNumber).toBe(4);
+});
+
 it('reset drops the cached snapshot and entry so another account starts clean', async () => {
   const server = fakeServer();
   const hook = await renderHook(() => useSpaceSnapshot({ client: server.clientFor(), realtime: server.realtime }));

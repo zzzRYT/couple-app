@@ -15,7 +15,7 @@ export default function PromptRoute() {
   const { client, realtime } = useApp();
   const { state, spaceId, refresh } = useSpace();
   const [token, setToken] = useState(0);
-  useEffect(() => (spaceId ? realtime.subscribe(spaceId, () => setToken((n) => n + 1)) : undefined), [realtime, spaceId]);
+  useEffect(() => (spaceId ? realtime.subscribe(spaceId, () => setToken((n) => n + 1), (status) => { if (status === 'SUBSCRIBED') setToken((n) => n + 1); }) : undefined), [realtime, spaceId]);
   const now = useNow();
   if (!state.snapshot) return <LoadingScreen label={t('common.loading')} />;
   const mini = estimateLayout(200, 280, 1, 'ios');
