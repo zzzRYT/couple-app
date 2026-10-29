@@ -76,7 +76,8 @@ export function lifecycleSweepHandler(db: Db, serviceKey: string, storage: Space
     if (request.headers.get('Authorization') !== `Bearer ${serviceKey}`) return Response.json({ error: { code: 'UNAUTHORIZED', retryable: false } }, { status: 401 });
     const at = now();
     const result = await db.rpc<Record<string, number>>('sweep_prompt_data', { at: at.toISOString() });
-    const coverObjectsDeleted = await sweepHomeCoverDeletes(db, storage, at);
+    let coverObjectsDeleted = 0;
+    try { coverObjectsDeleted = await sweepHomeCoverDeletes(db, storage, at); } catch { /* cover cleanup is retried next run and must not block the purge */ }
     const purge = await purgeDueSpaces(db, storage, at);
     console.log(JSON.stringify(safeLogFields({ event: 'lifecycle-sweep', status: 200 })));
     return Response.json({ ...result, coverObjectsDeleted, ...purge });
