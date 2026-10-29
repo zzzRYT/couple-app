@@ -26,6 +26,8 @@ it('moves from expiring soon to expired and reissues a new code after confirmati
   expect(screen.getByText(screen.t('invite.expired.title'))).toBeTruthy();
   expect(screen.queryByLabelText(codeLabel(screen.t, 'AAAA-BBBB'))).toBeNull();
   await fireEvent.press(screen.getByRole('button', { name: screen.t('invite.reissue') }));
+  expect(screen.getByText(screen.t('invite.reissue.body'))).toBeTruthy();
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('common.confirm') }));
   expect(await screen.findByLabelText(codeLabel(screen.t, 'CCCC-DDDD'))).toBeTruthy();
   expect(createInvitation).toHaveBeenCalledTimes(2);
 });
@@ -37,6 +39,19 @@ it('asks before replacing a live code', async () => {
   expect(screen.getByText(screen.t('invite.reissue.body'))).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: screen.t('common.confirm') }));
   expect(await screen.findByLabelText(codeLabel(screen.t, 'CCCC-DDDD'))).toBeTruthy();
+});
+
+it('does not reveal or reissue an existing valid invite when the screen is reopened', async () => {
+  const createInvitation = jest.fn().mockResolvedValue(invitation('CCCCDDDD'));
+  const screen = await renderWithI18n(<InviteScreen createInvitation={createInvitation} clock={() => clock} reducedMotion existingInvitationExpiresAt={new Date(clock + 60 * 60_000).toISOString()} />);
+  expect(await screen.findByText(screen.t('invite.waiting.title'))).toBeTruthy();
+  expect(createInvitation).not.toHaveBeenCalled();
+  expect(screen.queryByLabelText(codeLabel(screen.t, 'CCCC-DDDD'))).toBeNull();
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('invite.reissue') }));
+  expect(createInvitation).not.toHaveBeenCalled();
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('common.confirm') }));
+  expect(await screen.findByLabelText(codeLabel(screen.t, 'CCCC-DDDD'))).toBeTruthy();
+  expect(createInvitation).toHaveBeenCalledTimes(1);
 });
 
 it('reports share cancellation and network errors', async () => {

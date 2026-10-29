@@ -1,4 +1,3 @@
-import { Redirect, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { EndedScreen } from '../features/lifecycle/EndedScreen';
 import { partnerLabel } from '../features/prompt/PromptPanel';
@@ -10,10 +9,10 @@ export default function EndedRoute() {
   const { t } = useTranslation();
   const { client } = useApp();
   const { ended, entry, reload } = useSpace();
-  if (!ended) return <Redirect href="/" />;
   const hasActiveSpace = entry === 'active';
+  if (!ended) return null;
   return (
     <EndedScreen ended={ended} hasActiveSpace={hasActiveSpace} partnerName={partnerLabel(t)}
-        onContinue={async () => { await client.ackEnded(); await reload(); router.replace(hasActiveSpace ? '/' : '/choose-space'); }} />
+        onContinue={async () => { await client.ackEnded(); await reload(); }} />
   );
 }

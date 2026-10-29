@@ -3,11 +3,12 @@ import { InviteLinkRoute } from '../InviteLinkRoute';
 import { savePendingInvite } from '../inviteLink';
 import { router, useLocalSearchParams } from 'expo-router';
 jest.mock('expo-router', () => ({ router: { replace: jest.fn() }, useLocalSearchParams: jest.fn() }));
+jest.mock('../../features/space/SpaceContext', () => ({ useSpace: () => ({ entry: 'none' }) }));
 jest.mock('../inviteLink', () => ({ ...jest.requireActual('../inviteLink'), savePendingInvite: jest.fn().mockResolvedValue(undefined) }));
 it('stores a valid incoming route before returning to the authentication/space gate', async () => {
   jest.mocked(useLocalSearchParams).mockReturnValue({ code: 'TEST-CODE' });
   render(<InviteLinkRoute />);
-  await waitFor(() => expect(router.replace).toHaveBeenCalledWith('/'));
+  await waitFor(() => expect(router.replace).toHaveBeenCalledWith('/join'));
   expect(savePendingInvite).toHaveBeenCalledWith('TESTCODE');
   expect(jest.mocked(savePendingInvite).mock.invocationCallOrder[0]!).toBeLessThan(jest.mocked(router.replace).mock.invocationCallOrder[0]!);
 });
