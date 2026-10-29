@@ -82,7 +82,7 @@ Expo / React Native 모바일 앱에 메인 D-day 화면과 둘만의 자유 배
 
 ### 계정 삭제 (P1, 출시 필수)
 
-(2026-10-27 7차 답변, `spec.md` Decided 41~46·FR-070~FR-074·US10·SC-011, 모두 가정. 비교·정책 근거는 [research.md](./research.md) 10장.) Apple 5.1.1(v)와 Google Play가 앱 안 계정 삭제를 요구하므로 공개 출시 전에 반드시 끝낸다(게이트 G18). 다만 MVP 컷(US1·US4·US2)에는 넣지 않는다.
+(2026-10-27 7차 답변, `spec.md` Decided 41~46·FR-070~FR-074·US10·SC-011, 모두 가정. 비교·정책 근거는 [research.md](./research.md) 10장.) **2026-10-29 Decided 47~51이 이 절의 내부 30일 보관·껍데기 프로필·단계 순서를 대체했다** — 현재 상태 기계는 [data-model.md](./data-model.md), 실행기 단계는 [contracts/api.md](./contracts/api.md) "계정 삭제 실행기"를 따른다. Apple 5.1.1(v)와 Google Play가 앱 안 계정 삭제를 요구하므로 공개 출시 전에 반드시 끝낸다(게이트 G18). 다만 MVP 컷(US1·US4·US2)에는 넣지 않는다.
 
 **결정 41~46 요약**
 

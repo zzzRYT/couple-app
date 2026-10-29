@@ -223,7 +223,7 @@ ended --예약 작업 실패--> ended (그대로 보이지 않음, 다음 실행
 
 AccountDeletion: (없음) --DELETE /account 접수(한 트랜잭션: 사용자 deleting·개인 필드 비움·활성 공간 종료·초대 폐기·점유 해제·세션 무효·속했던 공간 purge_after=지금)--> requested --속했던 공간 모두 완전 삭제(Decided 47)--> space_ended
 space_ended --공급자 해제 성공(Apple revoke / Kakao unlink / 이메일은 건너뜀)--> provider_revoked
-provider_revoked --Supabase deleteUser 성공--> auth_deleted
+provider_revoked --그사이 생긴 공간 다시 완전 삭제·finish_account_deletion·Supabase deleteUser 성공--> auth_deleted
 auth_deleted --보관 자격 삭제--> done
 각 단계 실패 --> 같은 상태에 머묾(attempts+1, 백오프 재시도, 예약 작업이 이어서 처리)
 UserProfile: active --계정 삭제 접수--> deleting --finish_account_deletion(인증 사용자 삭제 직전)--> (행 없음)
