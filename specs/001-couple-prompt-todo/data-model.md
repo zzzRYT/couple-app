@@ -288,7 +288,7 @@ queued/generated --invalid result/provider failure--> rejected/failed
 - **즉시 삭제·익명화(계정 삭제 접수 때)**: 로그인 식별자(Supabase 인증 사용자는 공급자 해제 뒤 삭제), 프로필 개인 필드, AI 처리 동의 기록, 대기 초대 코드(폐기). 로컬 알림 예약은 기기 전용이라 서버에 없다.
 - **내부에 최대 30일 남는 것**: 활성이었던 공간의 모든 데이터(`purge_after`까지), 그 공간 구성원 행이 가리키는 껍데기 프로필(개인 필드 없음), 상대의 종료 알림. 모두 클라이언트가 읽을 수 없다.
 - **완전 삭제 때 함께 지움**: 공간의 모든 행과 Storage 객체, 그 공간의 신고(기본 가정, 연기 없음; 계정 삭제 경로는 내용 없는 `ReportFingerprint`만 남김), 생성 시도 기록. 계정 삭제 경로는 이 완전 삭제를 30일 기다리지 않고 곧바로 한다(Decided 47).
-- **남기는 것**: `generation_block` 지문(개인정보 없음), 내용 없는 `deletion_started`/`deletion_completed` 이벤트. 최소 동의 로그나 재가입 차단용 식별자 보관은 두지 않았다(열린 질문, `spec.md` Open Decisions 25·27).
+- **남기는 것**: `generation_block` 지문(개인정보 없음), 내용 없는 `deletion_started`/`deletion_completed` 이벤트. 재가입 차단용 식별자는 두지 않고(`spec.md` Open Decisions 25, 결정됨), 최소 동의 로그도 두지 않았다(법률 검토는 열림, Open Decisions 27).
 
 ### MVP quota timezone implementation
 The active space stores its IANA timezone for quota reservations before the room tables exist; the room theme must use the same value when initialized or updated. Quota mutation RPCs are server-only.
