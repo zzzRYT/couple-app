@@ -7,6 +7,9 @@ function calendarDate(value: unknown): string {
   if (parseCalendarDate(date) === null) throw new AppError('INVALID_REQUEST');
   return date;
 }
+function requireConfirm(body: Record<string, unknown>) {
+  if (body.confirm !== true) throw new AppError('INVALID_REQUEST');
+}
 export function spacesHandler(deps: Deps) {
   return createHandler([
     route('POST', '/spaces', async ({ userId, body, deps }) =>
@@ -20,6 +23,15 @@ export function spacesHandler(deps: Deps) {
       const snapshot = await deps.db.rpc('space_snapshot', { actor: userId, target: uuidParam(params.spaceId) });
       if (!snapshot) throw new AppError('NOT_FOUND');
       return snapshot;
+    }),
+    // "Disconnect" is the screen name; the endpoint keeps the contract name `block`. Both are the same soft delete with a different reason.
+    route('POST', '/spaces/:spaceId/end', ({ userId, params, body, deps }) => {
+      requireConfirm(body);
+      return deps.db.rpc('end_space', { actor: userId, target: uuidParam(params.spaceId), reason: 'ended' });
+    }),
+    route('POST', '/spaces/:spaceId/block', ({ userId, params, body, deps }) => {
+      requireConfirm(body);
+      return deps.db.rpc('end_space', { actor: userId, target: uuidParam(params.spaceId), reason: 'disconnect' });
     }),
     route('PATCH', '/spaces/:spaceId/anniversary', ({ userId, params, body, deps }) =>
       deps.db.rpc('update_anniversary', { actor: userId, target: uuidParam(params.spaceId), anniversary: calendarDate(body.anniversaryDate), expected: str(body.expectedUpdatedAt, 64) })),

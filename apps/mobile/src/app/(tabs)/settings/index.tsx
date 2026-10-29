@@ -21,5 +21,6 @@ export default function SettingsRoute() {
   };
   return <SettingsScreen onLogout={onLogout} version={Constants.expoConfig?.version}
     space={snapshot ? { anniversary: formatAnniversary(snapshot.space.anniversaryDate, i18n.language), consent: me?.aiConsentState ?? 'not_given' } : null}
-    onOpenDate={() => router.navigate('/home')} onOpenConsent={() => router.push('/prompt/consent')} />;
+    onOpenDate={() => router.navigate('/home')} onOpenConsent={() => router.push('/prompt/consent')}
+    onOpenReport={() => router.push('/settings/report')} onOpenEndSpace={() => router.push('/settings/end-space')} />;
 }

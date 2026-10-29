@@ -21,6 +21,6 @@ export default function PromptRoute() {
   const mini = estimateLayout(200, 280, 1, 'ios');
   const mode = roomMode(state.snapshot.roomThemeDocument, now);
   return <PromptPanel client={client} snapshot={state.snapshot} online={!state.offline} refreshToken={token}
-    onOpenConsent={() => router.push('/prompt/consent')} onClose={() => router.back()} onApplied={() => { void refresh(); router.back(); }}
+    onOpenConsent={() => router.push('/prompt/consent')} onReportMessage={(messageId) => router.push({ pathname: '/settings/report', params: { messageId } })} onClose={() => router.back()} onApplied={() => { void refresh(); router.back(); }}
     renderScene={(scene) => <RoomScene scene={scene} mode={mode} layout={{ ...mini, safeTop: 0, safeBottom: 0, tabBarHeight: 0, toolbar: { x: 0, y: 0, width: 0, height: 0 } }} compact />} />;
 }

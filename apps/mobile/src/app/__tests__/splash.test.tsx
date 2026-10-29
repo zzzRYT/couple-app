@@ -7,6 +7,7 @@ jest.mock('expo-splash-screen', () => ({ preventAutoHideAsync: jest.fn().mockRes
 jest.mock('expo-router', () => { const Stack = () => null; Stack.Screen = () => null; return { Stack }; });
 jest.mock('../../lib/AppContext', () => ({ AppProvider: ({ children }: { children: unknown }) => children }));
 jest.mock('../../features/space/SpaceContext', () => ({ SpaceProvider: ({ children }: { children: unknown }) => children }));
+jest.mock('../../features/lifecycle/EndedGate', () => ({ EndedGate: () => null }));
 
 it('keeps the splash screen until fonts and translations are ready', async () => {
   const fonts = useFonts as jest.Mock;

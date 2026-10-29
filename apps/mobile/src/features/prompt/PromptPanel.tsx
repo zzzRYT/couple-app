@@ -36,9 +36,11 @@ function noticeFor(error: unknown): Notice {
   }
 }
 /** S08 shared prompt panel: one owner types, requests and applies; the partner watches read-only. Offline requests are never queued. */
-export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpenConsent, onClose, onApplied, renderScene, clock, settings = defaultSessionSettings }: {
+export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpenConsent, onClose, onApplied, renderScene, clock, settings = defaultSessionSettings, onReportMessage }: {
   client: PanelClient; snapshot: Snapshot; online: boolean; refreshToken?: number; onOpenConsent: () => void; onClose?: () => void; onApplied?: (version: number) => void;
   renderScene?: (scene: SceneDocument) => ReactNode; clock?: () => number; settings?: SessionSettings;
+  /** Opens the report flow for a partner's message; omit to hide the message menu. */
+  onReportMessage?: (messageId: string) => void;
 }) {
   const color = useAppColor();
   const { t, i18n } = useTranslation();
@@ -53,6 +55,7 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
   const [busy, setBusy] = useState<null | 'sending' | 'applying' | 'undoing'>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const [quotaUsed, setQuotaUsed] = useState(false);
+  const [menuFor, setMenuFor] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
   const [confirmingUndo, setConfirmingUndo] = useState(false);
   const [applied, setApplied] = useState(false);
@@ -161,6 +164,7 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
                   <View style={{ paddingVertical: tokens.spacing[2], paddingHorizontal: tokens.spacing[3], borderRadius: tokens.radius.card, borderBottomRightRadius: mine ? 6 : tokens.radius.card, backgroundColor: mine ? color.primary : result ? color.surface : color.surface2, borderWidth: result ? tokens.border.outline.normal : 0, borderColor: color.border }}>
                     <AppText style={{ color: mine ? color.onPrimary : color.text }}>{result && !message.bodyText ? t('prompt.msg.status.preview') : message.bodyText}</AppText>
                   </View>
+                  {onReportMessage && message.kind === 'user_prompt' && !mine && message.authorUserId && <View style={{ alignSelf: 'flex-start' }}><Button label="⋯" variant="ghost" accessibilityLabel={t('report.msg.menu')} onPress={() => setMenuFor(message.id)} /></View>}
                   {mine && <AppText variant="caption" tone="text2" align="right">{time(message.createdAt)}</AppText>}
                 </View>
               );
@@ -190,6 +194,10 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
           {status === 'mine' && <AppText variant="caption" tone="text2">{t('prompt.idleHint')}</AppText>}
         </View>
       </View>
+      <Dialog visible={menuFor !== null} icon="warn" title={t('report.msg.menu')} onClose={() => setMenuFor(null)}>
+        <Button label={t('report.msg.menu')} onPress={() => { const id = menuFor; setMenuFor(null); if (id && onReportMessage) onReportMessage(id); }} />
+        <Button label={t('report.msg.menu.cancel')} variant="ghost" onPress={() => setMenuFor(null)} />
+      </Dialog>
       <Dialog visible={confirmingUndo} icon="undo" title={t('undo.title')} body={t('undo.body')} onClose={() => setConfirmingUndo(false)}>
         <Button label={t('undo.confirm')} onPress={() => { setConfirmingUndo(false); void undo(); }} />
         <Button label={t('common.cancel')} variant="ghost" onPress={() => setConfirmingUndo(false)} />

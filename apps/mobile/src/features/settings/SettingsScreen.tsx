@@ -6,8 +6,8 @@ import { tokens } from '../../theme/tokens';
 import { AppText, Banner, Button, Card, Dialog, GUTTER, ListRow, SectionLabel, useTabBarClearance } from '../../ui/components';
 
 type SpaceRows = { anniversary: string; consent: 'not_given' | 'granted' | 'revoked' };
-/** S13 settings tab root, limited to what exists in this MVP: the shared date, AI consent management, app version and sign-out. */
-export function SettingsScreen({ onLogout, space, version, onOpenDate, onOpenConsent }: { onLogout: () => Promise<void>; space?: SpaceRows | null; version?: string; onOpenDate?: () => void; onOpenConsent?: () => void }) {
+/** S13 settings tab root, limited to what exists in this MVP: the shared date, AI consent management, contact and reports, ending the space, app version and sign-out. */
+export function SettingsScreen({ onLogout, space, version, onOpenDate, onOpenConsent, onOpenReport, onOpenEndSpace }: { onLogout: () => Promise<void>; space?: SpaceRows | null; version?: string; onOpenDate?: () => void; onOpenConsent?: () => void; onOpenReport?: () => void; onOpenEndSpace?: () => void }) {
   const color = useAppColor();
   const { t } = useTranslation();
   const [confirming, setConfirming] = useState(false);
@@ -37,7 +37,20 @@ export function SettingsScreen({ onLogout, space, version, onOpenDate, onOpenCon
       <Card style={{ paddingVertical: tokens.spacing[0], gap: 0 }}>
         <ListRow icon="logout" label={t('set.logout')} onPress={() => { setFailed(false); setConfirming(true); }} />
       </Card>
-      {version && <><SectionLabel text={t('set.sec.info')} /><View style={{ paddingVertical: tokens.spacing[1] }}><AppText variant="bodySm" tone="text2">{t('set.about.version', { v: version })}</AppText></View></>}
+      {onOpenReport && <>
+        <SectionLabel text={t('set.sec.info')} />
+        <Card style={{ paddingVertical: tokens.spacing[0], gap: 0 }}>
+          <ListRow icon="mail" label={t('set.support')} onPress={onOpenReport} />
+        </Card>
+      </>}
+      {onOpenEndSpace && <>
+        <SectionLabel text={t('set.sec.danger')} />
+        <Card style={{ paddingVertical: tokens.spacing[0], gap: 0 }}>
+          <ListRow icon="warn" danger label={t('set.end')} onPress={onOpenEndSpace} />
+        </Card>
+        <AppText variant="bodySm" tone="text2">{t('set.end.help')}</AppText>
+      </>}
+      {version && <View style={{ paddingVertical: tokens.spacing[1] }}><AppText variant="bodySm" tone="text2">{t('set.about.version', { v: version })}</AppText></View>}
       <Dialog visible={confirming} icon="logout" title={t('set.logout.title')} body={t('set.logout.body')} onClose={() => { if (!busy) setConfirming(false); }}>
         {failed && <Banner kind="danger" text={t('sys.server.title')} />}
         <Button label={t('set.logout')} variant="danger" loading={busy} onPress={() => void confirm()} />
