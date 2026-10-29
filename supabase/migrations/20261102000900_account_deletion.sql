@@ -207,7 +207,7 @@ begin
     update public.space_end_notice n set space_id=null,
         by_user_id=case when exists (select 1 from public.account_deletion d where d.user_id=n.by_user_id) then null else n.by_user_id end
       where n.space_id=target and n.acked_at is null and not exists (select 1 from public.account_deletion d where d.user_id=n.user_id);
-    insert into public.report_fingerprint (target, reason, reported_at) select r.target, r.reason, r.created_at from public.report r where r.space_id=target;
+    insert into public.report_fingerprint (target, reason, reported_at) select r.target, r.reason, r.created_at from public.report r where r.space_id=purge_space.target;
   end if;
   delete from public.space_end_notice where space_id=target;
   -- Keep only content-free fingerprints of the lifecycle: no actor, no metadata.
