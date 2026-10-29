@@ -12,6 +12,7 @@ import type { HomeCover } from '../../lib/client';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { COVER_CROP } from '../../features/cover/coverCrop';
 const MAX_COVER_BYTES = 20 * 1024 * 1024;
+const MAX_COVER_EDGE = 4000;
 export default function HomeRoute() {
   const { client, userId } = useApp();
   const { state, refresh, spaceId } = useSpace();
@@ -39,8 +40,10 @@ export default function HomeRoute() {
     if (!space) return;
     let uploadUri = asset.uri;
     let contentType = asset.mimeType?.toLowerCase() ?? 'image/jpeg';
-    if (contentType === 'image/heic' || contentType === 'image/heif') {
-      const converted = await ImageManipulator.manipulateAsync(asset.uri, [], { compress: 0.9, format: ImageManipulator.SaveFormat.JPEG });
+    const oversized = Math.max(asset.width, asset.height) > MAX_COVER_EDGE;
+    if (oversized || contentType === 'image/heic' || contentType === 'image/heif') {
+      const resize = asset.width >= asset.height ? { width: MAX_COVER_EDGE } : { height: MAX_COVER_EDGE };
+      const converted = await ImageManipulator.manipulateAsync(asset.uri, oversized ? [{ resize }] : [], { compress: 0.9, format: ImageManipulator.SaveFormat.JPEG });
       uploadUri = converted.uri;
       contentType = 'image/jpeg';
     }

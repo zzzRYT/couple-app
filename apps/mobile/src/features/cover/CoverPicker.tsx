@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next';
 import type { HomeCover } from '../../lib/client';
 import { useAppColor } from '../../theme/useAppColor';
 import { tokens } from '../../theme/tokens';
-import { AppText, Banner, BottomSheet, Button, Toast } from '../../ui/components';
+import { AppText, Banner, BottomSheet, Button, Chip, Toast } from '../../ui/components';
 import { COVER_ASPECT_RATIO, COVER_PICKER_ASPECT } from './coverCrop';
 
 const MAX_COVER_BYTES = 20 * 1024 * 1024;
-type Props = { cover: HomeCover | null; userId: string | null; offline: boolean; open?: boolean; onOpenConsumed?: () => void; dayCount: number; since: string; onUpload: (asset: ImagePicker.ImagePickerAsset) => Promise<void>; onRemove: () => Promise<void>; onLoad: () => Promise<void> };
-export function CoverPicker({ cover, userId, offline, open, onOpenConsumed, dayCount, since, onUpload, onRemove, onLoad }: Props) {
+type Props = { cover: HomeCover | null; userId: string | null; offline: boolean; pending?: boolean; open?: boolean; onOpenConsumed?: () => void; dayCount: number; since: string; onUpload: (asset: ImagePicker.ImagePickerAsset) => Promise<void>; onRemove: () => Promise<void>; onLoad: () => Promise<void> };
+export function CoverPicker({ cover, userId, offline, pending, open, onOpenConsumed, dayCount, since, onUpload, onRemove, onLoad }: Props) {
   const color = useAppColor();
   const { t } = useTranslation();
   const [sheet, setSheet] = useState(false);
@@ -51,9 +51,12 @@ export function CoverPicker({ cover, userId, offline, open, onOpenConsumed, dayC
       {showPhoto && <Image source={{ uri: cover.signedUrl }} onError={() => setImageFailed(true)} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} resizeMode="cover" />}
       {showPhoto && <View pointerEvents="none" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, backgroundColor: 'rgba(20, 14, 12, 0.68)' }} />}
       <View style={{ padding: tokens.spacing[3], gap: tokens.spacing[2] }}>
-        <AppText style={{ color: showPhoto ? '#FFFFFF' : color.text2 }}>{t('dday.eyebrow')}</AppText>
-        <AppText variant="display" align="center" style={{ color: showPhoto ? '#FFFFFF' : color.text }}>{t('dday.count', { n: dayCount })}</AppText>
-        <AppText align="center" style={{ color: showPhoto ? '#FFFFFF' : color.text2 }}>{since}</AppText>
+        <View accessible accessibilityLabel={`${t('dday.eyebrow')} ${t('dday.count', { n: dayCount })}, ${since}`} style={{ gap: tokens.spacing[2] }}>
+          <AppText style={{ color: showPhoto ? '#FFFFFF' : color.text2 }}>{t('dday.eyebrow')}</AppText>
+          <AppText variant="display" align="center" style={{ color: showPhoto ? '#FFFFFF' : color.text }}>{t('dday.count', { n: dayCount })}</AppText>
+          <AppText align="center" style={{ color: showPhoto ? '#FFFFFF' : color.text2 }}>{since}</AppText>
+          {pending && <View style={{ alignSelf: 'center' }}><Chip kind="warn" icon="people" label={t('main.chip.waiting')} /></View>}
+        </View>
         <Pressable accessibilityRole="button" accessibilityLabel={t(showPhoto ? 'a11y.cover.change' : 'a11y.cover.add')} disabled={offline} onPress={() => setSheet(true)} style={{ alignSelf: 'center', minHeight: tokens.touch.minimum, justifyContent: 'center', backgroundColor: showPhoto ? 'rgba(20,14,12,0.72)' : color.surface, paddingHorizontal: tokens.spacing[2], paddingVertical: tokens.spacing[1], borderRadius: tokens.radius.pill }}>
           <AppText style={{ color: showPhoto ? '#FFFFFF' : color.primary }}>{t(showPhoto ? 'a11y.cover.change' : 'cover.add')}</AppText>
         </Pressable>

@@ -22,3 +22,10 @@ it('disables cover changes while offline', async () => {
   expect(screen.getByRole('button', { name: screen.t('a11y.cover.add') }).props.accessibilityState.disabled).toBe(true);
   expect(screen.queryByText(screen.t('cover.sheet.title'))).toBeNull();
 });
+
+it('shows the invite-waiting chip over the cover only while the partner has not joined', async () => {
+  const waiting = await renderWithI18n(<CoverPicker {...common()} pending />);
+  expect(waiting.getByText(waiting.t('main.chip.waiting'))).toBeTruthy();
+  const joined = await renderWithI18n(<CoverPicker {...common()} />);
+  expect(joined.queryByText(joined.t('main.chip.waiting'))).toBeNull();
+});

@@ -94,7 +94,7 @@ export function HomeScreen({ state, now, onOpenRoom, onOpenInvite, onSaveDate, o
         {!milestone && milestonePreset?.presetAvailable && <Button label={t('milestone.action.suggest')} icon="sparkle" variant="secondary" disabled={state.offline} onPress={onMilestoneSuggest ?? (() => {})} />}
         {!state.offline && state.status === 'error' && <Banner kind="warn" text={t('main.sync.title')} body={t('main.sync.body')} action={refresh ? { label: t('common.retry'), onPress: refresh } : undefined} />}
         {onCoverUpload && onCoverRemove && onCoverLoad
-          ? <CoverPicker cover={cover ?? null} userId={userId ?? null} offline={state.offline} open={openCover} onOpenConsumed={onCoverOpenConsumed} dayCount={n} since={since} onUpload={onCoverUpload} onRemove={onCoverRemove} onLoad={onCoverLoad} />
+          ? <CoverPicker cover={cover ?? null} userId={userId ?? null} offline={state.offline} pending={pending} open={openCover} onOpenConsumed={onCoverOpenConsumed} dayCount={n} since={since} onUpload={onCoverUpload} onRemove={onCoverRemove} onLoad={onCoverLoad} />
           : <View accessible accessibilityLabel={`${t('dday.eyebrow')} ${t('dday.count', { n })}, ${since}`} style={{ alignItems: 'center', gap: tokens.spacing[1], paddingVertical: tokens.spacing[3] }}>
             <AppText style={[emphasis(18), { color: color.text2 }]}>{t('dday.eyebrow')}</AppText>
             <AppText variant="display" align="center">{t('dday.count', { n })}</AppText>
