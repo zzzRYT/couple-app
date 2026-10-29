@@ -122,8 +122,8 @@ end $$;
 
 revoke all on function public.milestone_context(uuid,uuid),public.record_milestones(uuid,uuid,jsonb,date,text,date),public.read_current_milestone(uuid,uuid,text),public.mark_milestone_seen(uuid,uuid,uuid,text) from public,anon,authenticated;
 grant execute on function public.milestone_context(uuid,uuid),public.record_milestones(uuid,uuid,jsonb,date,text,date),public.read_current_milestone(uuid,uuid,text),public.mark_milestone_seen(uuid,uuid,uuid,text) to service_role;
-revoke all on function public.update_anniversary(uuid,uuid,date,timestamptz) from public,anon;
-grant execute on function public.update_anniversary(uuid,uuid,date,timestamptz) to authenticated,service_role;
+revoke all on function public.update_anniversary(uuid,uuid,date,timestamptz) from public,anon,authenticated;
+grant execute on function public.update_anniversary(uuid,uuid,date,timestamptz) to service_role;
 
 -- The existing confirmation RPC remains the only path that changes the room. Its
 -- source and preset audit are derived from the saved request, never from the client.

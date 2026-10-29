@@ -27,7 +27,7 @@ export function MilestoneCard({ celebration, offline, onClose, onSuggest }: { ce
         <Icon name="close" size={20} color={color.text2} />
       </Pressable>
     </View>
-    {!offline && <View style={{ alignItems: 'center', gap: 4 }}>
+    {!offline && celebration.presetAvailable && <View style={{ alignItems: 'center', gap: 4 }}>
       <Button label={t('milestone.action.suggest')} icon="sparkle" variant="secondary" onPress={onSuggest} />
       <AppText variant="caption" tone="text2">{t('milestone.suggest.hint')}</AppText>
     </View>}

@@ -30,3 +30,9 @@ it('keeps the last verified card closeable offline but disables its suggestion',
   await fireEvent.press(screen.getByTestId('milestone-close'));
   expect(onClose).toHaveBeenCalledTimes(1);
 });
+
+it('hides the suggestion once the preset was already applied', async () => {
+  const screen = await renderWithI18n(<MilestoneCard celebration={{ ...milestone, presetAvailable: false }} offline={false} onClose={jest.fn()} onSuggest={jest.fn()} />);
+  expect(screen.getByTestId('milestone-card')).toBeTruthy();
+  expect(screen.queryByRole('button', { name: screen.t('milestone.action.suggest') })).toBeNull();
+});

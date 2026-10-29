@@ -18,6 +18,6 @@ export default function HomeRoute() {
   const space = state.snapshot?.space;
   return <HomeScreen state={state} now={now} onOpenRoom={() => router.navigate('/room')} onOpenInvite={openInvite}
     milestone={milestone.celebration} milestonePreset={milestone.preset} onMilestoneSeen={() => { if (milestone.celebration) void milestone.seen(milestone.celebration); }}
-    onMilestoneSuggest={() => { if (milestone.preset) router.push({ pathname: '/prompt', params: { milestone: milestone.preset.id, milestoneKey: milestone.preset.key } }); }}
+    onMilestoneSuggest={() => { if (milestone.preset?.presetAvailable) router.push({ pathname: '/prompt', params: { milestone: milestone.preset.id, milestoneKey: milestone.preset.key } }); }}
     onRefresh={refresh} onSaveDate={async (date) => { if (space) { await client.updateAnniversary(space.spaceId, date, space.updatedAt); await refresh(); } }} />;
 }

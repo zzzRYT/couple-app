@@ -19,5 +19,5 @@ export default function RoomRoute() {
   const now = useNow(1000);
   return <RoomScreen state={room.state} now={now} onDecorate={openPrompt} onRecall={room.recall} onRetry={room.refresh}
     milestone={milestone.celebration} milestonePreset={milestone.preset} onMilestoneSeen={() => { if (milestone.celebration) void milestone.seen(milestone.celebration); }}
-    onMilestoneSuggest={() => { if (milestone.preset) router.push({ pathname: '/prompt', params: { milestone: milestone.preset.id, milestoneKey: milestone.preset.key } }); }} />;
+    onMilestoneSuggest={() => { if (milestone.preset?.presetAvailable) router.push({ pathname: '/prompt', params: { milestone: milestone.preset.id, milestoneKey: milestone.preset.key } }); }} />;
 }
