@@ -50,7 +50,8 @@
       "^expo-apple-authentication$": "<rootDir>/src/test/appleAuthMock.tsx",
       "^@shopify/react-native-skia$": "<rootDir>/src/test/skiaMock.tsx",
       "^(?:\\.\\./)+assets/catalog/images/([a-z_]+)\\.png$": "<rootDir>/../../assets/catalog/images/$1@2x.png",
-      "^(?:\\.\\./)+assets/loader/([a-z_]+)\\.png$": "<rootDir>/assets/loader/$1@2x.png"
+      "^(?:\\.\\./)+assets/loader/([a-z_]+)\\.png$": "<rootDir>/assets/loader/$1@2x.png",
+      "^react-native-reanimated$": "<rootDir>/src/test/reanimatedMock.tsx"
     }
   }
 }

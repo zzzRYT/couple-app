@@ -7,7 +7,11 @@ async function setup(createSpace = jest.fn().mockResolvedValue({ spaceId: 'space
   const onCreated = jest.fn();
   const onOpenSpace = jest.fn();
   const screen = await renderWithI18n(<CreateSpaceScreen createSpace={createSpace} now={now} timeZone="Asia/Seoul" onCreated={onCreated} onOpenSpace={onOpenSpace} />);
-  const pick = (field: string, value: number) => fireEvent.press(screen.getByTestId(`wheel-${field}-${value}`));
+  const pick = async (field: string, value: number) => {
+    await fireEvent.press(screen.getByTestId('date-year'));
+    await fireEvent.press(screen.getByTestId(`wheel-${field}-${value}`));
+    await fireEvent.press(screen.getByRole('button', { name: screen.t('common.done') }));
+  };
   const submit = () => fireEvent.press(screen.getByRole('button', { name: screen.t('space.create') }));
   return { screen, createSpace, onCreated, onOpenSpace, pick, submit };
 }

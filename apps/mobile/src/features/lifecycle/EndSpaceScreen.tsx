@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Banner, Button } from '../../ui/components';
+import { AppText, Banner, Button, Card, Screen } from '../../ui/components';
+import { Icon } from '../../ui/Icon';
 import { CycleLoader } from '../../ui/CycleLoader';
 import { tokens } from '../../theme/tokens';
 import { useAppColor } from '../../theme/useAppColor';
@@ -19,21 +20,24 @@ export function EndSpaceScreen({ onEnd, onCancel }: { onEnd: () => Promise<void>
     try { await onEnd(); } catch { setFailed(true); setBusy(false); }
   }
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2] }}>
-      <Text accessibilityRole="header" style={{ color: color.text, fontSize: tokens.typography.scale.heading.size }}>{t('end.title')}</Text>
-      <Text style={{ color: color.text2 }}>{t('end.body')}</Text>
-      <View style={{ gap: tokens.spacing[1] }}>
-        {(['end.b1', 'end.b2', 'end.b3'] as const).map((key) => <Text key={key} style={{ color: color.text }}>{`• ${t(key)}`}</Text>)}
-      </View>
-      <Pressable accessibilityRole="checkbox" accessibilityState={{ checked, disabled: busy }} accessibilityLabel={t('end.check')} disabled={busy} onPress={() => setChecked((value) => !value)}
-        style={{ minHeight: tokens.touch.minimum, flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[1] }}>
-        <View style={{ width: 24, height: 24, borderWidth: 2, borderColor: color.text, borderRadius: 4, backgroundColor: checked ? color.danger : 'transparent' }} />
-        <Text style={{ flexShrink: 1, color: color.text }}>{t('end.check')}</Text>
-      </Pressable>
-      {failed && <View style={{ gap: 4 }}><Banner kind="danger" text={t('end.err.title')} /><Text style={{ color: color.text2 }}>{t('end.err.body')}</Text></View>}
-      {busy && <View style={{ alignItems: 'center' }}><CycleLoader label={t('end.progress')} /><Text style={{ color: color.text2 }}>{t('end.progress')}</Text></View>}
-      <Button label={failed ? t('common.retry') : t('end.confirm')} variant="danger" disabled={!checked || busy} onPress={() => void confirm()} />
+    <Screen onBack={busy ? undefined : onCancel} footer={<>
+      <Button label={failed ? t('common.retry') : t('end.confirm')} variant="danger" loading={busy} disabled={!checked || busy} onPress={() => void confirm()} />
       <Button label={t('end.cancel')} variant="ghost" disabled={busy} onPress={onCancel} />
-    </ScrollView>
+    </>}>
+      <AppText variant="title" accessibilityRole="header">{t('end.title')}</AppText>
+      <AppText tone="text2">{t('end.body')}</AppText>
+      <Card style={{ gap: tokens.spacing[1] }}>
+        {(['end.b1', 'end.b2', 'end.b3'] as const).map((key) => <AppText key={key}>{`• ${t(key)}`}</AppText>)}
+      </Card>
+      <Pressable accessibilityRole="checkbox" accessibilityState={{ checked, disabled: busy }} accessibilityLabel={t('end.check')} disabled={busy} onPress={() => setChecked((value) => !value)}
+        style={{ minHeight: tokens.touch.minimum, flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[2] }}>
+        <View style={{ width: 24, height: 24, borderWidth: tokens.border.outline.normal, borderColor: color.line, borderRadius: 8, backgroundColor: checked ? color.danger : color.surface, alignItems: 'center', justifyContent: 'center' }}>
+          {checked && <Icon name="check" size={16} color={color.onDanger} />}
+        </View>
+        <AppText style={{ flexShrink: 1 }}>{t('end.check')}</AppText>
+      </Pressable>
+      {failed && <Banner kind="danger" text={t('end.err.title')} body={t('end.err.body')} />}
+      {busy && <View style={{ alignItems: 'center' }}><CycleLoader label={t('end.progress')} /></View>}
+    </Screen>
   );
 }

@@ -9,5 +9,5 @@ export default function HomeRoute() {
   const now = useNow();
   const space = state.snapshot?.space;
   return <HomeScreen state={state} now={now} onOpenRoom={() => router.navigate('/room')} onOpenInvite={() => router.push({ pathname: '/invite', params: { spaceId: space?.spaceId } })}
-    onSaveDate={async (date) => { if (space) { await client.updateAnniversary(space.spaceId, date, space.updatedAt); await refresh(); } }} />;
+    onRefresh={refresh} onSaveDate={async (date) => { if (space) { await client.updateAnniversary(space.spaceId, date, space.updatedAt); await refresh(); } }} />;
 }

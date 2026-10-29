@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Banner, Button, TextField } from '../../ui/components';
-import { CycleLoader } from '../../ui/CycleLoader';
+import { AppText, Banner, Button, Card, Screen, SectionLabel, TextField } from '../../ui/components';
 import { ApiError, errorKey } from '../../lib/errors';
 import type { ReportInput, ReportReason, ReportTarget } from '../../lib/client';
 import { tokens } from '../../theme/tokens';
@@ -23,11 +22,11 @@ function Choice({ label, selected, onPress, disabled }: { label: string; selecte
   const color = useAppColor();
   return (
     <Pressable accessibilityRole="radio" accessibilityState={{ selected, disabled }} accessibilityLabel={label} disabled={disabled} onPress={onPress}
-      style={{ minHeight: tokens.touch.minimum, flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[1] }}>
-      <View style={{ width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: color.text, alignItems: 'center', justifyContent: 'center' }}>
-        {selected && <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: color.text }} />}
+      style={{ minHeight: tokens.touch.minimum, flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[2] }}>
+      <View style={{ width: 22, height: 22, borderRadius: 11, borderWidth: tokens.border.outline.normal, borderColor: color.line, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' }}>
+        {selected && <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: color.primary }} />}
       </View>
-      <Text style={{ flexShrink: 1, color: color.text }}>{label}</Text>
+      <AppText style={{ flexShrink: 1 }}>{label}</AppText>
     </Pressable>
   );
 }
@@ -37,7 +36,6 @@ export function ReportScreen({ partnerName, initialTarget, messageId, onSubmit, 
   partnerName: string; initialTarget?: ReportTarget; messageId?: string;
   onSubmit: (input: ReportInput) => Promise<void>; onDisconnect: () => Promise<void>; onDone: () => void;
 }) {
-  const color = useAppColor();
   const { t } = useTranslation();
   const [target, setTarget] = useState<ReportTarget | null>(initialTarget ?? null);
   const [reason, setReason] = useState<ReportReason | null>(null);
@@ -60,35 +58,35 @@ export function ReportScreen({ partnerName, initialTarget, messageId, onSubmit, 
   }
   if (phase === 'done') {
     return (
-      <ScrollView style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2] }}>
-        <Text accessibilityRole="header" style={{ color: color.text, fontSize: tokens.typography.scale.heading.size }}>{t('report.done.title')}</Text>
-        <Text style={{ color: color.text2 }}>{t('report.done.body')}</Text>
-        <Text style={{ color: color.text2 }}>{t('report.contact')}</Text>
-        <Button label={t('common.done')} onPress={onDone} />
-      </ScrollView>
+      <Screen footer={<Button label={t('common.done')} onPress={onDone} />}>
+        <AppText variant="title" accessibilityRole="header">{t('report.done.title')}</AppText>
+        <AppText tone="text2">{t('report.done.body')}</AppText>
+        <AppText variant="bodySm" tone="text2">{t('report.contact')}</AppText>
+      </Screen>
     );
   }
   return (
-    <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2] }}>
-      <Text accessibilityRole="header" style={{ color: color.text, fontSize: tokens.typography.scale.heading.size }}>{t('report.title')}</Text>
-      <Text accessibilityRole="header" style={{ color: color.text2 }}>{t('report.what')}</Text>
-      <View accessibilityRole="radiogroup">
-        {TARGETS.map((option) => <Choice key={option.value} label={t(option.key)} selected={target === option.value} disabled={sending} onPress={() => setTarget(option.value)} />)}
-      </View>
-      <Text accessibilityRole="header" style={{ color: color.text2 }}>{t('report.why')}</Text>
-      <View accessibilityRole="radiogroup">
-        {REASONS.map((option) => <Choice key={option.value} label={t(option.key)} selected={reason === option.value} disabled={sending} onPress={() => setReason(option.value)} />)}
-      </View>
-      <Text style={{ color: color.text2 }}>{t('report.detail')}</Text>
-      <TextField label={t('report.detail')} placeholder={t('report.detail.placeholder')} placeholderTextColor={color.text2} multiline maxLength={MAX_DETAIL} editable={!sending}
+    <Screen onBack={sending ? undefined : onDone} footer={<Button label={t('report.submit')} loading={sending} disabled={!target || !reason || sending} onPress={() => void submit()} />}>
+      <AppText variant="title" accessibilityRole="header">{t('report.title')}</AppText>
+      <SectionLabel text={t('report.what')} />
+      <Card style={{ paddingVertical: tokens.spacing[0], gap: 0 }}>
+        <View accessibilityRole="radiogroup">
+          {TARGETS.map((option) => <Choice key={option.value} label={t(option.key)} selected={target === option.value} disabled={sending} onPress={() => setTarget(option.value)} />)}
+        </View>
+      </Card>
+      <SectionLabel text={t('report.why')} />
+      <Card style={{ paddingVertical: tokens.spacing[0], gap: 0 }}>
+        <View accessibilityRole="radiogroup">
+          {REASONS.map((option) => <Choice key={option.value} label={t(option.key)} selected={reason === option.value} disabled={sending} onPress={() => setReason(option.value)} />)}
+        </View>
+      </Card>
+      <TextField label={t('report.detail')} placeholder={t('report.detail.placeholder')} multiline maxLength={MAX_DETAIL} editable={!sending}
         value={detail} onChangeText={setDetail} style={{ minHeight: 96, textAlignVertical: 'top' }} />
-      {failure && <View style={{ gap: 4 }}><Banner kind="danger" text={t(failure)} />{failure === 'report.fail.title' && <Text style={{ color: color.text2 }}>{t('report.fail.body')}</Text>}</View>}
-      {sending && <View style={{ alignItems: 'center' }}><CycleLoader label={t('report.sending')} /><Text style={{ color: color.text2 }}>{t('report.sending')}</Text></View>}
-      <Button label={t('report.submit')} disabled={!target || !reason || sending} onPress={() => void submit()} />
-      <Text style={{ color: color.text2 }}>{t('report.contact')}</Text>
-      <View style={{ height: tokens.spacing[3] }} />
+      {failure && <Banner kind="danger" text={t(failure)} body={failure === 'report.fail.title' ? t('report.fail.body') : null} />}
+      <AppText variant="bodySm" tone="text2">{t('report.contact')}</AppText>
+      <View style={{ height: tokens.spacing[2] }} />
       <Button label={t('report.block', { name: partnerName })} variant="dangerOutline" disabled={sending} onPress={() => setDisconnecting(true)} />
       <DisconnectDialog visible={disconnecting} partnerName={partnerName} onConfirm={onDisconnect} onClose={() => setDisconnecting(false)} />
-    </ScrollView>
+    </Screen>
   );
 }

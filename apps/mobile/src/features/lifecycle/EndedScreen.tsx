@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { ScrollView, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Banner, Button } from '../../ui/components';
-import { tokens } from '../../theme/tokens';
-import { useAppColor } from '../../theme/useAppColor';
+import { AppText, Banner, Button, Screen } from '../../ui/components';
+import { Spot } from '../../ui/Spot';
 import type { MySpace } from '../../lib/client';
 
 type Ended = NonNullable<MySpace['ended']>;
@@ -17,7 +15,6 @@ export function endedTitleKey(ended: Ended): string {
  * restore and no countdown. With an active space already open (a new one started before this was read) it only asks for an OK.
  */
 export function EndedScreen({ ended, hasActiveSpace, partnerName, onContinue }: { ended: Ended; hasActiveSpace: boolean; partnerName: string; onContinue: () => Promise<void> }) {
-  const color = useAppColor();
   const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -28,11 +25,13 @@ export function EndedScreen({ ended, hasActiveSpace, partnerName, onContinue }: 
     setBusy(false);
   }
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2], flexGrow: 1, justifyContent: 'center' }}>
-      <Text accessibilityRole="header" style={{ color: color.text, fontSize: tokens.typography.scale.heading.size }}>{t(endedTitleKey(ended), { name: partnerName })}</Text>
-      <Text style={{ color: color.text2, fontSize: tokens.typography.scale.body.size }}>{t('end.done.body')}</Text>
+    <Screen center footer={<>
       {failed && <Banner kind="danger" text={t('sys.server.title')} />}
-      <Button label={hasActiveSpace ? t('common.confirm') : t('end.newSpace')} disabled={busy} onPress={() => void next()} />
-    </ScrollView>
+      <Button label={hasActiveSpace ? t('common.confirm') : t('end.newSpace')} loading={busy} disabled={busy} onPress={() => void next()} />
+    </>}>
+      <Spot kind="waiting" />
+      <AppText variant="title" accessibilityRole="header" align="center">{t(endedTitleKey(ended), { name: partnerName })}</AppText>
+      <AppText tone="text2" align="center">{t('end.done.body')}</AppText>
+    </Screen>
   );
 }

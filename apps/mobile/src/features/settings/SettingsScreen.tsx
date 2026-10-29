@@ -1,17 +1,19 @@
 import { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useAppColor } from '../../theme/useAppColor';
 import { tokens } from '../../theme/tokens';
-import { Banner, Button, Dialog, ListRow } from '../../ui/components';
+import { AppText, Banner, Button, Card, Dialog, GUTTER, ListRow, SectionLabel, useTabBarClearance } from '../../ui/components';
 
-/** Settings tab root. So far: account (sign out), contact and reports, and the space section (end space); the other S13 rows arrive with their features. */
-export function SettingsScreen({ onLogout, onOpenReport, onOpenEndSpace }: { onLogout: () => Promise<void>; onOpenReport: () => void; onOpenEndSpace: () => void }) {
+type SpaceRows = { anniversary: string; consent: 'not_given' | 'granted' | 'revoked' };
+/** S13 settings tab root, limited to what exists in this MVP: the shared date, AI consent management, contact and reports, ending the space, app version and sign-out. */
+export function SettingsScreen({ onLogout, space, version, onOpenDate, onOpenConsent, onOpenReport, onOpenEndSpace }: { onLogout: () => Promise<void>; space?: SpaceRows | null; version?: string; onOpenDate?: () => void; onOpenConsent?: () => void; onOpenReport?: () => void; onOpenEndSpace?: () => void }) {
   const color = useAppColor();
   const { t } = useTranslation();
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
+  const clearance = useTabBarClearance();
   async function confirm() {
     setBusy(true);
     setFailed(false);
@@ -19,22 +21,40 @@ export function SettingsScreen({ onLogout, onOpenReport, onOpenEndSpace }: { onL
     setBusy(false);
   }
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2] }}>
-      <Text accessibilityRole="header" style={{ color: color.text, fontSize: 20 }}>{t('set.title')}</Text>
-      <Text accessibilityRole="header" style={{ color: color.text2 }}>{t('set.sec.account')}</Text>
-      <ListRow label={t('set.logout')} onPress={() => { setFailed(false); setConfirming(true); }} />
-      <Text accessibilityRole="header" style={{ color: color.text2 }}>{t('set.sec.info')}</Text>
-      <ListRow label={t('set.support')} onPress={onOpenReport} />
-      <Text accessibilityRole="header" style={{ color: color.text2 }}>{t('set.sec.danger')}</Text>
-      <ListRow label={t('set.end')} onPress={onOpenEndSpace} />
-      <Text style={{ color: color.text2 }}>{t('set.end.help')}</Text>
-      <Dialog visible={confirming} title={t('set.logout.title')} onClose={() => { if (!busy) setConfirming(false); }}>
-        <Text style={{ color: color.text2 }}>{t('set.logout.body')}</Text>
+    <ScrollView contentInsetAdjustmentBehavior="automatic" style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ paddingHorizontal: GUTTER, paddingTop: tokens.spacing[3], paddingBottom: clearance + tokens.spacing[3], gap: tokens.spacing[2] }}>
+      <AppText variant="title" accessibilityRole="header">{t('set.title')}</AppText>
+      {space && <>
+        <SectionLabel text={t('set.sec.couple')} />
+        <Card style={{ paddingVertical: tokens.spacing[0], gap: 0 }}>
+          <ListRow icon="heart" label={t('set.together')} value={space.anniversary} onPress={onOpenDate ?? (() => {})} disabled={!onOpenDate} />
+        </Card>
+        <SectionLabel text={t('set.sec.ai')} />
+        <Card style={{ paddingVertical: tokens.spacing[0], gap: 0 }}>
+          <ListRow icon="shield" label={t('set.ai.consent')} value={space.consent === 'granted' ? t('consent.status.on', { date: '' }).replace(/\s*·\s*$/, '') : t('consent.status.off')} onPress={onOpenConsent ?? (() => {})} disabled={!onOpenConsent} />
+        </Card>
+      </>}
+      <SectionLabel text={t('set.sec.account')} />
+      <Card style={{ paddingVertical: tokens.spacing[0], gap: 0 }}>
+        <ListRow icon="logout" label={t('set.logout')} onPress={() => { setFailed(false); setConfirming(true); }} />
+      </Card>
+      {onOpenReport && <>
+        <SectionLabel text={t('set.sec.info')} />
+        <Card style={{ paddingVertical: tokens.spacing[0], gap: 0 }}>
+          <ListRow icon="mail" label={t('set.support')} onPress={onOpenReport} />
+        </Card>
+      </>}
+      {onOpenEndSpace && <>
+        <SectionLabel text={t('set.sec.danger')} />
+        <Card style={{ paddingVertical: tokens.spacing[0], gap: 0 }}>
+          <ListRow icon="warn" danger label={t('set.end')} onPress={onOpenEndSpace} />
+        </Card>
+        <AppText variant="bodySm" tone="text2">{t('set.end.help')}</AppText>
+      </>}
+      {version && <View style={{ paddingVertical: tokens.spacing[1] }}><AppText variant="bodySm" tone="text2">{t('set.about.version', { v: version })}</AppText></View>}
+      <Dialog visible={confirming} icon="logout" title={t('set.logout.title')} body={t('set.logout.body')} onClose={() => { if (!busy) setConfirming(false); }}>
         {failed && <Banner kind="danger" text={t('sys.server.title')} />}
-        <View style={{ gap: tokens.spacing[1] }}>
-          <Button label={t('set.logout')} variant="danger" disabled={busy} onPress={() => void confirm()} />
-          <Button label={t('common.cancel')} variant="ghost" disabled={busy} onPress={() => setConfirming(false)} />
-        </View>
+        <Button label={t('set.logout')} variant="danger" loading={busy} onPress={() => void confirm()} />
+        <Button label={t('common.cancel')} variant="ghost" disabled={busy} onPress={() => setConfirming(false)} />
       </Dialog>
     </ScrollView>
   );
