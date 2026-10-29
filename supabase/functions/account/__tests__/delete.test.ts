@@ -61,7 +61,7 @@ Deno.test('② alone with a pending invite: the code is revoked, nobody is notif
   const solo = await makeUser('acct-solo');
   const spaces = spacesHandler(await localDeps());
   const created = await call(spaces, solo, 'POST', '/spaces/spaces', { anniversaryDate: '2025-01-01', timeZone: 'Asia/Seoul' });
-  const invites = invitationsHandler(await localDeps());
+  const invites = invitationsHandler(await localDeps(), () => 'test-pepper');
   assertEquals((await call(invites, solo, 'POST', `/invitations/spaces/${created.body.spaceId}/invitations`, { expiresInSeconds: 86400 })).status, 201);
   assertEquals((await call(await handler(), solo, 'POST', '/account/account/deletion', remove)).status, 202);
   assertEquals(await count('invitation', 'created_by_user_id', solo.id), 0, 'invites went with the purged space');
