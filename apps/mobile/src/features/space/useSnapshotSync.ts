@@ -42,11 +42,14 @@ export function useSnapshotSync(spaceId: string | null, fetchSnapshot: (spaceId:
         const current = stateRef.current;
         const payload = event.payload;
         if (current.snapshot) {
-          const promptSession = payload.status === 'released' || payload.status === 'expired' ? null : {
-            sessionId: String(payload.sessionId ?? current.snapshot.promptSession?.sessionId ?? ''),
-            ownerUserId: String(payload.ownerUserId ?? current.snapshot.promptSession?.ownerUserId ?? ''),
-            expiresAt: String(payload.expiresAt ?? current.snapshot.promptSession?.expiresAt ?? ''),
-            status: 'occupied' as const,
+          const previous = current.snapshot.promptSession;
+          // An expired lease stays visible (the partner can continue it); the server settings carry over, absolute times come from the hint.
+          const promptSession = payload.status === 'released' ? null : {
+            sessionId: String(payload.sessionId ?? previous?.sessionId ?? ''),
+            ownerUserId: String(payload.ownerUserId ?? previous?.ownerUserId ?? ''),
+            expiresAt: String(payload.expiresAt ?? previous?.expiresAt ?? ''),
+            status: payload.status === 'expired' ? 'expired' as const : 'occupied' as const,
+            idleSeconds: previous?.idleSeconds, warnSeconds: previous?.warnSeconds,
           };
           setState({ ...current, snapshot: { ...current.snapshot, promptSession } });
         }

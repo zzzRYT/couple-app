@@ -130,3 +130,43 @@ Deno.test('⑦ errors and logs carry no key, prompt or model text', async () => 
     assert(!lines.join('\n').includes('secret-prompt-text'));
   } finally { console.log = original; }
 });
+Deno.test('⑬ overlapping requests with one Idempotency-Key run the generation once; the overlap gets IN_PROGRESS', async () => {
+  const r = await room();
+  let release!: () => void;
+  const gate = new Promise<void>((resolve) => { release = resolve; });
+  const slow = { propose: async (input: Parameters<typeof r.spy.model.propose>[0], options: Parameters<typeof r.spy.model.propose>[1]) => { await gate; return r.spy.model.propose(input, options); } };
+  const handler = decorationPreviewsHandler(r.deps, slow);
+  const key = crypto.randomUUID();
+  const path = `/decoration-previews/spaces/${r.spaceId}/decoration-previews`;
+  const body = { prompt: 'stars', sessionId: r.sessionId, baseVersion: 1 };
+  const first = call(handler, r.a, 'POST', path, body, key);
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  const overlap = await call(handler, r.a, 'POST', path, body, key);
+  assertEquals([overlap.status, overlap.body.error.code], [409, 'IN_PROGRESS']);
+  release();
+  assertEquals((await first).status, 201);
+  assertEquals(r.spy.calls.length, 1);
+  assertEquals(await quotaCount(r.deps, r.spaceId), 1);
+  const replay = await call(handler, r.a, 'POST', path, body, key);
+  assertEquals(replay.status, 201);
+  assertEquals(r.spy.calls.length, 1);
+});
+Deno.test('⑫ cancelling while the model runs returns the quota slot and discards the late result', async () => {
+  const r = await room();
+  let release!: () => void;
+  const gate = new Promise<void>((resolve) => { release = resolve; });
+  const slow = { propose: async (input: Parameters<typeof r.spy.model.propose>[0], options: Parameters<typeof r.spy.model.propose>[1]) => { await gate; return r.spy.model.propose(input, options); } };
+  const handler = decorationPreviewsHandler(r.deps, slow);
+  const pending = call(handler, r.a, 'POST', `/decoration-previews/spaces/${r.spaceId}/decoration-previews`, { prompt: 'stars', sessionId: r.sessionId, baseVersion: 1 });
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  const db = await service();
+  const { data: queued } = await db.from('decoration_request').select('id, generation_stage').eq('space_id', r.spaceId).eq('state', 'queued').single();
+  assertEquals(queued?.generation_stage, 'generating');
+  const cancelled = await call(handler, r.a, 'DELETE', `/decoration-previews/spaces/${r.spaceId}/decoration-previews/${queued!.id}?sessionId=${r.sessionId}`);
+  assertEquals(cancelled.status, 204);
+  release();
+  assertEquals((await pending).body.error.code, 'PREVIEW_CHANGED');
+  const { data: reservation } = await db.from('daily_request_reservation').select('status').eq('request_id', queued!.id).single();
+  assertEquals(reservation?.status, 'released');
+  assertEquals(await quotaCount(r.deps, r.spaceId), 0);
+});

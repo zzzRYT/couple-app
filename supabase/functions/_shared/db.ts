@@ -1,6 +1,6 @@
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2';
 import { AppError, isErrorCode } from './errors.ts';
-import type { IdempotencyStore } from './idempotency.ts';
+import type { Claim, IdempotencyStore } from './idempotency.ts';
 import type { UserVerifier } from './auth.ts';
 
 export interface Db {
@@ -34,15 +34,24 @@ function parseExtra(text: string): Record<string, unknown> {
   try { const value = JSON.parse(text); return value && typeof value === 'object' ? value : {}; } catch { return {}; }
 }
 export function tableIdempotencyStore(client: SupabaseClient): IdempotencyStore {
+  const parts = (scoped: string) => { const [userId, endpoint, key] = JSON.parse(scoped) as string[]; return { p_user: userId, p_endpoint: endpoint, p_key: key }; };
   return {
     async get(scoped) {
       const [userId, endpoint, key] = JSON.parse(scoped) as string[];
-      const { data } = await client.from('idempotency_key').select('response').eq('user_id', userId).eq('endpoint', endpoint).eq('key', key).maybeSingle();
+      const { data } = await client.from('idempotency_key').select('response').eq('user_id', userId).eq('endpoint', endpoint).eq('key', key).eq('state', 'done').maybeSingle();
       return data ? (data as { response: unknown }).response : undefined;
     },
     async put(scoped, value) {
-      const [userId, endpoint, key] = JSON.parse(scoped) as string[];
-      await client.from('idempotency_key').upsert({ user_id: userId, endpoint, key, response: value ?? null }, { onConflict: 'user_id,key,endpoint', ignoreDuplicates: true });
+      const { error } = await client.rpc('idempotency_complete', { ...parts(scoped), p_response: value ?? null });
+      if (error) throw new Error('DB_ERROR');
+    },
+    async claim(scoped) {
+      const { data, error } = await client.rpc('idempotency_claim', parts(scoped));
+      if (error || !data) throw new Error('DB_ERROR');
+      return data as Claim;
+    },
+    async release(scoped) {
+      await client.rpc('idempotency_release', parts(scoped));
     },
   };
 }

@@ -59,3 +59,21 @@ Deno.test('realtime payloads carry only ids and states', async () => {
   const allowed = new Set(['id', 'kind', 'memberCount', 'sessionId', 'status', 'ownerUserId', 'expiresAt', 'messageId', 'previewId', 'versionNumber', 'versionId', 'changedBy', 'at']);
   for (const { payload } of data) for (const key of Object.keys(payload)) assert(allowed.has(key), `unexpected payload field ${key}`);
 });
+Deno.test('an expired lease with a live preview is continued by start, and the conflict error names the session', async () => {
+  const deps = await localDeps();
+  const h = promptSessionHandler(deps);
+  const { a, b, spaceId } = await couple(deps);
+  const base = `/prompt-session/spaces/${spaceId}/prompt-session`;
+  const acquired = await call(h, a, 'POST', `${base}/acquire`, {});
+  const lost = await call(h, b, 'POST', `${base}/acquire`, {});
+  assertEquals([lost.status, lost.body.error.code, lost.body.error.sessionId], [409, 'SESSION_OCCUPIED', acquired.body.sessionId]);
+  const db = await service();
+  await db.from('decoration_request').insert({ space_id: spaceId, session_id: acquired.body.sessionId, requested_by_user_id: a.id, base_version_number: 1,
+    prompt_text: 'stars', state: 'previewed', result_candidate: {}, expires_at: new Date(Date.now() + 600_000).toISOString() });
+  await db.from('prompt_session').update({ expires_at: new Date(Date.now() - 1000).toISOString() }).eq('id', acquired.body.sessionId);
+  const revived = await call(h, a, 'POST', `${base}/acquire`, {});
+  assertEquals([revived.status, revived.body.sessionId, revived.body.status], [201, acquired.body.sessionId, 'occupied']);
+  await db.from('prompt_session').update({ expires_at: new Date(Date.now() - 1000).toISOString() }).eq('id', acquired.body.sessionId);
+  const taken = await call(h, b, 'POST', `${base}/acquire`, {});
+  assertEquals([taken.status, taken.body.sessionId, taken.body.ownerUserId], [201, acquired.body.sessionId, b.id]);
+});

@@ -34,3 +34,15 @@ it('routes logical contract paths to edge function names', () => {
   expect(routes.cancelPreview('s', 'v', 'a b')).toBe('decoration-previews/spaces/s/decoration-previews/v?sessionId=a%20b');
   expect(new ApiError(404, 'NOT_FOUND')).toBeInstanceOf(Error);
 });
+it('does not retry a request with retries: 0 and turns a timeout into a network error', async () => {
+  jest.useFakeTimers();
+  try {
+    const call = jest.fn((_path: string, init: RequestInit) => new Promise<Response>((_resolve, reject) => { init.signal?.addEventListener('abort', () => reject(new Error('aborted'))); }));
+    const api = createApi(call, () => 'fixed-id');
+    const pending = api.request('/slow', { method: 'POST', body: {}, retries: 0, timeoutMs: 1000 });
+    const outcome = pending.then(() => 'resolved', (error: unknown) => error);
+    await jest.advanceTimersByTimeAsync(1000);
+    expect(await outcome).toBeInstanceOf(TypeError);
+    expect(call).toHaveBeenCalledTimes(1);
+  } finally { jest.useRealTimers(); }
+});

@@ -33,6 +33,14 @@ npx supabase functions deploy               # 8개 함수 (supabase/config.toml�
 
 `lifecycle-sweep`은 하루 1회 이상 불러야 한다. 대시보드 Integrations → Cron(pg_cron)에서 HTTP 요청 작업을 만들고, `POST https://<project-ref>.supabase.co/functions/v1/lifecycle-sweep`에 `Authorization: Bearer <service-role 키>` 헤더를 단다(이 키는 대시보드 안의 작업 설정에만 둔다).
 
+점유 만료 처리(`public.expire_stale_sessions()`)는 1분마다 불러야 한다. 이 함수는 시간이 지난 점유를 `expired`로 바꾸고 상대 화면에 `session` 이벤트를 보내서, 앱이 꺼진 점유자 때문에 상대가 "이어서 꾸미기"를 늦게 보지 않게 한다. 마이그레이션은 함수만 만들고 일정은 만들지 않으므로 오너가 한 번 예약한다(대시보드 Integrations → Cron의 SQL 작업, 또는 SQL 편집기):
+
+```sql
+select cron.schedule('expire-prompt-sessions', '* * * * *', $$select public.expire_stale_sessions()$$);
+```
+
+이 작업을 예약하지 않아도 앱은 동작한다. 점유 관련 API가 호출될 때와 스냅샷을 읽을 때 만료가 반영되지만, 만료 이벤트는 다음 호출까지 늦어진다.
+
 ## 5. 인증 공급자
 
 Apple 설정은 `docs/apple-sign-in-setup.md`. 카카오는 지금 비활성이라 설정하지 않아도 된다.
