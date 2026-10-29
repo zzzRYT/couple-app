@@ -155,16 +155,30 @@ end $$;
 create trigger milestone_preset_applied_audit after update of state,applied_version_id on public.decoration_request
   for each row execute function public.track_milestone_preset_request();
 
-create function public.milestone_preview_source(actor uuid, target uuid, preview uuid) returns text
+create or replace function public.confirm_preview(actor uuid, target uuid, preview uuid, session uuid, base_version integer) returns jsonb
 language plpgsql security definer set search_path = '' as $$
-declare result text;
+declare r public.decoration_request%rowtype; current public.room_theme_version%rowtype; created public.room_theme_version%rowtype;
 begin
-  perform public.require_member(actor,target);
-  select source into result from public.decoration_request where id=preview and space_id=target;
-  return result;
+  perform public.lock_space_session(actor, target);
+  select * into r from public.decoration_request where id=preview and space_id=target for update;
+  if not found then raise exception 'NOT_FOUND'; end if;
+  if r.state='applied' then raise exception 'ALREADY_APPLIED'; end if;
+  perform public.owned_session(actor, target, session);
+  if r.session_id is distinct from session or r.state<>'previewed' then raise exception 'PREVIEW_CHANGED'; end if;
+  if r.expires_at <= public.app_now() then
+    update public.decoration_request set state='expired' where id=preview;
+    raise exception 'PREVIEW_CHANGED';
+  end if;
+  current := public.current_room(target);
+  if current.version_number <> base_version or r.base_version_number <> base_version then raise exception 'VERSION_CONFLICT'; end if;
+  created := public.append_room_version(actor, target, r.result_candidate->'sceneDocument', r.result_candidate->'roomPresentation',
+    r.result_candidate->'roomThemeDocument', 'prompt', coalesce(r.result_candidate->'provenance', '{}'::jsonb) || jsonb_build_object('request_id', r.id));
+  update public.decoration_request set state='applied', applied_version_id=created.id where id=preview;
+  update public.decoration_request set state='cancelled' where session_id=session and state='previewed';
+  update public.prompt_session set status='released', released_at=public.app_now(), release_reason='confirm' where id=session;
+  perform public.notify_space(target, 'session', jsonb_build_object('sessionId', session, 'status', 'released'));
+  return jsonb_build_object('appliedVersion', created.version_number, 'source', created.source, 'updatedAt', created.created_at);
 end $$;
-revoke all on function public.milestone_preview_source(uuid,uuid,uuid) from public,anon,authenticated;
-grant execute on function public.milestone_preview_source(uuid,uuid,uuid) to service_role;
 
 create function public.begin_milestone_preset(actor uuid, target uuid, session uuid, celebration uuid) returns jsonb
 language plpgsql security definer set search_path = '' as $$

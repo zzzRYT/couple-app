@@ -80,8 +80,7 @@ export function decorationPreviewsHandler(deps: Deps, model: DecorationModel = a
       const target = uuidParam(params.spaceId), preview = uuidParam(params.previewId);
       const result = await deps.db.rpc<Record<string, unknown>>('confirm_preview', { actor: userId, target, preview,
         session: uuidParam(body.sessionId), base_version: body.baseVersion });
-      const source = await deps.db.rpc<string | null>('milestone_preview_source', { actor: userId, target, preview });
-      return json(source === 'milestone_preset' ? { ...result, source } : result, 201);
+      return json(result, 201);
     }),
     route('DELETE', '/spaces/:spaceId/decoration-previews/:previewId', async ({ userId, params, query, deps }) => {
       await deps.db.rpc('cancel_preview', { actor: userId, target: uuidParam(params.spaceId), preview: uuidParam(params.previewId), session: uuidParam(query.get('sessionId')) });

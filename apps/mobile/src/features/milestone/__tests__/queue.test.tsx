@@ -36,3 +36,13 @@ it('does not show stale cached cards for an online server error', async () => {
   await waitFor(() => expect(result.current.value).toBeNull());
   expect(result.current.celebration).toBeNull();
 });
+
+it('keeps a queued close hidden and stored when replaying it fails', async () => {
+  mockSecureStore.set('milestone:space-a:user-a', JSON.stringify({ value: response, pending: ['event-a'] }));
+  const api = { milestones: jest.fn().mockResolvedValue(response), milestoneSeen: jest.fn().mockRejectedValue(new Error('offline')) };
+  const { result } = await renderHook(() => useMilestone('space-a', 'user-a', true, api as never, 'home', true));
+  await waitFor(() => expect(api.milestoneSeen).toHaveBeenCalledTimes(1));
+  await waitFor(() => expect(result.current.value).not.toBeNull());
+  expect(result.current.celebration).toBeNull();
+  expect(JSON.parse(mockSecureStore.get('milestone:space-a:user-a')!).pending).toEqual(['event-a']);
+});

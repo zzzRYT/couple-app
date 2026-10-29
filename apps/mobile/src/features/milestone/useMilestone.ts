@@ -36,7 +36,7 @@ export function useMilestone(spaceId: string | null, userId: string | null, onli
       await SecureStore.setItemAsync(key!, JSON.stringify({ value: cached, pending: remaining } satisfies Stored));
       setValue(cached);
     }
-    setClosed([]);
+    setClosed(remaining);
   }, [api, key, online, spaceId, userId, via]);
   useEffect(() => {
     let active = true;
@@ -67,7 +67,9 @@ export function useMilestone(spaceId: string | null, userId: string | null, onli
       const current = value;
       if (current) {
         const next = { ...current, celebration: { ...celebration, seenByMe: true } };
-        await SecureStore.setItemAsync(key, JSON.stringify({ value: next, pending: [] } satisfies Stored));
+        let pending: string[] = [];
+        try { pending = ((JSON.parse(await SecureStore.getItemAsync(key) || '{}') as Partial<Stored>).pending ?? []).filter((id) => id !== celebration.id); } catch { /* start from an empty queue */ }
+        await SecureStore.setItemAsync(key, JSON.stringify({ value: next, pending } satisfies Stored));
         setValue(next);
       }
       return;
