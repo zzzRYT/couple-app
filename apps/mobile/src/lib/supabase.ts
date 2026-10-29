@@ -17,7 +17,8 @@ export function functionsCaller(client: ReturnType<typeof createSupabase>, url: 
     headers.set('apikey', publishableKey);
     if (session?.access_token) headers.set('Authorization', `Bearer ${session.access_token}`);
     const response = await fetch(`${url.replace(/\/$/, '')}/functions/v1/${path.replace(/^\//, '')}`, { ...request, headers });
-    if (response.status === 401 && session) onUnauthorized?.();
+    // A refused re-authentication (account deletion) is not an expired session.
+    if (response.status === 401 && session && (await response.clone().json().catch(() => null))?.error?.code !== 'REAUTH_REQUIRED') onUnauthorized?.();
     return response;
   };
 }

@@ -26,5 +26,7 @@ export const routes = {
   milestonePreview: (spaceId: string, sessionId: string) => `milestones/spaces/${spaceId}/prompt-session/${sessionId}/milestone-preview`,
   homeCover: (spaceId: string) => `home-cover/spaces/${spaceId}/home-cover`,
   homeCoverUploadUrl: (spaceId: string) => `home-cover/spaces/${spaceId}/home-cover/upload-url`,
+  /** `POST /account/deletion`, the body-safe alias of `DELETE /account`. */
+  deleteAccount: () => 'account/account/deletion',
 } as const;
 export const spaceChannel = (spaceId: string) => `space:${spaceId}`;

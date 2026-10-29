@@ -1,5 +1,6 @@
 import type { Api } from './api';
 import { routes } from './routes';
+import type { Reauth } from '../features/account/deleteAccount';
 export type Locale = 'ko-KR' | 'en-US' | 'ja-JP';
 export type SceneDocument = { schemaVersion: 1; canvasProfile: 'room-portrait-v1'; objects: SceneObject[]; texts: SceneText[] };
 export type SceneObject = { assetId: string; x: number; y: number; width: number; height: number; rotationDeg: number; zIndex: number; opacity: number; flipX?: boolean };
@@ -61,6 +62,8 @@ export function createClient(api: Api) {
     homeCoverUploadUrl: (spaceId: string, contentType: string, byteSize: number) => api.json<{ uploadId: string; uploadUrl: string; expiresAt: string }>(routes.homeCoverUploadUrl(spaceId), { method: 'POST', body: { contentType, byteSize }, keyInBody: true }),
     finishHomeCoverUpload: (spaceId: string, uploadId: string, crop: { x: number; y: number; width: number; height: number }) => api.json<HomeCover>(routes.homeCover(spaceId), { method: 'PUT', body: { uploadId, crop }, keyInBody: true }),
     removeHomeCover: (spaceId: string) => api.json<void>(routes.homeCover(spaceId), { method: 'DELETE', body: {}, keyInBody: true }),
+    /** No automatic retry: a resent request after acceptance only meets a revoked session. */
+    deleteAccount: (reauth: Reauth) => api.json<{ state: 'requested' }>(routes.deleteAccount(), { method: 'POST', body: { confirm: true, reauth }, retries: 0 }),
   };
 }
 export type Client = ReturnType<typeof createClient>;

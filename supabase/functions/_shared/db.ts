@@ -56,5 +56,14 @@ export function tableIdempotencyStore(client: SupabaseClient): IdempotencyStore 
   };
 }
 export function clientVerifier(client: SupabaseClient): UserVerifier {
-  return { async getUser(token) { const { data, error } = await client.auth.getUser(token); return { user: data.user, error }; } };
+  return {
+    async getUser(token) {
+      const { data, error } = await client.auth.getUser(token);
+      if (error || !data.user) return { user: null, error };
+      // A JWT issued before an account deletion stays valid until it expires, so the account state is checked on every request.
+      const blocked = await client.rpc('account_blocked', { actor: data.user.id });
+      if (blocked.error || blocked.data !== false) return { user: null, error: blocked.error ?? 'ACCOUNT_DELETING' };
+      return { user: data.user, error: null };
+    },
+  };
 }

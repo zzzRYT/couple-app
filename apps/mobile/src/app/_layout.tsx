@@ -66,5 +66,7 @@ function AppNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
       <Stack.Screen name="settings/report" />
       <Stack.Screen name="settings/end-space" />
     </Stack.Protected>
+    {/* Any signed-in state: the space may end (realtime) while the deletion is in flight, and the screen must stay mounted. */}
+    <Stack.Protected guard={gate.kind === 'active' || gate.kind === 'needsOnboardingChoice' || gate.kind === 'ended'}><Stack.Screen name="settings/delete-account" /></Stack.Protected>
   </Stack>;
 }
