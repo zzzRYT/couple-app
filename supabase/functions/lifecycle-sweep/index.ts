@@ -34,15 +34,19 @@ export async function sweepHomeCoverDeletes(db: Db, storage: SpaceStorage, at: D
   const due = await db.rpc<{ space_id: string; object_path: string }[]>('due_home_cover_deletes', { at: at.toISOString(), max_count: 100 });
   let deleted = 0;
   for (const item of due) {
-    await storage.removeObjects([item.object_path]);
-    await db.rpc('finish_home_cover_delete', { target: item.space_id, object_path: item.object_path });
-    deleted++;
+    try {
+      await storage.removeObjects([item.object_path]);
+      await db.rpc('finish_home_cover_delete', { target: item.space_id, object_path: item.object_path });
+      deleted++;
+    } catch { /* stays queued for the next run */ }
   }
   const expired = await db.rpc<{ upload_id: string; object_path: string }[]>('due_home_cover_uploads', { at: at.toISOString(), max_count: 100 });
   for (const item of expired) {
-    await storage.removeObjects([item.object_path]);
-    await db.rpc('finish_home_cover_upload', { upload: item.upload_id, at: at.toISOString() });
-    deleted++;
+    try {
+      await storage.removeObjects([item.object_path]);
+      await db.rpc('finish_home_cover_upload', { upload: item.upload_id, at: at.toISOString() });
+      deleted++;
+    } catch { /* stays queued for the next run */ }
   }
   return deleted;
 }

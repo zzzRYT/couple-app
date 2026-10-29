@@ -21,6 +21,6 @@ Deno.test('failed Storage deletion keeps the queued object for a retry', async (
   const calls: string[] = [];
   const db: Db = { async rpc<T>(name) { calls.push(name); return [{ space_id: 'space-1', object_path: 'space-1/cover/old.jpg' }] as T; } };
   const storage: SpaceStorage = { async removeSpaceObjects() {}, async removeObjects() { throw new Error('storage failure'); } };
-  try { await sweepHomeCoverDeletes(db, storage, new Date()); } catch { /* the scheduled job will retry */ }
-  assertEquals(calls, ['due_home_cover_deletes']);
+  assertEquals(await sweepHomeCoverDeletes(db, storage, new Date()), 0);
+  assertEquals(calls, ['due_home_cover_deletes', 'due_home_cover_uploads']);
 });

@@ -66,7 +66,7 @@ export function homeCoverHandler(deps: Deps, storage: CoverStorage, now: () => D
       const spaceId = uuidParam(params.spaceId);
       if (typeof body.uploadId !== 'string' || !validCrop(body.crop)) throw new AppError('INVALID_REQUEST');
       const uploadId = uuidParam(body.uploadId);
-      const ticket = await deps.db.rpc<{ staging_path: string; content_type: string; byte_size: number }>('get_home_cover_upload_slot', { target: spaceId, upload: uploadId, actor: userId, at: now().toISOString() });
+      const ticket = await deps.db.rpc<{ staging_path: string; content_type: string; byte_size: number }>('get_home_cover_upload', { target: spaceId, upload: uploadId, actor: userId, at: now().toISOString() });
       let original: Uint8Array;
       try { original = await storage.download(ticket.staging_path); } catch { throw new AppError('COVER_INVALID_IMAGE'); }
       if (original.byteLength !== ticket.byte_size || original.byteLength > MAX_BYTES || !['image/jpeg', 'image/png'].includes(ticket.content_type)) throw new AppError('COVER_INVALID_IMAGE');
@@ -109,7 +109,7 @@ export function homeCoverHandler(deps: Deps, storage: CoverStorage, now: () => D
       const signature = url.searchParams.get('signature') ?? '';
       const payload = { spaceId, userId, uploadId, expiresAt };
       if (Date.parse(expiresAt) <= now().getTime() || !(await verifyUploadSignature(signedConfig.secret, payload, signature))) throw new AppError('NOT_FOUND');
-      const ticket = await deps.db.rpc<{ staging_path: string; content_type: string; byte_size: number }>('get_home_cover_upload', { target: spaceId, upload: uploadId, actor: userId, at: now().toISOString() });
+      const ticket = await deps.db.rpc<{ staging_path: string; content_type: string; byte_size: number }>('get_home_cover_upload_slot', { target: spaceId, upload: uploadId, actor: userId, at: now().toISOString() });
       if (request.headers.get('Content-Type')?.split(';')[0] !== ticket.content_type) throw new AppError('COVER_FORMAT_UNSUPPORTED');
       const bytes = await readBoundedBody(request, Math.min(ticket.byte_size, MAX_BYTES));
       if (bytes.byteLength !== ticket.byte_size) throw new AppError('COVER_INVALID_IMAGE');
