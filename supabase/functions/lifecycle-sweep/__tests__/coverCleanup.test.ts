@@ -5,14 +5,14 @@ import { lifecycleSweepHandler, sweepHomeCoverDeletes } from '../index.ts';
 
 Deno.test('cover cleanup removes only due paths and clears the queue after storage succeeds', async () => {
   const calls: string[] = [];
-  const db: Db = { async rpc<T>(name, args) {
+  const db: Db = { async rpc<T>(name: string) {
     calls.push(name);
     if (name === 'due_home_cover_deletes') return [{ space_id: 'space-1', object_path: 'space-1/cover/old.jpg' }] as T;
     if (name === 'due_home_cover_uploads') return [] as T;
     return undefined as T;
   } };
   const removed: string[][] = [];
-  const storage: SpaceStorage = { async removeSpaceObjects() {}, async removeObjects(paths) { removed.push(paths); } };
+  const storage: SpaceStorage = { async removeSpaceObjects() {}, async removeObjects(paths: string[]) { removed.push(paths); } };
   assertEquals(await sweepHomeCoverDeletes(db, storage, new Date('2026-11-03T00:00:00Z')), 1);
   assertEquals(removed, [['space-1/cover/old.jpg']]);
   assertEquals(calls, ['due_home_cover_deletes', 'finish_home_cover_delete', 'due_home_cover_uploads']);
@@ -20,7 +20,7 @@ Deno.test('cover cleanup removes only due paths and clears the queue after stora
 
 Deno.test('failed Storage deletion keeps the queued object for a retry', async () => {
   const calls: string[] = [];
-  const db: Db = { async rpc<T>(name) { calls.push(name); return [{ space_id: 'space-1', object_path: 'space-1/cover/old.jpg' }] as T; } };
+  const db: Db = { async rpc<T>(name: string) { calls.push(name); return [{ space_id: 'space-1', object_path: 'space-1/cover/old.jpg' }] as T; } };
   const storage: SpaceStorage = { async removeSpaceObjects() {}, async removeObjects() { throw new Error('storage failure'); } };
   assertEquals(await sweepHomeCoverDeletes(db, storage, new Date()), 0);
   assertEquals(calls, ['due_home_cover_deletes', 'due_home_cover_uploads']);
@@ -28,7 +28,7 @@ Deno.test('failed Storage deletion keeps the queued object for a retry', async (
 
 Deno.test('a failing cover queue lookup does not stop the space purge', async () => {
   const calls: string[] = [];
-  const db: Db = { async rpc<T>(name) {
+  const db: Db = { async rpc<T>(name: string) {
     calls.push(name);
     if (name === 'due_home_cover_deletes') throw new Error('function does not exist');
     if (name === 'sweep_prompt_data') return {} as T;
