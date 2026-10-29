@@ -1,4 +1,4 @@
--- deletion-policy: Account deletion (US10, spec Decided 41-51). begin_account_deletion clears personal fields, ends the active space and revokes sessions in one transaction; every space the person belonged to is then hard-deleted at once through purge_space (no 30-day wait, on this path only); finish_account_deletion removes the remaining references and the profile row right before the auth user is deleted. account_deletion keeps only states and content-free codes; report_fingerprint keeps only the target, reason and time of reports purged on this path. Rollback: drop the new functions and tables only after every account_deletion row is done, otherwise deletions in progress are stranded; restore the previous require_member and purge_space from 20261101000400 and 20261101000750.
+-- deletion-policy: Account deletion (US10, spec Decided 41-51). begin_account_deletion clears personal fields, ends the active space and revokes sessions in one transaction; every space the person belonged to is then hard-deleted at once through purge_space (no 30-day wait, on this path only); finish_account_deletion removes the remaining references and the profile row right before the auth user is deleted. account_deletion keeps only states and content-free codes; report_fingerprint keeps only the target, reason and time of reports purged on this path. Rollback: drop the new functions and tables only after every account_deletion row is done, otherwise deletions in progress are stranded; restore the previous require_member and purge_space from 20261101000400 and 20261101000750, create_space from 20261101000650 and accept_invitation from 20261101000450.
 insert into public.app_settings (key, value) values ('account_deletion_max_backoff_seconds', '3600'), ('account_deletion_lease_seconds', '300')
   on conflict (key) do nothing;
 
@@ -64,6 +64,24 @@ begin
     where m.space_id=target and m.user_id=actor and m.space_active and s.status='active') then
     raise exception 'NOT_FOUND';
   end if;
+end $$;
+
+-- The two paths that add a membership take the same guard, so they wait for a deletion in flight and refuse once it exists.
+create or replace function public.create_space(actor uuid, anniversary date, tz text) returns jsonb
+language plpgsql security definer set search_path = '' as $$
+declare created jsonb;
+begin
+  perform public.guard_account(actor);
+  created := public.create_space_only(actor, anniversary, tz);
+  perform public.ensure_initial_room((created->>'spaceId')::uuid);
+  return created;
+end $$;
+
+create or replace function public.accept_invitation(actor uuid, hash text) returns jsonb
+language plpgsql security definer set search_path = '' as $$
+begin
+  perform public.guard_account(actor);
+  return coalesce(public.invitation_lock(actor), public.record_invitation_result(actor, public.accept_invitation_unthrottled(actor, hash)));
 end $$;
 
 -- Ends the person's active space (a partner who ended it first wins and this is a no-op), drops generation in flight and makes

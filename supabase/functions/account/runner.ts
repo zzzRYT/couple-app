@@ -57,19 +57,13 @@ export async function runAccountDeletion(userId: string, ports: DeletionPorts): 
 
 async function step(state: DeletionState, userId: string, claimed: Claimed, ports: DeletionPorts): Promise<StepResult> {
   switch (state) {
-    case 'requested': {
-      // Account deletion hard-deletes every space the person belonged to right away (Decided 47): Storage first, then rows.
-      const spaces = await ports.db.rpc<string[]>('close_spaces_for_deletion', { actor: userId });
-      for (const spaceId of spaces) {
-        await ports.db.rpc('mark_purge_started', { target: spaceId });
-        await ports.storage.removeSpaceObjects(spaceId);
-        await ports.db.rpc<boolean>('purge_space', { target: spaceId, at: PURGE_NOW });
-      }
+    case 'requested':
+      await purgeSpaces(userId, ports);
       return { next: 'space_ended' };
-    }
     case 'space_ended':
       return await revokeProvider(userId, claimed, ports);
     case 'provider_revoked':
+      await purgeSpaces(userId, ports);
       await ports.db.rpc('finish_account_deletion', { actor: userId });
       await ports.auth.deleteUser(userId);
       return { next: 'auth_deleted' };
@@ -77,6 +71,16 @@ async function step(state: DeletionState, userId: string, claimed: Claimed, port
       return { next: 'done' };
     default:
       throw new Error('INVALID_STATE');
+  }
+}
+
+// Account deletion hard-deletes every space the person belonged to right away (Decided 47): Storage first, then rows. Safe to repeat.
+async function purgeSpaces(userId: string, ports: DeletionPorts): Promise<void> {
+  const spaces = await ports.db.rpc<string[]>('close_spaces_for_deletion', { actor: userId });
+  for (const spaceId of spaces) {
+    await ports.db.rpc('mark_purge_started', { target: spaceId });
+    await ports.storage.removeSpaceObjects(spaceId);
+    await ports.db.rpc<boolean>('purge_space', { target: spaceId, at: PURGE_NOW });
   }
 }
 

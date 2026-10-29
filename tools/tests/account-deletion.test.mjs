@@ -109,13 +109,24 @@ test('a step moved on by someone else (compare-and-set false) stops without reco
   assert.equal(db.row.locked, false);
 });
 
-test('spaces still present make finish fail and retry instead of deleting the auth user', async () => {
-  const db = fakeDb({ state: 'provider_revoked', spaces: [] });
-  db.remaining.add('late-space');
+test('a space that reached the person after the first purge is ended and purged before finish, so the deletion completes', async () => {
+  const db = fakeDb({ state: 'provider_revoked', spaces: ['late-space'] });
+  const { ports: p, log } = ports(db);
+  assert.equal(await runAccountDeletion(USER, p), 'done');
+  assert.deepEqual(log.removed, ['late-space']);
+  assert.deepEqual(log.deleted, [USER]);
+  assert.ok(db.calls.indexOf('purge_space') < db.calls.indexOf('finish_account_deletion'), 'the late space goes before the profile');
+  assert.equal(db.remaining.size, 0);
+});
+
+test('finish failing keeps the deletion in provider_revoked and never deletes the auth user', async () => {
+  const db = fakeDb({ state: 'provider_revoked', spaces: [], failOnce: { finish_account_deletion: true } });
   const { ports: p, log } = ports(db);
   assert.equal(await runAccountDeletion(USER, p), 'provider_revoked');
   assert.deepEqual(log.deleted, []);
   assert.equal(db.row.last, 'DB_ERROR');
+  assert.equal(await runAccountDeletion(USER, p), 'done', 'the next run finishes');
+  assert.deepEqual(log.deleted, [USER]);
 });
 
 test('Apple without a kept token (operator request or expired) finishes with a content-free note and a warning', async () => {

@@ -1,6 +1,6 @@
 -- T151 (DB part): accepting transaction, immediate purge, notices, fingerprints, profile removal and re-signup.
 begin;
-select plan(36);
+select plan(38);
 insert into auth.users (id,aud,role,email) values
  ('00000000-0000-0000-0000-0000000000a1','authenticated','authenticated','acct-a@example.invalid'),
  ('00000000-0000-0000-0000-0000000000a2','authenticated','authenticated','acct-b@example.invalid'),
@@ -38,6 +38,8 @@ select is(public.account_blocked('00000000-0000-0000-0000-0000000000a2'),false,'
 -- The whole test is one transaction, so drop the deletion's own exemption before checking how others see the account.
 select set_config('app.deleting_actor', '', true);
 select throws_ok($$select public.require_member('00000000-0000-0000-0000-0000000000a1',(select v from ctx where k='pair'))$$,'P0001','ACCOUNT_DELETING','a change by the deleter is refused with ACCOUNT_DELETING');
+select throws_ok($$select public.create_space('00000000-0000-0000-0000-0000000000a1','2025-04-04','Asia/Seoul')$$,'P0001','ACCOUNT_DELETING','the deleter cannot start a new space');
+select throws_ok($$select public.accept_invitation('00000000-0000-0000-0000-0000000000a1','acct-solo-hash')$$,'P0001','ACCOUNT_DELETING','nor join one with an invite code');
 -- ⑦ idempotent
 select is(public.begin_account_deletion('00000000-0000-0000-0000-0000000000a1','email','app',null,null),'{"state":"requested"}'::jsonb,'a retry answers the same');
 select is((select count(*) from public.account_deletion where user_id='00000000-0000-0000-0000-0000000000a1'),1::bigint,'and keeps one row');
