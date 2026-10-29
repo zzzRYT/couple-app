@@ -7,9 +7,9 @@ import type { Locale } from '../../i18n';
 
 export type DisplayMode = 'system' | 'light' | 'dark';
 type Storage = { getItemAsync(key: string): Promise<string | null>; setItemAsync(key: string, value: string): Promise<void>; deleteItemAsync(key: string): Promise<void> };
-export type Preferences = { locale: Locale | null; displayMode: DisplayMode; highContrast: boolean; ready: boolean; setLocale(value: Locale | null): Promise<void>; setDisplayMode(value: DisplayMode): Promise<void> };
+export type Preferences = { locale: Locale | null; displayMode: DisplayMode; highContrast: boolean; setLocale(value: Locale | null): Promise<void>; setDisplayMode(value: DisplayMode): Promise<void> };
 const PreferencesContext = createContext<Preferences | null>(null);
-const fallbackPreferences: Preferences = { locale: null, displayMode: 'system', highContrast: false, ready: true, setLocale: async () => {}, setDisplayMode: async () => {} };
+const fallbackPreferences: Preferences = { locale: null, displayMode: 'system', highContrast: false, setLocale: async () => {}, setDisplayMode: async () => {} };
 const storage: Storage = SecureStore;
 const isLocale = (value: string | null): value is Locale => value === 'ko-KR' || value === 'en-US' || value === 'ja-JP';
 const isDisplayMode = (value: string | null): value is DisplayMode => value === 'system' || value === 'light' || value === 'dark';
@@ -18,7 +18,6 @@ export function PreferencesProvider({ children, translator, store = storage }: {
   const [locale, setLocaleState] = useState<Locale | null>(null);
   const [displayMode, setDisplayModeState] = useState<DisplayMode>('system');
   const [highContrast, setHighContrast] = useState(false);
-  const [ready, setReady] = useState(false);
   useEffect(() => {
     let active = true;
     void Promise.all([store.getItemAsync('locale'), store.getItemAsync('displayMode')]).then(async ([savedLocale, savedMode]) => {
@@ -29,8 +28,8 @@ export function PreferencesProvider({ children, translator, store = storage }: {
         const tag = getLocales()[0]?.languageTag ?? 'en-US';
         await translator.changeLanguage(tag.startsWith('ko') ? 'ko-KR' : tag.startsWith('ja') ? 'ja-JP' : 'en-US');
       }
-      if (active) { setLocaleState(nextLocale); setDisplayModeState(nextMode); setReady(true); }
-    }).catch(() => { if (active) setReady(true); });
+      if (active) { setLocaleState(nextLocale); setDisplayModeState(nextMode); }
+    }).catch(() => {});
     const refreshContrast = () => {
       const query = Platform.OS === 'ios' ? AccessibilityInfo.isDarkerSystemColorsEnabled() : Platform.OS === 'android' ? AccessibilityInfo.isHighTextContrastEnabled() : Promise.resolve(false);
       void query.then((value) => { if (active) setHighContrast(value); }).catch(() => { if (active) setHighContrast(false); });
@@ -56,7 +55,7 @@ export function PreferencesProvider({ children, translator, store = storage }: {
     setLocaleState(value);
   }, [store, translator]);
   const setDisplayMode = useCallback(async (value: DisplayMode) => { await store.setItemAsync('displayMode', value); setDisplayModeState(value); }, [store]);
-  const value = useMemo(() => ({ locale, displayMode, highContrast, ready, setLocale, setDisplayMode }), [locale, displayMode, highContrast, ready, setLocale, setDisplayMode]);
+  const value = useMemo(() => ({ locale, displayMode, highContrast, setLocale, setDisplayMode }), [locale, displayMode, highContrast, setLocale, setDisplayMode]);
   return <PreferencesContext.Provider value={value}>{children}</PreferencesContext.Provider>;
 }
 export function usePreferences(): Preferences {

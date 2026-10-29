@@ -81,7 +81,7 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 
 요청: `{ "mode": "day" | "night" | "follow_time", "timeZone": "Asia/Seoul", "expectedCurrentVersion": 13, "idempotencyKey": "uuid" }`.
 
-방 모드는 커플 공유 설정이며 새 공간 기본은 `follow_time`과 공간 생성자의 저장된 IANA 시간대다. 구성원은 설정에서 모드와 시간대를 변경할 수 있고 변경은 새 version으로 저장된다(`source: room_mode`, 오래된 `expectedCurrentVersion`은 `409 VERSION_CONFLICT`). `timeZone`은 `couple_space.time_zone` 하나를 그대로 바꾼다: 방 낮/밤, 일일 요청 한도의 날짜 키, D-day·마일스톤 날짜가 모두 이 값을 쓰므로 변경하면 이 경계들이 함께 이동한다(설계된 동작, 별도 컬럼 없음).
+방 모드는 커플 공유 설정이며 새 공간 기본은 `follow_time`과 공간 생성자의 저장된 IANA 시간대다. 구성원은 설정에서 모드와 시간대를 변경할 수 있고 변경은 새 version으로 저장된다(`source: room_mode`, 오래된 `expectedCurrentVersion`은 `409 VERSION_CONFLICT`, 다른 구성원이 프롬프트 세션을 점유 중이면 `mascot-recall`처럼 `409 SESSION_OCCUPIED`). `timeZone`은 `couple_space.time_zone` 하나를 그대로 바꾼다: 방 낮/밤, 일일 요청 한도의 날짜 키, D-day·마일스톤 날짜가 모두 이 값을 쓰므로 변경하면 이 경계들이 함께 이동한다(설계된 동작, 별도 컬럼 없음).
 
 ## 마일스톤 축하
 

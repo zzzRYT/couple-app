@@ -1,6 +1,7 @@
 import { assertEquals } from 'jsr:@std/assert@1';
 import { call, localDeps, makeUser } from '../../_shared/__tests__/local.ts';
 import { couple } from '../../_shared/__tests__/fixtures.ts';
+import { consentingRoom } from '../../_shared/__tests__/roomFixture.ts';
 import { spacesHandler } from '../index.ts';
 
 Deno.test('shared room mode updates the room version and space time zone for both members', async () => {
@@ -23,4 +24,15 @@ Deno.test('room mode rejects invalid zones, outsiders, and stale versions', asyn
   assertEquals((await call(h, a, 'PATCH', path, { mode: 'day', timeZone: 'Mars/Olympus', expectedCurrentVersion: 1 })).body.error.code, 'INVALID_REQUEST');
   assertEquals((await call(h, outsider, 'PATCH', path, { mode: 'day', timeZone: 'Asia/Seoul', expectedCurrentVersion: 1 })).status, 404);
   assertEquals((await call(h, a, 'PATCH', path, { mode: 'day', timeZone: 'Asia/Seoul', expectedCurrentVersion: 2 })).body.error.code, 'VERSION_CONFLICT');
+});
+
+Deno.test('room mode is refused while a partner holds the prompt session and works once it is released', async () => {
+  const r = await consentingRoom();
+  const path = `/spaces/spaces/${r.spaceId}/room-mode`;
+  const sid = await r.acquire(r.b);
+  const blocked = await call(r.h.spaces, r.a, 'PATCH', path, { mode: 'night', timeZone: 'Asia/Seoul', expectedCurrentVersion: 1 });
+  assertEquals([blocked.status, blocked.body.error.code, blocked.body.error.sessionId], [409, 'SESSION_OCCUPIED', sid]);
+  assertEquals((await call(r.h.spaces, r.a, 'GET', `/spaces/spaces/${r.spaceId}/snapshot`)).body.versionNumber, 1);
+  await call(r.h.session, r.b, 'POST', `/prompt-session/spaces/${r.spaceId}/prompt-session/${sid}/release`, { reason: 'cancel' });
+  assertEquals((await call(r.h.spaces, r.a, 'PATCH', path, { mode: 'night', timeZone: 'Asia/Seoul', expectedCurrentVersion: 1 })).body.versionNumber, 2);
 });
