@@ -53,7 +53,7 @@ function RoomThumb({ snapshot, mode }: { snapshot: Snapshot; mode: 'day' | 'nigh
     </View>
   );
 }
-/** S06 home: the shared day count. The cover photo slot keeps the plain paper background until US6. */
+/** S06 home: the shared day count over the shared cover photo (or the plain paper background when none is set). */
 export function HomeScreen({ state, now, onOpenRoom, onOpenInvite, onSaveDate, onRefresh, milestone, milestonePreset, onMilestoneSeen, onMilestoneSuggest, cover, userId, openCover, onCoverOpenConsumed, onCoverUpload, onCoverRemove, onCoverLoad }: { state: SpaceState; now: string; onOpenRoom: () => void; onOpenInvite: () => void; onSaveDate: (date: string) => Promise<void>; onRefresh?: () => Promise<unknown>; milestone?: MilestoneCelebration | null; milestonePreset?: MilestoneCelebration | null; onMilestoneSeen?: () => void; onMilestoneSuggest?: () => void; cover?: HomeCover | null; userId?: string | null; openCover?: boolean; onCoverOpenConsumed?: () => void; onCoverUpload?: (asset: ImagePickerAsset) => Promise<void>; onCoverRemove?: () => Promise<void>; onCoverLoad?: () => Promise<void> }) {
   const color = useAppColor();
   const { t, i18n } = useTranslation();

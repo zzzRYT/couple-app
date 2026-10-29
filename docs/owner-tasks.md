@@ -48,3 +48,23 @@ PR을 검토·머지한 뒤에만 원격에 올린다(이 작업은 Aroom-prod�
 - 신고 화면의 "상대님과 연결 끊기": 확인 창이 결과를 먼저 말하고, 확인하면 A는 종료 안내, B는 "상대님이 연결을 끊었어요"를 본다. 신고는 접수되지 않는다.
 - 종료한 두 사람이 곧바로 각자 새 공간을 만들거나 한쪽이 만든 코드로 다시 합칠 수 있는지, 프롬프트 점유 중에 종료해도 상대 화면의 점유 표시가 풀리는지 본다.
 - 확인하지 못한 것: 실기기, 원격 프로젝트, 실제 Storage 사진 삭제(사진 기능은 US6), 예약된 완전 삭제(로컬에서 고정 시계로만 검증).
+
+## D. 홈 배경 사진(패키지 C) 검토 뒤 배포하기
+
+C와 마찬가지로 PR을 검토·머지한 뒤에만 원격에 올린다(이 작업은 Aroom-prod에 아무것도 배포하지 않았고, 서버를 켜서 실행해 보지도 않았다).
+
+1. `supabase db push` — 새 마이그레이션 `20261102000500_home_cover.sql` 하나가 적용된다(`home_cover_photo`·`home_cover_upload` 표, 비공개 `home-cover` 버킷, 커버 함수들).
+2. `supabase functions deploy home-cover lifecycle-sweep` — `home-cover`는 새 함수다(`verify_jwt = false`, 인증은 함수 안에서 한다). 마이그레이션보다 먼저 올리지 않는다.
+3. 앱은 **새 개발 빌드가 꼭 필요하다**: 새 네이티브 모듈 `expo-image-manipulator`가 들어가서 JS 업데이트만으로는 동작하지 않는다(`eas build --profile development --platform ios`).
+4. `lifecycle-sweep`은 이제 만료된 업로드와 교체·삭제 24시간 뒤의 이전 커버 객체도 지운다. 예약은 C 3번 결정을 따른다.
+
+**배포 전에 서버에서 확인할 것** (개발용 원격 프로젝트에서 curl 등으로)
+- 서명 URL: `upload-url`이 준 URL의 `signature`·`space`·`user`·`expires` 중 하나라도 바꾸거나, 5분이 지난 뒤 PUT하면 `NOT_FOUND`로 거부된다.
+- 크기·포맷: `byteSize` 20MB 초과는 `COVER_TOO_LARGE`, JPEG·PNG·HEIC 외 `contentType`이나 발급 때와 다른 `Content-Type`은 `COVER_FORMAT_UNSUPPORTED`, 실제 바이트가 선언과 다르거나 헤더가 포맷과 맞지 않으면 `COVER_INVALID_IMAGE`이고 커버는 그대로다.
+- crop: 0~1 범위를 벗어나거나 정사각형이 아닌 crop은 저장 전에 거부된다(`INVALID_REQUEST`/`COVER_INVALID_IMAGE`).
+- RLS: 비멤버 계정으로 `home_cover_photo`·`home_cover_upload`를 select하면 행이 안 보이고, `home-cover` 버킷 객체도 읽지 못한다.
+- 함수 권한: `authenticated` 키로 `commit_home_cover`(및 다른 커버 RPC)를 직접 부르면 권한 오류가 난다(실행 권한은 `service_role`에만 있다).
+
+**실기기로 확인할 것**
+- HEIC: iPhone에서 HEIC 사진을 골라 올리면 앱이 JPEG로 바꿔 올리고 홈에 보인다. Android도 확인한다(`docs/spikes/heic.md`, 아직 실기기 미확인).
+- 홈에서 사진 추가·바꾸기·없애기 시트가 열리고, 오프라인에서는 바꿀 수 없으며, 상대가 바꾸거나 없애면 알림이 뜬다.
