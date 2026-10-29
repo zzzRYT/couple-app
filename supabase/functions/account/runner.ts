@@ -2,7 +2,7 @@
 // idempotent and recorded in account_deletion.state, so a crash or a provider outage resumes where it stopped.
 // No Deno globals or runtime imports: the same module runs in Deno and in Node tests (tools/tests).
 import type { Db } from '../_shared/db.ts';
-import type { SpaceStorage } from '../lifecycle-sweep/index.ts';
+import type { SpaceStorage } from '../_shared/spaceStorage.ts';
 import type { AppleClient, AppleTokens } from '../_shared/providers/apple.ts';
 import type { KakaoClient } from '../_shared/providers/kakao.ts';
 import type { CredentialBox } from '../_shared/credentialBox.ts';

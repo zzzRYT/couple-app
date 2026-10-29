@@ -1,4 +1,4 @@
-import { Image } from 'npm:imagescript@1.3.1';
+import { Image } from 'https://deno.land/x/imagescript@1.3.0/mod.ts';
 
 export type Crop = { x: number; y: number; width: number; height: number };
 export type ProcessedImage = { bytes: Uint8Array; width: number; height: number };

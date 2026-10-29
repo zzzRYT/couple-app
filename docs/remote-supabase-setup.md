@@ -28,8 +28,10 @@ npx supabase secrets set ANTHROPIC_API_KEY=<Console API 키>      # 전용 works
 ## 4. 함수 배포와 정리 작업 예약
 
 ```bash
-npx supabase functions deploy               # 8개 함수 (supabase/config.toml의 import_map 설정을 함께 씀)
+npx supabase functions deploy               # 12개 함수 (supabase/config.toml의 import_map 설정을 함께 씀)
 ```
+
+**출시 전 미해결: `home-cover`의 wasm 런타임 다운로드.** `home-cover`가 쓰는 `https://deno.land/x/imagescript@1.3.0/mod.ts`는 콜드 스타트마다 모듈 평가 중에 코덱 wasm 파일을 `deno.land`에서 `fetch`로 받는다. `deno.lock`은 `.js` 모듈만 고정하고 이 wasm 바이트는 고정하지도 무결성을 검사하지도 않는다. 그래서 `deno.land`가 느리거나 내려가면 `home-cover` 전체(업로드 URL·조회·확정)가 부팅하지 못하고, 실행되는 코드가 검증 없이 바뀔 수 있다. 해결 방법은 둘 중 하나이고 둘 다 새 벤더링 산출물이 생기므로 소유자 승인 뒤에 한다: (1) wasm 파일을 함수 옆에 벤더링하고 `file:` URL로 불러오기, (2) wasm을 패키지 안에 묶어 둔 다른 코덱으로 바꾸기.
 
 `lifecycle-sweep`은 하루 1회 이상 불러야 한다. 대시보드 Integrations → Cron(pg_cron)에서 HTTP 요청 작업을 만들고, `POST https://<project-ref>.supabase.co/functions/v1/lifecycle-sweep`에 `Authorization: Bearer <service-role 키>` 헤더를 단다(이 키는 대시보드 안의 작업 설정에만 둔다).
 

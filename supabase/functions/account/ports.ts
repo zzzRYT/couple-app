@@ -4,7 +4,7 @@ import { appleClient, appleConfigFromEnv } from '../_shared/providers/apple.ts';
 import { kakaoClientFromEnv } from '../_shared/providers/kakao.ts';
 import { credentialBox } from '../_shared/credentialBox.ts';
 import { safeLogFields } from '../_shared/logging.ts';
-import { bucketStorage } from '../lifecycle-sweep/index.ts';
+import { bucketStorage } from '../_shared/spaceStorage.ts';
 import { PROVIDERS, type Provider } from './reauth.ts';
 import type { AuthAdmin, DeletionPorts } from './runner.ts';
 

@@ -26,6 +26,7 @@ jobs:
       - run: supabase test db
       - run: LOCAL_DATABASE_URL="$(supabase status -o json | node -e 'let s="";process.stdin.on("data",x=>s+=x).on("end",()=>process.stdout.write(JSON.parse(s).DB_URL))')" node --test tools/tests/quota-concurrency.test.mjs
       - run: deno test -A supabase/functions
+      - run: node tools/ci/check-functions-boot.mjs
       - run: deno run -A tools/ai/eval-fixtures.mjs > /dev/null
       - run: node tools/ci/check-schemas.mjs
       - run: node tools/ci/check-migrations.mjs
