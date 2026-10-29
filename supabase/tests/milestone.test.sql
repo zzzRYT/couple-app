@@ -17,7 +17,7 @@ select public.record_milestones('00000000-0000-0000-0000-000000000081',(select v
 select is((select count(*)::int from public.milestone_celebration where space_id=(select v from ctx where k='space')),2,'repeated current reads keep one row per milestone');
 insert into public.milestone_seen(celebration_id,member_user_id,via)
  select id,'00000000-0000-0000-0000-000000000081','home' from public.milestone_celebration where milestone_key in ('d50','d1000');
-create temp table changed as select public.update_anniversary('00000000-0000-0000-0000-000000000081',(select v from ctx where k='space'),(public.app_now() at time zone 'Asia/Seoul')::date,
+create temp table changed as select public.update_anniversary('00000000-0000-0000-0000-000000000081',(select v from ctx where k='space'),(public.app_now() at time zone 'Asia/Seoul')::date - 100,
   (select updated_at from public.couple_space where id=(select v from ctx where k='space')))->'milestonesReset' as reset_keys;
 select ok((select reset_keys ? 'd1000' from changed),'date edit resets a recorded mark that moves into the future');
 select is((select count(*)::int from public.milestone_celebration where space_id=(select v from ctx where k='space') and milestone_key='d1000'),0,'future record is deleted');
