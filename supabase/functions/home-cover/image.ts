@@ -3,7 +3,7 @@ import { Image } from 'npm:imagescript@1.3.1';
 export type Crop = { x: number; y: number; width: number; height: number };
 export type ProcessedImage = { bytes: Uint8Array; width: number; height: number };
 export type CoverInputFormat = 'image/jpeg' | 'image/png';
-const MAX_PIXELS = 20_000_000;
+const MAX_PIXELS = 4_000_000;
 const COVER_ASPECT_RATIO = 1;
 const PNG_SIGNATURE = [137, 80, 78, 71, 13, 10, 26, 10];
 

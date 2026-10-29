@@ -12,7 +12,7 @@ The app therefore uses the native picker crop and converts a picker result that 
 
 The picker and conversion path still needs iOS and Android device verification with actual HEIC assets before launch.
 
-The server permits at most 20 MB and 20 million decoded pixels per image; the pixel limit bounds decode memory for compressed image bombs.
+The server permits at most 20 MB and 4 million decoded pixels (the app downsizes the long edge to 1600 px before upload) per image; the pixel limit bounds decode memory for compressed image bombs.
 
 Signed download URLs last five minutes, and the server refuses to issue new ones after the space ends.
 

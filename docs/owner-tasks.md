@@ -59,6 +59,7 @@ C와 마찬가지로 PR을 검토·머지한 뒤에만 원격에 올린다(이 �
 4. `lifecycle-sweep`은 이제 만료된 업로드와 교체·삭제 24시간 뒤의 이전 커버 객체도 지운다. 예약은 C 3번 결정을 따른다.
 
 **배포 전에 서버에서 확인할 것** (개발용 원격 프로젝트에서 curl 등으로)
+- 재인코딩 부하: Edge Function이 사진을 디코드·크롭·JPEG 재인코딩할 때의 CPU 시간과 메모리는 **측정하지 못했다**. 출시 전에 실제 프로젝트에서 12MP 이상 사진(앱이 긴 변 1600px로 줄여 올리는 경로)으로 확정 PUT이 성공하는지 확인한다. 서버는 디코드 전에 400만 화소를 넘는 입력을 `COVER_INVALID_IMAGE`로 거부한다.
 - 서명 URL: `upload-url`이 준 URL의 `signature`·`space`·`user`·`expires` 중 하나라도 바꾸거나, 5분이 지난 뒤 PUT하면 `NOT_FOUND`로 거부된다.
 - 크기·포맷: `byteSize` 20MB 초과는 `COVER_TOO_LARGE`, JPEG·PNG·HEIC 외 `contentType`이나 발급 때와 다른 `Content-Type`은 `COVER_FORMAT_UNSUPPORTED`, 실제 바이트가 선언과 다르거나 헤더가 포맷과 맞지 않으면 `COVER_INVALID_IMAGE`이고 커버는 그대로다.
 - crop: 0~1 범위를 벗어나거나 정사각형이 아닌 crop은 저장 전에 거부된다(`INVALID_REQUEST`/`COVER_INVALID_IMAGE`).

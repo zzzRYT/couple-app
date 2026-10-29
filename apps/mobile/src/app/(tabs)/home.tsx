@@ -12,7 +12,7 @@ import type { HomeCover } from '../../lib/client';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { COVER_CROP } from '../../features/cover/coverCrop';
 const MAX_COVER_BYTES = 20 * 1024 * 1024;
-const MAX_COVER_EDGE = 4000;
+const MAX_COVER_EDGE = 1600;
 export default function HomeRoute() {
   const { client, userId } = useApp();
   const { state, refresh, spaceId } = useSpace();
