@@ -138,7 +138,7 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 
 ### `GET /spaces/{spaceId}/prompt-conversation`
 
-두 구성원 모두 사용자 prompt, preview 및 status 메시지를 시간 순서대로 읽는다. 권한이 있는 API는 메시지 ID, author, content, preview reference와 현재 점유 상태를 반환한다.
+두 구성원 모두 사용자 prompt, preview 및 status 메시지를 시간 순서대로 읽는다. 권한이 있는 API는 메시지 ID, author, content, preview reference, 현재 점유 상태(`session`: `sessionId`, `ownerUserId`, `status`, `expiresAt`, `warnAt`, `idleSeconds`, `warnSeconds`), 현재 미리 보기, 서버 시각(`serverTime`; 앱이 시계 차이를 보정하는 데 쓴다)을 반환한다. 아직 생성 중인 요청의 `preview` 메시지에는 `stage`(`generating` | `repairing`)가 붙는다.
 
 ### `POST /spaces/{spaceId}/prompt-session/acquire`
 
