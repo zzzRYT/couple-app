@@ -14,7 +14,10 @@ export type Snapshot = {
   promptSession: PromptSession | null; catalogVersion: number | string; serverTime: string; members: { userId: string; aiConsentState: 'not_given' | 'granted' | 'revoked' }[]; me: { userId: string };
 };
 export type MySpace = { active: { spaceId: string } | null; ended: { kind: 'ended' | 'disconnect' | 'account_deleted'; by: 'me' | 'partner'; at: string } | null };
-export type Preview = { previewId: string; sceneDocument: SceneDocument; roomPresentation: RoomPresentation; roomThemeDocument: RoomThemeDocument; expiresAt: string; baseVersion?: number };
+export type Preview = { previewId: string; sceneDocument: SceneDocument; roomPresentation: RoomPresentation; roomThemeDocument: RoomThemeDocument; expiresAt: string; baseVersion?: number; placed?: number; requested?: number };
+export type MilestoneItem = { key: string; kind: 'day' | 'anniversary'; milestoneDate: string; days?: number | null; anniversaryN?: number | null };
+export type MilestoneCelebration = MilestoneItem & { id: string; daysAgo: number; seenByMe: boolean; presetAvailable: boolean; presetId: 'milestone-day' | 'milestone-anniversary' };
+export type MilestoneResponse = { dayCount: number | null; timezone: string | null; celebration: MilestoneCelebration | null; upcoming: MilestoneItem[] };
 export type Message = { id: string; kind: 'user_prompt' | 'preview' | 'status'; authorUserId: string | null; bodyText: string | null; previewId: string | null; state: string | null; stage?: 'generating' | 'repairing' | null; createdAt: string };
 export type ReportTarget = 'partner' | 'shared_text' | 'room_scene';
 export type ReportReason = 'harass' | 'inappropriate' | 'privacy' | 'other';
@@ -46,9 +49,12 @@ export function createClient(api: Api) {
     undo: (spaceId: string, sessionId: string, expectedPreviewId: string) => api.json<{ previewId: string | null }>(routes.session(spaceId, sessionId, 'undo'), { method: 'POST', body: { expectedPreviewId }, keyInBody: true }),
     setConsent: (spaceId: string, state: 'granted' | 'revoked') => api.json<void>(routes.consent(spaceId), { method: 'PUT', body: { state, noticeVersion: 'ai-overseas-v1' } }),
     requestPreview: (spaceId: string, prompt: string, sessionId: string, baseVersion: number) => api.json<Preview>(routes.previews(spaceId), { method: 'POST', body: { prompt, sessionId, baseVersion }, keyInBody: true, retries: 0, timeoutMs: GENERATION_TIMEOUT_MS }),
-    confirmPreview: (spaceId: string, previewId: string, sessionId: string, baseVersion: number) => api.json<{ appliedVersion: number; source: 'prompt'; updatedAt: string }>(routes.confirmPreview(spaceId, previewId), { method: 'POST', body: { baseVersion, sessionId }, keyInBody: true }),
+    confirmPreview: (spaceId: string, previewId: string, sessionId: string, baseVersion: number) => api.json<{ appliedVersion: number; source: 'prompt' | 'milestone_preset'; updatedAt: string }>(routes.confirmPreview(spaceId, previewId), { method: 'POST', body: { baseVersion, sessionId }, keyInBody: true }),
     cancelPreview: (spaceId: string, previewId: string, sessionId: string) => api.json<void>(routes.cancelPreview(spaceId, previewId, sessionId), { method: 'DELETE' }),
     mascotRecall: (spaceId: string, expectedVersion: number) => api.json<{ versionNumber: number }>(routes.mascotRecall(spaceId), { method: 'POST', body: { expectedVersion }, keyInBody: true }),
+    milestones: (spaceId: string) => api.json<MilestoneResponse>(routes.milestones(spaceId)),
+    milestoneSeen: (spaceId: string, celebrationId: string, via: 'home' | 'room') => api.json<void>(routes.milestoneSeen(spaceId, celebrationId), { method: 'POST', body: { via }, keyInBody: true }),
+    milestonePreview: (spaceId: string, sessionId: string, celebrationId: string, locale: Locale) => api.json<Preview & { placed: number; requested: number }>(routes.milestonePreview(spaceId, sessionId), { method: 'POST', body: { celebrationId, locale }, keyInBody: true }),
   };
 }
 export type Client = ReturnType<typeof createClient>;

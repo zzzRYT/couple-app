@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Image, Pressable, View } from 'react-native';
-import Animated, { useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
+import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming, type SharedValue } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 import { mascotPoses } from './catalog';
 import { poseAt, ROAM_CYCLE_MS, TAP_CHEER_MS, type RoamPose } from './roamCycle';
@@ -39,27 +39,41 @@ function Roaming({ size, roamWidth, running, cheering }: { size: number; roamWid
  * excited greeting for 1.2 s and the cycle then continues from where it stopped. The cycle runs on the UI thread and stops
  * while the screen is unfocused or the app is in the background.
  */
-export function MascotRoam({ size, roamWidth, reducedMotion, compact = false, paused = false }: { size: number; roamWidth: number; reducedMotion?: boolean; compact?: boolean; paused?: boolean }) {
+export function MascotRoam({ size, roamWidth, reducedMotion, compact = false, paused = false, celebrating = false }: { size: number; roamWidth: number; reducedMotion?: boolean; compact?: boolean; paused?: boolean; celebrating?: boolean }) {
   const { t } = useTranslation();
   const systemReduced = useReducedMotion();
   const loopActive = useLoopActive();
   const still = (reducedMotion ?? systemReduced) || compact;
+  const bounce = useSharedValue(0);
+  const bounceStyle = useAnimatedStyle(() => ({ transform: [{ translateY: bounce.value }] }));
   const [cheering, setCheering] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const label = useRef(t('a11y.mascot', { pose: t('a11y.pose.wave_main') })).current;
+  const label = t('a11y.mascot', { pose: t(celebrating ? 'a11y.pose.cheer' : 'a11y.pose.wave_main') });
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+  useEffect(() => {
+    if (timer.current) clearTimeout(timer.current);
+    setCheering(celebrating);
+    if (celebrating) timer.current = setTimeout(() => setCheering(false), 10_000);
+  }, [celebrating]);
+  useEffect(() => {
+    cancelAnimation(bounce);
+    bounce.value = celebrating && !still ? withRepeat(withTiming(-7, { duration: 1200 }), 4, true) : 0;
+    return () => cancelAnimation(bounce);
+  }, [bounce, celebrating, still]);
   function cheer() {
     if (compact) return;
     if (timer.current) clearTimeout(timer.current);
     setCheering(true);
     timer.current = setTimeout(() => setCheering(false), TAP_CHEER_MS);
   }
-  const animated = !still && !paused;
+  const animated = !still && !paused && !celebrating;
   return (
+    <Animated.View style={bounceStyle}>
     <Pressable testID="mascot" accessible accessibilityRole="image" accessibilityLabel={label} disabled={compact} onPress={cheer} style={{ width: size, height: size }}>
       {/* The greeting is drawn inside the moving layer, which pauses its clock, so the mascot cheers where it stands and then carries on. */}
       {animated ? <Roaming size={size} roamWidth={roamWidth} running={loopActive} cheering={cheering} />
         : <Image testID="mascot-pose" source={mascotPoses[cheering ? 'cheer' : 'wave_main']} resizeMode="contain" style={{ width: size, height: size }} />}
     </Pressable>
+    </Animated.View>
   );
 }

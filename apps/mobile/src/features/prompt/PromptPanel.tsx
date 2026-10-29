@@ -7,7 +7,7 @@ import { AppText, Banner, Button, Chip, Dialog, GUTTER, IconButton, OccupancyChi
 import { Icon } from '../../ui/Icon';
 import { useType } from '../../theme/typography';
 import { CycleLoader } from '../../ui/CycleLoader';
-import type { Conversation, Preview, SceneDocument, Snapshot } from '../../lib/client';
+import type { Conversation, Locale, Preview, SceneDocument, Snapshot } from '../../lib/client';
 import { isNetworkError } from '../../lib/realtime';
 import { ApiError } from '../../lib/errors';
 import { tokens } from '../../theme/tokens';
@@ -18,6 +18,7 @@ export type PanelClient = SessionApi & {
   requestPreview(spaceId: string, prompt: string, sessionId: string, baseVersion: number): Promise<Preview>;
   confirmPreview(spaceId: string, previewId: string, sessionId: string, baseVersion: number): Promise<{ appliedVersion: number }>;
   cancelPreview(spaceId: string, previewId: string, sessionId: string): Promise<void>;
+  milestonePreview(spaceId: string, sessionId: string, celebrationId: string, locale: Locale): Promise<Preview & { placed: number; requested: number }>;
   undo(spaceId: string, sessionId: string, expectedPreviewId: string): Promise<{ previewId: string | null }>;
 };
 type Notice = { key: string; body?: string | null; kind: 'info' | 'success' | 'warn' | 'danger' };
@@ -43,11 +44,13 @@ function noticeFor(error: unknown): Notice {
   }
 }
 /** S08 shared prompt panel: one owner types, requests and applies; the partner watches read-only. Offline requests are never queued. */
-export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpenConsent, onClose, onApplied, renderScene, clock, settings = defaultSessionSettings, onReportMessage }: {
+export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpenConsent, onClose, onApplied, renderScene, clock, settings = defaultSessionSettings, onReportMessage, milestoneId, milestoneKey }: {
   client: PanelClient; snapshot: Snapshot; online: boolean; refreshToken?: number; onOpenConsent: () => void; onClose?: () => void; onApplied?: (version: number) => void;
   renderScene?: (scene: SceneDocument) => ReactNode; clock?: () => number; settings?: SessionSettings;
   /** Opens the report flow for a partner's message; omit to hide the message menu. */
   onReportMessage?: (messageId: string) => void;
+  milestoneId?: string;
+  milestoneKey?: string;
 }) {
   const color = useAppColor();
   const { t, i18n } = useTranslation();
@@ -56,6 +59,8 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
   const spaceId = snapshot.space.spaceId;
   const me = snapshot.me.userId;
   const partner = partnerLabel(t);
+  const milestoneN = Number(milestoneKey?.replace(/^[dy]/, '') ?? 0);
+  const milestoneLabel = milestoneKey ? t(milestoneKey.startsWith('y') ? 'milestone.label.anniv' : 'milestone.label.day', { n: milestoneN }) : '';
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [draft, setDraft] = useState('');
   const [busy, setBusy] = useState<null | 'sending' | 'checking' | 'applying' | 'undoing'>(null);
@@ -80,10 +85,27 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
   const sessionId = session.lease?.sessionId ?? '';
   const last = conversation?.messages.at(-1);
   const generating = last?.kind === 'user_prompt' && last.state === 'queued' && session.serverNow() - Date.parse(last.createdAt) < GENERATION_STALE_MS;
-  const fail = (error: unknown) => { const next = noticeFor(error); if (next.key === 'prompt.quota.title') setQuotaUsed(true); setNotice(next); };
+  const fail = (error: unknown) => {
+    const next = noticeFor(error);
+    if (milestoneId && error instanceof ApiError) {
+      if (error.code === 'ROOM_FULL') { setNotice({ key: 'milestone.suggest.full', kind: 'warn' }); return; }
+      if (error.code === 'SESSION_OCCUPIED') { setNotice({ key: 'milestone.suggest.busy', kind: 'warn' }); return; }
+      if (error.code === 'MILESTONE_PASSED' || error.code === 'VERSION_CONFLICT') { setNotice({ key: 'preview.conflict.title', body: 'preview.conflict.body', kind: 'warn' }); return; }
+    }
+    if (next.key === 'prompt.quota.title') setQuotaUsed(true);
+    setNotice(next);
+  };
   async function start() {
     setNotice(null); setApplied(false);
-    try { await session.acquire(); await load(); } catch (error) { fail(error); }
+    try {
+      const acquired = await session.acquire();
+      if (acquired && milestoneId) {
+        setBusy('sending');
+        try { await client.milestonePreview(spaceId, acquired.sessionId ?? '', milestoneId, i18n.language as Locale); setViewCandidate(true); await load(); }
+        catch (error) { fail(error); }
+        finally { setBusy(null); }
+      } else await load();
+    } catch (error) { fail(error); }
   }
   async function takeover() {
     try { await session.takeover(); await load(); } catch (error) { fail(error); }
@@ -148,7 +170,7 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: color.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       {renderScene && <View style={{ alignItems: 'center', paddingTop: Math.max(insets.top, tokens.spacing[3]), paddingBottom: tokens.spacing[2], gap: tokens.spacing[1] }}>
         <View style={{ overflow: 'hidden', borderRadius: tokens.radius.sheet - 4, borderWidth: tokens.border.outline.normal, borderColor: color.line }}>{renderScene(shown)}</View>
-        {showPreview && viewCandidate && <View style={{ marginTop: -tokens.spacing[5] }}><Chip kind="primary" label={t('preview.badge')} /></View>}
+        {showPreview && viewCandidate && <View style={{ marginTop: -tokens.spacing[5] }}><Chip kind="primary" label={milestoneId ? t('milestone.preview.badge', { label: milestoneLabel }) : t('preview.badge')} /></View>}
       </View>}
       <View style={{ flex: 1, backgroundColor: color.surface, borderTopLeftRadius: tokens.radius.sheet, borderTopRightRadius: tokens.radius.sheet, borderWidth: tokens.border.outline.normal, borderBottomWidth: 0, borderColor: color.divider, paddingTop: renderScene ? 0 : insets.top }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingLeft: GUTTER, paddingRight: GUTTER - 12, paddingTop: tokens.spacing[2] }}>
@@ -162,8 +184,9 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
             {partnerThinking && <Chip kind="info" label={t('prompt.partner.thinking')} />}
           </View>
           {!online && <Banner kind="offline" text={t('prompt.offline')} />}
+          {milestoneId && <Banner kind="info" text={t('milestone.preview.note')} body={preview ? t('milestone.preview.changes', { n: preview.placed ?? 0 }) : null} />}
           {online && partnerMissing && <Banner kind="info" icon="people" text={t('main.invitePending.title')} />}
-          {online && consentMissing && <Banner kind="warn" text={t('prompt.consent.need')} action={{ label: t('prompt.consent.action'), onPress: onOpenConsent }} />}
+          {online && !milestoneId && consentMissing && <Banner kind="warn" text={t('prompt.consent.need')} action={{ label: t('prompt.consent.action'), onPress: onOpenConsent }} />}
           {status === 'mineExpiring' && <Banner kind="warn" text={t('prompt.idleHint')} action={{ label: t('prompt.expiring.action'), onPress: () => void session.keepAlive() }} />}
           {status === 'mineExpired' && <View style={{ gap: tokens.spacing[1] }}><Banner kind="warn" text={t('prompt.idle.me.title')} body={t('prompt.idle.me.body')} /><Button label={t('prompt.idle.me.action')} onPress={() => void start()} /></View>}
           {status === 'partnerExpired' && <View style={{ gap: tokens.spacing[1] }}>
@@ -172,12 +195,13 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
           </View>}
           {session.lostTakeover && <Banner kind="warn" text={t('prompt.takeover.lost', { name: partner })} />}
           {status === 'free' && <View style={{ gap: tokens.spacing[1] }}>
-            <Button label={t('prompt.start')} icon="pencil" disabled={!online || consentMissing || quotaUsed} onPress={() => void start()} />
-            <AppText variant="bodySm" tone="text2">{t('prompt.start.help')}</AppText>
+            <Button label={milestoneId ? t('milestone.suggest.chip', { label: milestoneLabel }) : t('prompt.start')} icon={milestoneId ? 'sparkle' : 'pencil'} disabled={!online || (!milestoneId && (consentMissing || quotaUsed))} onPress={() => void start()} />
+            {!milestoneId && <AppText variant="bodySm" tone="text2">{t('prompt.start.help')}</AppText>}
           </View>}
           {notice && <Banner kind={notice.kind} text={t(notice.key)} body={notice.body ? t(notice.body) : null} />}
           {applied && <Banner kind="success" text={t('preview.applied.title')} body={t('preview.applied.body')} />}
           {showPreview && <View style={{ gap: tokens.spacing[2] }}>
+            {milestoneId && preview?.placed !== undefined && preview.requested !== undefined && preview.placed < preview.requested && <Banner kind="info" text={t('milestone.suggest.partial', { n: preview.placed })} />}
             <View accessibilityRole="tablist" style={{ flexDirection: 'row', padding: 4, gap: 4, borderRadius: tokens.radius.pill, borderWidth: tokens.border.outline.normal, borderColor: color.line, backgroundColor: color.surface2 }}>
               {([false, true] as const).map((candidate) => {
                 const selected = viewCandidate === candidate;
@@ -225,16 +249,16 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
               accessibilityLabel={status === 'partner' ? t('a11y.input.ro', { name: partner }) : t('a11y.input')}
               placeholder={t('prompt.placeholder')} placeholderTextColor={color.text2} value={draft}
               onChangeText={(value) => { setDraft(value.slice(0, MAX_PROMPT)); session.noteActivity(); }}
-              editable={canType} multiline returnKeyType="default" blurOnSubmit={false} submitBehavior="newline"
+              editable={canType && !milestoneId} multiline returnKeyType="default" blurOnSubmit={false} submitBehavior="newline"
               style={[type('body'), { flex: 1, minHeight: tokens.touch.toolbarHeight, maxHeight: 120, borderWidth: tokens.border.outline.normal, borderColor: color.border, color: color.text, backgroundColor: canType ? color.surface : color.surface2, paddingHorizontal: tokens.spacing[3], paddingTop: 13, paddingBottom: 13, borderRadius: tokens.radius.input + 8, textAlignVertical: 'top' }]}
             />
-            <Pressable accessibilityRole="button" accessibilityLabel={t('a11y.send')} accessibilityState={{ disabled: !canType || draft.trim().length === 0 }} disabled={!canType || draft.trim().length === 0} onPress={() => void send()}
+            {!milestoneId && <Pressable accessibilityRole="button" accessibilityLabel={t('a11y.send')} accessibilityState={{ disabled: !canType || draft.trim().length === 0 }} disabled={!canType || draft.trim().length === 0} onPress={() => void send()}
               style={({ pressed }) => {
                 const off = !canType || draft.trim().length === 0;
                 return { width: tokens.touch.toolbarHeight, height: tokens.touch.toolbarHeight, borderRadius: tokens.radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: off ? color.surface2 : color.primary, borderWidth: tokens.border.outline.normal, borderColor: off ? color.border : color.line, borderStyle: off ? 'dashed' : 'solid', opacity: pressed ? 0.85 : 1 };
               }}>
               <Icon name="send" size={22} color={!canType || draft.trim().length === 0 ? color.text2 : color.onPrimary} />
-            </Pressable>
+            </Pressable>}
           </View>
           {status === 'mine' && <AppText variant="caption" tone="text2">{t('prompt.idleHint')}</AppText>}
         </View>

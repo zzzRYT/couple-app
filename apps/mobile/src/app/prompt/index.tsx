@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { PromptPanel } from '../../features/prompt/PromptPanel';
 import { RoomScene } from '../../scene/RoomScene';
@@ -20,10 +20,11 @@ export default function PromptRoute() {
   const openOnce = (path: string | { pathname: string; params: Record<string, string> }) => { if (opening.current) return; opening.current = true; router.push(path); };
   useEffect(() => (spaceId ? realtime.subscribe(spaceId, () => setToken((n) => n + 1), (status) => { if (status === 'SUBSCRIBED') setToken((n) => n + 1); }) : undefined), [realtime, spaceId]);
   const now = useNow();
+  const { milestone, milestoneKey } = useLocalSearchParams<{ milestone?: string; milestoneKey?: string }>();
   if (!state.snapshot) return <LoadingScreen label={t('common.loading')} />;
   const mini = estimateLayout(200, 280, 1, 'ios');
   const mode = roomMode(state.snapshot.roomThemeDocument, now);
-  return <PromptPanel client={client} snapshot={state.snapshot} online={!state.offline} refreshToken={token}
+  return <PromptPanel client={client} snapshot={state.snapshot} online={!state.offline} refreshToken={token} milestoneId={typeof milestone === 'string' ? milestone : undefined} milestoneKey={typeof milestoneKey === 'string' ? milestoneKey : undefined}
     onOpenConsent={() => openOnce('/prompt/consent')} onReportMessage={(messageId) => openOnce({ pathname: '/settings/report', params: { messageId } })} onClose={() => router.back()} onApplied={() => { void refresh(); router.back(); }}
     renderScene={(scene) => <RoomScene scene={scene} mode={mode} layout={{ ...mini, safeTop: 0, safeBottom: 0, tabBarHeight: 0, toolbar: { x: 0, y: 0, width: 0, height: 0 } }} compact />} />;
 }

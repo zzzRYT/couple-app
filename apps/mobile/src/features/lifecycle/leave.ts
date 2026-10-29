@@ -1,5 +1,6 @@
 import type { Snapshot } from '../../lib/client';
 import { ApiError } from '../../lib/errors';
+import { clearMilestoneStorage } from '../milestone/useMilestone';
 
 type Deps = {
   /** `client.endSpace` or `client.disconnect`: both are the same soft delete on the server. */
@@ -23,6 +24,7 @@ export async function leaveSpace({ close, releaseSession, snapshot, userId, rese
   } catch (error) {
     if (!(error instanceof ApiError && error.status === 404)) throw error;
   }
+  if (userId) await clearMilestoneStorage(snapshot.space.spaceId, userId).catch(() => undefined);
   resetSpace();
   await reload();
 }
