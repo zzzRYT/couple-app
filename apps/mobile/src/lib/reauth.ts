@@ -8,6 +8,8 @@ type Supabase = ReturnType<typeof createSupabase>;
 /**
  * Signs in again with the account's own provider right before account deletion, refreshing the session the server checks
  * for a recent sign-in. Apple also hands back the one-time authorization code the server exchanges to revoke the tokens.
+ * A re-sign-in that lands on a different user is an error and that session is signed out locally, so deletion never
+ * targets an account other than the one that opened the screen.
  */
 export function supabaseReauth(client: Supabase): ReauthPort {
   const oauth = supabaseAuth(client).oauth;
