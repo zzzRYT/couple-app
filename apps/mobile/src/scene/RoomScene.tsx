@@ -53,8 +53,8 @@ function Decoration({ node, mode, layout }: { node: SceneObject; mode: 'day' | '
   );
 }
 /** Fixed renderer for validated scene data. Decorations never take touches or screen-reader focus; native controls passed as children stay on top and accessible. */
-export function RoomScene({ scene, mode, layout, compact = false, reducedMotion, paused, children }: {
-  scene: SceneDocument; mode: 'day' | 'night'; layout: RoomLayout; compact?: boolean; reducedMotion?: boolean; paused?: boolean; children?: ReactNode;
+export function RoomScene({ scene, mode, layout, compact = false, reducedMotion, paused, celebrating = false, children }: {
+  scene: SceneDocument; mode: 'day' | 'night'; layout: RoomLayout; compact?: boolean; reducedMotion?: boolean; paused?: boolean; celebrating?: boolean; children?: ReactNode;
 }) {
   const { i18n } = useTranslation();
   const placed = useMemo(() => placeNodes(scene, layout), [scene, layout]);
@@ -81,7 +81,7 @@ export function RoomScene({ scene, mode, layout, compact = false, reducedMotion,
       </View>
       {mascot && (
         <View style={{ position: 'absolute', left: mascot.x * layout.width - mascotSize / 2, top: mascot.y * layout.height - mascotSize / 2, zIndex: mascot.zIndex }}>
-          <MascotRoam size={mascotSize} roamWidth={compact ? 0 : layout.width} compact={compact} reducedMotion={reducedMotion} paused={paused} />
+          <MascotRoam size={mascotSize} roamWidth={compact ? 0 : layout.width} compact={compact} reducedMotion={reducedMotion} paused={paused} celebrating={celebrating} />
         </View>
       )}
       {children}

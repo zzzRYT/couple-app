@@ -1,5 +1,6 @@
 import type { AuthPort, Provider } from '../auth/authPort';
 import type { Snapshot } from '../../lib/client';
+import { clearMilestoneStorage } from '../milestone/useMilestone';
 
 type Deps = {
   auth: Pick<AuthPort, 'signOut'>;
@@ -21,6 +22,7 @@ export async function logout({ auth, releaseSession, clearPendingInvite, resetSp
     await releaseSession(snapshot.space.spaceId, lease.sessionId).catch(() => undefined);
   }
   await auth.signOut();
+  if (snapshot && userId) await clearMilestoneStorage(snapshot.space.spaceId, userId).catch(() => undefined);
   await clearPendingInvite().catch(() => undefined);
   resetSpace();
 }

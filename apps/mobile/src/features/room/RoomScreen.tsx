@@ -15,10 +15,13 @@ import type { SpaceState } from '../space/types';
 import { DdayWidget } from './DdayWidget';
 import { partnerLabel } from '../prompt/PromptPanel';
 import { shouldAutoRecall } from './recallPolicy';
+import type { MilestoneCelebration } from '../../lib/client';
+import { MilestoneBubble } from '../milestone/MilestoneBubble';
 
 /** S07 room: scene + native D-day widget + top toolbar with a single "decorate" action (settings, delete and leave live in the settings tab). */
-export function RoomScreen({ state, now, onDecorate, onRecall, onRetry, reducedMotion, layout: layoutOverride }: {
+export function RoomScreen({ state, now, onDecorate, onRecall, onRetry, reducedMotion, layout: layoutOverride, milestone, milestonePreset, onMilestoneSeen, onMilestoneSuggest }: {
   state: SpaceState; now: string; onDecorate: () => void; onRecall: () => Promise<unknown>; onRetry?: () => Promise<unknown>; reducedMotion?: boolean; layout?: RoomLayout;
+  milestone?: MilestoneCelebration | null; milestonePreset?: MilestoneCelebration | null; onMilestoneSeen?: () => void; onMilestoneSuggest?: () => void;
 }) {
   const focused = useScreenFocused();
   const color = useAppColor();
@@ -43,6 +46,7 @@ export function RoomScreen({ state, now, onDecorate, onRecall, onRetry, reducedM
   const session = snapshot?.promptSession;
   const partnerOccupying = !!session && session.status === 'occupied' && session.ownerUserId !== snapshot?.me.userId && Date.parse(session.expiresAt) > Date.parse(now);
   const occupied = !!session && session.status === 'occupied' && Date.parse(session.expiresAt) > Date.parse(now);
+  const roomFull = (snapshot?.sceneDocument.objects.length ?? 0) >= 16;
   const tried = useRef(false);
   const [recalling, setRecalling] = useState(false);
   useEffect(() => {
@@ -74,13 +78,14 @@ export function RoomScreen({ state, now, onDecorate, onRecall, onRetry, reducedM
   const bottom = layout.safeBottom + layout.tabBarHeight + tokens.spacing[3];
   return (
     <View style={{ flex: 1, backgroundColor: tokens.color.room[mode].wall }}>
-      <RoomScene scene={snapshot.sceneDocument} mode={mode} layout={layout} reducedMotion={reducedMotion}>
+      <RoomScene scene={snapshot.sceneDocument} mode={mode} layout={layout} reducedMotion={reducedMotion} celebrating={!!milestone}>
         <View accessibilityRole="toolbar" accessibilityLabel={t('a11y.toolbar')} testID="room-toolbar" style={{ position: 'absolute', left: GUTTER, right: GUTTER, top: layout.toolbar.y, height: layout.toolbar.height, justifyContent: 'center', zIndex: 50 }}>
           {partnerOccupying
             ? <Button label={t('room.watch')} icon="eye" variant="secondary" outline={outline} disabled={state.offline} onPress={onDecorate} />
             : <Button label={t('room.ctl.decorate')} accessibilityLabel={t('a11y.decorate')} icon="sparkle" outline={outline} disabled={state.offline} onPress={onDecorate} />}
         </View>
         <DdayWidget presentation={presentation ?? snapshot.roomPresentation} anniversaryDate={snapshot.space.anniversaryDate} timeZone={snapshot.space.timeZone} now={now} width={layout.width} height={layout.height} />
+        <MilestoneBubble top={layout.toolbar.y + layout.toolbar.height + tokens.spacing[2]} celebration={milestone ?? null} preset={milestonePreset ?? null} onClose={onMilestoneSeen ?? (() => {})} onSuggest={onMilestoneSuggest ?? (() => {})} disabled={state.offline || occupied || roomFull || !milestonePreset?.presetAvailable} busy={occupied} full={roomFull} />
         <View pointerEvents="box-none" style={{ position: 'absolute', left: GUTTER, right: GUTTER, bottom, gap: tokens.spacing[1], zIndex: 45 }}>
           {changed && <Toast text={t('room.partnerChanged', { name: partnerLabel(t) })} onHide={hideChanged} />}
           {state.offline && <Banner kind="offline" text={t('room.offline')} />}

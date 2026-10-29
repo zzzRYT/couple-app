@@ -100,8 +100,8 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 
 ### `POST /spaces/{spaceId}/prompt-session/{sessionId}/milestone-preview`
 
-요청: `{ "celebrationId": "uuid", "idempotencyKey": "uuid" }`. 먼저 기존 `acquire`로 점유를 얻어야 한다. 응답은 `POST decoration-previews`의 성공 응답과 같은 모양(`previewId`, `baseVersionNumber`, 후보 장면)에 `placed`·`requested`(놓은 소품 수/원래 5~6개)를 더한다. AI를 호출하지 않고 동의·일일 한도도 확인하지 않는다.
-- 오류: `409 SESSION_OCCUPIED`(상대가 점유 중이거나 내가 점유자가 아님), `410 MILESTONE_PASSED`(보이는 기간이 지남), `422 ROOM_FULL`(자리가 전혀 없음), `409 VERSION_CONFLICT`.
+요청: `{ "celebrationId": "uuid", "locale": "ko-KR | en-US | ja-JP", "idempotencyKey": "uuid" }`(`locale`은 기념 문구 언어이고 알 수 없는 값은 `en-US`). 먼저 기존 `acquire`로 점유를 얻어야 한다. 응답은 `POST decoration-previews`의 성공 응답과 같은 모양(`previewId`, `baseVersion`, 후보 장면)에 `placed`·`requested`(놓은 소품 수/원래 5~6개)를 더한다. AI를 호출하지 않고 동의·일일 한도도 확인하지 않는다.
+- 오류: `409 SESSION_OCCUPIED`(상대가 점유 중이거나 내가 점유자가 아님), `410 MILESTONE_PASSED`(보이는 기간이 지났거나 제안이 이미 적용됨), `422 ROOM_FULL`(자리가 전혀 없음), `409 VERSION_CONFLICT`.
 - 적용은 기존 `POST decoration-previews/{previewId}/confirm`을 그대로 쓴다. 자동 적용은 없다. 적용되면 `preset_applied_version_id`가 기록된다.
 
 ## 마스코트 되살림

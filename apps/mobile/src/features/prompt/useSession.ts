@@ -71,7 +71,7 @@ export function useSession({ api, spaceId, me, initial, serverTime, hold = false
   /** The server picks the transition: a new lease, a revival of my expired one, or a takeover of the partner's expired one. */
   const acquire = async () => {
     setLostTakeover(false);
-    try { setLease(toLease(await api.acquire(spaceId))); return true; } catch (error) { if (!occupiedFrom(error)) throw error; return false; }
+    try { const acquired = toLease(await api.acquire(spaceId)); setLease(acquired); return acquired; } catch (error) { if (!occupiedFrom(error)) throw error; return false; }
   };
   return {
     status, secondsLeft, lease, lostTakeover, serverNow,

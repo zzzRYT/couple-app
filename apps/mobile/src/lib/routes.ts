@@ -21,5 +21,8 @@ export const routes = {
   confirmPreview: (spaceId: string, previewId: string) => `decoration-previews/spaces/${spaceId}/decoration-previews/${previewId}/confirm`,
   cancelPreview: (spaceId: string, previewId: string, sessionId: string) => `decoration-previews/spaces/${spaceId}/decoration-previews/${previewId}?sessionId=${encodeURIComponent(sessionId)}`,
   mascotRecall: (spaceId: string) => `room/spaces/${spaceId}/room/mascot-recall`,
+  milestones: (spaceId: string) => `milestones/spaces/${spaceId}/milestones/current`,
+  milestoneSeen: (spaceId: string, celebrationId: string) => `milestones/spaces/${spaceId}/milestones/${celebrationId}/seen`,
+  milestonePreview: (spaceId: string, sessionId: string) => `milestones/spaces/${spaceId}/prompt-session/${sessionId}/milestone-preview`,
 } as const;
 export const spaceChannel = (spaceId: string) => `space:${spaceId}`;
