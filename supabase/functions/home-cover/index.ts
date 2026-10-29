@@ -75,7 +75,7 @@ export function homeCoverHandler(deps: Deps, storage: CoverStorage, now: () => D
       try { processed = await processImage(original, body.crop); } catch { throw new AppError('COVER_INVALID_IMAGE'); }
       const finalPath = `${spaceId}/cover/${crypto.randomUUID()}.jpg`;
       await storage.upload(finalPath, processed.bytes);
-      const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processed.bytes))).map((byte) => byte.toString(16).padStart(2, '0')).join('');
+      const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new Uint8Array(processed.bytes)))).map((byte) => byte.toString(16).padStart(2, '0')).join('');
       let result;
       try {
         result = await deps.db.rpc('commit_home_cover', { target: spaceId, upload: uploadId, actor: userId, final_path: finalPath, mime: 'image/jpeg', size_bytes: processed.bytes.byteLength, width: processed.width, height: processed.height, digest, crop_data: body.crop, at: now().toISOString() });
