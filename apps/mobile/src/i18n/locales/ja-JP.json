@@ -303,7 +303,7 @@
   "set.room.mode.auto": "時間帯に合わせる",
   "set.room.mode.day": "昼",
   "set.room.mode.night": "夜",
-  "set.room.mode.help": "「時間帯に合わせる」は、スペースを作った人のタイムゾーンで昼と夜を切り替えます。",
+  "set.room.mode.help": "「時間帯に合わせる」は、二人のスペースのタイムゾーンに従います。午前6時から午後6時までは昼として表示します。",
   "set.room.tz": "タイムゾーン",
   "set.room.tz.value": "ソウル（UTC+9）",
   "set.room.tz.pick": "タイムゾーンを選ぶ",

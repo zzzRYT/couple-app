@@ -303,7 +303,7 @@
   "set.room.mode.auto": "By time zone",
   "set.room.mode.day": "Day",
   "set.room.mode.night": "Night",
-  "set.room.mode.help": "\"By time zone\" switches day and night using the time zone of whoever created the space.",
+  "set.room.mode.help": "\"By time zone\" follows your shared space time zone. Day runs from 6 AM to 6 PM.",
   "set.room.tz": "Time zone",
   "set.room.tz.value": "Seoul (UTC+9)",
   "set.room.tz.pick": "Choose a time zone",

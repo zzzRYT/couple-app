@@ -1,6 +1,7 @@
-import { useColorScheme } from 'react-native';
 import { tokens } from './tokens';
+import { useDisplayAppearance } from '../features/settings/preferences';
 
 export function useAppColor() {
-  return tokens.color.app[useColorScheme() === 'dark' ? 'dark' : 'light'].normal;
+  const { scheme, highContrast } = useDisplayAppearance();
+  return tokens.color.app[scheme][highContrast ? 'highContrast' : 'normal'];
 }

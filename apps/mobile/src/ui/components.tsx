@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, TextInput, View, useColorScheme, type TextInputProps, type TextProps, type ViewStyle } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, TextInput, View, type TextInputProps, type TextProps, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme/tokens';
@@ -7,6 +7,7 @@ import { useAppColor } from '../theme/useAppColor';
 import { useType, type TypeVariant } from '../theme/typography';
 import { Icon, type IconName } from './Icon';
 import { useReducedMotion } from './motion';
+import { useDisplayAppearance } from '../features/settings/preferences';
 
 type AppColor = ReturnType<typeof useAppColor>;
 type Tone = 'text' | 'text2' | 'primary' | 'danger' | 'success' | 'onPrimary';
@@ -126,7 +127,7 @@ export function Banner({ text, body, kind = 'info', action, icon, quiet = false 
 }
 /** Dark brown (light app) / cream (dark app) pill that hides itself after 3s; important information also stays on screen. */
 export function Toast({ text, onHide, icon = 'check' }: { text: string; onHide?: () => void; icon?: IconName }) {
-  const dark = useColorScheme() === 'dark';
+  const dark = useDisplayAppearance().scheme === 'dark';
   const { emphasis } = useType();
   useEffect(() => {
     if (!onHide) return;
