@@ -86,7 +86,7 @@
 - `source`: `ai | milestone_preset` (`milestone_preset`은 AI를 호출하지 않는 앱 프리셋 미리 보기이고 `prompt_text`는 없으며 `preset_id`·`milestone_key`를 가진다. AI 요청 이력과 일일 한도에 세지 않는다)
 - `state`: `queued | generated | rejected | previewed | reverted | applied | cancelled | expired | failed` (`reverted`: 열린 대화 안에서 점유자가 이전 미리 보기로 되돌려 더 이상 보이지 않는 후보. 적용된 요청은 되돌릴 수 없다)
 - `result_candidate` (스키마 검증된 후보; 원문 모델 출력은 별도 저장하지 않음)
-- `failure_code?`, `repair_count` (최대 1), `created_at`, `expires_at`, `applied_version_id?`
+- `failure_code?`, `repair_count` (최대 1), `generation_stage?` (`generating | repairing`, `queued` 동안 모델 호출 단계), `created_at`, `expires_at`, `applied_version_id?`
 - `intent`: `catalog | generate | mixed` (서버가 입력 정책 단계에서 분류), `generation_attempt_id?`, `generated_object_ids[]` (이 후보가 만든 `GeneratedObject` 후보, 최대 2개), `quota_consumed` (boolean, 기본 false; 성공한 미리 보기가 만들어질 때만 true, 아래 "일일 요청 계수")
 - 후보와 대화 메시지는 두 구성원에게 공유되지만, 현재 session owner만 후보를 적용할 수 있다. 다른 구성원은 같은 후보를 읽기 전용으로 본다.
 - 취소/만료 미적용 후보는 24시간 후 삭제한다. 적용된 prompt 원문은 30일 지원 보관 후 삭제하며, 공간이 종료되면 남은 내용은 공간의 완전 삭제 때 함께 삭제한다.
@@ -132,7 +132,7 @@
 - `id`, `space_id`, `owner_user_id`, `status`: `occupied | released | expired`
 - `acquired_at`, `last_activity_at`, `expires_at`, `heartbeat_at?`, `released_at?`, `release_reason?`, `takeover_count`
 - 점유권은 공간 단위로 하나만 active할 수 있다. acquire와 takeover는 DB 원자 연산으로 owner를 한 명으로 제한한다.
-- 유휴 lease는 3분(만료 30초 전 경고)이며 서버 설정값이다. 의미 있는 사용자 입력/AI 생성 중 heartbeat로 갱신하고 background/닫힌 앱은 heartbeat를 보내지 않아 만료된다. 다른 구성원은 expected owner 및 expiry 검사 후 같은 shared session/preview를 takeover한다.
+- 유휴 lease는 3분(만료 30초 전 경고)이며 서버 설정값이다. 의미 있는 사용자 입력/AI 생성 중 heartbeat로 갱신하고 background/닫힌 앱은 heartbeat를 보내지 않아 만료된다. 다른 구성원은 expected owner 및 expiry 검사 후 같은 shared session/preview를 takeover한다. 만료는 `expire_stale_sessions()`(주기 작업)와 각 API 호출이 `expired`로 바꾸며, 유효한 미리 보기가 남은 만료 session은 acquire가 새 session 없이 이어 간다(`takeover_count`는 owner가 바뀔 때 +1). 미리 보기가 없거나 유효 시간이 지나면 읽는 쪽에는 점유가 없는 것으로 보인다.
 - confirm/cancel은 데이터 변경과 함께 점유를 해제한다. 열린 대화 안의 되돌리기는 점유를 풀지 않는다. 현재 점유자만 입력·제출·적용할 수 있고 비점유자는 공유 대화와 preview를 읽기 전용으로 본다.
 
 ### PromptMessage
@@ -254,10 +254,10 @@ queued/generated --invalid result/provider failure--> rejected/failed
 
 - 공간 구성원 수 ≤ 2; 초대 수락은 단일 DB 트랜잭션.
 - 요청 시 공간 활성, 사용자 구성원, 필요한 동의가 모두 유효해야 한다. 권장 정책은 두 명 모두 유효 동의가 있어야 외부 AI 호출 가능.
-- **일일 요청 계수**(2026-10-27 개정): `space_id` 기준으로 **방 시간대의 날짜**(자정 초기화)를 키로 센다. 한도는 커플당 **3회**이고 초과 응답은 `429 DAILY_LIMIT_REACHED`. **성공한 미리 보기(유효한 후보가 만들어져 두 사람에게 보인 요청)만 센다**(가정): 요청 시작 때 `DecorationRequest`에 예약(`quota_consumed=false`)하고, 성공으로 끝나는 같은 트랜잭션에서 `daily_request_count`를 atomic increment하며 `quota_consumed=true`로 바꾼다. 입력 정책 거절, 검증 실패, 2차 검사 실패, 제공자 오류는 센 값을 바꾸지 않는다. 점유 lease로 한 커플의 동시 요청은 하나뿐이지만 한도 검사(`count < 3`)와 증가는 한 트랜잭션에서 한다. 마일스톤 제안(AI 호출 없음)은 계수하지 않는다.
+- **일일 요청 계수**(2026-10-27 개정): `space_id` 기준으로 **방 시간대의 날짜**(자정 초기화)를 키로 센다. 한도는 커플당 **3회**이고 초과 응답은 `429 DAILY_LIMIT_REACHED`. **성공한 미리 보기(유효한 후보가 만들어져 두 사람에게 보인 요청)만 센다**(가정): 요청 시작 때 `DecorationRequest`에 예약(`quota_consumed=false`)하고, 성공으로 끝나는 같은 트랜잭션에서 `daily_request_count`를 atomic increment하며 `quota_consumed=true`로 바꾼다. 입력 정책 거절, 검증 실패, 2차 검사 실패, 제공자 오류는 센 값을 바꾸지 않는다. 생성 중에 점유자가 취소하면 그 요청은 `cancelled`가 되고 예약이 풀린다. 점유 lease로 한 커플의 동시 요청은 하나뿐이지만 한도 검사(`count < 3`)와 증가는 한 트랜잭션에서 한다. 마일스톤 제안(AI 호출 없음)은 계수하지 않는다.
 - **남용 한도(별도)**: `GenerationAttempt` 기준으로 커플당 하루 시도 30회(거절·실패 포함), 사용자당 분당 4회, 거절이 1시간 안에 5번 연속이면 그 커플의 생성을 1시간 쉬게 하고(쿨다운, `429 RATE_LIMITED` + 다시 시도 시각), 하루 15번 거절되면 그날은 생성을 막고 운영자에게 표시한다. 이 값은 서버 설정(`generation_attempt_limits`)이다.
 - **생성 장식 검증 규칙**: 장면의 `gen:<uuid>` 참조는 같은 공간의 `active`/`candidate` 행이어야 하고 종류가 맞아야 한다(`bubble_frame`은 텍스트의 틀로만, `background_piece`는 오브젝트로만). 생성 오브젝트는 장면의 오브젝트 16개 한도에 포함된다. 배경 조각의 `zIndex`와 상관없이 렌더 순서는 배경 조각 < 카탈로그 오브젝트·마스코트 < 텍스트다. 장면에 쓰인 생성 장식은 보관함에서 지울 수 없다. 렌더 직전에 `validator_version`이 `generation_min_validator_version`보다 낮으면 다시 검증하고, 실패한 장식은 그리지 않는다.
-- **생성 요청 순서(서버)**: 권한·동의·공간 활성·킬 스위치·보관함 여유 → 시도 한도 → 입력 정책(결정론 필터 + 분류 호출) → 생성 호출 → 형식 검증·정규화 → 2차 검사 → 후보 저장 → 성공 때만 횟수 증가. 어느 단계든 실패하면 후보를 저장하지 않고 횟수도 쓰지 않는다. 멱등 키로 같은 요청은 같은 결과를 돌려준다.
+- **생성 요청 순서(서버)**: 권한·동의·공간 활성·킬 스위치·보관함 여유 → 시도 한도 → 입력 정책(결정론 필터 + 분류 호출) → 생성 호출 → 형식 검증·정규화 → 2차 검사 → 후보 저장 → 성공 때만 횟수 증가. 어느 단계든 실패하면 후보를 저장하지 않고 횟수도 쓰지 않는다. 멱등 키로 같은 요청은 같은 결과를 돌려준다(키는 일을 시작하기 전에 먼저 선점하고, 처리 중인 같은 키는 `409 IN_PROGRESS`, 실패하면 키를 풀어 준다).
 - 한 사용자(`user_id`)는 **활성** 공간의 `SpaceMember`를 하나만 가진다(FR-057): 부분 고유 인덱스 `unique (user_id) where space_active`. 종료된 공간의 구성원 행은 `space_active = false`이므로 새 공간 생성·초대 수락을 막지 않는다(종료 직후 바로 가능). 종료·연결 끊기는 공간 `status`와 두 구성원의 `space_active`를 한 트랜잭션에서 바꾸며 이 열을 다시 true로 되돌리는 전이는 없다. 같은 사용자의 동시 요청은 사용자 단위 어드바이저리 락(`pg_advisory_xact_lock(hashtext(user_id))`)으로 직렬화한다.
 - **종료 접근 차단(FR-023)**: 모든 읽기·쓰기 RLS와 서버 함수는 공간 `status = 'active'`를 조건에 둔다. 종료된 공간에 대한 호출은 비구성원과 구분되지 않게 `404`로 거절한다(예외: 종료 알림 `GET /spaces/mine`·`POST /spaces/mine/ended/ack`는 공간이 아니라 사용자 기준이다). Storage 정책도 같은 조건이다.
 - **완전 삭제 작업(`purge_expired_spaces()`, 내부 예약 작업, 클라이언트 API 아님; FR-024)**: `status = 'ended' and purge_after <= now()`인 공간마다 ① Storage 객체(홈 커버 현재 객체와 `pending_delete[]`)를 먼저 지우고(없으면 성공으로 본다) ② 한 트랜잭션에서 그 공간의 모든 행을 지운다: `CoupleSpace`, `SpaceMember`, `Invitation`, `RoomTheme`과 버전, `DecorationRequest`, `PromptSession`과 `PromptMessage`, `HomeCoverPhoto`, `MilestoneCelebration`·`MilestoneSeen`, `GeneratedObject`, `GenerationAttempt`, 그 공간의 `Report`(기본 가정; Open Decisions 21), 일일 요청 계수 행, `SpaceEndNotice`, `SpaceLifecycleEvent`의 개인 내용 있는 `metadata`. 공간 단위로 멱등이고 재시도에 안전하다. 실패하면 공간은 `ended` 그대로(이미 보이지 않음)여서 부분 삭제로 보이는 상태가 없다. `deletion_started`/`deletion_completed` 이벤트만 내용 없이 남기고 `GenerationBlock` 지문은 지우지 않는다. 한 번 실행에서 처리할 공간 수는 상한을 두어 오래 걸리는 실행을 피한다.

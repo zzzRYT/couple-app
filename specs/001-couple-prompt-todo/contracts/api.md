@@ -8,7 +8,7 @@
 - 오류 형태: `{ "error": { "code": "VERSION_CONFLICT", "retryable": true } }`. `code`는 언어 중립 안정 코드이며 앱이 현재 locale의 번역 리소스에서 사용자 메시지를 찾는다.
 - 오류 응답에 사용자 표시용 자연어 문구나 locale별 메시지 키를 넣지 않고 원문 프롬프트를 되풀이하지 않는다. 화면·설정·오류 문구는 앱 번역 리소스에서 제공한다.
 - 모든 변경 요청은 `Idempotency-Key` UUID를 받아 중복 tap/retry로 이중 적용되지 않게 한다.
-- 구현 중 추가한 공통 코드(2026-10-27): `400 INVALID_REQUEST`, `401 UNAUTHORIZED`, `404 NOT_FOUND`, `403 CONSENT_REQUIRED`(두 구성원 동의 전 AI 요청), `409 SESSION_EXPIRED`(만료된 점유의 heartbeat·요청). `409 SESSION_OCCUPIED` 오류 본문에는 `ownerUserId`, `expiresAt`이 함께 온다.
+- 구현 중 추가한 공통 코드(2026-10-27): `400 INVALID_REQUEST`, `401 UNAUTHORIZED`, `404 NOT_FOUND`, `403 CONSENT_REQUIRED`(두 구성원 동의 전 AI 요청), `409 SESSION_EXPIRED`(만료된 점유의 heartbeat·요청). `409 SESSION_OCCUPIED` 오류 본문에는 `sessionId`, `ownerUserId`, `expiresAt`이 함께 온다. `409 IN_PROGRESS`(재시도 가능)는 같은 `Idempotency-Key`의 요청이 아직 처리 중일 때다. 서버는 변경 요청을 실행하기 전에 키를 먼저 선점하고, 실패한 요청의 키는 풀어 준다.
 - Edge Function 매핑: 앱은 `/functions/v1/{함수}{논리 경로}`를 호출한다. 함수는 `spaces`, `invitations`, `profile`, `prompt-session`, `ai-consent`, `decoration-previews`, `room`이다(`apps/mobile/src/lib/routes.ts`).
 
 ## Auth / 초대
@@ -138,17 +138,17 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 
 ### `GET /spaces/{spaceId}/prompt-conversation`
 
-두 구성원 모두 사용자 prompt, preview 및 status 메시지를 시간 순서대로 읽는다. 권한이 있는 API는 메시지 ID, author, content, preview reference와 현재 점유 상태를 반환한다.
+두 구성원 모두 사용자 prompt, preview 및 status 메시지를 시간 순서대로 읽는다. 권한이 있는 API는 메시지 ID, author, content, preview reference, 현재 점유 상태(`session`: `sessionId`, `ownerUserId`, `status`, `expiresAt`, `warnAt`, `idleSeconds`, `warnSeconds`), 현재 미리 보기, 서버 시각(`serverTime`; 앱이 시계 차이를 보정하는 데 쓴다)을 반환한다. 아직 생성 중인 요청의 `preview` 메시지에는 `stage`(`generating` | `repairing`)가 붙는다.
 
 ### `POST /spaces/{spaceId}/prompt-session/acquire`
 
 요청: `{ "idempotencyKey": "uuid" }`.
 
-활성 점유가 없을 때 lease를 만든다. 201 응답: `{ "sessionId": "uuid", "ownerUserId": "uuid", "expiresAt": "RFC3339" }`. 다른 구성원이 유효하게 점유 중이면 `409 SESSION_OCCUPIED`와 owner/expiry를 반환한다. 동시 요청은 단일 DB 원자 연산으로 한 명만 승자로 선택한다.
+활성 점유가 없을 때 lease를 만든다. 가장 최근 session이 만료됐고 아직 유효한 미리 보기가 있으면 새 session을 만들지 않고 **같은 session을 이어 간다**(원래 owner는 되살리기, 다른 구성원은 takeover와 같은 결과로 `takeoverCount` +1). 201 응답: `{ "sessionId": "uuid", "ownerUserId": "uuid", "expiresAt": "RFC3339", "warnAt": "RFC3339", "idleSeconds": 180, "warnSeconds": 30 }`. 다른 구성원이 유효하게 점유 중이면 `409 SESSION_OCCUPIED`와 session/owner/expiry를 반환한다. 동시 요청은 단일 DB 원자 연산으로 한 명만 승자로 선택한다.
 
 ### `POST /spaces/{spaceId}/prompt-session/{sessionId}/heartbeat`
 
-현재 owner만 호출할 수 있다. 최근 입력/생성 활동이 있으면 서버 시각 기준으로 lease를 3분 연장한다. heartbeat가 멈추면 expiry 후 점유권은 만료된다.
+현재 owner만 호출할 수 있다. 최근 입력/생성 활동이 있으면 서버 시각 기준으로 lease를 3분 연장한다. 서버도 미리 보기 요청 시작·결과 저장(`store_preview`)·되돌리기에서 lease를 연장한다. 앱은 입력, 현재/후보 전환, 확인 창 열기, "계속하기"를 활동으로 보내고, 열린 미리 보기를 보고 있는 동안에는 시트가 보이는 한 heartbeat를 계속 보낸다. heartbeat가 멈추면 expiry 후 점유권은 만료된다. 만료는 API 호출이 없어도 `expire_stale_sessions()`(1분 주기 pg_cron, 오너 설정)가 `session` 이벤트(`status: expired`)와 함께 처리한다. 스냅샷의 `promptSession`은 만료된 lease를 `status: "expired"`로 돌려주고(미리 보기 유효 시간이 지나면 사라진다), 시트를 닫을 때 미리 보기나 진행 중인 요청이 없으면 앱이 `release`를 호출한다.
 
 ### `POST /spaces/{spaceId}/prompt-session/{sessionId}/takeover`
 
@@ -169,6 +169,8 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 인증 사용자의 동의만 기록한다. 권장 정책은 **두 멤버 모두 granted**일 때 AI 요청 허용. 상태 변경 시 감사 이벤트를 남긴다. 철회 시 대기 요청과 미적용 preview를 무효화한다.
 
 ### `POST /spaces/{spaceId}/decoration-previews`
+
+생성 요청은 자동 재시도하지 않는다. 앱은 75초 안에 응답이 없거나 연결이 끊기면 대화를 다시 읽어 결과를 확인한다. 서버는 모델 호출 단계를 `message` 이벤트(`generating`, `repairing`)로 알리고, 생성 중에 취소하면 그 요청의 하루 한도 예약을 돌려준다.
 
 요청:
 

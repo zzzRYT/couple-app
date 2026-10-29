@@ -40,8 +40,14 @@ export function decorationPreviewsHandler(deps: Deps, model: DecorationModel = a
         presentationStyleTokens: PRESENTATION_TOKENS, textStyleTokens: TEXT_TOKENS, rules: RULES,
       };
       let repairs = 0;
+      // Announces the stage to both screens; a request cancelled meanwhile reports false, which skips the model call and its cost.
+      const stage = async (name: 'generating' | 'repairing') => {
+        const alive = await deps.db.rpc<boolean>('mark_decoration_stage', { request: begun.requestId, stage: name }).catch(() => true);
+        if (alive === false) throw new AppError('PREVIEW_CHANGED');
+      };
       try {
         for (;;) {
+          await stage(repairs > 0 ? 'repairing' : 'generating');
           const { proposal, model: modelId } = await model.propose(input, { escalate: repairs > 0 });
           if (proposal.decision !== 'propose') {
             await fail('UNSUPPORTED_REQUEST', true, repairs);

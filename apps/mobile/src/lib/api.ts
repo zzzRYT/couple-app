@@ -1,7 +1,7 @@
 import { randomUUID } from 'expo-crypto';
 import { ApiError } from './errors';
 type Caller = (path: string, request: RequestInit) => Promise<Response>;
-type RequestOptions = { method?: string; body?: Record<string, unknown>; retries?: number; keyInBody?: boolean };
+type RequestOptions = { method?: string; body?: Record<string, unknown>; retries?: number; keyInBody?: boolean; timeoutMs?: number };
 export function createApi(call: Caller, makeId: () => string = randomUUID) {
   const api = {
     /** One key per logical mutation; retries of the same call reuse it, in the header and (when the contract asks) in the body. */
@@ -14,9 +14,19 @@ export function createApi(call: Caller, makeId: () => string = randomUUID) {
       const body = options.keyInBody && key ? { ...options.body, idempotencyKey: key } : options.body;
       const init: RequestInit = { method, headers, ...(body === undefined ? {} : { body: JSON.stringify(body) }) };
       const retries = options.retries ?? 1;
+      // A timeout surfaces as a network error (TypeError) so callers handle "the answer may still arrive" in one place.
+      const send = async () => {
+        if (!options.timeoutMs) return call(path, init);
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), options.timeoutMs);
+        try { return await call(path, { ...init, signal: controller.signal }); } catch (error) {
+          if (controller.signal.aborted) throw new TypeError('REQUEST_TIMEOUT');
+          throw error;
+        } finally { clearTimeout(timer); }
+      };
       for (let attempt = 0; ; attempt++) {
         try {
-          const response = await call(path, init);
+          const response = await send();
           if (response.status < 500 || attempt >= retries) return response;
         } catch (error) {
           if (attempt >= retries) throw error;

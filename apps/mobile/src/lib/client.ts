@@ -6,7 +6,8 @@ export type SceneObject = { assetId: string; x: number; y: number; width: number
 export type SceneText = { text: string; x: number; y: number; width: number; height: number; rotationDeg: number; zIndex: number; styleToken: 'text.primary' | 'text.accent' | 'text.soft' };
 export type RoomPresentation = { schemaVersion: 1; visible: boolean; x: number; y: number; width: number; height: number; styleToken: string; textScale: number; surfaceToken?: string };
 export type RoomThemeDocument = { schemaVersion: 1; mode: 'day' | 'night' | 'follow_time'; timeZone: string; day: unknown; night: unknown };
-export type PromptSession = { sessionId: string; ownerUserId: string; expiresAt: string; status: 'occupied' | 'released' | 'expired' };
+/** `warnAt`, `idleSeconds` and `warnSeconds` come from the server settings; a lease read from an older server lacks them. */
+export type PromptSession = { sessionId: string; ownerUserId: string; expiresAt: string; status: 'occupied' | 'released' | 'expired'; warnAt?: string; idleSeconds?: number; warnSeconds?: number };
 export type Snapshot = {
   space: { spaceId: string; status: 'active'; anniversaryDate: string; timeZone: string; memberCount: number; updatedAt: string; invitation: { status: string; expiresAt: string } | null };
   features: { generation: boolean; generatedRender: boolean }; versionNumber: number; sceneDocument: SceneDocument; roomPresentation: RoomPresentation; roomThemeDocument: RoomThemeDocument;
@@ -14,11 +15,13 @@ export type Snapshot = {
 };
 export type MySpace = { active: { spaceId: string } | null; ended: { kind: 'ended' | 'disconnect' | 'account_deleted'; by: 'me' | 'partner'; at: string } | null };
 export type Preview = { previewId: string; sceneDocument: SceneDocument; roomPresentation: RoomPresentation; roomThemeDocument: RoomThemeDocument; expiresAt: string; baseVersion?: number };
-export type Message = { id: string; kind: 'user_prompt' | 'preview' | 'status'; authorUserId: string | null; bodyText: string | null; previewId: string | null; state: string | null; createdAt: string };
+export type Message = { id: string; kind: 'user_prompt' | 'preview' | 'status'; authorUserId: string | null; bodyText: string | null; previewId: string | null; state: string | null; stage?: 'generating' | 'repairing' | null; createdAt: string };
 export type ReportTarget = 'partner' | 'shared_text' | 'room_scene';
 export type ReportReason = 'harass' | 'inappropriate' | 'privacy' | 'other';
 export type ReportInput = { target: ReportTarget; reason: ReportReason; detail?: string; messageId?: string };
-export type Conversation = { messages: Message[]; session: PromptSession | null; currentPreview: Preview | null };
+export type Conversation = { messages: Message[]; session: PromptSession | null; currentPreview: Preview | null; serverTime?: string };
+/** Generation can take a while; past this the app stops waiting and asks the server what happened. */
+export const GENERATION_TIMEOUT_MS = 75_000;
 export function createClient(api: Api) {
   return {
     createSpace: (anniversaryDate: string, timeZone: string) => api.json<{ spaceId: string; memberCount: number }>(routes.createSpace(), { method: 'POST', body: { anniversaryDate, timeZone } }),
@@ -42,7 +45,7 @@ export function createClient(api: Api) {
     release: (spaceId: string, sessionId: string) => api.json<void>(routes.session(spaceId, sessionId, 'release'), { method: 'POST', body: { reason: 'cancel' } }),
     undo: (spaceId: string, sessionId: string, expectedPreviewId: string) => api.json<{ previewId: string | null }>(routes.session(spaceId, sessionId, 'undo'), { method: 'POST', body: { expectedPreviewId }, keyInBody: true }),
     setConsent: (spaceId: string, state: 'granted' | 'revoked') => api.json<void>(routes.consent(spaceId), { method: 'PUT', body: { state, noticeVersion: 'ai-overseas-v1' } }),
-    requestPreview: (spaceId: string, prompt: string, sessionId: string, baseVersion: number) => api.json<Preview>(routes.previews(spaceId), { method: 'POST', body: { prompt, sessionId, baseVersion }, keyInBody: true }),
+    requestPreview: (spaceId: string, prompt: string, sessionId: string, baseVersion: number) => api.json<Preview>(routes.previews(spaceId), { method: 'POST', body: { prompt, sessionId, baseVersion }, keyInBody: true, retries: 0, timeoutMs: GENERATION_TIMEOUT_MS }),
     confirmPreview: (spaceId: string, previewId: string, sessionId: string, baseVersion: number) => api.json<{ appliedVersion: number; source: 'prompt'; updatedAt: string }>(routes.confirmPreview(spaceId, previewId), { method: 'POST', body: { baseVersion, sessionId }, keyInBody: true }),
     cancelPreview: (spaceId: string, previewId: string, sessionId: string) => api.json<void>(routes.cancelPreview(spaceId, previewId, sessionId), { method: 'DELETE' }),
     mascotRecall: (spaceId: string, expectedVersion: number) => api.json<{ versionNumber: number }>(routes.mascotRecall(spaceId), { method: 'POST', body: { expectedVersion }, keyInBody: true }),

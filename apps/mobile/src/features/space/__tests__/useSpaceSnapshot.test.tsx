@@ -65,3 +65,16 @@ it('reset drops the cached snapshot and entry so another account starts clean', 
   expect(hook.result.current.spaceId).toBeNull();
   expect(hook.result.current.state.snapshot).toBeNull();
 });
+
+it('keeps an expired lease visible from the realtime hint so the partner can continue it', async () => {
+  const realtime = memoryRealtime();
+  const session = { sessionId: 's1', ownerUserId: 'u2', expiresAt: '2026-10-27T03:03:00Z', status: 'occupied' as const, idleSeconds: 180, warnSeconds: 30 };
+  const snapshot = jest.fn().mockResolvedValue({ ...snapshotFixture(), promptSession: session });
+  const hook = await renderHook(() => useSpaceSnapshot({ client: { mySpace: async () => ({ active: { spaceId: 'space-1' }, ended: null }), snapshot }, realtime }));
+  await waitFor(() => expect(hook.result.current.state.snapshot?.promptSession?.status).toBe('occupied'));
+  snapshot.mockResolvedValue({ ...snapshotFixture(), promptSession: { ...session, status: 'expired' } });
+  await act(async () => { realtime.emit('space-1', { event: 'session', payload: { sessionId: 's1', status: 'expired', ownerUserId: 'u2', expiresAt: '2026-10-27T03:03:00Z' } }); });
+  expect(hook.result.current.state.snapshot?.promptSession).toMatchObject({ sessionId: 's1', status: 'expired', ownerUserId: 'u2', idleSeconds: 180 });
+  await act(async () => { realtime.emit('space-1', { event: 'session', payload: { sessionId: 's1', status: 'released' } }); });
+  expect(hook.result.current.state.snapshot?.promptSession).toBeNull();
+});
