@@ -37,3 +37,10 @@ it('keeps decorations out of touch and accessibility while native controls stay 
   expect(screen.getByRole('button', { name: 'control' })).toBeTruthy();
   expect(screen.getByTestId('mascot')).toBeTruthy();
 });
+
+it.each(['ko-KR', 'en-US', 'ja-JP'] as const)('renders user-written scene text unchanged in %s', async (locale) => {
+  const written = '우리의 첫 만남 ☕ {{it}} set.title';
+  const room = { ...scene([]), texts: [{ ...scene([]).texts[0]!, text: written }] };
+  const screen = await renderWithI18n(<RoomScene scene={room} mode="day" layout={layout} reducedMotion />, locale);
+  expect(screen.getByText(written, { includeHiddenElements: true })).toBeTruthy();
+});

@@ -79,7 +79,7 @@ export function SettingsScreen({ onLogout, space, version, offline = false, onRo
         <ListRow icon="globe" label={t('set.lang')} value={preferences.locale === 'ko-KR' ? '한국어' : preferences.locale === 'ja-JP' ? '日本語' : preferences.locale === 'en-US' ? 'English' : t('set.lang.system')} onPress={() => setSheet('language')} />
         <ListRow icon="room" label={t('set.theme')} value={t(`set.theme.${preferences.displayMode}`)} disabled onPress={() => {}} />
         <View style={{ flexDirection: 'row', gap: tokens.spacing[1], paddingBottom: tokens.spacing[2] }}>
-          {modes.map(({ mode, key }) => <View key={mode} style={{ flex: 1 }}><Button compact variant={preferences.displayMode === mode ? 'primary' : 'secondary'} label={t(key)} onPress={() => void preferences.setDisplayMode(mode)} /></View>)}
+          {modes.map(({ mode, key }) => <View key={mode} style={{ flex: 1 }}><Button compact variant={preferences.displayMode === mode ? 'primary' : 'secondary'} label={t(key)} onPress={() => { preferences.setDisplayMode(mode).catch(() => {}); }} /></View>)}
         </View>
         <ListRow icon="shield" label={t('set.hc')} value={preferences.highContrast ? t('a11y.on') : t('a11y.off')} disabled onPress={() => {}} />
         <AppText variant="bodySm" tone="text2">{t('set.hc.help')}</AppText>
@@ -106,7 +106,7 @@ export function SettingsScreen({ onLogout, space, version, offline = false, onRo
         <AppText variant="bodySm" tone="text2">{t('set.end.help')}</AppText>
       </>}
       <BottomSheet visible={sheet === 'language'} title={t('set.lang.sheet')} onClose={() => setSheet(null)}>
-        {languages.map(({ locale, label, value }) => <ListRow key={value} label={locale ? label : t(label)} value={(preferences.locale ?? 'system') === (locale ?? 'system') ? '✓' : undefined} onPress={async () => { await preferences.setLocale(locale); setSheet(null); }} />)}
+        {languages.map(({ locale, label, value }) => <ListRow key={value} label={locale ? label : t(label)} value={(preferences.locale ?? 'system') === (locale ?? 'system') ? '✓' : undefined} onPress={async () => { try { await preferences.setLocale(locale); setSheet(null); } catch { setSheet('language'); } }} />)}
         <AppText variant="bodySm" tone="text2">{t('set.lang.note')}</AppText>
       </BottomSheet>
       <BottomSheet visible={sheet === 'timezone'} title={t('set.room.tz.pick')} onClose={() => setSheet(null)}>

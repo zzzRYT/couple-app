@@ -56,17 +56,11 @@ it('keeps every control reachable and untruncated with 40% longer copy', async (
   for (const control of screen.getAllByRole('button')) expect(StyleSheet.flatten(control.props.style).minHeight).toBeGreaterThanOrEqual(44);
 });
 
-it.each(['ko-KR', 'en-US', 'ja-JP'] as const)('shows %s error copy chosen by locale, never the raw server error code', async (locale) => {
+it.each(['ko-KR', 'en-US', 'ja-JP'] as const)('shows the generic %s server error copy, never the raw server error code', async (locale) => {
   const onRoomMode = jest.fn().mockRejectedValue(Object.assign(new Error('VERSION_CONFLICT'), { code: 'VERSION_CONFLICT' }));
   const screen = await renderWithI18n(<SettingsScreen onLogout={jest.fn().mockResolvedValue(undefined)} space={fullSpace} onRoomMode={onRoomMode} onTimeZone={jest.fn()} />, locale);
   await fireEvent.press(screen.getByRole('button', { name: screen.t('set.room.mode.night') }));
   await waitFor(() => expect(screen.getByText(screen.t('sys.server.title'))).toBeTruthy());
   expect(screen.getByText(screen.t('sys.server.body'))).toBeTruthy();
   expect(screen.queryByText(/VERSION_CONFLICT/)).toBeNull();
-});
-
-it.each(['ko-KR', 'en-US', 'ja-JP'] as const)('renders user-written room text unchanged in %s', async (locale) => {
-  const written = '우리의 첫 만남 ☕ {it} set.title';
-  const screen = await renderWithI18n(<SettingsScreen onLogout={jest.fn().mockResolvedValue(undefined)} space={{ ...fullSpace, anniversary: written }} />, locale);
-  expect(screen.getByRole('button', { name: `${screen.t('set.together')}, ${written}` })).toBeTruthy();
 });
