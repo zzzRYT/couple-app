@@ -1,5 +1,5 @@
 begin;
-select plan(18);
+select plan(17);
 insert into auth.users (id,aud,role,email) values
  ('00000000-0000-0000-0000-000000000071','authenticated','authenticated','cover-a@example.invalid'),
  ('00000000-0000-0000-0000-000000000072','authenticated','authenticated','cover-b@example.invalid'),
