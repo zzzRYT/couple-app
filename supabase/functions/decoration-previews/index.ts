@@ -77,10 +77,8 @@ export function decorationPreviewsHandler(deps: Deps, model: DecorationModel = a
     }),
     route('POST', '/spaces/:spaceId/decoration-previews/:previewId/confirm', async ({ userId, params, body, deps }) => {
       if (!Number.isInteger(body.baseVersion)) throw new AppError('INVALID_REQUEST');
-      const target = uuidParam(params.spaceId), preview = uuidParam(params.previewId);
-      const result = await deps.db.rpc<Record<string, unknown>>('confirm_preview', { actor: userId, target, preview,
-        session: uuidParam(body.sessionId), base_version: body.baseVersion });
-      return json(result, 201);
+      return json(await deps.db.rpc('confirm_preview', { actor: userId, target: uuidParam(params.spaceId), preview: uuidParam(params.previewId),
+        session: uuidParam(body.sessionId), base_version: body.baseVersion }), 201);
     }),
     route('DELETE', '/spaces/:spaceId/decoration-previews/:previewId', async ({ userId, params, query, deps }) => {
       await deps.db.rpc('cancel_preview', { actor: userId, target: uuidParam(params.spaceId), preview: uuidParam(params.previewId), session: uuidParam(query.get('sessionId')) });
