@@ -1,36 +1,24 @@
-import { act, renderHook, waitFor } from '@testing-library/react-native';
-import { AppState } from 'react-native';
+import { act, renderHook } from '@testing-library/react-native';
 import { useRoom } from '../useRoom';
-import { memoryRealtime } from '../../../lib/realtime';
 import { snapshotFixture } from '../../../test/fixtures';
-afterEach(() => jest.restoreAllMocks());
 const version = (n: number) => ({ ...snapshotFixture(), versionNumber: n });
+const state = (snapshot: ReturnType<typeof version>, offline = false) => ({ status: 'ready' as const, snapshot, offline, lastSyncedAt: snapshot.serverTime });
 
-it('stays read-only offline, sends nothing, and shows the latest version after reconnecting', async () => {
-  const listeners: ((state: string) => void)[] = [];
-  jest.spyOn(AppState, 'addEventListener').mockImplementation((_type, listener) => { listeners.push(listener as (state: string) => void); return { remove: jest.fn() }; });
-  const snapshot = jest.fn().mockResolvedValueOnce(version(1)).mockRejectedValueOnce(new TypeError('Network request failed')).mockResolvedValueOnce(version(3));
-  const client = { snapshot, mascotRecall: jest.fn() };
-  const realtime = memoryRealtime();
-  const hook = await renderHook(() => useRoom('space-1', { client, realtime }));
-  await waitFor(() => expect(hook.result.current.snapshot?.versionNumber).toBe(1));
-  await act(async () => { for (const listener of listeners) listener('active'); });
-  await waitFor(() => expect(hook.result.current.readOnly).toBe(true));
-  expect(hook.result.current.snapshot?.versionNumber).toBe(1);
+it('uses the shared snapshot and keeps offline rooms read-only', async () => {
+  const client = { snapshot: jest.fn(), mascotRecall: jest.fn() };
+  const refresh = jest.fn();
+  const hook = await renderHook(() => useRoom('space-1', { client }, { state: state(version(3), true), refresh }));
+  expect(hook.result.current.snapshot?.versionNumber).toBe(3);
+  expect(hook.result.current.readOnly).toBe(true);
   await act(async () => { expect(await hook.result.current.recall()).toBe('offline'); });
-  expect(client.mascotRecall).not.toHaveBeenCalled();
-  await act(async () => { realtime.emit('space-1', { event: 'room_version', payload: { versionNumber: 3 } }); });
-  await waitFor(() => expect(hook.result.current.snapshot?.versionNumber).toBe(3));
-  expect(hook.result.current.readOnly).toBe(false);
   expect(client.mascotRecall).not.toHaveBeenCalled();
 });
 
-it('refetches after a Realtime room change from the partner', async () => {
-  const snapshot = jest.fn().mockResolvedValueOnce(version(1)).mockResolvedValueOnce(version(2));
-  const realtime = memoryRealtime();
-  const client = { snapshot, mascotRecall: jest.fn() };
-  const hook = await renderHook(() => useRoom('space-1', { client, realtime }));
-  await waitFor(() => expect(hook.result.current.snapshot?.versionNumber).toBe(1));
-  await act(async () => { realtime.emit('space-1', { event: 'room_version', payload: { versionNumber: 2 } }); });
-  await waitFor(() => expect(hook.result.current.snapshot?.versionNumber).toBe(2));
+it('recalls using the shared version and refreshes the shared snapshot once', async () => {
+  const client = { snapshot: jest.fn(), mascotRecall: jest.fn().mockResolvedValue({ versionNumber: 2 }) };
+  const refresh = jest.fn();
+  const hook = await renderHook(() => useRoom('space-1', { client }, { state: state(version(1)), refresh }));
+  await act(async () => { expect(await hook.result.current.recall()).toBe('ok'); });
+  expect(client.mascotRecall).toHaveBeenCalledWith('space-1', 1);
+  expect(refresh).toHaveBeenCalledTimes(1);
 });

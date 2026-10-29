@@ -1,13 +1,12 @@
 import { useCallback } from 'react';
 import type { Snapshot } from '../../lib/client';
+import type { SpaceState } from '../space/types';
 import { ApiError } from '../../lib/errors';
-import { isNetworkError, type RealtimePort } from '../../lib/realtime';
-import { useSnapshotSync } from '../space/useSnapshotSync';
+import { isNetworkError } from '../../lib/realtime';
 type RoomClient = { snapshot(spaceId: string): Promise<Snapshot>; mascotRecall(spaceId: string, expectedVersion: number): Promise<unknown> };
 export type RecallResult = 'ok' | 'offline' | string;
 /** Room version sync. Offline the last confirmed room stays read-only; edits, AI and confirm requests are never queued for later. */
-export function useRoom(spaceId: string | null, { client, realtime }: { client: RoomClient; realtime: RealtimePort }) {
-  const { state, refresh } = useSnapshotSync(spaceId, client.snapshot, realtime);
+export function useRoom(spaceId: string | null, { client }: { client: RoomClient }, { state, refresh }: { state: SpaceState; refresh: () => Promise<void> }) {
   const snapshot = state.snapshot;
   const readOnly = state.offline || !snapshot;
   const hasMascot = !!snapshot?.sceneDocument.objects.some((node) => node.assetId === 'app_mascot');
