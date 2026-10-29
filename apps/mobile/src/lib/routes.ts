@@ -24,5 +24,7 @@ export const routes = {
   milestones: (spaceId: string) => `milestones/spaces/${spaceId}/milestones/current`,
   milestoneSeen: (spaceId: string, celebrationId: string) => `milestones/spaces/${spaceId}/milestones/${celebrationId}/seen`,
   milestonePreview: (spaceId: string, sessionId: string) => `milestones/spaces/${spaceId}/prompt-session/${sessionId}/milestone-preview`,
+  homeCover: (spaceId: string) => `home-cover/spaces/${spaceId}/home-cover`,
+  homeCoverUploadUrl: (spaceId: string) => `home-cover/spaces/${spaceId}/home-cover/upload-url`,
 } as const;
 export const spaceChannel = (spaceId: string) => `space:${spaceId}`;

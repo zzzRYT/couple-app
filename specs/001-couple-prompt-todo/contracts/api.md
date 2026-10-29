@@ -116,7 +116,7 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 
 ### `POST /spaces/{spaceId}/home-cover/upload-url`
 
-활성 공간 구성원만. 요청: `{ "contentType": "image/jpeg" | "image/png" | "image/heic", "byteSize": 1234567 }`. 허용 형식·크기(20MB 이하) 위반은 `400 COVER_FORMAT_UNSUPPORTED` / `400 COVER_TOO_LARGE`. 응답 201: `{ "uploadId": "uuid", "uploadUrl": "signed-url", "expiresAt": "RFC3339" }` (일회용, 짧은 수명). 공간이 `ended`이면 `404`(종료된 공간).
+활성 공간 구성원만. 요청: `{ "contentType": "image/jpeg" | "image/png" | "image/heic", "byteSize": 1234567 }`. 허용 형식·크기(20MB 이하) 위반은 `400 COVER_FORMAT_UNSUPPORTED` / `400 COVER_TOO_LARGE`. 응답 201: `{ "uploadId": "uuid", "uploadUrl": "signed-url", "expiresAt": "RFC3339" }` (일회용, 5분 수명). `uploadUrl`은 `home-cover` 함수의 서명된 `PUT …/home-cover/upload/{uploadId}` 주소이고, 요청한 `contentType`과 정확히 `byteSize` 바이트만 받는다. 확정 단계는 JPEG·PNG만 받으므로 HEIC는 앱이 올리기 전에 JPEG로 바꾼다(`docs/spikes/heic.md`). 공간이 `ended`이면 `404`(종료된 공간).
 
 ### `PUT /spaces/{spaceId}/home-cover`
 
@@ -281,7 +281,7 @@ lease 만료 후 다른 구성원이 호출한다. 서버는 만료와 예상 ow
 ### 완전 삭제 작업 `purge_expired_spaces()` (Edge Function `lifecycle-sweep`)
 
 - 스케줄러가 주기적으로(최소 하루 1회) 호출한다. `status = 'ended' and purge_after <= now()`인 공간마다 **공간 단위로** ① Storage 객체(홈 커버 현재 객체와 삭제 대기 목록)를 먼저 지우고 ② 그 공간의 모든 행(공간·구성원·초대·방 테마와 버전·꾸밈 요청·프롬프트 세션과 메시지·홈 커버 사진·마일스톤·생성 장식·생성 시도·그 공간의 신고·일일 요청 행·종료 알림)을 한 트랜잭션으로 지운다.
-- 구현(US5): DB 쪽은 `due_purge_spaces(at)`(대상 목록) → `mark_purge_started` → (Edge Function이 Storage 객체를 비공개 버킷 `home-cover`의 `<spaceId>/…` 접두사로 찾아 지움) → `purge_space(spaceId, at)`(한 트랜잭션, 기한 전이면 `false`)로 나뉜다. Storage는 SQL 밖이라 단일 `purge_expired_spaces()` 대신 이 순서를 `lifecycle-sweep`이 돌린다. 한 번에 최대 50개 공간이고, 한 공간의 실패는 다른 공간을 막지 않는다. 방 버전 불변 트리거는 `purge_space` 안에서만 해제된다. 응답: 기존 정리 결과에 `purged`, `failed`가 더해진다. **스케줄은 아직 걸지 않았다**(소유자 결정 대기).
+- 구현(US5): DB 쪽은 `due_purge_spaces(at)`(대상 목록) → `mark_purge_started` → (Edge Function이 Storage 객체를 비공개 버킷 `home-cover`의 `<spaceId>/…` 접두사로 찾아 지움) → `purge_space(spaceId, at)`(한 트랜잭션, 기한 전이면 `false`)로 나뉜다. Storage는 SQL 밖이라 단일 `purge_expired_spaces()` 대신 이 순서를 `lifecycle-sweep`이 돌린다. 한 번에 최대 50개 공간이고, 한 공간의 실패는 다른 공간을 막지 않는다. 방 버전 불변 트리거는 `purge_space` 안에서만 해제된다. 같은 실행에서 교체·삭제 뒤 24시간이 지난 이전 커버 객체와 만료된 업로드 임시 객체도 지우며, 이 정리가 실패해도 완전 삭제는 계속된다. 응답: 기존 정리 결과에 `coverObjectsDeleted`, `purged`, `failed`가 더해진다. **스케줄은 아직 걸지 않았다**(소유자 결정 대기).
 - 멱등이고 재시도에 안전하다. 실패하면 공간은 `ended` 그대로(이미 클라이언트에 보이지 않음) 남아 다음 실행에서 다시 시도한다. 부분적으로 삭제되어 보이는 상태는 없다.
 - 내용 없는 `deletion_started`/`deletion_completed` 이벤트만 남긴다(`space_lifecycle_event.space_id`의 외래 키를 없애 공간이 지워진 뒤에도 남고, 삭제 때 앞선 `ended` 이벤트의 `actor_user_id`와 `metadata`도 비운다). `generation_block` 지문(개인정보 없음)은 지우지 않는다. 신고 행을 증거로 오래 둘지는 열린 질문(기본 가정: 함께 삭제, `spec.md` Open Decisions 21).
 - `purge_after`는 서버 설정값(종료 + 30일)이며 어떤 API 응답에도 나가지 않는다.

@@ -13,6 +13,7 @@ export type Snapshot = {
   features: { generation: boolean; generatedRender: boolean }; versionNumber: number; sceneDocument: SceneDocument; roomPresentation: RoomPresentation; roomThemeDocument: RoomThemeDocument;
   promptSession: PromptSession | null; catalogVersion: number | string; serverTime: string; members: { userId: string; aiConsentState: 'not_given' | 'granted' | 'revoked' }[]; me: { userId: string };
 };
+export type HomeCover = { status: 'none' | 'ready'; version: number; signedUrl?: string; signedUrlExpiresAt?: string; crop?: { x: number; y: number; width: number; height: number }; uploadedBy: string | null; updatedAt: string | null };
 export type MySpace = { active: { spaceId: string } | null; ended: { kind: 'ended' | 'disconnect' | 'account_deleted'; by: 'me' | 'partner'; at: string } | null };
 export type Preview = { previewId: string; sceneDocument: SceneDocument; roomPresentation: RoomPresentation; roomThemeDocument: RoomThemeDocument; expiresAt: string; baseVersion?: number; placed?: number; requested?: number };
 export type MilestoneItem = { key: string; kind: 'day' | 'anniversary'; milestoneDate: string; days?: number | null; anniversaryN?: number | null };
@@ -56,6 +57,10 @@ export function createClient(api: Api) {
     milestones: (spaceId: string) => api.json<MilestoneResponse>(routes.milestones(spaceId)),
     milestoneSeen: (spaceId: string, celebrationId: string, via: 'home' | 'room') => api.json<void>(routes.milestoneSeen(spaceId, celebrationId), { method: 'POST', body: { via }, keyInBody: true }),
     milestonePreview: (spaceId: string, sessionId: string, celebrationId: string, locale: Locale) => api.json<Preview & { placed: number; requested: number }>(routes.milestonePreview(spaceId, sessionId), { method: 'POST', body: { celebrationId, locale }, keyInBody: true }),
+    homeCover: (spaceId: string) => api.json<HomeCover>(routes.homeCover(spaceId)),
+    homeCoverUploadUrl: (spaceId: string, contentType: string, byteSize: number) => api.json<{ uploadId: string; uploadUrl: string; expiresAt: string }>(routes.homeCoverUploadUrl(spaceId), { method: 'POST', body: { contentType, byteSize }, keyInBody: true }),
+    finishHomeCoverUpload: (spaceId: string, uploadId: string, crop: { x: number; y: number; width: number; height: number }) => api.json<HomeCover>(routes.homeCover(spaceId), { method: 'PUT', body: { uploadId, crop }, keyInBody: true }),
+    removeHomeCover: (spaceId: string) => api.json<void>(routes.homeCover(spaceId), { method: 'DELETE', body: {}, keyInBody: true }),
   };
 }
 export type Client = ReturnType<typeof createClient>;

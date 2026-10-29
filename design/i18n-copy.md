@@ -2,7 +2,7 @@
 
 > 이 문서는 디자인 원본에서 자동으로 만든 표예요. 구현은 **키만 코드에 쓰고** 텍스트는 번역 리소스(`ko-KR`, `en-US`, `ja-JP`)로 둬요. `{name}` 형태는 보간 변수예요. 달력·할 일·가격을 떠올리게 하는 표현과(마일스톤 알림 문구는 예외)(홈 배경 사진 한 장 말고는) 사진 기능 표현은 쓰지 않았어요. 일본어·영어 문구는 디자이너가 쓴 초안이라 **원어민 검수**가 필요해요(handoff.md).
 
-- 총 키 수: **642**
+- 총 키 수: **645**
 - 사용자가 입력한 방 문구와 프롬프트는 번역하지 않고 입력한 그대로 저장·표시해요.
 - 서버 오류는 언어 중립 코드(`VERSION_CONFLICT` 등)만 오고, 앱이 아래 키로 문구를 골라요: `VERSION_CONFLICT`→`preview.conflict.*`·`undo.conflict.*`, `QUOTA_REACHED`→`prompt.quota.*`, `CONSENT_REQUIRED`→`prompt.consent.need`, `SESSION_OCCUPIED`→`prompt.partner`, `SESSION_EXPIRED`→`prompt.idle.me.*`, `INVITE_EXPIRED`→`join.expired.*`, `INVITE_USED`→`join.used.*`, `SPACE_FULL`→`join.full.*`, `ALREADY_IN_SPACE`→`join.hasSpace.*`, `GENERATION_REFUSED`(`category`별)→`gen.refuse.*`(`ip`→`gen.refuse.ip`, `people`, `unsafe`, `personal`, `photo_like`→`gen.refuse.photo`, `off_purpose`·`injection`→`gen.refuse.purpose`), `GENERATION_FAILED`→`gen.fail.*`, `GENERATION_DISABLED`→`gen.disabled.*`, `LIBRARY_FULL`→`gen.lib.full`, `REPORT_RATE_LIMITED`→`report.obj.limit`, `UNSUPPORTED_REQUEST`→`prompt.unsupported.*`, `BRAND_REQUEST`→`prompt.brand.*`, `AUTH_EXPIRED`→`sys.login.*`. (코드 이름은 계약 문서 `contracts/api.md`의 이름을 확인해서 맞춰야 해요.)
 
@@ -750,7 +750,10 @@
 | `cover.sheet.pick` | 앨범에서 고르기 | Choose from your photos | アルバムから選ぶ |
 | `cover.sheet.remove` | 사진 없애기 | Remove photo | 写真を外す |
 | `cover.sheet.note` | 두 사람이 같은 사진을 봐요. 어느 쪽이든 바꾸거나 없앨 수 있고, 마지막에 바꾼 사진이 보여요. | You both see the same photo. Either of you can change or remove it, and the last change is the one shown. | ふたりに同じ写真が表示されます。どちらでも変更・削除でき、最後に変更した写真が表示されます。 |
-| `cover.by` | 마지막으로 {name}님이 바꿨어요 · {time} | Last changed by {name} · {time} | 最後に{name}さんが変更しました · {time} |
+| `cover.by` | 마지막 변경: {name} · {time} | Last changed: {name} · {time} | 最終変更: {name} · {time} |
+| `cover.me` | 나 | you | 自分 |
+| `cover.partner` | 상대 | your partner | パートナー |
+| `cover.offline` | 오프라인에서는 사진을 바꿀 수 없어요 | You can't change the photo while offline | オフライン中は写真を変更できません |
 | `cover.by.time` | 오늘 오후 9:14 | Today, 9:14 PM | 今日 21:14 |
 | `cover.crop.title` | 보여 줄 부분을 맞춰 주세요 | Choose the part to show | 表示する部分を合わせてください |
 | `cover.crop.hint` | 끌어서 옮기고, 두 손가락으로 크기를 바꿔요. | Drag to move, pinch to resize. | ドラッグで移動、2本指で大きさを変えます。 |
