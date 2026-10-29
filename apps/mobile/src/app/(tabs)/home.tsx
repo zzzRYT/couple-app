@@ -13,6 +13,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import { COVER_CROP } from '../../features/cover/coverCrop';
 const MAX_COVER_BYTES = 20 * 1024 * 1024;
 const MAX_COVER_EDGE = 1600;
+const COVER_URL_REFRESH_MARGIN_MS = 90 * 1000;
 export default function HomeRoute() {
   const { client, userId } = useApp();
   const { state, refresh, spaceId } = useSpace();
@@ -26,16 +27,19 @@ export default function HomeRoute() {
   const openInvite = () => { if (inviteOpening.current) return; inviteOpening.current = true; router.push('/invite'); };
   const now = useNow();
   const space = state.snapshot?.space;
-  const loadCover = useCallback(async () => {
+  const loadCover = useCallback(async (force = false) => {
     if (!space) return;
-    try { setCover(await client.homeCover(space.spaceId)); } catch { /* retain the last verified cover while offline */ }
+    try {
+      const next = await client.homeCover(space.spaceId);
+      setCover((current) => !force && current && current.version === next.version && current.status === next.status && (next.status !== 'ready' || (current.signedUrl && current.signedUrlExpiresAt && Date.parse(current.signedUrlExpiresAt) - Date.now() > COVER_URL_REFRESH_MARGIN_MS)) ? current : next);
+    } catch { /* retain the last verified cover while offline */ }
   }, [client, space?.spaceId]);
   useEffect(() => { void loadCover(); }, [loadCover, state.lastSyncedAt]);
   useEffect(() => {
     if (cover?.status !== 'ready') return;
     const timer = setTimeout(() => { void loadCover(); }, 4 * 60 * 1000);
     return () => clearTimeout(timer);
-  }, [cover?.status, cover?.version, loadCover]);
+  }, [cover?.status, cover?.signedUrl, loadCover]);
   const uploadCover = useCallback(async (asset: ImagePickerAsset) => {
     if (!space) return;
     let uploadUri = asset.uri;
@@ -60,6 +64,6 @@ export default function HomeRoute() {
   return <HomeScreen state={state} now={now} onOpenRoom={() => router.navigate('/room')} onOpenInvite={openInvite}
     milestone={milestone.celebration} milestonePreset={milestone.preset} onMilestoneSeen={() => { if (milestone.celebration) void milestone.seen(milestone.celebration); }}
     onMilestoneSuggest={() => { if (milestone.preset?.presetAvailable) router.push({ pathname: '/prompt', params: { milestone: milestone.preset.id, milestoneKey: milestone.preset.key } }); }}
-    onRefresh={refresh} cover={cover} userId={userId} openCover={params.cover === '1'} onCoverOpenConsumed={() => router.setParams({ cover: undefined })} onCoverUpload={uploadCover} onCoverRemove={removeCover} onCoverLoad={loadCover}
+    onRefresh={refresh} cover={cover} userId={userId} openCover={params.cover === '1'} onCoverOpenConsumed={() => router.setParams({ cover: undefined })} onCoverUpload={uploadCover} onCoverRemove={removeCover} onCoverLoad={() => loadCover(true)}
     onSaveDate={async (date) => { if (space) { await client.updateAnniversary(space.spaceId, date, space.updatedAt); await refresh(); } }} />;
 }
