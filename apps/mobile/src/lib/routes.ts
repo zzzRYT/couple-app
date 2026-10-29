@@ -12,6 +12,7 @@ export const routes = {
   previewInvitation: () => 'invitations/invitations/preview',
   acceptInvitation: () => 'invitations/invitations/accept',
   preferences: () => 'profile/profile/preferences',
+  roomMode: (spaceId: string) => `spaces/spaces/${spaceId}/room-mode`,
   conversation: (spaceId: string) => `prompt-session/spaces/${spaceId}/prompt-conversation`,
   acquire: (spaceId: string) => `prompt-session/spaces/${spaceId}/prompt-session/acquire`,
   session: (spaceId: string, sessionId: string, action: 'heartbeat' | 'takeover' | 'release' | 'undo') => `prompt-session/spaces/${spaceId}/prompt-session/${sessionId}/${action}`,

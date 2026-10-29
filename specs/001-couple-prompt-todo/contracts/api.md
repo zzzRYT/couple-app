@@ -59,17 +59,17 @@
 
 ### `GET /profile/preferences`
 
-응답 200: `{ "locale": "ko-KR" | "en-US" | "ja-JP" | null, "uiTheme": "system" | "light" | "dark" }`. 본인 설정만 읽는다(스냅샷에는 사용자별 설정이 들어 있지 않다).
+응답 200: `{ "locale": "ko-KR" | "en-US" | "ja-JP" | null, "uiTheme": "system" | "light" | "dark" }`. 서버 프로필 설정 API다. 현재 앱의 화면 언어·화면 모드 설정은 계정이 아닌 이 기기에 저장하며 이 API를 읽거나 쓰지 않는다.
 
 ### `PATCH /profile/preferences`
 
 요청: `{ "locale": "ko-KR" | "en-US" | "ja-JP" | null, "uiTheme": "system" | "light" | "dark" }`.
 
-`locale: null`은 기기 언어 기본값을 뜻한다. `uiTheme` 기본값은 `system`이며 사용자별 설정이다. 지원 locale 목록은 앱 번역 리소스 manifest와 일치해야 한다.
+레거시 호환 API. 현재 앱은 언어 명시 선택과 `system | light | dark` 화면 모드를 이 기기의 로컬 저장소에 저장한다. 언어 `system`은 기기 언어를 따르고 화면 모드 `system`은 기기 모양을 따른다. 이 값들은 파트너나 다른 기기와 동기화하지 않는다.
 
 ### `GET /spaces/{spaceId}/snapshot`
 
-구성원만 접근 가능. 응답은 공간 요약, **`features`**(`{ "generation": true|false, "generatedRender": true|false }`, 원격 설정에서 오며 앱은 이 값으로 화면만 맞춘다), 현재 장면이 참조하는 **생성 오브젝트 문서들**(`generatedObjects`: 검증된 `{id, kind, layerHint, label, createdBy, createdAt, document}`; 운영자가 제거한 것과 호출자가 신고해 숨긴 것(`hiddenObjectIds`)은 걸러서 준다. `generatedRender`가 false이면 비어 있다), 홈 커버 사진 요약(`homeCover`: `status`, `version`, `uploadedBy`, `updatedAt`; 주소는 별도 요청), 현재 버전의 `sceneDocument`, `roomPresentation`, `roomThemeDocument`(낮/밤 자산·색 variant, 모드와 시간대), 현재 `promptSession` owner/expiry 상태, 버전 번호, 카탈로그 버전, 서버 시간으로 구성한다. 사용자별 `locale` 및 `system | light | dark` UI 테마 설정은 프로필 설정 API로 읽고 저장한다. 인증 사용자는 해당 공간 구성원이 아니면 공간 존재 여부도 확인할 수 없다. **종료된 공간(`ended`)의 스냅샷은 비구성원과 같은 `404`다**(요약도 없다. 종료 사실은 `GET /spaces/mine`의 `ended` 알림으로만 알린다).
+구성원만 접근 가능. 응답은 공간 요약, **`features`**(`{ "generation": true|false, "generatedRender": true|false }`, 원격 설정에서 오며 앱은 이 값으로 화면만 맞춘다), 현재 장면이 참조하는 **생성 오브젝트 문서들**(`generatedObjects`: 검증된 `{id, kind, layerHint, label, createdBy, createdAt, document}`; 운영자가 제거한 것과 호출자가 신고해 숨긴 것(`hiddenObjectIds`)은 걸러서 준다. `generatedRender`가 false이면 비어 있다), 홈 커버 사진 요약(`homeCover`: `status`, `version`, `uploadedBy`, `updatedAt`; 주소는 별도 요청), 현재 버전의 `sceneDocument`, `roomPresentation`, `roomThemeDocument`(낮/밤 자산·색 variant, 모드와 시간대), 현재 `promptSession` owner/expiry 상태, 버전 번호, 카탈로그 버전, 서버 시간으로 구성한다. 기기별 UI 언어·화면 모드는 스냅샷에 포함되지 않는다. 인증 사용자는 해당 공간 구성원이 아니면 공간 존재 여부도 확인할 수 없다. **종료된 공간(`ended`)의 스냅샷은 비구성원과 같은 `404`다**(요약도 없다. 종료 사실은 `GET /spaces/mine`의 `ended` 알림으로만 알린다).
 
 ### `PATCH /spaces/{spaceId}/anniversary`
 
@@ -81,7 +81,7 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 
 요청: `{ "mode": "day" | "night" | "follow_time", "timeZone": "Asia/Seoul", "expectedCurrentVersion": 13, "idempotencyKey": "uuid" }`.
 
-방 모드는 커플 공유 설정이며 새 공간 기본은 `follow_time`과 공간 생성자의 저장된 IANA 시간대다. 구성원은 설정에서 모드와 시간대를 변경할 수 있고 변경은 새 version으로 저장된다(`source: room_mode`, 오래된 `expectedCurrentVersion`은 `409 VERSION_CONFLICT`).
+방 모드는 커플 공유 설정이며 새 공간 기본은 `follow_time`과 공간 생성자의 저장된 IANA 시간대다. 구성원은 설정에서 모드와 시간대를 변경할 수 있고 변경은 새 version으로 저장된다(`source: room_mode`, 오래된 `expectedCurrentVersion`은 `409 VERSION_CONFLICT`, 프롬프트 세션이 점유 중이면(본인 포함) `mascot-recall`처럼 `409 SESSION_OCCUPIED`). `timeZone`은 `couple_space.time_zone` 하나를 그대로 바꾼다: 방 낮/밤, 일일 요청 한도의 날짜 키, D-day·마일스톤 날짜가 모두 이 값을 쓰므로 변경하면 이 경계들이 함께 이동한다(설계된 동작, 별도 컬럼 없음).
 
 ## 마일스톤 축하
 

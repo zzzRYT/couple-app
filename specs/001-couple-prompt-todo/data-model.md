@@ -8,7 +8,7 @@
 
 - `user_id` (UUID, 인증 사용자 PK)
 - `created_at`, `updated_at`
-- `ui_theme`: `system | light | dark` (기본 `system`, 사용자별 앱 모양 설정; API `PATCH /profile/preferences`의 `uiTheme`).
+- `ui_theme`: `system | light | dark` (기본 `system`; API `PATCH /profile/preferences`의 `uiTheme`. 현재 앱은 이 열을 쓰지 않고 화면 모드를 기기 로컬에 저장한다. `contracts/api.md` 참조).
 - `locale`, `time_zone` (선택적 개인 설정). `locale`은 앱 언어 재정의를 저장하며 비어 있으면 기기 언어를 사용한다. V1 지원 언어는 `ko-KR`, `en-US`, `ja-JP`다. 커플 방의 시간대는 room theme document에 저장한다.
 - `status`: `active | deleting | shell` (2026-10-27 7차 답변, 가정, 기본 `active`). `deleting` = 계정 삭제가 접수되어 접근이 막힌 상태, `shell` = 계정 삭제가 끝난 뒤 **개인 필드가 모두 null인 껍데기**(아래 규칙). `deleted_at?` (계정 삭제 접수 시각; 껍데기 전환 후에도 남는 유일한 시각 정보). 모든 서버 함수는 요청마다 `status = 'active'`를 확인한다(발급된 JWT가 만료 전이어도 거절, FR-071).
 - 공급자 식별자는 Auth 공급자 저장소가 관리하며 앱 도메인 데이터나 AI 문맥에 복제하지 않는다.
@@ -76,7 +76,7 @@
 - 확정 후 불변. AI 출처는 내부 감사용이며 캔버스에 배지를 렌더링하지 않는다.
 - 마스코트는 `asset_id=app_mascot`인 카탈로그 오브젝트로 표현하며 방 초기 문서에 정확히 하나 포함한다. 이후 제거된 장면은 되살림을 위해 마스코트 0개도 허용하며, 중복은 허용하지 않는다. 사용자는 프롬프트로 위치·크기를 정하거나 방에서 제거할 수 있고(결정), 제거되어도 방에는 항상 하나가 있어야 하므로 되살림 규칙(FR-018c)을 따른다: 장면에 없으면 `POST /spaces/{spaceId}/room/mascot-recall`(또는 방을 다시 열 때의 자동 호출)이 기본 자리에 하나를 추가한 새 방 버전(`source: mascot_recall`)을 만든다. 기본 디자인을 교체하거나 그려 넣을 수는 없다.
 - 마스코트의 **이용자 설정 상태는 저장하지 않는다**. 이전 문서에 있던 `mascot_state`(슬롯 아이템·팔레트 색·표정·포즈 ID)는 없앴다. 마스코트가 어떤 포즈를 보일지는 앱이 시각·화면·누름 반응에 따라 정하는 클라이언트 동작이며 서버 데이터가 아니다. 크기와 위치는 일반 오브젝트의 좌표 필드를 사용한다.
-- UI theme preference는 사용자 설정 `system | light | dark`이며 기본값은 `system`이다. room theme document의 기본 `mode`는 `follow_time`, 기본 `timeZone`은 공간 생성자의 시간대이며 설정에서 둘 다 변경 가능하다.
+- UI theme preference는 기기별 설정 `system | light | dark`이며 기본값은 `system`이다(계정·파트너와 동기화하지 않음, 고대비는 OS 설정을 따름). room theme document의 기본 `mode`는 `follow_time`, 기본 `timeZone`은 공간 생성자의 시간대이며 설정에서 둘 다 변경 가능하다. **`couple_space.time_zone`은 방 낮/밤, 일일 요청 한도의 날짜 키, D-day와 마일스톤 날짜가 함께 쓰는 단일 원천이다**(별도 컬럼 없음). 시간대를 바꾸면 이 경계들이 함께 이동하는 것이 설계된 동작이다(수용됨).
 - 이용자에게 보여 주는 버전 목록(기록)과 적용 후 되돌리기는 V1에 없다. 버전 스냅샷은 **감사 기록(AI 출처·작성자·시각)과 충돌 검사**를 위해서만 서버에 append-only로 저장하고 이용자에게 보이지 않는다. 현재 버전만 방에 쓰인다. 보관 상한과 정리 기간은 이용자 기능이 걸려 있지 않아 감사·남용 조사에 필요한 만큼으로 정하면 되며(plan.md 결정 3), 종료된 공간의 버전은 내부 보관 기간 동안 두었다가 공간의 완전 삭제 때 함께 삭제한다.
 
 ### DecorationRequest
@@ -287,3 +287,5 @@ queued/generated --invalid result/provider failure--> rejected/failed
 
 ### MVP quota timezone implementation
 The active space stores its IANA timezone for quota reservations before the room tables exist; the room theme must use the same value when initialized or updated. Quota mutation RPCs are server-only.
+
+`couple_space.time_zone` is the single source for the room day/night boundary, the local-date key of the daily request limit, and the D-day and milestone dates. Changing it through `PATCH /room-mode` shifts all of these boundaries together by design (accepted behavior; there is no separate room time zone column).

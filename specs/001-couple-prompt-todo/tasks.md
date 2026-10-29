@@ -265,15 +265,15 @@ docs/                         구현 문서·점검표·게이트 기록
 
 ### 테스트 먼저
 
-- [ ] T084 [P] [US3] `apps/mobile/src/features/settings/__tests__/language.test.tsx`: 기기 언어 `ko-KR/en-US/ja-JP`로 첫 실행 → 해당 리소스·날짜·숫자·D-day, 설정에서 다른 언어 선택 → **모든 UI 문자열이 바뀜**(키 누락 시 실패), pseudo-localization(+40% 길이)·큰 글자·좁은 화면에서 clipping 없음과 고정 컨트롤이 가려지지 않음, 사용자가 쓴 방 문구는 번역·변경되지 않음, 서버 오류는 코드만 와서 현재 locale 문구가 선택됨 → 수락: 구현 전 실패.
-- [ ] T085 [P] [US3] `apps/mobile/src/features/settings/__tests__/themes.test.tsx`: day/night × light/dark 4조합 각각에서 본문 4.5:1·큰 글자 3:1 대비(T026 토큰 사용), 장면·마스코트·텍스트·D-day·입력 패널·고정 버튼의 보호 영역·터치 영역 → 수락: 4조합 모두 통과.
-- [ ] T086 [P] [US3] `apps/mobile/src/features/settings/__tests__/followTime.test.ts`: `follow_time`은 방 `timeZone`의 현지 시각으로 낮/밤 variant 선택(경계 시각·시간대 변경·DST 포함 픽스처), 새 공간의 기본은 `follow_time` + 생성자 시간대, 수동 `day`/`night`와 시간대 변경 → 수락: 구현 전 실패.
+- [ ] T084 [P] [US3] `apps/mobile/src/i18n/__tests__/{locales,setup}.test.ts`와 `apps/mobile/src/features/settings/__tests__/{preferences,settings}.test.tsx`(별도 `language.test.tsx`는 두지 않는다; 키 누락·기기 언어 첫 실행·앱 내 언어 선택/해제는 `i18n/__tests__`와 `preferences.test.tsx`가, +40% pseudo-localization 하의 줄임 없음과 서버 오류 일반 배너(로케일별 문구, 원시 코드 비노출)는 `settings.test.tsx`가, 사용자 방 문구 비번역은 `apps/mobile/src/scene/__tests__/render.test.tsx`가 단언한다; 오류 코드별 문구 선택은 `lib/__tests__/api.test.ts`의 `errorKey` 매핑이 맡는다; 실제 레이아웃 clipping은 Jest에서 측정할 수 없어 `numberOfLines`·`allowFontScaling` 정적 단언으로 대신하고 기기 확인은 별도다): 기기 언어 `ko-KR/en-US/ja-JP`로 첫 실행 → 해당 리소스·날짜·숫자·D-day, 설정에서 다른 언어 선택 → **모든 UI 문자열이 바뀜**(키 누락 시 실패), pseudo-localization(+40% 길이)·큰 글자·좁은 화면에서 clipping 없음과 고정 컨트롤이 가려지지 않음, 사용자가 쓴 방 문구는 번역·변경되지 않음, 서버 오류는 코드만 와서 현재 locale 문구가 선택됨 → 수락: 구현 전 실패.
+- [ ] T085 [P] [US3] `apps/mobile/src/theme/__tests__/contrast.test.ts`(T026의 대비 행렬, 별도 `themes.test.tsx`는 두지 않는다; 터치 영역 44pt 이상은 `features/settings/__tests__/settings.test.tsx`가 단언하고, 장면·마스코트 등 보호 영역은 설정 화면 밖이라 해당 화면 테스트의 몫이다)와 `apps/mobile/src/features/settings/__tests__/preferences.test.tsx`(이 기기 화면 설정이 색 토큰에 반영됨): day/night × light/dark 4조합 각각에서 본문 4.5:1·큰 글자 3:1 대비(T026 토큰 사용), 장면·마스코트·텍스트·D-day·입력 패널·고정 버튼의 보호 영역·터치 영역 → 수락: 4조합 모두 통과.
+- [x] T086 [P] [US3] `apps/mobile/src/features/settings/__tests__/followTime.test.ts`: `follow_time`은 방 `timeZone`의 현지 시각으로 낮/밤 variant 선택(경계 시각·시간대 변경·DST 포함 픽스처), 새 공간의 기본은 `follow_time` + 생성자 시간대, 수동 `day`/`night`와 시간대 변경 → 수락: 구현 전 실패.
 
 ### 구현
 
-- [ ] T087 [US3] `supabase/functions/spaces/index.ts`에 `PATCH /spaces/{id}/room-mode`(요청 `{mode: 'day'|'night'|'follow_time', timeZone, expectedCurrentVersion, idempotencyKey}`) 추가: **공유 설정이라 서버 필요**(오프라인에서는 앱이 잠금), 변경은 **새 방 버전**으로 저장(`source: room_mode` — 데이터 모델에 이 값을 더했음, T067 참고), 옛 `expectedCurrentVersion`은 `409 VERSION_CONFLICT` → 수락: pgTAP/Deno 테스트가 구성원만 변경, 잘못된 IANA 시간대 거절, 버전 충돌을 단언.
-- [ ] T088 [US3] `apps/mobile/src/app/(tabs)/settings/index.tsx`, `apps/mobile/src/features/settings/`: 설정 루트(계정·방·이 기기·정보) 섹션, **언어 시트**(앱 언어), **시간대·방 낮/밤 모드**(오프라인에서는 잠금+이유, 이 기기 화면 설정은 항상 가능), **앱 모양**(`system|light|dark`, 기본 `system`, 고대비는 OS 설정을 따름), 글꼴·오픈소스 라이선스 푸시(`lic.*`) → 수락: T084·T085·T086가 통과한다.
-- [ ] T089 [P] [US3] `apps/mobile/src/features/settings/followTime.ts`: 방 낮/밤 선택 순수 함수(`Intl` 기반) + 앱 UI 모드와 독립 → 수락: T086가 통과한다.
+- [x] T087 [US3] `supabase/functions/spaces/index.ts`에 `PATCH /spaces/{id}/room-mode`(요청 `{mode: 'day'|'night'|'follow_time', timeZone, expectedCurrentVersion, idempotencyKey}`) 추가: **공유 설정이라 서버 필요**(오프라인에서는 앱이 잠금), 변경은 **새 방 버전**으로 저장(`source: room_mode` — 데이터 모델에 이 값을 더했음, T067 참고), 옛 `expectedCurrentVersion`은 `409 VERSION_CONFLICT` → 수락: pgTAP/Deno 테스트가 구성원만 변경, 잘못된 IANA 시간대 거절, 버전 충돌을 단언.
+- [ ] T088 [US3] `apps/mobile/src/app/(tabs)/settings/index.tsx`, `apps/mobile/src/features/settings/`: 설정 루트(계정·방·이 기기·정보) 섹션, **언어 시트**(앱 언어), **시간대·방 낮/밤 모드**(오프라인에서는 잠금+이유, 이 기기 화면 설정은 항상 가능), **앱 모양**(`system|light|dark`, 기본 `system`, 고대비는 OS 설정을 따름), 글꼴·오픈소스 라이선스 푸시(`lic.*`) → 수락: T084·T085·T086가 통과하고, `apps/mobile/src/features/settings/__tests__/settings.test.tsx`가 오프라인 잠금(공유 방 설정 비활성, 이 기기 설정 활성)을 단언한다(구현 완료; 추가한 단언은 아직 실행으로 확인되지 않았고 T084·T085가 남아 체크하지 않음).
+- [x] T089 [P] [US3] `apps/mobile/src/features/settings/followTime.ts`: 방 낮/밤 선택 순수 함수(`Intl` 기반) + 앱 UI 모드와 독립 → 수락: T086가 통과한다.
 
 **체크포인트**: P1 스토리 전체(US1·US4·US2·US3) 완료 = **P1 완성 컷**.
 

@@ -1,6 +1,7 @@
 import { createApi } from '../api';
 import { ApiError, errorBodyKey, errorKey, errorKeys } from '../errors';
 import { routes } from '../routes';
+import { createClient } from '../client';
 import translations from '../../i18n/locales/en-US.json';
 
 it('reuses the idempotency key for retries of the same mutation', async () => {
@@ -32,6 +33,7 @@ it('routes logical contract paths to edge function names', () => {
   expect(routes.mySpace()).toBe('spaces/spaces/mine');
   expect(routes.session('s', 'p', 'undo')).toBe('prompt-session/spaces/s/prompt-session/p/undo');
   expect(routes.cancelPreview('s', 'v', 'a b')).toBe('decoration-previews/spaces/s/decoration-previews/v?sessionId=a%20b');
+  expect(routes.roomMode('s')).toBe('spaces/spaces/s/room-mode');
   expect(new ApiError(404, 'NOT_FOUND')).toBeInstanceOf(Error);
 });
 it('does not retry a request with retries: 0 and turns a timeout into a network error', async () => {
@@ -45,4 +47,12 @@ it('does not retry a request with retries: 0 and turns a timeout into a network 
     expect(await outcome).toBeInstanceOf(TypeError);
     expect(call).toHaveBeenCalledTimes(1);
   } finally { jest.useRealTimers(); }
+});
+it('sends shared room mode changes with version and idempotency contract fields', async () => {
+  const call = jest.fn().mockResolvedValue({ status: 200, json: async () => ({ versionNumber: 3, mode: 'night', timeZone: 'Asia/Tokyo' }) });
+  const client = createClient(createApi(call, () => 'room-mode-key'));
+  await expect(client.updateRoomMode('space-1', 'night', 'Asia/Tokyo', 2)).resolves.toEqual({ versionNumber: 3, mode: 'night', timeZone: 'Asia/Tokyo' });
+  expect(call.mock.calls[0][0]).toBe('spaces/spaces/space-1/room-mode');
+  expect(JSON.parse(call.mock.calls[0][1].body)).toEqual({ mode: 'night', timeZone: 'Asia/Tokyo', expectedCurrentVersion: 2, idempotencyKey: 'room-mode-key' });
+  expect(call.mock.calls[0][1].headers['Idempotency-Key']).toBe('room-mode-key');
 });

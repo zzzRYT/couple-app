@@ -15,6 +15,7 @@ import { peekPendingInvite } from '../lib/inviteLink';
 import { LoadingScreen } from '../ui/CycleLoader';
 import { Screen, Button, Banner } from '../ui/components';
 import { useTranslation } from 'react-i18next';
+import { PreferencesProvider } from '../features/settings/preferences';
 
 void SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
@@ -27,11 +28,13 @@ export default function RootLayout() {
   if ((!loaded && !error) || !translator) return null;
   return (
     <I18nextProvider i18n={translator}>
-      <AppProvider>
-        <SpaceProvider>
-          <AppNavigator fontsLoaded={!!loaded || !!error} />
-        </SpaceProvider>
-      </AppProvider>
+      <PreferencesProvider translator={translator}>
+        <AppProvider>
+          <SpaceProvider>
+            <AppNavigator fontsLoaded={!!loaded || !!error} />
+          </SpaceProvider>
+        </AppProvider>
+      </PreferencesProvider>
     </I18nextProvider>
   );
 }

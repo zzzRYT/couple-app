@@ -389,7 +389,7 @@
 | `set.room.mode.auto` | 시간대 따라 | By time zone | 時間帯に合わせる |
 | `set.room.mode.day` | 낮 | Day | 昼 |
 | `set.room.mode.night` | 밤 | Night | 夜 |
-| `set.room.mode.help` | '시간대 따라'는 공간을 만든 사람의 시간대로 낮과 밤을 바꿔요. | "By time zone" switches day and night using the time zone of whoever created the space. | 「時間帯に合わせる」は、スペースを作った人のタイムゾーンで昼と夜を切り替えます。 |
+| `set.room.mode.help` | '시간대 따라'는 두 사람의 공간 시간대에 맞춰 오전 6시부터 오후 6시까지 낮으로 보여 줘요. | "By time zone" follows your shared space time zone. Day runs from 6 AM to 6 PM. | 「時間帯に合わせる」は、二人のスペースのタイムゾーンに従います。午前6時から午後6時までは昼として表示します。 |
 | `set.room.tz` | 시간대 | Time zone | タイムゾーン |
 | `set.room.tz.value` | 서울 (UTC+9) | Seoul (UTC+9) | ソウル（UTC+9） |
 | `set.room.tz.pick` | 시간대 고르기 | Choose a time zone | タイムゾーンを選ぶ |

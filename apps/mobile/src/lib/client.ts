@@ -33,6 +33,7 @@ export function createClient(api: Api) {
     ackEnded: () => api.json<void>(routes.ackEnded(), { method: 'POST', body: {} }),
     submitReport: (spaceId: string, input: ReportInput) => api.json<{ reportId: string }>(routes.report(spaceId), { method: 'POST', body: input }),
     updateAnniversary: (spaceId: string, anniversaryDate: string, expectedUpdatedAt: string) => api.json<{ anniversaryDate: string; updatedAt: string; milestonesReset: string[] }>(routes.anniversary(spaceId), { method: 'PATCH', body: { anniversaryDate, expectedUpdatedAt } }),
+    updateRoomMode: (spaceId: string, mode: RoomThemeDocument['mode'], timeZone: string, expectedCurrentVersion: number) => api.json<{ versionNumber: number; mode: RoomThemeDocument['mode']; timeZone: string }>(routes.roomMode(spaceId), { method: 'PATCH', body: { mode, timeZone, expectedCurrentVersion }, keyInBody: true }),
     createInvitation: (spaceId: string) => api.json<{ invitationId: string; code: string; expiresAt: string }>(routes.createInvitation(spaceId), { method: 'POST', body: { expiresInSeconds: 86400 } }),
     previewInvitation: (code: string) => api.json<{ anniversaryDate: string; memberCount: number }>(routes.previewInvitation(), { method: 'POST', body: { code } }),
     acceptInvitation: (code: string) => api.json<{ spaceId: string; memberCount: number }>(routes.acceptInvitation(), { method: 'POST', body: { code } }),

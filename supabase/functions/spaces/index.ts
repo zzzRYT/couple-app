@@ -10,6 +10,13 @@ function calendarDate(value: unknown): string {
 function requireConfirm(body: Record<string, unknown>) {
   if (body.confirm !== true) throw new AppError('INVALID_REQUEST');
 }
+function roomMode(body: Record<string, unknown>) {
+  if (body.mode !== 'day' && body.mode !== 'night' && body.mode !== 'follow_time') throw new AppError('INVALID_REQUEST');
+  const timeZone = str(body.timeZone, 64);
+  try { new Intl.DateTimeFormat('en-US', { timeZone }).format(0); } catch { throw new AppError('INVALID_REQUEST'); }
+  if (!Number.isInteger(body.expectedCurrentVersion) || (body.expectedCurrentVersion as number) < 1) throw new AppError('INVALID_REQUEST');
+  return { mode: body.mode, timeZone, expected: body.expectedCurrentVersion as number };
+}
 export function spacesHandler(deps: Deps) {
   return createHandler([
     route('POST', '/spaces', async ({ userId, body, deps }) =>
@@ -35,6 +42,10 @@ export function spacesHandler(deps: Deps) {
     }),
     route('PATCH', '/spaces/:spaceId/anniversary', ({ userId, params, body, deps }) =>
       deps.db.rpc('update_anniversary', { actor: userId, target: uuidParam(params.spaceId), anniversary: calendarDate(body.anniversaryDate), expected: str(body.expectedUpdatedAt, 64) })),
+    route('PATCH', '/spaces/:spaceId/room-mode', ({ userId, params, body, deps }) => {
+      const change = roomMode(body);
+      return deps.db.rpc('update_room_mode', { actor: userId, target: uuidParam(params.spaceId), new_mode: change.mode, new_time_zone: change.timeZone, expected_version: change.expected });
+    }),
   ], deps);
 }
 if (import.meta.main) Deno.serve(spacesHandler(defaultDeps()));
