@@ -1,5 +1,5 @@
 import { assertEquals, assertRejects } from 'jsr:@std/assert@1';
-import { Image } from 'npm:imagescript@1.3.1';
+import { Image } from 'https://deno.land/x/imagescript@1.3.0/mod.ts';
 import { inspectCoverHeader, reencodeCover } from '../image.ts';
 
 Deno.test('PNG headers expose dimensions without decoding pixels', () => {

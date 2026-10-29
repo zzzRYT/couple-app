@@ -28,7 +28,7 @@ npx supabase secrets set ANTHROPIC_API_KEY=<Console API 키>      # 전용 works
 ## 4. 함수 배포와 정리 작업 예약
 
 ```bash
-npx supabase functions deploy               # 8개 함수 (supabase/config.toml의 import_map 설정을 함께 씀)
+npx supabase functions deploy               # 12개 함수 (supabase/config.toml의 import_map 설정을 함께 씀)
 ```
 
 `lifecycle-sweep`은 하루 1회 이상 불러야 한다. 대시보드 Integrations → Cron(pg_cron)에서 HTTP 요청 작업을 만들고, `POST https://<project-ref>.supabase.co/functions/v1/lifecycle-sweep`에 `Authorization: Bearer <service-role 키>` 헤더를 단다(이 키는 대시보드 안의 작업 설정에만 둔다).
