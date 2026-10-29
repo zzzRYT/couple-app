@@ -11,37 +11,47 @@ type Supabase = ReturnType<typeof createSupabase>;
  */
 export function supabaseReauth(client: Supabase): ReauthPort {
   const oauth = supabaseAuth(client).oauth;
-  async function email(): Promise<string | null> {
-    return (await client.auth.getSession()).data.session?.user.email ?? null;
+  async function current() {
+    return (await client.auth.getSession()).data.session?.user ?? null;
+  }
+  async function sameAccount(before: string | undefined): Promise<boolean> {
+    if (before && (await current())?.id === before) return true;
+    await client.auth.signOut({ scope: 'local' }).catch(() => undefined);
+    return false;
   }
   return {
     async apple() {
+      const before = (await current())?.id;
       const rawNonce = `${Crypto.randomUUID()}${Crypto.randomUUID()}`;
       const hashedNonce = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, rawNonce);
       try {
         const credential = await AppleAuthentication.signInAsync({ requestedScopes: [], nonce: hashedNonce });
         if (!credential.identityToken || !credential.authorizationCode) return { kind: 'error' };
         const { error } = await client.auth.signInWithIdToken({ provider: 'apple', token: credential.identityToken, nonce: rawNonce });
-        return error ? { kind: 'error' } : { kind: 'ok', reauth: { provider: 'apple', authorizationCode: credential.authorizationCode } };
+        if (error) return { kind: 'error' };
+        return (await sameAccount(before)) ? { kind: 'ok', reauth: { provider: 'apple', authorizationCode: credential.authorizationCode } } : { kind: 'error' };
       } catch (error) {
         return (error as { code?: string }).code === 'ERR_REQUEST_CANCELED' ? { kind: 'cancelled' } : { kind: 'error' };
       }
     },
     async kakao() {
+      const before = (await current())?.id;
       const result = await oauth('kakao').catch(() => 'error' as const);
-      return result === 'ok' ? { kind: 'ok', reauth: { provider: 'kakao' } } : { kind: result };
+      if (result !== 'ok') return { kind: result };
+      return (await sameAccount(before)) ? { kind: 'ok', reauth: { provider: 'kakao' } } : { kind: 'error' };
     },
     async sendEmailCode() {
-      const address = await email();
+      const address = (await current())?.email;
       if (!address) return false;
       const { error } = await client.auth.signInWithOtp({ email: address, options: { shouldCreateUser: false } });
       return !error;
     },
     async verifyEmailCode(code) {
-      const address = await email();
-      if (!address) return { kind: 'error' };
-      const { error } = await client.auth.verifyOtp({ email: address, token: code, type: 'email' });
-      return error ? { kind: 'error' } : { kind: 'ok', reauth: { provider: 'email' } };
+      const user = await current();
+      if (!user?.email) return { kind: 'error' };
+      const { error } = await client.auth.verifyOtp({ email: user.email, token: code, type: 'email' });
+      if (error) return { kind: 'error' };
+      return (await sameAccount(user.id)) ? { kind: 'ok', reauth: { provider: 'email' } } : { kind: 'error' };
     },
   };
 }
