@@ -5,7 +5,10 @@ import { Welcome } from '../Welcome';
 it('shows the age notice and legal links without collecting a birth date', async () => {
   const onStart = jest.fn();
   const screen = await renderWithI18n(<Welcome onStart={onStart} onHasAccount={jest.fn()} />);
+  expect(screen.queryByText(screen.t('onb.legal.lead'))).toBeNull();
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('onb.skip') }));
   expect(screen.getByText(screen.t('onb.legal.lead'))).toBeTruthy();
+  expect(screen.getByText(screen.t('onb.age'))).toBeTruthy();
   expect(screen.getByText(screen.t('onb.legal.links'))).toBeTruthy();
   expect(JSON.stringify(screen.toJSON())).not.toContain('"type":"TextInput"');
   await fireEvent.press(screen.getByRole('button', { name: screen.t('onb.start') }));
@@ -27,6 +30,7 @@ it('hides the tagline at 130% text size and offers the existing-account path', a
   const onHasAccount = jest.fn();
   const large = await renderWithI18n(<Welcome onStart={jest.fn()} onHasAccount={onHasAccount} fontScale={1.3} />);
   expect(large.queryByText(large.t('brand.tagline'))).toBeNull();
+  await fireEvent.press(large.getByRole('button', { name: large.t('onb.skip') }));
   await fireEvent.press(large.getByRole('button', { name: large.t('onb.hasAccount') }));
   expect(onHasAccount).toHaveBeenCalled();
   const normal = await renderWithI18n(<Welcome onStart={jest.fn()} onHasAccount={jest.fn()} fontScale={1} />);

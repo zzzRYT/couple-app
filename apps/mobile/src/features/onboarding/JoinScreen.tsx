@@ -1,9 +1,9 @@
-import { useAppColor } from '../../theme/useAppColor';
 import { useEffect, useRef, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Banner, Button, TextField } from '../../ui/components';
-import { CycleLoader } from '../../ui/CycleLoader';
+import { AppText, Banner, Button, Card, Screen } from '../../ui/components';
+import { CodeInput } from '../../ui/CodeBoxes';
+import { Spot } from '../../ui/Spot';
 import { ApiError, errorBodyKey, errorKey } from '../../lib/errors';
 import { formatAnniversary } from '../../lib/dday';
 import { parseInvite } from '../../lib/inviteLink';
@@ -21,7 +21,6 @@ export function JoinScreen({ previewInvitation, acceptInvitation, onJoined, onOp
   previewInvitation: (code: string) => Promise<{ anniversaryDate: string }>; acceptInvitation: (code: string) => Promise<{ spaceId: string }>;
   onJoined: (spaceId: string) => void; onOpenSpace: () => void; readClipboard?: () => Promise<string>; onBack?: () => void; initialCode?: string | null; alreadyInSpace?: boolean;
 }) {
-  const color = useAppColor();
   const { t, i18n } = useTranslation();
   const [value, setValue] = useState(initialCode ? maskInviteInput(initialCode) : '');
   const [step, setStep] = useState<Step>('enter');
@@ -49,36 +48,45 @@ export function JoinScreen({ previewInvitation, acceptInvitation, onJoined, onOp
     try { setStep({ joined: (await acceptInvitation(code)).spaceId }); } catch (error) { fail(error); }
   }
   if (typeof step === 'object' && 'joined' in step) {
-    return <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2] }}>
-      <Text accessibilityRole="header" style={{ color: color.text, fontSize: 20 }}>{t('join.ok.title')}</Text>
-      <Button label={t('join.ok.next')} onPress={() => onJoined(step.joined)} />
-    </ScrollView>;
+    return (
+      <Screen center footer={<Button label={t('join.ok.next')} onPress={() => onJoined(step.joined)} />}>
+        <Spot kind="celebrate" />
+        <AppText variant="title" accessibilityRole="header" align="center">{t('join.ok.title')}</AppText>
+      </Screen>
+    );
   }
-  if (typeof step === 'object') {
-    return <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2] }}>
-      <Text accessibilityRole="header" style={{ color: color.text, fontSize: 20 }}>{t('join.found.heading')}</Text>
-      <Text style={{ color: color.text2 }}>{t('join.found.body', { date: formatAnniversary(step.found.anniversaryDate, i18n.language) })}</Text>
-      <Button label={t('join.accept')} onPress={() => void accept()} />
-      <Button label={t('join.decline')} variant="ghost" onPress={() => setStep('enter')} />
-    </ScrollView>;
+  if (step === 'accepting' || (typeof step === 'object' && 'found' in step)) {
+    const found = typeof step === 'object' ? step.found : null;
+    return (
+      <Screen onBack={() => setStep('enter')} footer={<>
+        <Button label={t('join.accept')} loading={step === 'accepting'} onPress={() => void accept()} />
+        <Button label={t('join.decline')} variant="ghost" disabled={step === 'accepting'} onPress={() => setStep('enter')} />
+      </>}>
+        <AppText variant="title" accessibilityRole="header">{t('join.found.heading')}</AppText>
+        {found && <Card style={{ flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[3] }}>
+          <Spot kind="gift" scale={0.6} />
+          <AppText tone="text2" style={{ flex: 1 }}>{t('join.found.body', { date: formatAnniversary(found.anniversaryDate, i18n.language) })}</AppText>
+        </Card>}
+      </Screen>
+    );
   }
-  const busy = step === 'checking' || step === 'accepting';
-  const body = problem && typeof problem === 'object' && 'code' in problem ? errorBodyKey(problem.code) : null;
+  const codeProblem = problem && typeof problem === 'object' && 'code' in problem ? problem.code : null;
+  const body = codeProblem ? errorBodyKey(codeProblem) : null;
+  const hasSpace = codeProblem === 'ALREADY_IN_SPACE';
   return (
-    <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2] }}>
-      {onBack && <Button label={t('common.back')} variant="ghost" onPress={onBack} />}
-      <Text accessibilityRole="header" style={{ color: color.text, fontSize: 20 }}>{t('join.title')}</Text>
-      <Text style={{ color: color.text2 }}>{t('join.body')}</Text>
-      <TextField label={t('join.title')} value={value} onChangeText={(next) => setValue(maskInviteInput(next))} autoCapitalize="characters" autoCorrect={false} maxLength={9} style={{ fontSize: 24, letterSpacing: 4 }} />
-      {readClipboard && <Button label={t('join.paste')} variant="ghost" onPress={() => void readClipboard().then((text) => setValue(maskInviteInput(parseInvite(text) ?? parseInvite(text.replace(/\s/g, '')) ?? ''))).catch(() => setProblem('network'))} />}
+    <Screen onBack={onBack} footer={hasSpace ? <>
+      <Button label={t('join.hasSpace.action')} onPress={onOpenSpace} />
+      {onBack && <Button label={t('common.close')} variant="ghost" onPress={onBack} />}
+    </> : <Button label={step === 'checking' ? t('join.checking') : t('join.check')} loading={step === 'checking'} disabled={code.length !== 8} onPress={() => void check()} />}>
+      <AppText variant="title" accessibilityRole="header">{t('join.title')}</AppText>
+      <AppText tone="text2">{t('join.body')}</AppText>
+      <CodeInput label={t('join.title')} value={value} error={!!codeProblem} onChangeText={(next) => { setValue(maskInviteInput(next)); if (problem && !hasSpace) setProblem(null); }} />
       {problem === 'network' && <Banner kind="danger" text={t('join.err')} />}
       {problem && typeof problem === 'object' && 'rateMinutes' in problem && <Banner kind="danger" text={t('login.code.rate', { m: problem.rateMinutes })} />}
-      {problem && typeof problem === 'object' && 'code' in problem && <View style={{ gap: 4 }}>
-        <Banner kind="warn" text={t(errorKey(problem.code))} />
-        {body && <Text style={{ color: color.text2 }}>{t(body)}</Text>}
-        {problem.code === 'ALREADY_IN_SPACE' && <Button label={t('join.hasSpace.action')} variant="secondary" onPress={onOpenSpace} />}
+      {codeProblem && <Banner kind="warn" text={t(errorKey(codeProblem))} body={body ? t(body) : null} />}
+      {readClipboard && <View style={{ alignItems: 'center' }}>
+        <Button label={t('join.paste')} variant="ghost" compact onPress={() => void readClipboard().then((text) => setValue(maskInviteInput(parseInvite(text) ?? parseInvite(text.replace(/\s/g, '')) ?? ''))).catch(() => setProblem('network'))} />
       </View>}
-      {busy ? <CycleLoader label={t('join.checking')} /> : <Button label={t('join.check')} disabled={code.length !== 8} onPress={() => void check()} />}
-    </ScrollView>
+    </Screen>
   );
 }

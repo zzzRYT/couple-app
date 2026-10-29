@@ -83,3 +83,15 @@ it('keeps a stored widget below the toolbar when their frames overlap', async ()
   const widget = screen.getByTestId('dday-widget');
   expect(widget.props.style.top).toBeGreaterThanOrEqual(layout.toolbar.y + layout.toolbar.height);
 });
+
+it('turns "decorate" into "watch" while the partner holds the session and toasts a partner change once', async () => {
+  const onDecorate = jest.fn();
+  const watching = snapshotFixture({ promptSession: lease(PARTNER, '2026-10-27T03:02:00Z') });
+  const screen = await renderWithI18n(<RoomScreen state={ready(watching)} now={now} layout={layout} reducedMotion onDecorate={onDecorate} onRecall={jest.fn()} />);
+  await fireEvent.press(within(screen.getByTestId('room-toolbar')).getByRole('button', { name: screen.t('room.watch') }));
+  expect(onDecorate).toHaveBeenCalled();
+  const changed = snapshotFixture();
+  changed.versionNumber = watching.versionNumber + 1;
+  await screen.rerender(<RoomScreen state={ready(changed)} now={now} layout={layout} reducedMotion onDecorate={onDecorate} onRecall={jest.fn()} />);
+  expect(screen.getByText(screen.t('room.partnerChanged', { name: screen.t('report.target.partner') }))).toBeTruthy();
+});

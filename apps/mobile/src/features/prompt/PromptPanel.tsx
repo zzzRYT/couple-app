@@ -1,9 +1,11 @@
 import { useAppColor } from '../../theme/useAppColor';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Banner, Button, Chip, Dialog, OccupancyChip } from '../../ui/components';
+import { AppText, Banner, Button, Chip, Dialog, GUTTER, IconButton, OccupancyChip } from '../../ui/components';
+import { Icon } from '../../ui/Icon';
+import { useType } from '../../theme/typography';
 import { CycleLoader } from '../../ui/CycleLoader';
 import type { Conversation, Preview, SceneDocument, Snapshot } from '../../lib/client';
 import { ApiError } from '../../lib/errors';
@@ -39,7 +41,8 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
   renderScene?: (scene: SceneDocument) => ReactNode; clock?: () => number; settings?: SessionSettings;
 }) {
   const color = useAppColor();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { type, emphasis } = useType();
   const insets = useSafeAreaInsets();
   const spaceId = snapshot.space.spaceId;
   const me = snapshot.me.userId;
@@ -89,78 +92,109 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
   const partnerThinking = status === 'partner' && last?.kind === 'user_prompt' && last.state === 'queued';
   const canType = online && owner && !consentMissing && !quotaUsed && busy === null;
   const occupancy = status === 'free' ? t('prompt.free') : owner || status === 'mineExpired' ? t('prompt.mine') : t('prompt.partner', { name: partner });
+  const chipState = owner ? 'mine' : status === 'partner' ? 'partner' : 'free';
+  const showPreview = !!preview && !applied;
+  const shown = showPreview && viewCandidate ? preview.sceneDocument : snapshot.sceneDocument;
+  const time = (iso: string) => new Intl.DateTimeFormat(i18n.language, { hour: 'numeric', minute: '2-digit' }).format(new Date(iso));
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: color.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }} contentContainerStyle={{ padding: tokens.spacing[3], paddingTop: Math.max(insets.top, tokens.spacing[3]), gap: tokens.spacing[1] }}>
-      {!preview && renderScene && <View style={{ alignSelf: 'center', overflow: 'hidden', borderRadius: tokens.radius.card, borderWidth: tokens.border.outline.normal, borderColor: color.line }}>{renderScene(snapshot.sceneDocument)}</View>}
-      <View style={{ gap: tokens.spacing[1] }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: tokens.spacing[1] }}><Text accessibilityRole="header" style={{ flexShrink: 1, color: color.text, fontSize: tokens.typography.scale.heading.size }}>{t('prompt.title')}</Text>{onClose && <Button label={t('common.close')} variant="ghost" onPress={onClose} />}</View>
-        <View accessibilityLabel={t('a11y.presence', { state: occupancy })} style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-          <OccupancyChip label={occupancy} />
-          {(status === 'partner' || status === 'mineExpiring') && <Chip label={t('prompt.expiring', { s: session.secondsLeft })} />}
-          {partnerThinking && <Chip label={t('prompt.partner.thinking')} />}
+      {renderScene && <View style={{ alignItems: 'center', paddingTop: Math.max(insets.top, tokens.spacing[3]), paddingBottom: tokens.spacing[2], gap: tokens.spacing[1] }}>
+        <View style={{ overflow: 'hidden', borderRadius: tokens.radius.sheet - 4, borderWidth: tokens.border.outline.normal, borderColor: color.line }}>{renderScene(shown)}</View>
+        {showPreview && viewCandidate && <View style={{ marginTop: -tokens.spacing[5] }}><Chip kind="primary" label={t('preview.badge')} /></View>}
+      </View>}
+      <View style={{ flex: 1, backgroundColor: color.surface, borderTopLeftRadius: tokens.radius.sheet, borderTopRightRadius: tokens.radius.sheet, borderWidth: tokens.border.outline.normal, borderBottomWidth: 0, borderColor: color.divider, paddingTop: renderScene ? 0 : insets.top }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingLeft: GUTTER, paddingRight: GUTTER - 12, paddingTop: tokens.spacing[2] }}>
+          <AppText accessibilityRole="header" style={[emphasis(22), { color: color.text, flexShrink: 1 }]}>{t('prompt.title')}</AppText>
+          {onClose && <IconButton plain icon="close" label={t('common.close')} onPress={onClose} />}
         </View>
-        {!online && <Banner kind="offline" text={t('prompt.offline')} />}
-        {online && partnerMissing && <Banner kind="info" text={t('main.invitePending.title')} />}
-        {online && consentMissing && <View style={{ gap: 4 }}><Banner kind="warn" text={t('prompt.consent.need')} /><Button label={t('prompt.consent.action')} variant="secondary" onPress={onOpenConsent} /></View>}
-        {status === 'mineExpiring' && <View style={{ gap: 4 }}><Banner kind="warn" text={t('prompt.idleHint')} /><Button label={t('prompt.expiring.action')} variant="secondary" onPress={() => void session.keepAlive()} /></View>}
-        {status === 'mineExpired' && <View style={{ gap: 4 }}><Banner kind="warn" text={t('prompt.idle.me.title')} /><Text style={{ color: color.text2 }}>{t('prompt.idle.me.body')}</Text><Button label={t('prompt.idle.me.action')} onPress={() => void start()} /></View>}
-        {status === 'partnerExpired' && <View style={{ gap: 4 }}>
-          <Banner text={t('prompt.takeover.title', { name: partner })} /><Text style={{ color: color.text2 }}>{t('prompt.takeover.body')}</Text>
-          <Button label={t('prompt.takeover.action')} disabled={!online || consentMissing} onPress={() => void session.takeover().catch(fail)} />
-        </View>}
-        {session.lostTakeover && <Banner kind="warn" text={t('prompt.takeover.lost', { name: partner })} />}
-        {status === 'free' && <View style={{ gap: 4 }}>
-          <Button label={t('prompt.start')} disabled={!online || consentMissing || quotaUsed} onPress={() => void start()} />
-          <Text style={{ color: color.text2 }}>{t('prompt.start.help')}</Text><Text style={{ color: color.text2 }}>{t('prompt.idleHint')}</Text>
-        </View>}
-        {notice && <View style={{ gap: 4 }}><Banner kind={notice.kind} text={t(notice.key)} />{notice.body && <Text style={{ color: color.text2 }}>{t(notice.body)}</Text>}</View>}
-        {applied && <View style={{ gap: 4 }}><Banner kind="success" text={t('preview.applied.title')} /><Text style={{ color: color.text2 }}>{t('preview.applied.body')}</Text></View>}
-      </View>
-      <View style={{ gap: tokens.spacing[1] }}>
-        {conversation?.messages.length ? conversation.messages.map((message) => (
-          <View key={message.id} style={{ alignSelf: message.authorUserId === me ? 'flex-end' : 'flex-start', padding: 8, backgroundColor: message.kind === 'status' ? 'transparent' : color.surface, borderWidth: message.kind === 'status' ? 0 : 1, borderColor: color.divider }}>
-            <Text style={{ color: message.kind === 'status' ? color.text2 : color.text }}>{message.kind === 'preview' && !message.bodyText ? t('prompt.msg.status.preview') : message.bodyText}</Text>
+        <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: GUTTER, paddingBottom: tokens.spacing[3], gap: tokens.spacing[2] }}>
+          <View accessible accessibilityLabel={t('a11y.presence', { state: occupancy })} style={{ flexDirection: 'row', gap: tokens.spacing[1], flexWrap: 'wrap' }}>
+            <OccupancyChip label={occupancy} state={chipState} />
+            {(status === 'partner' || status === 'mineExpiring') && <Chip kind="warn" icon="clock" label={t('prompt.expiring', { s: session.secondsLeft })} />}
+            {partnerThinking && <Chip kind="info" label={t('prompt.partner.thinking')} />}
           </View>
-        )) : <Text style={{ color: color.text2 }}>{t('prompt.history.empty')}</Text>}
-        {preview && !applied && <View style={{ gap: 8, borderWidth: 2, borderColor: color.line, borderRadius: tokens.radius.card, padding: tokens.spacing[1] }}>
-          <Chip label={t('preview.badge')} />
-          <Text style={{ color: color.text2 }}>{t('preview.shared')}</Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: tokens.spacing[1] }}>
-            <Button label={t('preview.view.current')} variant={viewCandidate ? 'ghost' : 'secondary'} accessibilityLabel={t('a11y.toggle.view', { state: t('preview.view.current') })} onPress={() => setViewCandidate(false)} />
-            <Button label={t('preview.view.candidate')} variant={viewCandidate ? 'secondary' : 'ghost'} accessibilityLabel={t('a11y.toggle.view', { state: t('preview.view.candidate') })} onPress={() => setViewCandidate(true)} />
+          {!online && <Banner kind="offline" text={t('prompt.offline')} />}
+          {online && partnerMissing && <Banner kind="info" icon="people" text={t('main.invitePending.title')} />}
+          {online && consentMissing && <Banner kind="warn" text={t('prompt.consent.need')} action={{ label: t('prompt.consent.action'), onPress: onOpenConsent }} />}
+          {status === 'mineExpiring' && <Banner kind="warn" text={t('prompt.idleHint')} action={{ label: t('prompt.expiring.action'), onPress: () => void session.keepAlive() }} />}
+          {status === 'mineExpired' && <View style={{ gap: tokens.spacing[1] }}><Banner kind="warn" text={t('prompt.idle.me.title')} body={t('prompt.idle.me.body')} /><Button label={t('prompt.idle.me.action')} onPress={() => void start()} /></View>}
+          {status === 'partnerExpired' && <View style={{ gap: tokens.spacing[1] }}>
+            <Banner text={t('prompt.takeover.title', { name: partner })} body={t('prompt.takeover.body')} />
+            <Button label={t('prompt.takeover.action')} disabled={!online || consentMissing} onPress={() => void session.takeover().catch(fail)} />
+          </View>}
+          {session.lostTakeover && <Banner kind="warn" text={t('prompt.takeover.lost', { name: partner })} />}
+          {status === 'free' && <View style={{ gap: tokens.spacing[1] }}>
+            <Button label={t('prompt.start')} icon="pencil" disabled={!online || consentMissing || quotaUsed} onPress={() => void start()} />
+            <AppText variant="bodySm" tone="text2">{t('prompt.start.help')}</AppText>
+          </View>}
+          {notice && <Banner kind={notice.kind} text={t(notice.key)} body={notice.body ? t(notice.body) : null} />}
+          {applied && <Banner kind="success" text={t('preview.applied.title')} body={t('preview.applied.body')} />}
+          {showPreview && <View style={{ gap: tokens.spacing[2] }}>
+            <View accessibilityRole="tablist" style={{ flexDirection: 'row', padding: 4, gap: 4, borderRadius: tokens.radius.pill, borderWidth: tokens.border.outline.normal, borderColor: color.line, backgroundColor: color.surface2 }}>
+              {([false, true] as const).map((candidate) => {
+                const selected = viewCandidate === candidate;
+                const label = t(candidate ? 'preview.view.candidate' : 'preview.view.current');
+                return <Pressable key={label} accessibilityRole="tab" accessibilityState={{ selected }} accessibilityLabel={t('a11y.toggle.view', { state: label })} onPress={() => setViewCandidate(candidate)}
+                  style={{ flex: 1, minHeight: 44, alignItems: 'center', justifyContent: 'center', borderRadius: tokens.radius.pill, backgroundColor: selected ? color.primary : 'transparent', borderWidth: selected ? tokens.border.outline.normal : 0, borderColor: color.line }}>
+                  <AppText style={[emphasis(15), { color: selected ? color.onPrimary : color.text }]}>{label}</AppText>
+                </Pressable>;
+              })}
+            </View>
+            <AppText variant="bodySm" tone="text2">{t('preview.shared')}</AppText>
+            {owner ? <View style={{ gap: tokens.spacing[1] }}>
+              <AppText style={[emphasis(14), { color: color.text }]}>{t('preview.applyHint')}</AppText>
+              <View style={{ flexDirection: 'row', gap: tokens.spacing[1] }}>
+                <View style={{ flex: 1 }}><Button label={t('preview.apply')} accessibilityLabel={t('a11y.apply')} loading={busy === 'applying'} disabled={!online} onPress={() => setConfirming(true)} /></View>
+                <View style={{ flex: 1 }}><Button label={t('preview.cancel')} accessibilityLabel={t('a11y.cancel')} variant="secondary" disabled={!online || busy !== null} onPress={() => void cancel()} /></View>
+              </View>
+              <Button label={t('preview.undo')} accessibilityLabel={t('a11y.undo')} icon="undo" variant="ghost" loading={busy === 'undoing'} disabled={!online || busy !== null} onPress={() => setConfirmingUndo(true)} />
+            </View> : <Banner kind="info" icon="lock" text={t('preview.partner.wait', { name: partner })} body={t('preview.partner.readonly')} />}
+          </View>}
+          <View style={{ gap: tokens.spacing[2], paddingTop: tokens.spacing[1] }}>
+            {conversation?.messages.length ? conversation.messages.map((message) => {
+              if (message.kind === 'status') return <View key={message.id} style={{ alignSelf: 'center' }}><Chip label={message.bodyText ?? ''} /></View>;
+              const mine = message.kind === 'user_prompt' && message.authorUserId === me;
+              const result = message.kind === 'preview';
+              return (
+                <View key={message.id} style={{ alignSelf: mine ? 'flex-end' : 'stretch', maxWidth: mine ? '86%' : '100%', gap: 2 }}>
+                  {!mine && !result && <AppText variant="caption" tone="text2">{partner}</AppText>}
+                  <View style={{ paddingVertical: tokens.spacing[2], paddingHorizontal: tokens.spacing[3], borderRadius: tokens.radius.card, borderBottomRightRadius: mine ? 6 : tokens.radius.card, backgroundColor: mine ? color.primary : result ? color.surface : color.surface2, borderWidth: result ? tokens.border.outline.normal : 0, borderColor: color.border }}>
+                    <AppText style={{ color: mine ? color.onPrimary : color.text }}>{result && !message.bodyText ? t('prompt.msg.status.preview') : message.bodyText}</AppText>
+                  </View>
+                  {mine && <AppText variant="caption" tone="text2" align="right">{time(message.createdAt)}</AppText>}
+                </View>
+              );
+            }) : <AppText variant="bodySm" tone="text2">{t('prompt.history.empty')}</AppText>}
+            {partnerThinking && <AppText variant="bodySm" tone="text2">{t('prompt.partner.typing', { name: partner })}</AppText>}
           </View>
-          {renderScene?.(viewCandidate ? preview.sceneDocument : snapshot.sceneDocument)}
-          {owner ? <View style={{ gap: 8 }}>
-            <Text style={{ color: color.text2 }}>{t('preview.applyHint')}</Text>
-            {busy === 'applying' ? <CycleLoader label={t('preview.applying')} /> : <Button label={t('preview.apply')} accessibilityLabel={t('a11y.apply')} disabled={!online} onPress={() => setConfirming(true)} />}
-            <Button label={t('preview.undo')} accessibilityLabel={t('a11y.undo')} variant="secondary" disabled={!online || busy !== null} onPress={() => setConfirmingUndo(true)} />
-            <Button label={t('preview.cancel')} accessibilityLabel={t('a11y.cancel')} variant="ghost" disabled={!online} onPress={() => void cancel()} />
-          </View> : <View style={{ gap: 4 }}><Text style={{ color: color.text2 }}>{t('preview.partner.wait', { name: partner })}</Text><Text style={{ color: color.text2 }}>{t('preview.partner.readonly')}</Text></View>}
-        </View>}
-      </View>
-      </ScrollView>
-      <View style={{ padding: tokens.spacing[3], paddingBottom: Math.max(insets.bottom, tokens.spacing[3]), gap: tokens.spacing[1], borderTopWidth: 1, borderColor: color.divider }}>
-        {status === 'partner' && <Text style={{ color: color.text2 }}>{t('prompt.input.partner', { name: partner })}</Text>}
-        {busy === 'sending' && <CycleLoader label={t('prompt.sending')} />}
-        <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: tokens.spacing[1] }}>
-        <TextInput
-          accessibilityLabel={status === 'partner' ? t('a11y.input.ro', { name: partner }) : t('a11y.input')}
-          placeholder={t('prompt.placeholder')} placeholderTextColor={color.text2} value={draft}
-          onChangeText={(value) => { setDraft(value.slice(0, MAX_PROMPT)); session.noteActivity(); }}
-          editable={canType} multiline returnKeyType="default" blurOnSubmit={false} submitBehavior="newline"
-          style={{ flex: 1, minHeight: tokens.touch.minimum, maxHeight: tokens.spacing[8] * 2, borderWidth: 1, borderColor: color.border, color: color.text, padding: tokens.spacing[2], borderRadius: tokens.radius.input, textAlignVertical: 'top', opacity: canType ? 1 : 0.6 }}
-        />
-        <Button label={t('prompt.send')} accessibilityLabel={t('a11y.send')} disabled={!canType || draft.trim().length === 0} onPress={() => void send()} />
+        </ScrollView>
+        <View style={{ paddingHorizontal: GUTTER, paddingTop: tokens.spacing[1], paddingBottom: Math.max(insets.bottom, tokens.spacing[3]), gap: tokens.spacing[1] }}>
+          {status === 'partner' && <View style={{ flexDirection: 'row', gap: tokens.spacing[0], alignItems: 'center' }}><Icon name="lock" size={16} color={color.text2} /><AppText variant="bodySm" tone="text2" style={{ flexShrink: 1 }}>{t('prompt.input.partner', { name: partner })}</AppText></View>}
+          {busy === 'sending' && <CycleLoader label={t('prompt.sending')} />}
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: tokens.spacing[1] }}>
+            <TextInput
+              accessibilityLabel={status === 'partner' ? t('a11y.input.ro', { name: partner }) : t('a11y.input')}
+              placeholder={t('prompt.placeholder')} placeholderTextColor={color.text2} value={draft}
+              onChangeText={(value) => { setDraft(value.slice(0, MAX_PROMPT)); session.noteActivity(); }}
+              editable={canType} multiline returnKeyType="default" blurOnSubmit={false} submitBehavior="newline"
+              style={[type('body'), { flex: 1, minHeight: tokens.touch.toolbarHeight, maxHeight: 120, borderWidth: tokens.border.outline.normal, borderColor: color.border, color: color.text, backgroundColor: canType ? color.surface : color.surface2, paddingHorizontal: tokens.spacing[3], paddingTop: 13, paddingBottom: 13, borderRadius: tokens.radius.input + 8, textAlignVertical: 'top' }]}
+            />
+            <Pressable accessibilityRole="button" accessibilityLabel={t('a11y.send')} accessibilityState={{ disabled: !canType || draft.trim().length === 0 }} disabled={!canType || draft.trim().length === 0} onPress={() => void send()}
+              style={({ pressed }) => {
+                const off = !canType || draft.trim().length === 0;
+                return { width: tokens.touch.toolbarHeight, height: tokens.touch.toolbarHeight, borderRadius: tokens.radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: off ? color.surface2 : color.primary, borderWidth: tokens.border.outline.normal, borderColor: off ? color.border : color.line, borderStyle: off ? 'dashed' : 'solid', opacity: pressed ? 0.85 : 1 };
+              }}>
+              <Icon name="send" size={22} color={!canType || draft.trim().length === 0 ? color.text2 : color.onPrimary} />
+            </Pressable>
+          </View>
+          {status === 'mine' && <AppText variant="caption" tone="text2">{t('prompt.idleHint')}</AppText>}
         </View>
       </View>
-      <Dialog visible={confirmingUndo} title={t('undo.title')} onClose={() => setConfirmingUndo(false)}>
-        <Text style={{ color: color.text2 }}>{t('undo.body')}</Text>
+      <Dialog visible={confirmingUndo} icon="undo" title={t('undo.title')} body={t('undo.body')} onClose={() => setConfirmingUndo(false)}>
         <Button label={t('undo.confirm')} onPress={() => { setConfirmingUndo(false); void undo(); }} />
         <Button label={t('common.cancel')} variant="ghost" onPress={() => setConfirmingUndo(false)} />
       </Dialog>
-      <Dialog visible={confirming} title={t('preview.confirm.title')} onClose={() => setConfirming(false)}>
-        <Text style={{ color: color.text2 }}>{t('preview.confirm.body')}</Text>
+      <Dialog visible={confirming} icon="sparkle" title={t('preview.confirm.title')} body={t('preview.confirm.body')} onClose={() => setConfirming(false)}>
         <Button label={t('preview.apply')} onPress={() => void apply()} />
         <Button label={t('common.cancel')} variant="ghost" onPress={() => setConfirming(false)} />
       </Dialog>

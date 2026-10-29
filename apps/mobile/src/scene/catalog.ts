@@ -23,3 +23,9 @@ export { entries as catalogEntries };
 export function imageForAsset(asset: CatalogEntry, mode: 'day' | 'night'): number | undefined {
   return catalogImages[mode === 'night' && 'night_variant' in asset && asset.night_variant ? `${asset.asset_id}__night` : asset.asset_id];
 }
+/** A bundled catalog image by id, for app UI art (spots, loader, intro cards); fails loudly on a typo instead of drawing nothing. */
+export function catalogArt(id: string): number {
+  const image = catalogImages[id];
+  if (image === undefined) throw new Error(`unknown catalog image ${id}`);
+  return image;
+}

@@ -1,87 +1,107 @@
-import { useAppColor } from '../../theme/useAppColor';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, Share, ScrollView, Text, View } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { Share, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Banner, Button, Dialog } from '../../ui/components';
-import { CycleLoader } from '../../ui/CycleLoader';
-import { useReducedMotion } from '../../ui/motion';
-import { catalogImages } from '../../scene/catalogImages';
+import { AppText, Banner, Button, Card, Dialog, Screen, Toast } from '../../ui/components';
+import { LoadingScreen } from '../../ui/CycleLoader';
+import { CodeBoxes } from '../../ui/CodeBoxes';
+import { Icon } from '../../ui/Icon';
+import { Spot } from '../../ui/Spot';
 import { tokens } from '../../theme/tokens';
+import { useAppColor } from '../../theme/useAppColor';
+import { useType } from '../../theme/typography';
 
 const EXPIRING_MS = 30 * 60_000;
 type Invitation = { code: string; expiresAt: string };
 export const formatInviteCode = (code: string) => { const clean = code.replace(/[^0-9a-z]/gi, '').toUpperCase(); return `${clean.slice(0, 4)}-${clean.slice(4, 8)}`; };
-function FloatingLetter({ reduced }: { reduced: boolean }) {
-  const lift = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    if (reduced) return;
-    const loop = Animated.loop(Animated.sequence([Animated.timing(lift, { toValue: -8, duration: 1600, useNativeDriver: true }), Animated.timing(lift, { toValue: 0, duration: 1600, useNativeDriver: true })]));
-    loop.start();
-    return () => loop.stop();
-  }, [lift, reduced]);
-  return <Animated.Image source={catalogImages.obj_keep_letter} style={{ width: 56, height: 56, transform: [{ translateY: lift }] }} />;
-}
-/** S04 invite. The raw code exists only in component state for display/share and is never logged. */
-export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion, memberCount = 1, onJoined, onLater, copyCode }: {
-  createInvitation: () => Promise<Invitation>; clock?: () => number; reducedMotion?: boolean; memberCount?: number; onJoined?: () => void; onLater?: () => void; copyCode?: (code: string) => Promise<boolean>;
+/** S04 invite. The raw code exists only in component state for display/share and is never logged. Sharing or copying the code moves on to the waiting state (S04-waiting). */
+export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion, memberCount = 1, onJoined, onLater, onBack, copyCode }: {
+  createInvitation: () => Promise<Invitation>; clock?: () => number; reducedMotion?: boolean; memberCount?: number; onJoined?: () => void; onLater?: () => void; onBack?: () => void; copyCode?: (code: string) => Promise<boolean>;
 }) {
   const color = useAppColor();
   const { t, i18n } = useTranslation();
-  const systemReduced = useReducedMotion();
+  const { emphasis } = useType();
   const [invite, setInvite] = useState<Invitation | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [view, setView] = useState<'code' | 'waiting'>('code');
   const [now, setNow] = useState(clock());
   const [confirmReissue, setConfirmReissue] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const load = useCallback(async () => {
-    setStatus('loading'); setNotice(null);
+    setStatus('loading'); setNotice(null); setView('code');
     try { setInvite(await createInvitation()); setNow(clock()); setStatus('ready'); } catch { setStatus('error'); }
   }, [createInvitation, clock]);
   useEffect(() => { void load(); }, [load]);
   useEffect(() => { const timer = setInterval(() => setNow(clock()), 30_000); return () => clearInterval(timer); }, [clock]);
   useEffect(() => { if (memberCount >= 2) onJoined?.(); }, [memberCount, onJoined]);
-  if (status === 'loading') return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: color.bg }}><CycleLoader label={t('invite.generating')} /><Text style={{ color: color.text }}>{t('invite.generating')}</Text></View>;
+  const hideNotice = useCallback(() => setNotice(null), []);
+  if (status === 'loading') return <LoadingScreen label={t('invite.generating')} />;
   if (status === 'error' || !invite) {
-    return <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2] }}>
-      <Banner kind="danger" text={t('invite.err.title')} /><Text style={{ color: color.text2 }}>{t('invite.err.body')}</Text>
-      <Button label={t('common.retry')} onPress={() => void load()} />
-    </ScrollView>;
+    return (
+      <Screen onBack={onBack} footer={<>
+        <Button label={t('common.retry')} onPress={() => void load()} />
+        {onLater && <Button label={t('invite.later')} variant="ghost" onPress={onLater} />}
+      </>}>
+        <AppText variant="title" accessibilityRole="header">{t('invite.title')}</AppText>
+        <Banner kind="danger" text={t('invite.err.title')} body={t('invite.err.body')} />
+      </Screen>
+    );
   }
   const code = formatInviteCode(invite.code);
   const left = Date.parse(invite.expiresAt) - now;
   const expired = left <= 0;
+  const expiring = !expired && left <= EXPIRING_MS;
   const minutes = Math.max(0, Math.ceil(left / 60_000));
+  const toast = notice ? <Toast text={notice} icon={notice === t('invite.copied') ? 'check' : 'info'} onHide={hideNotice} /> : null;
   async function share() {
     const result = await Share.share({ message: t('invite.shareMsg', { code, link: `https://aroom.jinjinstar.com/i/${code}` }) }).catch(() => null);
-    setNotice(result?.action === Share.dismissedAction || result === null ? t('invite.shareCancelled') : null);
+    if (result?.action === Share.sharedAction) { setNotice(null); setView('waiting'); } else setNotice(t('invite.shareCancelled'));
+  }
+  function copy() {
+    if (!copyCode) return;
+    void copyCode(code).then((copied) => { setNotice(t(copied ? 'invite.copied' : 'invite.err.title')); if (copied) setView('waiting'); }).catch(() => setNotice(t('invite.err.title')));
+  }
+  if (view === 'waiting' && !expired) {
+    return (
+      <Screen center footer={<>
+        {toast}
+        <Button label={t('invite.code.label')} variant="secondary" onPress={() => setView('code')} />
+        {onLater && <Button label={t('common.next')} variant="ghost" onPress={onLater} />}
+      </>}>
+        <Spot kind="waiting" reducedMotion={reducedMotion} />
+        <AppText variant="title" accessibilityRole="header" align="center">{t('invite.waiting.title')}</AppText>
+        <AppText tone="text2" align="center">{t('invite.waiting.body')}</AppText>
+      </Screen>
+    );
   }
   const expiresAt = new Intl.DateTimeFormat(i18n.language, { month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(invite.expiresAt));
   return (
-    <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2] }}>
-      <Text accessibilityRole="header" style={{ color: color.text, fontSize: 20 }}>{t('invite.title')}</Text>
-      <Text style={{ color: color.text2 }}>{t('invite.body')}</Text>
-      {expired ? <View style={{ gap: 4 }}><Banner kind="warn" text={t('invite.expired.title')} /><Text style={{ color: color.text2 }}>{t('invite.expired.body')}</Text></View> : <View style={{ gap: 4 }}>
-        <Text style={{ color: color.text2 }}>{t('invite.code.label')}</Text>
-        <Text accessibilityLabel={t('a11y.code', { code: code.split('').join(' ') })} style={{ color: color.text, fontSize: 32, letterSpacing: 4 }}>{code}</Text>
-        <Text style={{ color: color.text2 }}>{t('invite.once')}</Text>
-        {left <= EXPIRING_MS ? <Banner kind="warn" text={t('invite.expiring', { m: minutes })} /> : <Text style={{ color: color.text2 }}>{t('invite.expires', { h: Math.floor(minutes / 60), m: minutes % 60 })}</Text>}
-        <Text style={{ color: color.text2 }}>{t('invite.expiresAt', { date: expiresAt })}</Text>
-        {copyCode && <Button label={t('invite.copy')} accessibilityLabel={t('a11y.copy')} variant="secondary" onPress={() => { void copyCode(code).then((copied) => setNotice(t(copied ? 'invite.copied' : 'invite.err.title'))).catch(() => setNotice(t('invite.err.title'))); }} />}
-        <Button label={t('invite.share')} accessibilityLabel={t('a11y.share')} onPress={() => void share()} />
-      </View>}
-      {notice && <Banner text={notice} />}
-      <Button label={t('invite.reissue')} variant="secondary" onPress={() => setConfirmReissue(true)} />
-      <View style={{ alignItems: 'center', gap: 4 }}>
-        <FloatingLetter reduced={reducedMotion ?? systemReduced} />
-        <Text style={{ color: color.text }}>{t('invite.waiting.title')}</Text>
-        <Text style={{ color: color.text2 }}>{t('invite.waiting.body')}</Text>
-      </View>
-      {onLater && <Button label={t('invite.later')} variant="ghost" onPress={onLater} />}
-      <Dialog visible={confirmReissue} title={t('invite.reissue.title')} onClose={() => setConfirmReissue(false)}>
-        <Text style={{ color: color.text2 }}>{t('invite.reissue.body')}</Text>
+    <Screen onBack={onBack} footer={<>
+      {toast}
+      {expired ? <Button label={t('invite.reissue')} onPress={() => void load()} /> : <>
+        <Button label={t('invite.share')} accessibilityLabel={t('a11y.share')} icon="share" onPress={() => void share()} />
+        {copyCode && <Button label={t('invite.copy')} accessibilityLabel={t('a11y.copy')} icon="copy" variant="secondary" onPress={copy} />}
+        <Button label={t('invite.reissue')} variant="ghost" onPress={() => setConfirmReissue(true)} />
+      </>}
+    </>}>
+      <AppText variant="title" accessibilityRole="header">{t('invite.title')}</AppText>
+      <AppText tone="text2">{t('invite.body')}</AppText>
+      {expired ? <Banner kind="warn" text={t('invite.expired.title')} body={t('invite.expired.body')} /> : (
+        <Card style={{ alignItems: 'stretch', gap: tokens.spacing[3], paddingVertical: tokens.spacing[5] }}>
+          <AppText style={[emphasis(14), { color: color.text2, textAlign: 'center' }]}>{t('invite.code.label')}</AppText>
+          <CodeBoxes code={code} label={t('a11y.code', { code: code.split('').join(' ') })} />
+          <View style={{ flexDirection: 'row', gap: tokens.spacing[1], alignItems: 'flex-start' }}>
+            <Icon name="clock" size={20} color={expiring ? color.warn : color.text2} />
+            <View style={{ flex: 1 }}>
+              <AppText style={[emphasis(14), { color: expiring ? color.warn : color.text2 }]}>{expiring ? t('invite.expiring', { m: minutes }) : t('invite.expires', { h: Math.floor(minutes / 60), m: minutes % 60 })}</AppText>
+              <AppText variant="bodySm" tone="text2">{t('invite.expiresAt', { date: expiresAt })}</AppText>
+            </View>
+          </View>
+        </Card>
+      )}
+      <Dialog visible={confirmReissue} title={t('invite.reissue.title')} body={t('invite.reissue.body')} onClose={() => setConfirmReissue(false)}>
         <Button label={t('common.confirm')} onPress={() => { setConfirmReissue(false); void load(); }} />
         <Button label={t('common.cancel')} variant="ghost" onPress={() => setConfirmReissue(false)} />
       </Dialog>
-    </ScrollView>
+    </Screen>
   );
 }

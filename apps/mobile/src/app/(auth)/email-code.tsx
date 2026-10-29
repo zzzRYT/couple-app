@@ -7,5 +7,5 @@ export default function EmailCodeRoute() {
   const { auth } = useApp();
   const { email } = useLocalSearchParams<{ email: string }>();
   if (!authOptions.devEmail) return <Redirect href="/login" />;
-  return <EmailCodeScreen auth={auth} email={email ?? ''} onDone={() => router.replace('/')} />;
+  return <EmailCodeScreen auth={auth} email={email ?? ''} onDone={() => router.replace('/')} onBack={() => router.back()} />;
 }

@@ -7,8 +7,8 @@ export function AppleButton({ onPress }: { onPress: () => void }) {
     <AppleAuthentication.AppleAuthenticationButton
       buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
       buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-      cornerRadius={12}
-      style={{ height: 48 }}
+      cornerRadius={26}
+      style={{ height: 52 }}
       accessibilityLabel={t('login.apple')}
       testID="apple-sign-in"
       onPress={onPress}
