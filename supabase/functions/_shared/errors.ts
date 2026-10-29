@@ -16,6 +16,7 @@ const STATUS: Partial<Record<ErrorCode, [number, boolean]>> = {
   NOTHING_TO_UNDO: [409, false], PREVIEW_CHANGED: [409, true], ALREADY_APPLIED: [409, false], UNSUPPORTED_REQUEST: [422, false],
   INVALID_CANDIDATE: [422, true], GENERATION_FAILED: [503, true], INVITE_EXPIRED: [410, false], INVITE_USED: [409, false],
   INVITE_INVALID: [404, false], SPACE_FULL: [409, false], CONSENT_REQUIRED: [403, false], INVALID_REQUEST: [400, false],
+  COVER_INVALID_IMAGE: [422, false],
   NOT_FOUND: [404, false], UNAUTHORIZED: [401, false],
 };
 export class AppError extends Error {

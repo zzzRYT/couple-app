@@ -12,6 +12,9 @@ import { estimateLayout } from '../../scene/protectedZones';
 import { roomMode } from '../../scene/dayNight';
 import { dayCount, formatAnniversary, todayIn } from '../../lib/dday';
 import type { Snapshot } from '../../lib/client';
+import type { HomeCover } from '../../lib/client';
+import type { ImagePickerAsset } from 'expo-image-picker';
+import { CoverPicker } from '../cover/CoverPicker';
 import type { SpaceState } from '../space/types';
 import type { MilestoneCelebration } from '../../lib/client';
 import { MilestoneCard } from '../milestone/MilestoneCard';
@@ -51,7 +54,7 @@ function RoomThumb({ snapshot, mode }: { snapshot: Snapshot; mode: 'day' | 'nigh
   );
 }
 /** S06 home: the shared day count. The cover photo slot keeps the plain paper background until US6. */
-export function HomeScreen({ state, now, onOpenRoom, onOpenInvite, onSaveDate, onRefresh, milestone, milestonePreset, onMilestoneSeen, onMilestoneSuggest }: { state: SpaceState; now: string; onOpenRoom: () => void; onOpenInvite: () => void; onSaveDate: (date: string) => Promise<void>; onRefresh?: () => Promise<unknown>; milestone?: MilestoneCelebration | null; milestonePreset?: MilestoneCelebration | null; onMilestoneSeen?: () => void; onMilestoneSuggest?: () => void }) {
+export function HomeScreen({ state, now, onOpenRoom, onOpenInvite, onSaveDate, onRefresh, milestone, milestonePreset, onMilestoneSeen, onMilestoneSuggest, cover, userId, openCover, onCoverOpenConsumed, onCoverUpload, onCoverRemove, onCoverLoad }: { state: SpaceState; now: string; onOpenRoom: () => void; onOpenInvite: () => void; onSaveDate: (date: string) => Promise<void>; onRefresh?: () => Promise<unknown>; milestone?: MilestoneCelebration | null; milestonePreset?: MilestoneCelebration | null; onMilestoneSeen?: () => void; onMilestoneSuggest?: () => void; cover?: HomeCover | null; userId?: string | null; openCover?: boolean; onCoverOpenConsumed?: () => void; onCoverUpload?: (asset: ImagePickerAsset) => Promise<void>; onCoverRemove?: () => Promise<void>; onCoverLoad?: () => Promise<void> }) {
   const color = useAppColor();
   const { t, i18n } = useTranslation();
   const { type, emphasis } = useType();
@@ -90,12 +93,14 @@ export function HomeScreen({ state, now, onOpenRoom, onOpenInvite, onSaveDate, o
         <MilestoneCard celebration={milestone ?? null} offline={state.offline} onClose={onMilestoneSeen ?? (() => {})} onSuggest={onMilestoneSuggest ?? (() => {})} />
         {!milestone && milestonePreset?.presetAvailable && <Button label={t('milestone.action.suggest')} icon="sparkle" variant="secondary" disabled={state.offline} onPress={onMilestoneSuggest ?? (() => {})} />}
         {!state.offline && state.status === 'error' && <Banner kind="warn" text={t('main.sync.title')} body={t('main.sync.body')} action={refresh ? { label: t('common.retry'), onPress: refresh } : undefined} />}
-        <View accessible accessibilityLabel={`${t('dday.eyebrow')} ${t('dday.count', { n })}, ${since}`} style={{ alignItems: 'center', gap: tokens.spacing[1], paddingVertical: tokens.spacing[3] }}>
-          <AppText style={[emphasis(18), { color: color.text2 }]}>{t('dday.eyebrow')}</AppText>
-          <AppText variant="display" align="center">{t('dday.count', { n })}</AppText>
-          <AppText tone="text2" align="center" style={type('body')}>{since}</AppText>
-          {pending && <View style={{ alignSelf: 'center', marginTop: tokens.spacing[1] }}><Chip kind="warn" icon="people" label={t('main.chip.waiting')} /></View>}
-        </View>
+        {onCoverUpload && onCoverRemove && onCoverLoad
+          ? <CoverPicker cover={cover ?? null} userId={userId ?? null} offline={state.offline} open={openCover} onOpenConsumed={onCoverOpenConsumed} dayCount={n} since={since} onUpload={onCoverUpload} onRemove={onCoverRemove} onLoad={onCoverLoad} />
+          : <View accessible accessibilityLabel={`${t('dday.eyebrow')} ${t('dday.count', { n })}, ${since}`} style={{ alignItems: 'center', gap: tokens.spacing[1], paddingVertical: tokens.spacing[3] }}>
+            <AppText style={[emphasis(18), { color: color.text2 }]}>{t('dday.eyebrow')}</AppText>
+            <AppText variant="display" align="center">{t('dday.count', { n })}</AppText>
+            <AppText tone="text2" align="center" style={type('body')}>{since}</AppText>
+            {pending && <View style={{ alignSelf: 'center', marginTop: tokens.spacing[1] }}><Chip kind="warn" icon="people" label={t('main.chip.waiting')} /></View>}
+          </View>}
         {pending && <Banner kind="info" icon="people" text={t('main.invitePending.title')} body={hoursLeft !== null ? t('main.invitePending.body', { h: hoursLeft }) : null}
           action={{ label: t('main.invitePending.action'), onPress: onOpenInvite }} />}
         <Pressable accessibilityRole="button" accessibilityLabel={`${t('main.roomCard.title')}, ${t(mode === 'day' ? 'main.roomCard.day' : 'main.roomCard.night')}`} onPress={onOpenRoom}

@@ -4,7 +4,7 @@ import { localEnv, service } from '../../_shared/__tests__/local.ts';
 import { consentingRoom } from '../../_shared/__tests__/roomFixture.ts';
 import { lifecycleSweepHandler, type SpaceStorage } from '../index.ts';
 
-const noStorage: SpaceStorage = { removeSpaceObjects: () => Promise.resolve() };
+const noStorage: SpaceStorage = { removeSpaceObjects: () => Promise.resolve(), removeObjects: () => Promise.resolve() };
 
 const HOUR = 3_600_000;
 async function messages(spaceId: string) {

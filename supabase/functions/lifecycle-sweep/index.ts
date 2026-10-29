@@ -5,6 +5,7 @@ import { safeLogFields } from '../_shared/logging.ts';
 /** Removes the Storage objects that belong to a space; it must finish before the space's rows are deleted. */
 export interface SpaceStorage {
   removeSpaceObjects(spaceId: string): Promise<void>;
+  removeObjects(paths: string[]): Promise<void>;
 }
 /** Home cover photos live in a private bucket under `<spaceId>/…`, current object and pending-delete objects alike. */
 export const HOME_COVER_BUCKET = 'home-cover';
@@ -22,7 +23,28 @@ export function bucketStorage(client: SupabaseClient, bucket = HOME_COVER_BUCKET
       if (removeError) throw removeError;
     }
   }
-  return { removeSpaceObjects: (spaceId) => remove(spaceId) };
+  return {
+    removeSpaceObjects: (spaceId) => remove(spaceId),
+    async removeObjects(paths) { if (!paths.length) return; const { error } = await client.storage.from(bucket).remove(paths); if (error) throw error; },
+  };
+}
+
+/** Removes prior cover versions only after their replacement has been committed for a full day. */
+export async function sweepHomeCoverDeletes(db: Db, storage: SpaceStorage, at: Date): Promise<number> {
+  const due = await db.rpc<{ space_id: string; object_path: string }[]>('due_home_cover_deletes', { at: at.toISOString(), max_count: 100 });
+  let deleted = 0;
+  for (const item of due) {
+    await storage.removeObjects([item.object_path]);
+    await db.rpc('finish_home_cover_delete', { target: item.space_id, object_path: item.object_path });
+    deleted++;
+  }
+  const expired = await db.rpc<{ upload_id: string; object_path: string }[]>('due_home_cover_uploads', { at: at.toISOString(), max_count: 100 });
+  for (const item of expired) {
+    await storage.removeObjects([item.object_path]);
+    await db.rpc('finish_home_cover_upload', { upload: item.upload_id, at: at.toISOString() });
+    deleted++;
+  }
+  return deleted;
 }
 
 /**
@@ -50,9 +72,10 @@ export function lifecycleSweepHandler(db: Db, serviceKey: string, storage: Space
     if (request.headers.get('Authorization') !== `Bearer ${serviceKey}`) return Response.json({ error: { code: 'UNAUTHORIZED', retryable: false } }, { status: 401 });
     const at = now();
     const result = await db.rpc<Record<string, number>>('sweep_prompt_data', { at: at.toISOString() });
+    const coverObjectsDeleted = await sweepHomeCoverDeletes(db, storage, at);
     const purge = await purgeDueSpaces(db, storage, at);
     console.log(JSON.stringify(safeLogFields({ event: 'lifecycle-sweep', status: 200 })));
-    return Response.json({ ...result, ...purge });
+    return Response.json({ ...result, coverObjectsDeleted, ...purge });
   };
 }
 if (import.meta.main) {

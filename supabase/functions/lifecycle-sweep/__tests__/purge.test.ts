@@ -9,7 +9,7 @@ const DUE = '2001-01-01T00:00:00.000Z';
 const at = (offsetMs: number) => new Date(new Date(DUE).getTime() + offsetMs);
 const SPACE_TABLES = ['space_member', 'invitation', 'space_end_notice', 'prompt_session', 'prompt_message', 'room_theme', 'room_theme_version',
   'decoration_request', 'ai_consent_event', 'daily_request_count', 'daily_request_reservation', 'report'] as const;
-const noStorage: SpaceStorage = { removeSpaceObjects: () => Promise.resolve() };
+const noStorage: SpaceStorage = { removeSpaceObjects: () => Promise.resolve(), removeObjects: () => Promise.resolve() };
 
 async function rowCount(table: string, spaceId: string) {
   const { count, error } = await (await service()).from(table).select('*', { count: 'exact', head: true }).eq('space_id', spaceId);
@@ -91,7 +91,7 @@ Deno.test('ignores active spaces and spaces that are not due yet', async () => {
 Deno.test('a Storage failure leaves the space ended and untouched, and the next run finishes it', async () => {
   const r = await endedRoom();
   let calls = 0;
-  const flaky: SpaceStorage = { removeSpaceObjects: (id) => { if (id === r.spaceId && ++calls === 1) return Promise.reject(new Error('storage down')); return Promise.resolve(); } };
+  const flaky: SpaceStorage = { removeSpaceObjects: (id) => { if (id === r.spaceId && ++calls === 1) return Promise.reject(new Error('storage down')); return Promise.resolve(); }, removeObjects: () => Promise.resolve() };
   const failed = await sweep(flaky, at(1000));
   assert(failed.failed >= 1);
   assert(await exists(r.spaceId), 'rows stay because the objects could not be removed');
@@ -108,7 +108,7 @@ Deno.test('a Storage failure leaves the space ended and untouched, and the next 
 
 Deno.test('one failing space does not block the others', async () => {
   const bad = await endedRoom(), good = await endedRoom();
-  const storage: SpaceStorage = { removeSpaceObjects: (id) => id === bad.spaceId ? Promise.reject(new Error('boom')) : Promise.resolve() };
+  const storage: SpaceStorage = { removeSpaceObjects: (id) => id === bad.spaceId ? Promise.reject(new Error('boom')) : Promise.resolve(), removeObjects: () => Promise.resolve() };
   const result = await sweep(storage, at(1000));
   assert(result.failed >= 1);
   assert(await exists(bad.spaceId));

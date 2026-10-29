@@ -18,7 +18,7 @@ const languages: { locale: Locale | null; label: string; value: string }[] = [
 ];
 const modes: { mode: DisplayMode; key: string }[] = [{ mode: 'system', key: 'set.theme.system' }, { mode: 'light', key: 'set.theme.light' }, { mode: 'dark', key: 'set.theme.dark' }];
 /** S13 settings tab: shared room preferences, this-device preferences, app info, and existing account/space actions. */
-export function SettingsScreen({ onLogout, space, version, offline = false, onRoomMode, onTimeZone, onOpenDate, onOpenConsent, onOpenReport, onOpenEndSpace }: { onLogout: () => Promise<void>; space?: SpaceRows | null; version?: string; offline?: boolean; onRoomMode?: (mode: SpaceRows['roomMode']) => Promise<void>; onTimeZone?: (timeZone: string) => Promise<void>; onOpenDate?: () => void; onOpenConsent?: () => void; onOpenReport?: () => void; onOpenEndSpace?: () => void }) {
+export function SettingsScreen({ onLogout, space, version, offline = false, onRoomMode, onTimeZone, onOpenDate, onOpenCover, onOpenConsent, onOpenReport, onOpenEndSpace }: { onLogout: () => Promise<void>; space?: SpaceRows | null; version?: string; offline?: boolean; onRoomMode?: (mode: SpaceRows['roomMode']) => Promise<void>; onTimeZone?: (timeZone: string) => Promise<void>; onOpenDate?: () => void; onOpenCover?: () => void; onOpenConsent?: () => void; onOpenReport?: () => void; onOpenEndSpace?: () => void }) {
   const color = useAppColor();
   const { t } = useTranslation();
   const preferences = usePreferences();
@@ -68,6 +68,7 @@ export function SettingsScreen({ onLogout, space, version, offline = false, onRo
         <SectionLabel text={t('set.sec.couple')} />
         <Card style={{ paddingVertical: tokens.spacing[0], gap: 0 }}>
           <ListRow icon="heart" label={t('set.together')} value={space.anniversary} onPress={onOpenDate ?? (() => {})} disabled={!onOpenDate} />
+          <ListRow icon="image" label={t('set.cover')} onPress={onOpenCover ?? (() => {})} disabled={!onOpenCover} />
         </Card>
         <SectionLabel text={t('set.sec.ai')} />
         <Card style={{ paddingVertical: tokens.spacing[0], gap: 0 }}>

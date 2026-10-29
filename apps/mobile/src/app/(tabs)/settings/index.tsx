@@ -30,6 +30,6 @@ export default function SettingsRoute() {
   return <SettingsScreen onLogout={onLogout} version={Constants.expoConfig?.version} offline={state.offline}
     space={snapshot ? { anniversary: formatAnniversary(snapshot.space.anniversaryDate, i18n.language), consent: me?.aiConsentState ?? 'not_given', roomMode: snapshot.roomThemeDocument.mode, timeZone: snapshot.space.timeZone } : null}
     onRoomMode={updateRoomMode} onTimeZone={updateTimeZone}
-    onOpenDate={() => router.navigate('/home')} onOpenConsent={() => router.push('/prompt/consent')}
+    onOpenDate={() => router.navigate('/home')} onOpenCover={() => router.navigate({ pathname: '/home', params: { cover: '1' } })} onOpenConsent={() => router.push('/prompt/consent')}
     onOpenReport={() => router.push('/settings/report')} onOpenEndSpace={() => router.push('/settings/end-space')} />;
 }

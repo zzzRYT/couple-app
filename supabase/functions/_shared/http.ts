@@ -6,12 +6,12 @@ import { clientVerifier, rpcDb, serviceClient, tableIdempotencyStore, type Db } 
 
 export type Deps = { db: Db; verifier: UserVerifier; idempotency: IdempotencyStore; now?: () => Date };
 export type Context = { userId: string; params: Record<string, string>; body: Record<string, unknown>; query: URLSearchParams; deps: Deps; request: Request };
-type Route = { method: string; pattern: RegExp; endpoint: string; handle: (ctx: Context) => Promise<Response | unknown> };
+type Route = { method: string; pattern: RegExp; endpoint: string; handle: (ctx: Context) => Promise<Response | unknown>; idempotent: boolean };
 
 /** Declares `/spaces/:spaceId/...` routes; mutations are replayed from the idempotency store. */
-export function route(method: string, path: string, handle: Route['handle']): Route {
+export function route(method: string, path: string, handle: Route['handle'], options: { idempotent?: boolean } = {}): Route {
   const pattern = new RegExp(`${path.replace(/:(\w+)/g, '(?<$1>[^/]+)')}$`);
-  return { method, pattern, endpoint: `${method} ${path}`, handle };
+  return { method, pattern, endpoint: `${method} ${path}`, handle, idempotent: options.idempotent ?? true };
 }
 export function defaultDeps(): Deps {
   const client = serviceClient();
@@ -37,6 +37,7 @@ export function createHandler(routes: Route[], deps: Deps) {
       if (!body || typeof body !== 'object' || Array.isArray(body)) throw new AppError('INVALID_REQUEST');
       const ctx: Context = { userId, params: { ...match.m!.groups }, body, query: url.searchParams, deps, request };
       if (request.method === 'GET') response = asResponse(await match.r.handle(ctx));
+      else if (!match.r.idempotent) response = asResponse(await match.r.handle(ctx));
       else {
         const key = request.headers.get('Idempotency-Key') ?? (typeof body.idempotencyKey === 'string' ? body.idempotencyKey : null);
         if (!key) throw new AppError('INVALID_REQUEST');
