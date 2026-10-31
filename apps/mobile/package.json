@@ -54,5 +54,14 @@
       "^(?:\\.\\./)+assets/loader/([a-z_]+)\\.png$": "<rootDir>/assets/loader/$1@2x.png",
       "^react-native-reanimated$": "<rootDir>/src/test/reanimatedMock.tsx"
     }
+  },
+  "expo": {
+    "autolinking": {
+      "ios": {
+        "buildFromSource": [
+          "expo-image-manipulator"
+        ]
+      }
+    }
   }
 }
