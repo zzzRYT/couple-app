@@ -54,8 +54,8 @@ function AppNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
   return <Stack screenOptions={{ headerShown: false }}>
     <Stack.Screen name="i/[code]" />
     <Stack.Screen name="invite/[code]" />
-    <Stack.Protected guard={gate.kind === 'signedOut' || gate.kind === 'sessionExpired'}><Stack.Screen name="(auth)" /></Stack.Protected>
-    <Stack.Protected guard={gate.kind === 'needsOnboardingChoice'}><Stack.Screen name="(onboarding)" /></Stack.Protected>
+    <Stack.Protected guard={gate.kind === 'signedOut' || gate.kind === 'sessionExpired'}><Stack.Screen name="(auth)" options={{ gestureEnabled: false }} /></Stack.Protected>
+    <Stack.Protected guard={gate.kind === 'needsOnboardingChoice'}><Stack.Screen name="(onboarding)" options={{ gestureEnabled: false }} /></Stack.Protected>
     <Stack.Protected guard={gate.kind === 'ended'}><Stack.Screen name="ended" /></Stack.Protected>
     <Stack.Protected guard={gate.kind === 'active'}>
       <Stack.Screen name="(tabs)" />

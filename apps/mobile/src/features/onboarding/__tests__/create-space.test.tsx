@@ -52,3 +52,16 @@ it('maps ALREADY_IN_SPACE and network failures to their messages', async () => {
   await act(async () => { await submit(); });
   expect(screen.getByText(screen.t('space.err.title'))).toBeTruthy();
 });
+
+
+it('hides back during creation and after the space is committed', async () => {
+  let finish: (value: { spaceId: string }) => void = () => {};
+  const createSpace = jest.fn(() => new Promise<{ spaceId: string }>((resolve) => { finish = resolve; }));
+  const screen = await renderWithI18n(<CreateSpaceScreen createSpace={createSpace} now={now} timeZone="Asia/Seoul" onCreated={jest.fn()} onOpenSpace={jest.fn()} onBack={jest.fn()} />);
+  expect(screen.getByTestId('screen-back')).toBeTruthy();
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('space.create') }));
+  expect(screen.queryByTestId('screen-back')).toBeNull();
+  await act(async () => { finish({ spaceId: 's1' }); });
+  expect(screen.getByText(screen.t('space.ok.title'))).toBeTruthy();
+  expect(screen.queryByTestId('screen-back')).toBeNull();
+});
