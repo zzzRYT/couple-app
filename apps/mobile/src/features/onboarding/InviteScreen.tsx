@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Share, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AppText, Banner, Button, Card, Dialog, Screen, Toast } from '../../ui/components';
@@ -26,11 +26,16 @@ export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion
   const [now, setNow] = useState(clock());
   const [confirmReissue, setConfirmReissue] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const initialized = useRef(false);
   const load = useCallback(async () => {
     setStatus('loading'); setNotice(null); setView('code');
     try { setInvite(await createInvitation()); setNow(clock()); setStatus('ready'); void Promise.resolve(onInvitationCreated?.()).catch(() => undefined); } catch { setStatus('error'); }
   }, [createInvitation, clock, onInvitationCreated]);
-  useEffect(() => { if (memberCount >= 2) return; if (existingInvitationExpiresAt) { setStatus('pending'); setInvite(null); } else void load(); }, [load, existingInvitationExpiresAt, memberCount]);
+  useEffect(() => {
+    if (memberCount >= 2 || initialized.current) return;
+    initialized.current = true;
+    if (!existingInvitationExpiresAt) void load();
+  }, [load, existingInvitationExpiresAt, memberCount]);
   useEffect(() => { const timer = setInterval(() => setNow(clock()), 30_000); return () => clearInterval(timer); }, [clock]);
   useEffect(() => { if (memberCount >= 2) onJoined?.(); }, [memberCount, onJoined]);
   const hideNotice = useCallback(() => setNotice(null), []);

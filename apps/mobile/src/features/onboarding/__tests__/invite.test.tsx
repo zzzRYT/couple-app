@@ -9,6 +9,19 @@ afterEach(() => jest.useRealTimers());
 const codeLabel = (t: (key: string, options?: Record<string, unknown>) => string, code: string) => t('a11y.code', { code: code.split('').join(' ') });
 const invitation = (code: string, hours = 24) => ({ invitationId: code, code, expiresAt: new Date(clock + hours * 3_600_000).toISOString() });
 
+it('keeps the freshly created code when the parent refreshes its snapshot', async () => {
+  const created = invitation('AAAABBBB');
+  const createInvitation = jest.fn().mockResolvedValue(created);
+  const refresh = jest.fn();
+  const now = () => clock;
+  const screen = await renderWithI18n(<InviteScreen createInvitation={createInvitation} clock={now} reducedMotion onInvitationCreated={refresh} />);
+  expect(await screen.findByLabelText(codeLabel(screen.t, 'AAAA-BBBB'))).toBeTruthy();
+  expect(refresh).toHaveBeenCalledTimes(1);
+  await screen.rerender(<InviteScreen createInvitation={createInvitation} clock={now} reducedMotion onInvitationCreated={refresh} existingInvitationExpiresAt={created.expiresAt} />);
+  expect(screen.getByLabelText(codeLabel(screen.t, 'AAAA-BBBB'))).toBeTruthy();
+  expect(createInvitation).toHaveBeenCalledTimes(1);
+});
+
 it('formats codes as 4-4 and shows the remaining time', async () => {
   expect(formatInviteCode('k7m4q9xp')).toBe('K7M4-Q9XP');
   const createInvitation = jest.fn().mockResolvedValue(invitation('K7M4Q9XP'));
@@ -51,6 +64,27 @@ it('does not reveal or reissue an existing valid invite when the screen is reope
   expect(createInvitation).not.toHaveBeenCalled();
   await fireEvent.press(screen.getByRole('button', { name: screen.t('common.confirm') }));
   expect(await screen.findByLabelText(codeLabel(screen.t, 'CCCC-DDDD'))).toBeTruthy();
+  expect(createInvitation).toHaveBeenCalledTimes(1);
+});
+
+it('retains a confirmed reissue through refresh but not after leaving and reopening', async () => {
+  const old = invitation('AAAABBBB', 1);
+  const replacement = invitation('CCCCDDDD');
+  const createInvitation = jest.fn().mockResolvedValue(replacement);
+  const refresh = jest.fn();
+  const now = () => clock;
+  const props = { createInvitation, clock: now, reducedMotion: true, onInvitationCreated: refresh };
+  const screen = await renderWithI18n(<InviteScreen {...props} existingInvitationExpiresAt={old.expiresAt} />);
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('invite.reissue') }));
+  expect(createInvitation).not.toHaveBeenCalled();
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('common.confirm') }));
+  expect(await screen.findByLabelText(codeLabel(screen.t, 'CCCC-DDDD'))).toBeTruthy();
+  await screen.rerender(<InviteScreen {...props} existingInvitationExpiresAt={replacement.expiresAt} />);
+  expect(screen.getByLabelText(codeLabel(screen.t, 'CCCC-DDDD'))).toBeTruthy();
+  await screen.unmount();
+  const reopened = await renderWithI18n(<InviteScreen {...props} existingInvitationExpiresAt={replacement.expiresAt} />);
+  expect(reopened.getByText(reopened.t('invite.waiting.title'))).toBeTruthy();
+  expect(reopened.queryByLabelText(codeLabel(reopened.t, 'CCCC-DDDD'))).toBeNull();
   expect(createInvitation).toHaveBeenCalledTimes(1);
 });
 
