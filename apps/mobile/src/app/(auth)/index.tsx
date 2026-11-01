@@ -19,5 +19,5 @@ export default function AuthIndex() {
     return <LoginScreen auth={auth} notice={t('acct.delete.done')} onDone={moveOn} onEmail={(email) => { moveOn(); router.push({ pathname: '/email-code', params: { email } }); }} />;
   }
   if (!sessionExpired) return <Welcome onStart={() => router.push('/login')} onHasAccount={() => router.push({ pathname: '/login', params: { returning: '1' } })} />;
-  return <Screen center footer={<Button label={t('sys.login.action')} onPress={() => { void auth.signOut().finally(() => { reset(); clearSessionExpired(); router.push('/login'); }); }} />}><Banner kind="warn" text={t('sys.login.title')} body={t('sys.login.body')} /></Screen>;
+  return <Screen center footer={<Button label={t('sys.login.action')} onPress={() => { void auth.signOut().finally(() => { reset(); clearSessionExpired(); router.replace('/login'); }); }} />}><Banner kind="warn" text={t('sys.login.title')} body={t('sys.login.body')} /></Screen>;
 }

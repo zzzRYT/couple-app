@@ -10,5 +10,5 @@ export default function JoinHasSpaceRoute() {
   const [code, setCode] = useState<string | null | undefined>(undefined);
   useEffect(() => { void takePendingInvite().then(setCode); }, []);
   if (code === undefined) return null;
-  return <JoinScreen initialCode={code} alreadyInSpace readClipboard={Clipboard.getStringAsync} onBack={() => router.back()} previewInvitation={client.previewInvitation} acceptInvitation={client.acceptInvitation} onJoined={() => {}} onOpenSpace={() => router.back()} />;
+  return <JoinScreen initialCode={code} alreadyInSpace readClipboard={Clipboard.getStringAsync} onBack={() => router.dismissTo('/home')} previewInvitation={client.previewInvitation} acceptInvitation={client.acceptInvitation} onJoined={() => {}} onOpenSpace={() => router.dismissTo('/home')} />;
 }
