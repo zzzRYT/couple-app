@@ -1,4 +1,4 @@
-import { fireEvent } from '@testing-library/react-native';
+import { act, fireEvent } from '@testing-library/react-native';
 import { renderWithI18n } from '../../../test/render';
 import { JoinScreen, maskInviteInput } from '../JoinScreen';
 import { ApiError } from '../../../lib/errors';
@@ -90,4 +90,19 @@ it('pastes an invite link as a code', async () => {
   const screen = await renderWithI18n(<JoinScreen previewInvitation={jest.fn()} acceptInvitation={jest.fn()} onJoined={jest.fn()} onOpenSpace={jest.fn()} readClipboard={async () => 'https://aroom.jinjinstar.com/i/AB12-CD34'} />);
   await fireEvent.press(screen.getByRole('button', { name: screen.t('join.paste') }));
   expect(screen.getByLabelText(screen.t('join.title')).props.value).toBe('AB12-CD34');
+});
+
+
+it('does not offer back while accepting or after the server has joined the space', async () => {
+  let finish: (value: { spaceId: string }) => void = () => {};
+  const accept = jest.fn(() => new Promise<{ spaceId: string }>((resolve) => { finish = resolve; }));
+  const screen = await renderWithI18n(<JoinScreen previewInvitation={jest.fn().mockResolvedValue({ anniversaryDate: '2025-06-29' })} acceptInvitation={accept} onJoined={jest.fn()} onOpenSpace={jest.fn()} onBack={jest.fn()} />);
+  await fireEvent.changeText(screen.getByLabelText(screen.t('join.title')), 'AAAABBBB');
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('join.check') }));
+  expect(screen.getByTestId('screen-back')).toBeTruthy();
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('join.accept') }));
+  expect(screen.queryByTestId('screen-back')).toBeNull();
+  await act(async () => { finish({ spaceId: 's1' }); });
+  expect(screen.getByText(screen.t('join.ok.title'))).toBeTruthy();
+  expect(screen.queryByTestId('screen-back')).toBeNull();
 });

@@ -7,6 +7,7 @@ import { useAppColor } from '../theme/useAppColor';
 import { useType, type TypeVariant } from '../theme/typography';
 import { Icon, type IconName } from './Icon';
 import { useReducedMotion } from './motion';
+import { FlowBackAction } from './FlowBack';
 import { useDisplayAppearance } from '../features/settings/preferences';
 
 type AppColor = ReturnType<typeof useAppColor>;
@@ -63,6 +64,11 @@ export function IconButton({ icon, label, onPress, disabled = false, plain = fal
       <Icon name={icon} size={plain ? 26 : 22} color={color.text} />
     </Pressable>
   );
+}
+/** Shared, translated back affordance used by screen scaffolds. */
+export function BackControl({ onPress }: { onPress: () => void }) {
+  const { t } = useTranslation();
+  return <IconButton plain icon="back" label={t('a11y.back')} onPress={onPress} testID="screen-back" />;
 }
 export function TextField({ label, error, hideLabel = false, ...props }: TextInputProps & { label: string; error?: string | null; hideLabel?: boolean }) {
   const color = useAppColor();
@@ -225,13 +231,14 @@ export function Screen({ children, footer, onBack, onClose, scroll = true, cente
   const insets = useSafeAreaInsets();
   const bar = onBack || onClose
     ? <View style={{ height: tokens.touch.minimum + tokens.spacing[1], flexDirection: 'row', alignItems: 'center', justifyContent: onBack ? 'flex-start' : 'flex-end', marginHorizontal: GUTTER - 12 }}>
-      {onBack && <IconButton plain icon="back" label={t('a11y.back')} onPress={onBack} testID="screen-back" />}
+      {onBack && <BackControl onPress={onBack} />}
       {onClose && <IconButton plain icon="close" label={t('a11y.close')} onPress={onClose} testID="screen-close" />}
     </View>
     : null;
   const body = { flexGrow: 1, paddingHorizontal: GUTTER, paddingTop: bar ? tokens.spacing[1] : tokens.spacing[3], paddingBottom: tokens.spacing[5], gap: tokens.spacing[3], justifyContent: center ? 'center' as const : 'flex-start' as const };
   return (
     <KeyboardAvoidingView testID={testID} behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1, backgroundColor: color.bg, paddingTop: insets.top }}>
+      <FlowBackAction onBack={onBack} />
       {bar}
       {scroll ? <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }} contentContainerStyle={body}>{children}</ScrollView> : <View style={[{ flex: 1 }, body]}>{children}</View>}
       {footer && <View style={{ paddingHorizontal: GUTTER, paddingTop: tokens.spacing[2], paddingBottom: bottomInset ? Math.max(insets.bottom, GUTTER) : GUTTER, gap: tokens.spacing[1] }}>{footer}</View>}

@@ -58,7 +58,7 @@ export function JoinScreen({ previewInvitation, acceptInvitation, onJoined, onOp
   if (step === 'accepting' || (typeof step === 'object' && 'found' in step)) {
     const found = typeof step === 'object' ? step.found : null;
     return (
-      <Screen onBack={() => setStep('enter')} footer={<>
+      <Screen onBack={step === 'accepting' ? undefined : () => setStep('enter')} footer={<>
         <Button label={t('join.accept')} loading={step === 'accepting'} onPress={() => void accept()} />
         <Button label={t('join.decline')} variant="ghost" disabled={step === 'accepting'} onPress={() => setStep('enter')} />
       </>}>

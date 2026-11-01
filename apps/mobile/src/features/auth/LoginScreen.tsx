@@ -55,9 +55,9 @@ export function LoginScreen({ auth, lastUsed, onDone, onEmail, onBack, notice, o
   }
   if (state.kind === 'email' && options.devEmail) {
     return (
-      <Screen onBack={() => setState({ kind: 'choose' })} footer={<>
+      <Screen onBack={state.sending ? undefined : () => setState({ kind: 'choose' })} footer={<>
         <Button label={t('login.email.send')} loading={state.sending} onPress={() => void send()} />
-        <Button label={t('login.other')} variant="ghost" onPress={() => setState({ kind: 'choose' })} />
+        <Button label={t('login.other')} variant="ghost" disabled={state.sending} onPress={() => setState({ kind: 'choose' })} />
       </>}>
         <AppText variant="title" accessibilityRole="header">{t('login.email.title')}</AppText>
         <TextField label={t('login.email.label')} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoComplete="email" autoFocus

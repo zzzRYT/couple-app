@@ -11,5 +11,5 @@ export default function CreateSpaceRoute() {
   const timeZone = getCalendars()[0]?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
   return <CreateSpaceScreen createSpace={client.createSpace} now={now} timeZone={timeZone}
     onCreated={() => { queueInviteAfterActivation(); void reload(); }}
-    onBack={() => router.back()} onOpenSpace={() => { void reload(); }} />;
+    onBack={() => router.dismissTo('/choose-space')} onOpenSpace={() => { void reload(); }} />;
 }
