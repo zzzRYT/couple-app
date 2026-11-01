@@ -8,6 +8,10 @@ if (!dev && process.env.EXPO_PUBLIC_DEV_EMAIL_LOGIN === 'true') {
   throw new Error('EXPO_PUBLIC_DEV_EMAIL_LOGIN must not be set for production builds');
 }
 
+if (variant !== 'development' && process.env.EXPO_PUBLIC_DEV_QUICK_LOGIN === 'true') {
+  throw new Error('EXPO_PUBLIC_DEV_QUICK_LOGIN must not be set for preview or production builds');
+}
+
 export default {
   expo: {
     name: dev ? `${APP_IDENTITY.name} (${variant})` : APP_IDENTITY.name,

@@ -50,6 +50,7 @@
   "onb.lastUsed": "최근 사용",
   "onb.skip": "건너뛰기",
   "onb.pageOf": "{n} / {total}",
+  "login.quick.title": "DEV · 테스트 계정으로 바로 입장",
   "login.title": "로그인 방법을 골라 주세요",
   "login.kakao": "카카오로 계속하기",
   "login.apple": "Apple로 계속하기",

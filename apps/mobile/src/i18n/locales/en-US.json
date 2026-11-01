@@ -50,6 +50,7 @@
   "onb.lastUsed": "Last used",
   "onb.skip": "Skip",
   "onb.pageOf": "{n} of {total}",
+  "login.quick.title": "DEV · Enter with a test account",
   "login.title": "Choose how to sign in",
   "login.kakao": "Continue with Kakao",
   "login.apple": "Continue with Apple",
