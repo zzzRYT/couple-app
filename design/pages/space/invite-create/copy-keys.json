@@ -1,5 +1,6 @@
 [
   "a11y.code",
+  "common.back",
   "common.cancel",
   "common.next",
   "common.retry",
