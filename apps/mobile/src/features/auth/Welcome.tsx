@@ -60,7 +60,7 @@ export function Welcome({ onStart, onHasAccount, fontScale }: { onStart: () => v
   const last = page === pages.length - 1;
   const key = pages[page]!;
   return (
-    <Screen footer={<>
+    <Screen onBack={page > 0 ? () => setPage(page - 1) : undefined} footer={<>
       {last ? <Button label={t('onb.start')} onPress={() => onStart()} /> : <Button label={t('common.next')} onPress={() => setPage(page + 1)} />}
       {last && <Button label={t('onb.hasAccount')} variant="ghost" onPress={() => onHasAccount()} />}
       {last && <View style={{ alignItems: 'center', gap: 2, paddingTop: tokens.spacing[1] }}>

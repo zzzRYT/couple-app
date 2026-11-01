@@ -19,8 +19,7 @@ export function EmailCodeScreen({ auth, email, onDone, onBack }: { auth: AuthPor
   async function confirm() {
     setBusy(true);
     const result = await auth.verifyCode(email, code).catch(() => 'error' as const);
-    setBusy(false);
-    if (result === 'ok') { setProblem(null); onDone(); } else setProblem(result);
+    if (result === 'ok') { setProblem(null); onDone(); } else { setBusy(false); setProblem(result); }
   }
   async function resend() {
     setProblem(null); setCode(''); setWait(RESEND_SECONDS);
@@ -29,7 +28,7 @@ export function EmailCodeScreen({ auth, email, onDone, onBack }: { auth: AuthPor
   }
   const message = problem === null ? null : typeof problem === 'object' ? t('login.code.rate', { m: problem.rateLimitedMinutes }) : t(problem === 'error' ? 'login.error.body' : `login.code.${problem}`);
   return (
-    <Screen onBack={onBack} footer={<>
+    <Screen onBack={busy ? undefined : onBack} footer={<>
       <Button label={t('login.code.confirm')} loading={busy} disabled={code.length !== 6 || typeof problem === 'object' && problem !== null} onPress={() => void confirm()} />
       {wait > 0 ? <AppText variant="bodySm" tone="text2" align="center" style={{ paddingVertical: 14 }}>{t('login.code.resendIn', { s: wait })}</AppText> : <Button label={t('login.code.resend')} variant="ghost" onPress={() => void resend()} />}
     </>}>

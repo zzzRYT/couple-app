@@ -1,9 +1,7 @@
-import { Slot } from 'expo-router';
-import { View } from 'react-native';
-import { useAppColor } from '../../theme/useAppColor';
+import { Stack } from 'expo-router';
+import { FlowBackProvider } from '../../ui/FlowBack';
 
-/** Screens own their safe-area insets (ui/components Screen), so the group only paints the background. */
+/** The screen scaffold owns the safe area and the visible back control. */
 export default function Layout() {
-  const color = useAppColor();
-  return <View style={{ flex: 1, backgroundColor: color.bg }}><Slot /></View>;
+  return <FlowBackProvider><Stack screenOptions={{ headerShown: false, gestureEnabled: false }} /></FlowBackProvider>;
 }

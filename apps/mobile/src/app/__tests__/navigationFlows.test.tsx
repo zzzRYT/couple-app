@@ -1,16 +1,17 @@
 import { Text } from 'react-native';
-import { router, Slot, Stack, Tabs } from 'expo-router';
+import { router, Stack, Tabs } from 'expo-router';
 import { act, renderRouter, testRouter, waitFor } from 'expo-router/testing-library';
 
 const screen = (name: string) => () => <Text>{name}</Text>;
 const tabsLayout = () => <Tabs><Tabs.Screen name="home" /><Tabs.Screen name="room" /><Tabs.Screen name="settings/index" /></Tabs>;
 const routes = {
   _layout: () => <Stack />,
-  '(auth)/_layout': () => <Slot />,
+  '(auth)/_layout': () => <Stack />,
   '(auth)/index': screen('welcome'),
   '(auth)/welcome': screen('welcome'),
   '(auth)/login': screen('login'),
-  '(onboarding)/_layout': () => <Slot />,
+  '(auth)/email-code': screen('code'),
+  '(onboarding)/_layout': () => <Stack />,
   '(onboarding)/index': screen('choice'),
   '(onboarding)/choose-space': screen('choice'),
   '(onboarding)/create-space': screen('create'),
@@ -41,7 +42,9 @@ const cases = [
   { name: '9 clean logout has no back stack', start: '/settings', actions: [['replace', '/login']], back: false, tabs: 0, path: '/login' },
   { name: '10 warm invite link backs to Home', start: '/home', actions: [['push', '/join'], ['back']], back: false, tabs: 1, path: '/home' },
   { name: '11 cold invite Join back goes to choice anchor', start: '/join', actions: [['dismissTo', '/choose-space']], back: false, tabs: 0, path: '/choose-space' },
-  { name: '12 repeated prompt navigation resolves to one modal route', start: '/room', actions: [['navigate', '/prompt'], ['navigate', '/prompt']], back: true, tabs: 1, path: '/prompt' },
+  { name: '12 cold email code returns safely to login', start: '/email-code', actions: [['dismissTo', '/login']], back: false, tabs: 0, path: '/login' },
+  { name: '13 create with empty history returns to choice', start: '/create-space', actions: [['dismissTo', '/choose-space']], back: false, tabs: 0, path: '/choose-space' },
+  { name: '14 repeated prompt navigation resolves to one modal route', start: '/room', actions: [['navigate', '/prompt'], ['navigate', '/prompt']], back: true, tabs: 1, path: '/prompt' },
 ] as const;
 
 it.each(cases)('$name', async ({ start, actions, back, tabs, path }) => {
