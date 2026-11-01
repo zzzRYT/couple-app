@@ -1,0 +1,26 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "set.sec.account": "Account",
+    "set.logout.title": "Sign out?",
+    "set.logout.body": "Signing out doesn't change your space or room.",
+    "set.name": "Nickname",
+    "set.cover.off": "None",
+    "acct.delete.title": "Delete your account?",
+    "acct.delete.lead": "You'll be signed out right away, and this can't be undone.",
+    "acct.delete.b1": "Your account and profile information are deleted",
+    "acct.delete.b2": "If you share a space, it ends. Neither of you can open it, and the room, photos and decorations are deleted",
+    "acct.delete.b3": "Signing up again with the same login won't bring anything back",
+    "acct.delete.confirm": "Delete account",
+    "acct.delete.reauth.title": "Please confirm it's you",
+    "acct.delete.reauth.body": "For your safety, please sign in once more.",
+    "acct.delete.reauth.fail": "We couldn't confirm it's you. Please try again.",
+    "acct.delete.progress": "Deleting your account",
+    "acct.delete.done": "Your account was deleted",
+    "acct.delete.offline": "You need an internet connection to delete your account",
+    "acct.delete.fail.title": "Couldn't delete it",
+    "acct.delete.fail.body": "Nothing was deleted yet. Please try again in a moment.",
+    "a11y.on": "on",
+    "set.notif.sub.on": "On · 9:00 am on milestone days"
+  }
+}

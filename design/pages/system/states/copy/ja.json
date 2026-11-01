@@ -1,0 +1,27 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "join.haveCode": "招待コードがあります",
+    "join.createSpace": "新しいスペースを作る",
+    "sys.server.title": "サーバーが一時的に不安定です",
+    "sys.server.body": "しばらくしてからもう一度お試しください。部屋はそのままです。",
+    "sys.ai.title": "飾り付けは一時的に使えません",
+    "sys.ai.body": "日数表示と部屋の閲覧はそのまま使えます。しばらくしてからお試しください。",
+    "sys.login.title": "ログインの有効期限が切れました",
+    "sys.login.body": "もう一度ログインすると、続きから使えます。",
+    "sys.login.action": "もう一度ログイン",
+    "sys.denied.title": "このスペースには入れません",
+    "sys.denied.body": "このスペースのメンバーではないか、スペースが終了しています。",
+    "sys.old.title": "この部屋はより新しいバージョンのアプリで飾られています",
+    "sys.old.body": "アプリを更新するとすべて表示できます。今は読み取れる部分だけを表示しています。",
+    "sys.old.action": "アプリを更新",
+    "sys.asset.title": "一部の小物を読み込めませんでした",
+    "sys.asset.body": "その場所は空けてあります。接続が良くなると自動で読み込み直します。",
+    "sys.pending.title": "同期を待っています",
+    "sys.pending.body": "インターネットに接続されると、最新の内容に更新されます。",
+    "sys.quota.title": "今日の回数を使い切りました",
+    "sys.empty.title": "まだ表示できるものがありません",
+    "sys.empty.body": "表示できる内容ができると、ここに表示されます。",
+    "sys.retry": "もう一度試す"
+  }
+}

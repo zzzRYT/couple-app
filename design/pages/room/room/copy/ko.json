@@ -1,0 +1,24 @@
+{
+  "status": "source",
+  "strings": {
+    "room.ctl.settings": "설정",
+    "room.syncing": "동기화하는 중",
+    "room.partnerChanged": "{name}님이 방을 바꿨어요",
+    "room.recover.title": "방 데이터를 읽지 못했어요",
+    "room.recover.body": "저장된 방은 그대로 있어요. 다시 불러와 주세요.",
+    "room.recover.action": "다시 불러오기",
+    "room.ddayHidden": "날짜 위젯은 이 방에서 숨겨져 있어요. 메인 화면에서는 그대로 보여요.",
+    "room.protect.legend.system": "시스템 영역",
+    "room.protect.legend.ctl": "방 도구 막대",
+    "room.protect.legend.dday": "날짜 위젯",
+    "room.protect.legend.text": "글자 가독성 영역",
+    "room.protect.legend.tab": "시스템 탭 막대",
+    "obj.report": "신고하기",
+    "obj.report.scene": "방 전체 신고",
+    "obj.reported": "신고했어요 · 접수됨",
+    "obj.hidden.note": "내 화면에서만 숨겼어요.",
+    "obj.removed.notice": "검토 결과 이 장식은 방에서 빠졌어요.",
+    "room.mascot.recall": "아루미 다시 부르기",
+    "room.mascot.missing": "방에 아루미가 없어요. 누르면 기본 자리로 돌아와요."
+  }
+}

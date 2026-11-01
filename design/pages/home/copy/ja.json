@@ -1,0 +1,18 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "common.save": "保存",
+    "main.invitePending.title": "パートナーを待っています",
+    "main.invitePending.body": "招待コードはあと{h}時間で期限切れになります。",
+    "main.invitePending.action": "招待コードを見る",
+    "main.noDate.title": "一緒になった日を決めてください",
+    "main.noDate.body": "日付を決めると、何日目か表示されます。",
+    "main.noDate.action": "日付を決める",
+    "main.editSheet.title": "日付を変更",
+    "main.editSheet.body": "日付を変更すると、ふたりの画面の日数がどちらも変わります。",
+    "main.sync.title": "同期できませんでした",
+    "main.sync.body": "最後に保存された内容を表示しています。",
+    "a11y.cover.change": "ホームの背景写真を変更",
+    "a11y.cover.photo": "ふたりで設定した背景写真"
+  }
+}

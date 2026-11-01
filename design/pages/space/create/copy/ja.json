@@ -1,0 +1,26 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "space.choice.title": "ふたりのスペースを始めましょう",
+    "space.choice.body": "新しく作るか、パートナーからの招待コードで参加できます。",
+    "space.title": "ふたりが一緒になった日を教えてください",
+    "space.body": "この日から一緒に過ごした日数を数えます。あとで設定から変更できます。",
+    "space.date.label": "一緒になった日",
+    "space.date.hint": "例：2025年6月29日",
+    "space.date.future": "今日より後の日付は選べません。",
+    "space.date.invalid": "存在しない日付です。もう一度確認してください。",
+    "space.tz.note": "部屋の昼と夜は、今いる場所のタイムゾーン（{tz}）に合わせて切り替わります。設定で変更できます。",
+    "space.tz.name": "ソウル",
+    "space.create": "ふたりのスペースを作る",
+    "space.creating": "スペースを作っています",
+    "space.ok.title": "スペースができました",
+    "space.ok.body": "次はパートナーを招待しましょう。",
+    "space.ok.next": "パートナーを招待する",
+    "space.err.title": "スペースを作れませんでした",
+    "space.err.body": "インターネット接続を確認して、もう一度お試しください。",
+    "space.date.pick": "日付を選ぶ",
+    "space.year": "年",
+    "space.month": "月",
+    "space.day": "日"
+  }
+}

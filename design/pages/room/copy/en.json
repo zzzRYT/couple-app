@@ -1,0 +1,22 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "room.loading": "Loading your room",
+    "room.offline": "You're offline, so the room is view-only",
+    "room.syncFail.title": "Couldn't sync",
+    "room.syncFail.body": "Showing the room as last seen.",
+    "common.confirm": "OK",
+    "prompt.free": "No one is decorating right now",
+    "prompt.start": "I'll decorate",
+    "prompt.idleHint": "If nothing happens for 3 minutes, it's released automatically.",
+    "prompt.placeholder": "How would you like to decorate?",
+    "prompt.left": "{n} more tries today",
+    "prompt.fail.title": "Couldn't create a preview",
+    "prompt.msg.me": "Make it a bit cozier. I'd like a cushion and a lamp.",
+    "prompt.msg.result": "I added 1 cushion and 1 lamp. Take a look at the preview.",
+    "preview.badge": "Preview · not applied yet",
+    "preview.partner.wait": "{name} is deciding whether to apply it",
+    "preview.partner.readonly": "You can only watch for now",
+    "preview.changes.list": "Added a cushion, a lamp and a star"
+  }
+}

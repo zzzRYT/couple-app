@@ -41,7 +41,7 @@
 
 응답 200: `{ "spaceId": "uuid", "status": "active", "memberCount": 2 }`.
 
-초대 실패 코드(구현 중 확정, 2026-10-27; `design/i18n-copy.md`의 대응 표와 같은 이름): `404 INVITE_INVALID`(없는·폐기된·위조 코드), `410 INVITE_EXPIRED`, `409 INVITE_USED`, `409 SPACE_FULL`(이미 두 사람), `409 ALREADY_IN_SPACE`, `429 RATE_LIMITED`(`retryAfterSeconds`, `unlockAt`; 사용자당 시간당 실패 10회, 서버 설정값). 잠금 동안에는 올바른 코드도 거절한다.
+초대 실패 코드(구현 중 확정, 2026-10-27; `design/archive/i18n-copy-2026-11.md`의 당시 대응 표와 같은 이름): `404 INVITE_INVALID`(없는·폐기된·위조 코드), `410 INVITE_EXPIRED`, `409 INVITE_USED`, `409 SPACE_FULL`(이미 두 사람), `409 ALREADY_IN_SPACE`, `429 RATE_LIMITED`(`retryAfterSeconds`, `unlockAt`; 사용자당 시간당 실패 10회, 서버 설정값). 잠금 동안에는 올바른 코드도 거절한다.
 
 ### `POST /invitations/preview`
 
@@ -130,7 +130,7 @@ D-day 값은 모델 입력으로 보내지 않는다. 변경을 두 구성원에
 
 사진을 없앤다(`status: none`, 없앤 사용자를 `uploadedBy`에 기록). 응답 204. 이전 객체는 삭제 대기 목록에 들어가 24시간 뒤 삭제된다. 공간이 종료되면 사진은 즉시 읽을 수 없고(`GET`·서명 주소 `404`), 서버의 완전 삭제 작업이 객체도 함께 지운다.
 
-오류 코드는 언어 중립이며 앱 번역 리소스가 문구를 고른다(`i18n-copy.md`의 `cover.*`).
+오류 코드는 언어 중립이며 앱 번역 리소스가 문구를 고른다(`design/pages/`의 `cover.*`).
 
 ## 공유 프롬프트 세션 및 AI 미리보기
 

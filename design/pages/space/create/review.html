@@ -1,0 +1,55 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>S03 커플 공간 생성</title><style>body{font:16px/1.55 system-ui,sans-serif;max-width:1100px;margin:auto;padding:24px;color:#352a2d;background:#fbf8f5}a{color:#804052}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:1em;border-radius:10px}img{max-width:300px;max-height:600px;object-fit:contain;border:1px solid #ddd;border-radius:8px}figure{display:inline-block;vertical-align:top;margin:8px}figcaption{max-width:300px;overflow-wrap:anywhere}table{border-collapse:collapse;background:white;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}td{overflow-wrap:anywhere}nav{margin-bottom:1em}</style><body><nav><a href="../../index.html">전체</a> · <a href="../review.html">space</a> · <a href="page.md">명세 편집</a></nav><h1>S03 커플 공간 생성</h1><h2>이미지</h2><figure><img loading="lazy" src="../../../exports/S03-creating__ios-light-ko.png" alt="S03-creating__ios-light-ko.png"><figcaption>S03-creating__ios-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../../exports/S03-form__ios-light-ko.png" alt="S03-form__ios-light-ko.png"><figcaption>S03-form__ios-light-ko.png</figcaption></figure><h2>수락 시나리오</h2><ul><li>☐ S03-AC-01: 유효한 날짜로 공간을 만들면 S04로 이동한다.</li><li>☐ S03-AC-02: 미래 날짜와 존재하지 않는 날짜에 오류를 표시한다.</li></ul><h2>상태 · 흐름 · 원본 명세</h2><pre># S03 커플 공간 생성
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S03
+Route: /(onboarding)/choose-space, /(onboarding)/create-space
+
+## 디자인 원본
+
+- [S03-couple-space.dc.html](../../../canvas/project/S03-couple-space.dc.html)
+
+## 이미지
+
+- [S03-creating__ios-light-ko.png](../../../exports/S03-creating__ios-light-ko.png)
+- [S03-form__ios-light-ko.png](../../../exports/S03-form__ios-light-ko.png)
+
+## 상태와 상호작용
+
+- **캔버스 보드**: `S03-couple-space`
+- **목적**: 함께한 날짜 입력·수정(달력이 아닌 3열 휠), 형식·유효성 오류(미래 날짜, 존재하지 않는 날짜), 생성 중·성공·연결 오류. 방의 시간대 안내.
+- **이동**: S02 → 날짜 입력 → 공간 만들기 → 성공 → S04.
+- 날짜는 달력 UI로 고르지 않아요(달력 기능을 암시하지 않기 위해). 3열 휠(년·월·일, 영어는 월·일·년 순서).
+- 방의 낮밤은 만드는 사람의 현재 시간대로 정해지고 설정에서 바꿀 수 있다는 안내를 여기서 처음 보여요(FR-020).
+- **긴 문구·언어 사례**: 날짜 필드 순서가 언어별로 달라요(ko/ja 년·월·일, en 월·일·년).
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S03-form` | 날짜 입력 (기본) | `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.date.hint` `space.tz.name` `space.tz.note` `space.create` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S03-picker` | 날짜 휠 선택 시트 | `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.date.hint` `space.tz.name` `space.tz.note` `space.create` `space.date.pick` `common.done` | iOS·밝게·ko, Android·어둡게·ko |
+| `S03-future` | 미래 날짜 오류 | `space.date.future` `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.tz.name` `space.tz.note` `space.create` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S03-invalid` | 존재하지 않는 날짜 오류 | `space.date.invalid` `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.tz.name` `space.tz.note` `space.create` | iOS·밝게·ko, Android·어둡게·ko |
+| `S03-creating` | 생성 중 | `space.creating` | iOS·밝게·ko, Android·어둡게·ko |
+| `S03-ok` | 생성 성공 | `space.ok.title` `space.ok.body` `space.ok.next` | iOS·밝게·ko, Android·어둡게·ko |
+| `S03-error` | 연결 오류 | `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.date.hint` `space.tz.name` `space.tz.note` `space.err.title` `space.err.body` `common.retry` `space.create` | iOS·밝게·ko, Android·어둡게·ko |
+
+## 이동 및 뒤로
+
+F01: S02 → S03 → S04 → 홈; 다른 사용자는 S02 → S05 → 홈. 홈 → S04 재진입. 뒤로: 생성/참여 → 공간 선택; 초대는 진입한 화면으로. 초대 링크와 대기 화면의 정확한 뒤로 동작은 확인 필요.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S03-AC-01: 유효한 날짜로 공간을 만들면 S04로 이동한다.
+- [ ] S03-AC-02: 미래 날짜와 존재하지 않는 날짜에 오류를 표시한다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre><h2>번역</h2><table><thead><tr><th>Key</th><th>한국어</th><th>English · draft G4</th><th>日本語 · draft G4</th></tr></thead><tbody><tr><th>common.done</th><td>완료</td><td>Done</td><td>完了</td></tr><tr><th>common.retry</th><td>다시 시도</td><td>Try again</td><td>もう一度試す</td></tr><tr><th>space.body</th><td>이 날짜부터 함께한 일수를 세어요. 나중에 설정에서 고칠 수 있어요.</td><td>We'll count the days from this date. You can change it later in Settings.</td><td>この日から一緒に過ごした日数を数えます。あとで設定から変更できます。</td></tr><tr><th>space.choice.body</th><td>새 공간을 만들거나 상대에게 받은 초대 코드로 참여할 수 있어요.</td><td>Create a new space or join with an invitation code from your partner.</td><td>新しく作るか、パートナーからの招待コードで参加できます。</td></tr><tr><th>space.choice.title</th><td>우리 공간을 시작해요</td><td>Start your space</td><td>ふたりのスペースを始めましょう</td></tr><tr><th>space.create</th><td>우리 공간 만들기</td><td>Create our space</td><td>ふたりのスペースを作る</td></tr><tr><th>space.creating</th><td>공간을 만들고 있어요</td><td>Creating your space</td><td>スペースを作っています</td></tr><tr><th>space.date.future</th><td>오늘 이후의 날짜는 고를 수 없어요.</td><td>You can't pick a date after today.</td><td>今日より後の日付は選べません。</td></tr><tr><th>space.date.hint</th><td>예: 2025년 6월 29일</td><td>e.g. June 29, 2025</td><td>例：2025年6月29日</td></tr><tr><th>space.date.invalid</th><td>존재하지 않는 날짜예요. 다시 확인해 주세요.</td><td>That date doesn't exist. Check it again.</td><td>存在しない日付です。もう一度確認してください。</td></tr><tr><th>space.date.label</th><td>함께한 날짜</td><td>Date you got together</td><td>一緒になった日</td></tr><tr><th>space.date.pick</th><td>날짜 고르기</td><td>Choose a date</td><td>日付を選ぶ</td></tr><tr><th>space.day</th><td>일</td><td>Day</td><td>日</td></tr><tr><th>space.err.body</th><td>인터넷 연결을 확인하고 다시 시도해 주세요.</td><td>Check your internet connection and try again.</td><td>インターネット接続を確認して、もう一度お試しください。</td></tr><tr><th>space.err.title</th><td>공간을 만들지 못했어요</td><td>Couldn't create your space</td><td>スペースを作れませんでした</td></tr><tr><th>space.month</th><td>월</td><td>Month</td><td>月</td></tr><tr><th>space.ok.body</th><td>이제 상대를 초대해 주세요.</td><td>Next, invite your partner.</td><td>次はパートナーを招待しましょう。</td></tr><tr><th>space.ok.next</th><td>상대 초대하기</td><td>Invite your partner</td><td>パートナーを招待する</td></tr><tr><th>space.ok.title</th><td>공간이 만들어졌어요</td><td>Your space is ready</td><td>スペースができました</td></tr><tr><th>space.title</th><td>함께한 날짜를 알려 주세요</td><td>When did you two get together?</td><td>ふたりが一緒になった日を教えてください</td></tr><tr><th>space.tz.name</th><td>서울</td><td>Seoul</td><td>ソウル</td></tr><tr><th>space.tz.note</th><td>방의 낮·밤은 지금 있는 곳의 시간대({tz})에 맞춰 바뀌어요. 설정에서 바꿀 수 있어요.</td><td>Day and night in your room follow your current time zone ({tz}). You can change it in Settings.</td><td>部屋の昼と夜は、今いる場所のタイムゾーン（{tz}）に合わせて切り替わります。設定で変更できます。</td></tr><tr><th>space.year</th><td>년</td><td>Year</td><td>年</td></tr></tbody></table></body></html>

@@ -1,0 +1,18 @@
+{
+  "status": "source",
+  "strings": {
+    "common.save": "저장",
+    "main.invitePending.title": "상대를 기다리고 있어요",
+    "main.invitePending.body": "초대 코드는 {h}시간 뒤에 만료돼요.",
+    "main.invitePending.action": "초대 코드 보기",
+    "main.noDate.title": "함께한 날짜를 정해 주세요",
+    "main.noDate.body": "날짜를 정하면 며칠째인지 보여 드려요.",
+    "main.noDate.action": "날짜 정하기",
+    "main.editSheet.title": "함께한 날짜 고치기",
+    "main.editSheet.body": "날짜를 바꾸면 두 사람 화면의 일수가 모두 바뀌어요.",
+    "main.sync.title": "동기화하지 못했어요",
+    "main.sync.body": "마지막으로 저장된 내용을 보여 드리고 있어요.",
+    "a11y.cover.change": "홈 배경 사진 바꾸기",
+    "a11y.cover.photo": "우리가 올린 배경 사진"
+  }
+}

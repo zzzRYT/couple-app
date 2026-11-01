@@ -1,0 +1,195 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>space</title><style>body{font:16px/1.55 system-ui,sans-serif;max-width:1100px;margin:auto;padding:24px;color:#352a2d;background:#fbf8f5}a{color:#804052}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:1em;border-radius:10px}img{max-width:300px;max-height:600px;object-fit:contain;border:1px solid #ddd;border-radius:8px}figure{display:inline-block;vertical-align:top;margin:8px}figcaption{max-width:300px;overflow-wrap:anywhere}table{border-collapse:collapse;background:white;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}td{overflow-wrap:anywhere}nav{margin-bottom:1em}</style><body><nav><a href="../index.html">전체</a> · <a href="feature.md">기능 편집</a></nav><h1>space</h1><pre># space
+
+승인자: 미승인
+승인일: 미정
+
+## 목적과 범위
+
+F01: S02 → S03 → S04 → 홈; 다른 사용자는 S02 → S05 → 홈. 홈 → S04 재진입. 뒤로: 생성/참여 → 공간 선택; 초대는 진입한 화면으로. 초대 링크와 대기 화면의 정확한 뒤로 동작은 확인 필요.
+
+## 페이지
+
+- [S03 create](create/page.md)
+- [S04 invite-create](invite-create/page.md)
+- [S05 invite-enter](invite-enter/page.md)
+
+## 흐름과 뒤로 가기
+
+F01: S02 → S03 → S04 → 홈; 다른 사용자는 S02 → S05 → 홈. 홈 → S04 재진입. 뒤로: 생성/참여 → 공간 선택; 초대는 진입한 화면으로. 초대 링크와 대기 화면의 정확한 뒤로 동작은 확인 필요.
+
+공통 플랫폼 뒤로 규칙: [interaction notes](../../interaction-notes.md#13-플랫폼-동작). 화면별 미결정은 각 페이지를 확인하세요.
+
+## 분류 결정
+
+S23/S24/S26은 각 탭의 참고 보드로 해당 기능에 배치. S27은 전체 탭 이동을 설명하지만 설정에 배치. S28은 홈과 방에 걸쳐 홈에 배치. 보류된 L-*는 V1과 분리. 초기 A/B/Main은 foundations에 보관합니다.
+</pre><ul><li><a href="create/review.html">S03 커플 공간 생성</a> — 승인자: 미승인 · 승인일: 미정</li><li><a href="invite-create/review.html">S04 초대 코드 생성 · 공유</a> — 승인자: 미승인 · 승인일: 미정</li><li><a href="invite-enter/review.html">S05 초대 코드 입력 / 수락</a> — 승인자: 미승인 · 승인일: 미정</li></ul><section><h2>S03 커플 공간 생성</h2><figure><img loading="lazy" src="../../exports/S03-creating__ios-light-ko.png" alt="S03-creating__ios-light-ko.png"><figcaption>S03-creating__ios-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S03-form__ios-light-ko.png" alt="S03-form__ios-light-ko.png"><figcaption>S03-form__ios-light-ko.png</figcaption></figure><pre># S03 커플 공간 생성
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S03
+Route: /(onboarding)/choose-space, /(onboarding)/create-space
+
+## 디자인 원본
+
+- [S03-couple-space.dc.html](../../../canvas/project/S03-couple-space.dc.html)
+
+## 이미지
+
+- [S03-creating__ios-light-ko.png](../../../exports/S03-creating__ios-light-ko.png)
+- [S03-form__ios-light-ko.png](../../../exports/S03-form__ios-light-ko.png)
+
+## 상태와 상호작용
+
+- **캔버스 보드**: `S03-couple-space`
+- **목적**: 함께한 날짜 입력·수정(달력이 아닌 3열 휠), 형식·유효성 오류(미래 날짜, 존재하지 않는 날짜), 생성 중·성공·연결 오류. 방의 시간대 안내.
+- **이동**: S02 → 날짜 입력 → 공간 만들기 → 성공 → S04.
+- 날짜는 달력 UI로 고르지 않아요(달력 기능을 암시하지 않기 위해). 3열 휠(년·월·일, 영어는 월·일·년 순서).
+- 방의 낮밤은 만드는 사람의 현재 시간대로 정해지고 설정에서 바꿀 수 있다는 안내를 여기서 처음 보여요(FR-020).
+- **긴 문구·언어 사례**: 날짜 필드 순서가 언어별로 달라요(ko/ja 년·월·일, en 월·일·년).
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S03-form` | 날짜 입력 (기본) | `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.date.hint` `space.tz.name` `space.tz.note` `space.create` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S03-picker` | 날짜 휠 선택 시트 | `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.date.hint` `space.tz.name` `space.tz.note` `space.create` `space.date.pick` `common.done` | iOS·밝게·ko, Android·어둡게·ko |
+| `S03-future` | 미래 날짜 오류 | `space.date.future` `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.tz.name` `space.tz.note` `space.create` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S03-invalid` | 존재하지 않는 날짜 오류 | `space.date.invalid` `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.tz.name` `space.tz.note` `space.create` | iOS·밝게·ko, Android·어둡게·ko |
+| `S03-creating` | 생성 중 | `space.creating` | iOS·밝게·ko, Android·어둡게·ko |
+| `S03-ok` | 생성 성공 | `space.ok.title` `space.ok.body` `space.ok.next` | iOS·밝게·ko, Android·어둡게·ko |
+| `S03-error` | 연결 오류 | `space.title` `space.body` `space.date.label` `space.year` `space.month` `space.day` `space.date.hint` `space.tz.name` `space.tz.note` `space.err.title` `space.err.body` `common.retry` `space.create` | iOS·밝게·ko, Android·어둡게·ko |
+
+## 이동 및 뒤로
+
+F01: S02 → S03 → S04 → 홈; 다른 사용자는 S02 → S05 → 홈. 홈 → S04 재진입. 뒤로: 생성/참여 → 공간 선택; 초대는 진입한 화면으로. 초대 링크와 대기 화면의 정확한 뒤로 동작은 확인 필요.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S03-AC-01: 유효한 날짜로 공간을 만들면 S04로 이동한다.
+- [ ] S03-AC-02: 미래 날짜와 존재하지 않는 날짜에 오류를 표시한다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre></section><section><h2>S04 초대 코드 생성 · 공유</h2><figure><img loading="lazy" src="../../exports/S04-waiting__ios-light-ko.png" alt="S04-waiting__ios-light-ko.png"><figcaption>S04-waiting__ios-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S04-code__ios-light-ko.png" alt="S04-code__ios-light-ko.png"><figcaption>S04-code__ios-light-ko.png</figcaption></figure><pre># S04 초대 코드 생성 · 공유
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S04
+Route: /invite
+
+## 디자인 원본
+
+- [S04-invite-create.dc.html](../../../canvas/project/S04-invite-create.dc.html)
+
+## 이미지
+
+- [S04-waiting__ios-light-ko.png](../../../exports/S04-waiting__ios-light-ko.png)
+- [S04-code__ios-light-ko.png](../../../exports/S04-code__ios-light-ko.png)
+
+## 상태와 상호작용
+
+- **캔버스 보드**: `S04-invite-create`
+- **목적**: 코드 생성 중, 8자리 코드와 만료 시간(24시간, 한 번만 수락), OS 공유 시트, 복사, 만료 임박, 만료됨, 재발급(기존 미사용 코드 폐기 안내), 공유 취소, 네트워크 오류, 상대 대기.
+- **이동**: S03 → S04. 공유 시트(OS) / 복사. 나중에 초대하기 → 홈(초대 미완료).
+- 코드는 0/O, 1/I 없이 8자(4-4 그룹)로 제안했어요(스펙에 길이 없음).
+- 공유 시트는 OS 컴포넌트를 닮게 그린 자리표시예요.
+- 초대·꾸밈 변경에 대한 알림은 없어서 &quot;상대가 들어오면 알려 드려요&quot;가 아니라 &quot;앱을 열면 확인할 수 있어요&quot;로 써요.
+- **긴 문구·언어 사례**: 200% 글자에서는 코드 8칸이 4+4 두 줄로 나뉘어요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S04-gen` | 코드 생성 중 | `invite.title` `invite.body` `invite.generating` `invite.share` `invite.copy` | iOS·밝게·ko, Android·어둡게·ko |
+| `S04-code` | 코드 · 만료 시간 · 공유/복사 | `invite.expires` `invite.expiresAt.sample` `invite.expiresAt` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` `invite.share` `invite.copy` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S04-share` | OS 공유 시트 | `invite.expires` `invite.expiresAt.sample` `invite.expiresAt` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` `invite.share` `invite.copy` `login.email.label` `invite.shareSheet.title` `invite.shareMsg` | iOS·밝게·ko, Android·어둡게·ko |
+| `S04-copied` | 복사 완료 토스트 | `invite.expires` `invite.expiresAt.sample` `invite.expiresAt` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` `invite.share` `invite.copy` `invite.copied` | iOS·밝게·ko, Android·어둡게·ko |
+| `S04-soon` | 만료 임박 (30분 이내) | `invite.expiring` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` `invite.share` `invite.copy` | iOS·밝게·ko, Android·어둡게·ko |
+| `S04-expired` | 만료됨 · 재발급 유도 | `invite.expired.title` `invite.expired.body` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 1 |
+| `S04-reissue` | 재발급 확인 (기존 코드 폐기) | `invite.expires` `invite.expiresAt.sample` `invite.expiresAt` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` `invite.share` `invite.copy` `invite.reissue.title` `invite.reissue.body` `common.cancel` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S04-cancelled` | 공유 취소 안내 | `invite.expires` `invite.expiresAt.sample` `invite.expiresAt` `invite.title` `invite.body` `invite.code.label` `a11y.code` `invite.reissue` `invite.share` `invite.copy` `invite.shareCancelled` | iOS·밝게·ko, Android·어둡게·ko |
+| `S04-error` | 네트워크 오류 | `invite.title` `invite.err.title` `invite.err.body` `common.retry` `invite.later` | iOS·밝게·ko, Android·어둡게·ko |
+| `S04-waiting` | 상대 참여 대기 (메인 진입 전) | `invite.waiting.title` `invite.waiting.body` `invite.code.label` `common.next` | iOS·밝게·ko, Android·어둡게·ko |
+
+## 이동 및 뒤로
+
+F01: S02 → S03 → S04 → 홈; 다른 사용자는 S02 → S05 → 홈. 홈 → S04 재진입. 뒤로: 생성/참여 → 공간 선택; 초대는 진입한 화면으로. 초대 링크와 대기 화면의 정확한 뒤로 동작은 확인 필요.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S04-AC-01: 코드 화면에 8자리 코드, 만료 시간, 공유와 복사를 표시한다.
+- [ ] S04-AC-02: 재발급 전에 기존 미사용 코드가 폐기됨을 안내한다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre></section><section><h2>S05 초대 코드 입력 / 수락</h2><figure><img loading="lazy" src="../../exports/S05-has__ios-light-ko.png" alt="S05-has__ios-light-ko.png"><figcaption>S05-has__ios-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S05-found__ios-light-ko.png" alt="S05-found__ios-light-ko.png"><figcaption>S05-found__ios-light-ko.png</figcaption></figure><pre># S05 초대 코드 입력 / 수락
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S05
+Route: /(onboarding)/join, /i/[code], /invite/[code]
+
+## 디자인 원본
+
+- [S05-invite-enter.dc.html](../../../canvas/project/S05-invite-enter.dc.html)
+
+## 이미지
+
+- [S05-has__ios-light-ko.png](../../../exports/S05-has__ios-light-ko.png)
+- [S05-found__ios-light-ko.png](../../../exports/S05-found__ios-light-ko.png)
+
+## 상태와 상호작용
+
+- **캔버스 보드**: `S05-invite-enter`
+- **목적**: 코드 입력, 확인, 초대 상대·공간 확인 후 수락, 만료·사용됨·유효하지 않음·인원 초과·이미 다른 공간 소속.
+- **이동**: S02(공간 없음) → &quot;초대 코드가 있어요&quot; → S05 → 참여 → 홈.
+- 이미 다른 공간에 있는 사용자는 &quot;한 번에 하나의 공간만&quot; 안내를 받고 코드가 소모되지 않아요(결정: 사용자당 한 공간). 지금 공간에서 먼저 나오려면(설정의 공간 종료) 한 뒤 다시 입력해요.
+- 붙여넣기를 제공해요.
+- **긴 문구·언어 사례**: 오류 문구가 영어·일본어에서 길어져도 카드 안에서 줄바꿈돼요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S05-empty` | 코드 입력 (비어 있음) | `join.check` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko |
+| `S05-typing` | 코드 입력 중 | `join.check` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·ko·고대비, Android·어둡게·ko·고대비 외 2 |
+| `S05-checking` | 코드 확인 중 | `join.checking` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko |
+| `S05-found` | 초대 상대·공간 확인 후 수락 | `join.found.heading` `sample.partner` `join.found.title` `set.together.value` `join.found.body` `join.accept` `join.decline` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S05-expired` | 만료된 코드 | `join.expired.title` `join.expired.body` `join.check` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S05-used` | 이미 사용된 코드 | `join.used.title` `join.used.body` `join.check` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko |
+| `S05-invalid` | 유효하지 않은 코드 | `join.invalid.title` `join.invalid.body` `join.check` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko |
+| `S05-full` | 공간 인원 초과 | `join.full.title` `join.full.body` `join.check` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko |
+| `S05-has` | 이미 다른 공간 소속 | `join.hasSpace.title` `join.hasSpace.body` `join.hasSpace.action` `common.close` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 1 |
+| `S05-ok` | 참여 완료 | `join.ok.title` `sample.partner` `join.ok.body` `join.ok.next` | iOS·밝게·ko, Android·어둡게·ko |
+| `S05-net` | 네트워크 오류 | `join.err` `common.retry` `join.check` `join.title` `join.body` `invite.code.label` `join.paste` | iOS·밝게·ko, Android·어둡게·ko |
+
+## 이동 및 뒤로
+
+F01: S02 → S03 → S04 → 홈; 다른 사용자는 S02 → S05 → 홈. 홈 → S04 재진입. 뒤로: 생성/참여 → 공간 선택; 초대는 진입한 화면으로. 초대 링크와 대기 화면의 정확한 뒤로 동작은 확인 필요.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S05-AC-01: 코드를 확인한 뒤 상대와 공간을 보여 주고 수락하면 홈으로 이동한다.
+- [ ] S05-AC-02: 만료되거나 이미 사용된 코드에 해당 오류를 표시한다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre></section><h2>페이지별 번역 모음</h2><table><thead><tr><th>Key</th><th>한국어</th><th>English · draft G4</th><th>日本語 · draft G4</th></tr></thead><tbody><tr><th>a11y.code</th><td>초대 코드 {code}, 글자 하나씩 읽어요</td><td>Invite code {code}, read one character at a time</td><td>招待コード {code}、1文字ずつ読み上げます</td></tr><tr><th>common.cancel</th><td>취소</td><td>Cancel</td><td>キャンセル</td></tr><tr><th>common.close</th><td>닫기</td><td>Close</td><td>閉じる</td></tr><tr><th>common.done</th><td>완료</td><td>Done</td><td>完了</td></tr><tr><th>common.next</th><td>다음</td><td>Next</td><td>次へ</td></tr><tr><th>common.retry</th><td>다시 시도</td><td>Try again</td><td>もう一度試す</td></tr><tr><th>invite.body</th><td>아래 코드를 상대에게 보내 주세요. 코드는 24시간 동안 한 번만 쓸 수 있어요.</td><td>Send this code to your partner. It works once and expires in 24 hours.</td><td>このコードをパートナーに送ってください。コードは24時間のあいだ、1回だけ使えます。</td></tr><tr><th>invite.code.label</th><td>초대 코드</td><td>Invite code</td><td>招待コード</td></tr><tr><th>invite.copied</th><td>복사했어요</td><td>Copied</td><td>コピーしました</td></tr><tr><th>invite.copy</th><td>코드 복사</td><td>Copy code</td><td>コードをコピー</td></tr><tr><th>invite.err.body</th><td>인터넷 연결을 확인하고 다시 시도해 주세요.</td><td>Check your internet connection and try again.</td><td>インターネット接続を確認して、もう一度お試しください。</td></tr><tr><th>invite.err.title</th><td>코드를 만들지 못했어요</td><td>Couldn't create a code</td><td>コードを作れませんでした</td></tr><tr><th>invite.expired.body</th><td>새 코드를 만들어 상대에게 다시 보내 주세요.</td><td>Create a new code and send it to your partner.</td><td>新しいコードを作って、パートナーにもう一度送ってください。</td></tr><tr><th>invite.expired.title</th><td>코드가 만료됐어요</td><td>This code has expired</td><td>コードの期限が切れました</td></tr><tr><th>invite.expires</th><td>{h}시간 {m}분 뒤에 만료돼요</td><td>Expires in {h} h {m} min</td><td>あと{h}時間{m}分で期限切れです</td></tr><tr><th>invite.expiresAt</th><td>{date}까지</td><td>Until {date}</td><td>{date}まで</td></tr><tr><th>invite.expiresAt.sample</th><td>10월 25일 오후 8:30</td><td>Oct 25, 8:30 PM</td><td>10月25日 20:30</td></tr><tr><th>invite.expiring</th><td>곧 만료돼요 · {m}분 남았어요</td><td>Expiring soon · {m} min left</td><td>まもなく期限切れ · 残り{m}分</td></tr><tr><th>invite.generating</th><td>코드를 만들고 있어요</td><td>Creating your code</td><td>コードを作っています</td></tr><tr><th>invite.later</th><td>나중에 초대하기</td><td>Invite later</td><td>あとで招待する</td></tr><tr><th>invite.once</th><td>한 번만 쓸 수 있어요</td><td>One use only</td><td>1回だけ使えます</td></tr><tr><th>invite.reissue</th><td>새 코드 만들기</td><td>Create a new code</td><td>新しいコードを作る</td></tr><tr><th>invite.reissue.body</th><td>지금 코드는 바로 쓸 수 없게 돼요. 상대가 아직 입력하지 않았다면 새 코드를 보내야 해요.</td><td>The current code stops working right away. If your partner hasn't used it yet, you'll need to send the new one.</td><td>今のコードはすぐに使えなくなります。パートナーがまだ入力していない場合は、新しいコードを送る必要があります。</td></tr><tr><th>invite.reissue.title</th><td>새 코드를 만들까요?</td><td>Create a new code?</td><td>新しいコードを作りますか？</td></tr><tr><th>invite.share</th><td>코드 공유하기</td><td>Share code</td><td>コードを共有</td></tr><tr><th>invite.shareCancelled</th><td>공유를 취소했어요. 코드는 그대로 쓸 수 있어요.</td><td>Sharing was canceled. The code still works.</td><td>共有をキャンセルしました。コードはそのまま使えます。</td></tr><tr><th>invite.shareMsg</th><td>우리 공간에 와 줘요. {link} 초대 코드: {code} (24시간 안에 입력해 주세요)</td><td>Come join our space. {link} Invite code: {code} (use it within 24 hours)</td><td>ふたりのスペースに来てね。 {link} 招待コード：{code}（24時間以内に入力してください）</td></tr><tr><th>invite.shareSheet.title</th><td>공유</td><td>Share</td><td>共有</td></tr><tr><th>invite.title</th><td>상대를 초대해 주세요</td><td>Invite your partner</td><td>パートナーを招待しましょう</td></tr><tr><th>invite.waiting.body</th><td>상대가 코드를 입력한 뒤 앱을 열면 여기에서 확인할 수 있어요.</td><td>Once your partner enters the code, you'll see it here when you open the app.</td><td>パートナーがコードを入力したあと、アプリを開くとここで確認できます。</td></tr><tr><th>invite.waiting.title</th><td>상대를 기다리고 있어요</td><td>Waiting for your partner</td><td>パートナーを待っています</td></tr><tr><th>join.accept</th><td>참여하기</td><td>Join</td><td>参加する</td></tr><tr><th>join.body</th><td>상대에게 받은 8자리 코드를 입력해 주세요.</td><td>Enter the 8-character code your partner sent you.</td><td>パートナーから受け取った8文字のコードを入力してください。</td></tr><tr><th>join.check</th><td>코드 확인</td><td>Check code</td><td>コードを確認</td></tr><tr><th>join.checking</th><td>코드를 확인하고 있어요</td><td>Checking the code</td><td>コードを確認しています</td></tr><tr><th>join.decline</th><td>참여하지 않기</td><td>Don't join</td><td>参加しない</td></tr><tr><th>join.err</th><td>코드를 확인하지 못했어요. 인터넷 연결을 확인해 주세요.</td><td>Couldn't check the code. Check your internet connection.</td><td>コードを確認できませんでした。インターネット接続を確認してください。</td></tr><tr><th>join.expired.body</th><td>상대에게 새 코드를 보내 달라고 해 주세요.</td><td>Ask your partner to send a new code.</td><td>パートナーに新しいコードを送ってもらってください。</td></tr><tr><th>join.expired.title</th><td>이 코드는 만료됐어요</td><td>This code has expired</td><td>このコードは期限切れです</td></tr><tr><th>join.found.body</th><td>함께한 날짜는 {date}이에요. 참여하면 두 사람의 공간이 돼요.</td><td>You got together on {date}. Joining makes it your space for two.</td><td>一緒になった日は{date}です。参加すると、ふたりのスペースになります。</td></tr><tr><th>join.found.heading</th><td>이 공간에 참여할까요?</td><td>Join this space?</td><td>このスペースに参加しますか？</td></tr><tr><th>join.found.title</th><td>{name}님의 공간이에요</td><td>{name}'s space</td><td>{name}さんのスペース</td></tr><tr><th>join.full.body</th><td>이 공간에는 더 참여할 수 없어요. 상대에게 확인해 주세요.</td><td>You can't join this space. Check with your partner.</td><td>このスペースには参加できません。パートナーに確認してください。</td></tr><tr><th>join.full.title</th><td>이미 두 사람이 있는 공간이에요</td><td>This space already has two people</td><td>すでに2人いるスペースです</td></tr><tr><th>join.hasSpace.action</th><td>지금 공간 보기</td><td>View current space</td><td>今のスペースを見る</td></tr><tr><th>join.hasSpace.body</th><td>한 번에 하나의 공간만 쓸 수 있어요. 지금 공간에서 먼저 나온 뒤(설정의 공간 종료) 코드를 다시 입력해 주세요.</td><td>You can only be in one space at a time. Leave your current space first (Settings › End space), then enter the code again.</td><td>同時に使えるスペースは1つだけです。まず今のスペースから抜けて（設定の「スペースを終了」）、もう一度コードを入力してください。</td></tr><tr><th>join.hasSpace.title</th><td>이미 다른 공간에 있어요</td><td>You're already in another space</td><td>すでに別のスペースにいます</td></tr><tr><th>join.invalid.body</th><td>문자를 다시 확인해 주세요. 헷갈리는 0과 O, 1과 I는 코드에 쓰지 않아요.</td><td>Check the characters. Codes never use 0/O or 1/I.</td><td>文字をもう一度確認してください。コードには0とO、1とIは使われません。</td></tr><tr><th>join.invalid.title</th><td>코드가 맞지 않아요</td><td>That code isn't valid</td><td>コードが正しくありません</td></tr><tr><th>join.ok.body</th><td>{name}님과 함께하는 공간이 열렸어요.</td><td>Your space with {name} is open.</td><td>{name}さんとのスペースが開きました。</td></tr><tr><th>join.ok.next</th><td>메인으로 가기</td><td>Go to home</td><td>メインへ進む</td></tr><tr><th>join.ok.title</th><td>참여했어요</td><td>You're in</td><td>参加しました</td></tr><tr><th>join.paste</th><td>붙여넣기</td><td>Paste</td><td>貼り付け</td></tr><tr><th>join.title</th><td>초대 코드를 입력해 주세요</td><td>Enter your invite code</td><td>招待コードを入力してください</td></tr><tr><th>join.used.body</th><td>한 번 쓴 코드는 다시 쓸 수 없어요. 상대에게 새 코드를 요청해 주세요.</td><td>A code can only be used once. Ask your partner for a new one.</td><td>一度使ったコードは再利用できません。パートナーに新しいコードをお願いしてください。</td></tr><tr><th>join.used.title</th><td>이미 사용된 코드예요</td><td>This code was already used</td><td>このコードは使用済みです</td></tr><tr><th>login.email.label</th><td>이메일</td><td>Email</td><td>メールアドレス</td></tr><tr><th>sample.partner</th><td>하루</td><td>Haru</td><td>ハル</td></tr><tr><th>set.together.value</th><td>2025년 6월 29일</td><td>June 29, 2025</td><td>2025年6月29日</td></tr><tr><th>space.body</th><td>이 날짜부터 함께한 일수를 세어요. 나중에 설정에서 고칠 수 있어요.</td><td>We'll count the days from this date. You can change it later in Settings.</td><td>この日から一緒に過ごした日数を数えます。あとで設定から変更できます。</td></tr><tr><th>space.choice.body</th><td>새 공간을 만들거나 상대에게 받은 초대 코드로 참여할 수 있어요.</td><td>Create a new space or join with an invitation code from your partner.</td><td>新しく作るか、パートナーからの招待コードで参加できます。</td></tr><tr><th>space.choice.title</th><td>우리 공간을 시작해요</td><td>Start your space</td><td>ふたりのスペースを始めましょう</td></tr><tr><th>space.create</th><td>우리 공간 만들기</td><td>Create our space</td><td>ふたりのスペースを作る</td></tr><tr><th>space.creating</th><td>공간을 만들고 있어요</td><td>Creating your space</td><td>スペースを作っています</td></tr><tr><th>space.date.future</th><td>오늘 이후의 날짜는 고를 수 없어요.</td><td>You can't pick a date after today.</td><td>今日より後の日付は選べません。</td></tr><tr><th>space.date.hint</th><td>예: 2025년 6월 29일</td><td>e.g. June 29, 2025</td><td>例：2025年6月29日</td></tr><tr><th>space.date.invalid</th><td>존재하지 않는 날짜예요. 다시 확인해 주세요.</td><td>That date doesn't exist. Check it again.</td><td>存在しない日付です。もう一度確認してください。</td></tr><tr><th>space.date.label</th><td>함께한 날짜</td><td>Date you got together</td><td>一緒になった日</td></tr><tr><th>space.date.pick</th><td>날짜 고르기</td><td>Choose a date</td><td>日付を選ぶ</td></tr><tr><th>space.day</th><td>일</td><td>Day</td><td>日</td></tr><tr><th>space.err.body</th><td>인터넷 연결을 확인하고 다시 시도해 주세요.</td><td>Check your internet connection and try again.</td><td>インターネット接続を確認して、もう一度お試しください。</td></tr><tr><th>space.err.title</th><td>공간을 만들지 못했어요</td><td>Couldn't create your space</td><td>スペースを作れませんでした</td></tr><tr><th>space.month</th><td>월</td><td>Month</td><td>月</td></tr><tr><th>space.ok.body</th><td>이제 상대를 초대해 주세요.</td><td>Next, invite your partner.</td><td>次はパートナーを招待しましょう。</td></tr><tr><th>space.ok.next</th><td>상대 초대하기</td><td>Invite your partner</td><td>パートナーを招待する</td></tr><tr><th>space.ok.title</th><td>공간이 만들어졌어요</td><td>Your space is ready</td><td>スペースができました</td></tr><tr><th>space.title</th><td>함께한 날짜를 알려 주세요</td><td>When did you two get together?</td><td>ふたりが一緒になった日を教えてください</td></tr><tr><th>space.tz.name</th><td>서울</td><td>Seoul</td><td>ソウル</td></tr><tr><th>space.tz.note</th><td>방의 낮·밤은 지금 있는 곳의 시간대({tz})에 맞춰 바뀌어요. 설정에서 바꿀 수 있어요.</td><td>Day and night in your room follow your current time zone ({tz}). You can change it in Settings.</td><td>部屋の昼と夜は、今いる場所のタイムゾーン（{tz}）に合わせて切り替わります。設定で変更できます。</td></tr><tr><th>space.year</th><td>년</td><td>Year</td><td>年</td></tr></tbody></table></body></html>

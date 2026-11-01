@@ -1,0 +1,26 @@
+{
+  "status": "source",
+  "strings": {
+    "set.sec.account": "계정",
+    "set.logout.title": "로그아웃할까요?",
+    "set.logout.body": "로그아웃해도 공간과 방은 그대로예요.",
+    "set.name": "별명",
+    "set.cover.off": "없음",
+    "acct.delete.title": "계정을 삭제할까요?",
+    "acct.delete.lead": "삭제하면 바로 로그아웃되고, 되돌릴 수 없어요.",
+    "acct.delete.b1": "내 계정과 프로필 정보가 삭제돼요",
+    "acct.delete.b2": "함께 쓰는 공간이 있다면 종료돼요. 두 사람 모두 들어갈 수 없고 방·사진·장식이 삭제돼요",
+    "acct.delete.b3": "같은 계정으로 다시 가입해도 이전 내용은 돌아오지 않아요",
+    "acct.delete.confirm": "계정 삭제하기",
+    "acct.delete.reauth.title": "본인 확인이 필요해요",
+    "acct.delete.reauth.body": "계정을 지키기 위해 한 번 더 로그인해 주세요.",
+    "acct.delete.reauth.fail": "본인 확인에 실패했어요. 다시 시도해 주세요.",
+    "acct.delete.progress": "계정을 삭제하는 중이에요",
+    "acct.delete.done": "계정을 삭제했어요",
+    "acct.delete.offline": "인터넷에 연결되어야 계정을 삭제할 수 있어요",
+    "acct.delete.fail.title": "삭제하지 못했어요",
+    "acct.delete.fail.body": "아직 아무것도 지워지지 않았어요. 잠시 뒤 다시 시도해 주세요.",
+    "a11y.on": "켜짐",
+    "set.notif.sub.on": "켜짐 · 기념일 오전 9시"
+  }
+}

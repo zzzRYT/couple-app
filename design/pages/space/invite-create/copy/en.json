@@ -1,0 +1,21 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "invite.expiring": "Expiring soon · {m} min left",
+    "invite.expired.title": "This code has expired",
+    "invite.expired.body": "Create a new code and send it to your partner.",
+    "invite.copied": "Copied",
+    "invite.shareMsg": "Come join our space. {link} Invite code: {code} (use it within 24 hours)",
+    "invite.shareSheet.title": "Share",
+    "invite.shareCancelled": "Sharing was canceled. The code still works.",
+    "invite.reissue.title": "Create a new code?",
+    "invite.reissue.body": "The current code stops working right away. If your partner hasn't used it yet, you'll need to send the new one.",
+    "invite.waiting.title": "Waiting for your partner",
+    "invite.waiting.body": "Once your partner enters the code, you'll see it here when you open the app.",
+    "invite.generating": "Creating your code",
+    "invite.err.title": "Couldn't create a code",
+    "invite.err.body": "Check your internet connection and try again.",
+    "invite.later": "Invite later",
+    "invite.once": "One use only"
+  }
+}

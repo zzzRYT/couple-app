@@ -1,0 +1,27 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "login.redirect.title": "Opening Kakao",
+    "login.redirect.body": "You'll come back to Aroom after signing in.",
+    "login.processing": "Signing you in",
+    "login.cancelled.title": "Sign-in was canceled",
+    "login.cancelled.body": "You can try again whenever you like.",
+    "login.error.title": "Couldn't sign you in",
+    "login.error.body": "Try again in a moment, or choose another method.",
+    "login.email.title": "Enter your email address",
+    "login.email.invalid": "Check the format of the email address.",
+    "login.email.send": "Send me a code",
+    "login.code.title": "Enter the code we emailed you",
+    "login.code.body": "We sent a 6-digit code to {email}. You can also tap the link in the email.",
+    "login.code.label": "Verification code",
+    "login.code.confirm": "Verify",
+    "login.code.resend": "Resend code",
+    "login.code.resendIn": "You can resend in {s}s",
+    "login.code.wrong": "That code isn't right. Check it and try again.",
+    "login.code.expired": "That code has expired. Request a new one.",
+    "login.code.rate": "Too many attempts. Try again in {m} minutes.",
+    "login.other": "Use another method",
+    "login.cancel": "Cancel sign-in",
+    "login.brandNote": "Replace with official button asset"
+  }
+}

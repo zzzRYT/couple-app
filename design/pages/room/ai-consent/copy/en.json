@@ -1,0 +1,21 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "consent.title": "Room decorating is processed by AI overseas",
+    "consent.lead": "When you ask to decorate, the information below is sent to an AI provider's servers overseas. Without consent, the day count and viewing the room still work.",
+    "consent.sent.label": "What's sent",
+    "consent.purpose.label": "Purpose",
+    "consent.purpose.body": "To create a room preview that matches your request",
+    "consent.processor.label": "Processed by",
+    "consent.processor.body": "Anthropic PBC (United States). Sent through Aroom's servers.",
+    "consent.keep.label": "Retention and withdrawal",
+    "consent.provider.keep": "Provider retention period: [fill in after legal review]",
+    "consent.couple.label": "This room is shared by two",
+    "consent.agree": "Agree and continue",
+    "consent.later": "Not now",
+    "consent.withdraw.title": "Withdraw your consent?",
+    "consent.withdraw.body": "After you withdraw, requests are no longer sent overseas. The room stays as it is, and you'll need to agree again to decorate.",
+    "consent.withdraw.done": "Consent withdrawn",
+    "consent.later.note": "You can't decorate until you agree. Viewing the room and the day count are unaffected."
+  }
+}

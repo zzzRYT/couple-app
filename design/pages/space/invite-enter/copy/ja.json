@@ -1,0 +1,30 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "join.title": "招待コードを入力してください",
+    "join.body": "パートナーから受け取った8文字のコードを入力してください。",
+    "join.paste": "貼り付け",
+    "join.check": "コードを確認",
+    "join.checking": "コードを確認しています",
+    "join.found.heading": "このスペースに参加しますか？",
+    "join.found.title": "{name}さんのスペース",
+    "join.found.body": "一緒になった日は{date}です。参加すると、ふたりのスペースになります。",
+    "join.accept": "参加する",
+    "join.decline": "参加しない",
+    "join.expired.title": "このコードは期限切れです",
+    "join.expired.body": "パートナーに新しいコードを送ってもらってください。",
+    "join.used.title": "このコードは使用済みです",
+    "join.used.body": "一度使ったコードは再利用できません。パートナーに新しいコードをお願いしてください。",
+    "join.invalid.title": "コードが正しくありません",
+    "join.invalid.body": "文字をもう一度確認してください。コードには0とO、1とIは使われません。",
+    "join.full.title": "すでに2人いるスペースです",
+    "join.full.body": "このスペースには参加できません。パートナーに確認してください。",
+    "join.hasSpace.title": "すでに別のスペースにいます",
+    "join.hasSpace.body": "同時に使えるスペースは1つだけです。まず今のスペースから抜けて（設定の「スペースを終了」）、もう一度コードを入力してください。",
+    "join.hasSpace.action": "今のスペースを見る",
+    "join.ok.title": "参加しました",
+    "join.ok.body": "{name}さんとのスペースが開きました。",
+    "join.ok.next": "メインへ進む",
+    "join.err": "コードを確認できませんでした。インターネット接続を確認してください。"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "onb.p1.title": "ふたりで過ごした日を数えます",
+    "onb.p1.body": "一緒に過ごし始めた日を決めると、メイン画面で今日が何日目か分かります。",
+    "onb.p2.title": "プロンプトでふたりの部屋を飾ろう",
+    "onb.p2.body": "好きな雰囲気を書くとプレビューが出ます。気に入ったときだけ反映できます。",
+    "onb.p3.title": "部屋にはアルーミがいます",
+    "onb.p3.body": "部屋の一角で、ふたりを迎えてくれます。",
+    "onb.start": "はじめる",
+    "onb.hasAccount": "アカウントをお持ちの方",
+    "onb.back.title": "おかえりなさい",
+    "onb.back.body": "前回と同じ方法でログインしてください。",
+    "onb.lastUsed": "前回の方法",
+    "onb.skip": "スキップ",
+    "onb.pageOf": "{n} / {total}"
+  }
+}

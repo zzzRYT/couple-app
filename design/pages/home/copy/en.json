@@ -1,0 +1,18 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "common.save": "Save",
+    "main.invitePending.title": "Waiting for your partner",
+    "main.invitePending.body": "The invite code expires in {h} hours.",
+    "main.invitePending.action": "View invite code",
+    "main.noDate.title": "Set the date you got together",
+    "main.noDate.body": "Once you set it, you'll see which day it is.",
+    "main.noDate.action": "Set the date",
+    "main.editSheet.title": "Change the date",
+    "main.editSheet.body": "Changing the date updates the day count on both of your screens.",
+    "main.sync.title": "Couldn't sync",
+    "main.sync.body": "Showing what was saved last.",
+    "a11y.cover.change": "Change the home background photo",
+    "a11y.cover.photo": "Background photo you shared"
+  }
+}

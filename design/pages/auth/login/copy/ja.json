@@ -1,0 +1,27 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "login.redirect.title": "Kakaoに移動しています",
+    "login.redirect.body": "ログインが終わると、アルームに戻ります。",
+    "login.processing": "ログインしています",
+    "login.cancelled.title": "ログインをキャンセルしました",
+    "login.cancelled.body": "いつでももう一度試せます。",
+    "login.error.title": "ログインできませんでした",
+    "login.error.body": "しばらくしてからもう一度試すか、別の方法を選んでください。",
+    "login.email.title": "メールアドレスを入力してください",
+    "login.email.invalid": "メールアドレスの形式を確認してください。",
+    "login.email.send": "認証コードを受け取る",
+    "login.code.title": "メールで送ったコードを入力してください",
+    "login.code.body": "{email}に6桁のコードを送りました。メールのリンクをタップしてもログインできます。",
+    "login.code.label": "認証コード",
+    "login.code.confirm": "確認する",
+    "login.code.resend": "コードを再送する",
+    "login.code.resendIn": "{s}秒後に再送できます",
+    "login.code.wrong": "コードが違います。もう一度確認してください。",
+    "login.code.expired": "コードの有効期限が切れました。新しいコードを受け取ってください。",
+    "login.code.rate": "試行回数が多すぎます。{m}分後にもう一度お試しください。",
+    "login.other": "別の方法でログイン",
+    "login.cancel": "ログインをやめる",
+    "login.brandNote": "公式ボタン素材に差し替え"
+  }
+}

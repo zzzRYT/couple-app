@@ -1,0 +1,26 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "space.choice.title": "Start your space",
+    "space.choice.body": "Create a new space or join with an invitation code from your partner.",
+    "space.title": "When did you two get together?",
+    "space.body": "We'll count the days from this date. You can change it later in Settings.",
+    "space.date.label": "Date you got together",
+    "space.date.hint": "e.g. June 29, 2025",
+    "space.date.future": "You can't pick a date after today.",
+    "space.date.invalid": "That date doesn't exist. Check it again.",
+    "space.tz.note": "Day and night in your room follow your current time zone ({tz}). You can change it in Settings.",
+    "space.tz.name": "Seoul",
+    "space.create": "Create our space",
+    "space.creating": "Creating your space",
+    "space.ok.title": "Your space is ready",
+    "space.ok.body": "Next, invite your partner.",
+    "space.ok.next": "Invite your partner",
+    "space.err.title": "Couldn't create your space",
+    "space.err.body": "Check your internet connection and try again.",
+    "space.date.pick": "Choose a date",
+    "space.year": "Year",
+    "space.month": "Month",
+    "space.day": "Day"
+  }
+}

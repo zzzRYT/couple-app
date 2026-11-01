@@ -1,0 +1,400 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>room</title><style>body{font:16px/1.55 system-ui,sans-serif;max-width:1100px;margin:auto;padding:24px;color:#352a2d;background:#fbf8f5}a{color:#804052}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:1em;border-radius:10px}img{max-width:300px;max-height:600px;object-fit:contain;border:1px solid #ddd;border-radius:8px}figure{display:inline-block;vertical-align:top;margin:8px}figcaption{max-width:300px;overflow-wrap:anywhere}table{border-collapse:collapse;background:white;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}td{overflow-wrap:anywhere}nav{margin-bottom:1em}</style><body><nav><a href="../index.html">전체</a> · <a href="feature.md">기능 편집</a></nav><h1>room</h1><pre># room
+
+승인자: 미승인
+승인일: 미정
+
+## 목적과 범위
+
+F03: S07 → S08 → S09 → 적용 후 S07; S09 → S10 → 이전 미리보기; 필요 시 S12 동의. 뒤로: 대화/시트 또는 확인을 닫고 이전 단계로. 취소 시 방은 유지.
+
+## 페이지
+
+- [S07 room](room/page.md)
+- [S08 prompt-session](prompt-session/page.md)
+- [S09 preview-confirm](preview-confirm/page.md)
+- [S10 undo](undo/page.md)
+- [S12 ai-consent](ai-consent/page.md)
+- [S24 room-tab](room-tab/page.md)
+
+## 흐름과 뒤로 가기
+
+F03: S07 → S08 → S09 → 적용 후 S07; S09 → S10 → 이전 미리보기; 필요 시 S12 동의. 뒤로: 대화/시트 또는 확인을 닫고 이전 단계로. 취소 시 방은 유지.
+
+공통 플랫폼 뒤로 규칙: [interaction notes](../../interaction-notes.md#13-플랫폼-동작). 화면별 미결정은 각 페이지를 확인하세요.
+
+## 분류 결정
+
+S23/S24/S26은 각 탭의 참고 보드로 해당 기능에 배치. S27은 전체 탭 이동을 설명하지만 설정에 배치. S28은 홈과 방에 걸쳐 홈에 배치. 보류된 L-*는 V1과 분리. 초기 A/B/Main은 foundations에 보관합니다.
+</pre><ul><li><a href="room/review.html">S07 방 탭 — 방 페이지</a> — 승인자: 미승인 · 승인일: 미정</li><li><a href="prompt-session/review.html">S08 공유 프롬프트 대화 / 입력</a> — 승인자: 미승인 · 승인일: 미정</li><li><a href="preview-confirm/review.html">S09 공유 미리 보기 / 적용 확인·취소</a> — 승인자: 미승인 · 승인일: 미정</li><li><a href="undo/review.html">S10 되돌리기 — 열린 대화 안에서만</a> — 승인자: 미승인 · 승인일: 미정</li><li><a href="ai-consent/review.html">S12 해외 AI 처리 동의</a> — 승인자: 미승인 · 승인일: 미정</li><li><a href="room-tab/review.html">S24 S24 tab</a> — 승인자: 미승인 · 승인일: 미정</li></ul><section><h2>S07 방 탭 — 방 페이지</h2><figure><img loading="lazy" src="../../exports/S07-decorated__android-night-dark-ko.png" alt="S07-decorated__android-night-dark-ko.png"><figcaption>S07-decorated__android-night-dark-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S07-decorated__ios-day-light-ko-hc.png" alt="S07-decorated__ios-day-light-ko-hc.png"><figcaption>S07-decorated__ios-day-light-ko-hc.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S07-gen-room__ios-day-light-ko.png" alt="S07-gen-room__ios-day-light-ko.png"><figcaption>S07-gen-room__ios-day-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S07-decorated__ios-night-light-ko.png" alt="S07-decorated__ios-night-light-ko.png"><figcaption>S07-decorated__ios-night-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S07-decorated__ios-day-light-ko.png" alt="S07-decorated__ios-day-light-ko.png"><figcaption>S07-decorated__ios-day-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S07-no-mascot__ios-day-light-ko.png" alt="S07-no-mascot__ios-day-light-ko.png"><figcaption>S07-no-mascot__ios-day-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S07-decorated__ios-day-dark-ko.png" alt="S07-decorated__ios-day-dark-ko.png"><figcaption>S07-decorated__ios-day-dark-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S07-decorated__android-night-dark-ja-200.png" alt="S07-decorated__android-night-dark-ja-200.png"><figcaption>S07-decorated__android-night-dark-ja-200.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S07-protect__ios-day-light-ko.png" alt="S07-protect__ios-day-light-ko.png"><figcaption>S07-protect__ios-day-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S07-obj-detail__ios-day-light-ko.png" alt="S07-obj-detail__ios-day-light-ko.png"><figcaption>S07-obj-detail__ios-day-light-ko.png</figcaption></figure><pre># S07 방 탭 — 방 페이지
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S07
+Route: /(tabs)/room
+
+## 디자인 원본
+
+- [S07-room.dc.html](../../../canvas/project/S07-room.dc.html)
+
+## 이미지
+
+- [S07-decorated__android-night-dark-ko.png](../../../exports/S07-decorated__android-night-dark-ko.png)
+- [S07-decorated__ios-day-light-ko-hc.png](../../../exports/S07-decorated__ios-day-light-ko-hc.png)
+- [S07-gen-room__ios-day-light-ko.png](../../../exports/S07-gen-room__ios-day-light-ko.png)
+- [S07-decorated__ios-night-light-ko.png](../../../exports/S07-decorated__ios-night-light-ko.png)
+- [S07-decorated__ios-day-light-ko.png](../../../exports/S07-decorated__ios-day-light-ko.png)
+- [S07-no-mascot__ios-day-light-ko.png](../../../exports/S07-no-mascot__ios-day-light-ko.png)
+- [S07-decorated__ios-day-dark-ko.png](../../../exports/S07-decorated__ios-day-dark-ko.png)
+- [S07-decorated__android-night-dark-ja-200.png](../../../exports/S07-decorated__android-night-dark-ja-200.png)
+- [S07-protect__ios-day-light-ko.png](../../../exports/S07-protect__ios-day-light-ko.png)
+- [S07-obj-detail__ios-day-light-ko.png](../../../exports/S07-obj-detail__ios-day-light-ko.png)
+
+## 상태와 상호작용
+
+- **캔버스 보드**: `S07-room, S24-tab-room`
+- **목적**: 마스코트가 기본 포함된 장면, 낮/밤, 네이티브 날짜 위젯, 방 도구 막대(꾸미기 하나), 시스템 탭 바, 로딩·오프라인 읽기 전용·동기화 중/실패·상대 변경 실시간 반영·장면 데이터 복구 오류, 날짜 위젯 숨김, 보호 영역.
+- **이동**: 탭 루트(방). 꾸미기 → 모달 시트(S08). 탭 바로 다른 탭. 되돌리기는 방 탭에 없고 꾸미기 시트 안(S09)에만 있어요.
+- 방 도구 막대는 방 화면 **자신의 도구 막대**(위쪽)이고, 아래 탭 바는 **시스템 컴포넌트**예요. 두 영역 + 날짜 위젯 + 시스템 안전 영역이 보호 영역이에요(장식이 가리거나 입력을 가로챌 수 없음).
+- 도구 막대 윤곽선은 방의 낮밤을 따라가요(낮 방 갈색, 밤 방 크림).
+- 상대가 꾸미는 중이면 꾸미기 알약이 &quot;지켜보기&quot;로 바뀌어요.
+- **긴 문구·언어 사례**: 도구 막대는 버튼 하나라 글자가 커져도 한 줄이고, 라벨은 160%에서 확대를 멈춰요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S07-new` | 새 방 (마스코트 기본 + 화분) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S07-decorated` | 꾸민 방 (소품·문구 2개·날짜 위젯) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 10 |
+| `S07-loading` | 로딩 (장면 자리 표시) | `room.loading` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-offline` | 오프라인 읽기 전용 | `room.offline` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S07-syncing` | 동기화 중 표시 | `room.syncing` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-syncfail` | 동기화 실패 | `room.syncFail.title` `room.syncFail.body` `common.retry` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-partner` | 상대가 방을 바꿈 (실시간 반영) | `sample.partner` `room.partnerChanged` `a11y.pose.lookup` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-recover` | 장면 데이터 복구 오류 | `room.recover.title` `room.recover.body` `room.recover.action` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-hidden` | 날짜 위젯을 방에서 숨긴 경우 | `room.ddayHidden` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-no-mascot` | 아루미가 방에서 빠진 방 · 고정 컨트롤 &quot;아루미 다시 부르기&quot; | `room.mascot.recall` `room.mascot.missing` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S07-protect` | 보호 영역 표시 (측정값에서 계산) | `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·ko·200% |
+| `S07-gen-room` | 생성 장식이 들어간 방 (배경 조각 2 + 말풍선 틀) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S07-obj-detail` | 생성 장식을 누르면 · 장식 상세 시트 (신고하기 · 방 전체 신고) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` `obj.detail.kind.bubble` `sample.partner` `gen.lib.by` `obj.report` `obj.report.scene` `common.close` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S07-obj-reported` | 신고 직후 · 내 화면에서 그 장식이 숨겨짐 | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` `report.obj.done.title` `obj.hidden.note` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-obj-detail-reported` | 신고한 장식의 상세 · &quot;신고했어요 · 접수됨&quot; | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` `obj.hidden.note` `obj.reported` `obj.report.scene` `common.close` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-obj-removed` | 운영 검토로 장식이 방에서 빠짐 · 두 사람에게 한 번 안내 | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` `obj.removed.notice` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S07-protect-small` | 보호 영역 · 360×640 | `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | Android·낮·밝게·ko |
+| `S07-protect-med` | 보호 영역 · 412×915 | `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | Android·낮·밝게·ko |
+| `S07-protect-large` | 보호 영역 · 430×932 | `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko |
+| `S07-protect-1.3` | 보호 영역 · 글자 130% | `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·밤·어둡게·ja·130% |
+| `S07-protect-1.6` | 보호 영역 · 글자 160% | `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·밤·어둡게·ja·160% |
+| `S07-widget-coral` | 날짜 위젯 모양·위치 변경 · coral | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko |
+| `S07-widget-yellow` | 날짜 위젯 모양·위치 변경 · yellow | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·밤·어둡게·ko |
+| `S07-widget-white` | 날짜 위젯 모양·위치 변경 · white | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·낮·밝게·ko |
+| `S07-widget-navy` | 날짜 위젯 모양·위치 변경 · navy | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` | iOS·밤·어둡게·ko |
+
+## 이동 및 뒤로
+
+F03: S07 → S08 → S09 → 적용 후 S07; S09 → S10 → 이전 미리보기; 필요 시 S12 동의. 뒤로: 대화/시트 또는 확인을 닫고 이전 단계로. 취소 시 방은 유지.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S07-AC-01: 오프라인에서는 방을 읽기 전용으로 표시한다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre></section><section><h2>S08 공유 프롬프트 대화 / 입력</h2><figure><img loading="lazy" src="../../exports/S08-library__ios-day-light-ko.png" alt="S08-library__ios-day-light-ko.png"><figcaption>S08-library__ios-day-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S08-gen-refused__ios-day-light-ko.png" alt="S08-gen-refused__ios-day-light-ko.png"><figcaption>S08-gen-refused__ios-day-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S08-mine__ios-day-light-ko.png" alt="S08-mine__ios-day-light-ko.png"><figcaption>S08-mine__ios-day-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S08-takeover__ios-day-light-en.png" alt="S08-takeover__ios-day-light-en.png"><figcaption>S08-takeover__ios-day-light-en.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S08-partner-typing__android-night-dark-ko.png" alt="S08-partner-typing__android-night-dark-ko.png"><figcaption>S08-partner-typing__android-night-dark-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S08-quota__ios-day-light-ko.png" alt="S08-quota__ios-day-light-ko.png"><figcaption>S08-quota__ios-day-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S08-gen-refused-purpose__android-night-dark-ja.png" alt="S08-gen-refused-purpose__android-night-dark-ja.png"><figcaption>S08-gen-refused-purpose__android-night-dark-ja.png</figcaption></figure><pre># S08 공유 프롬프트 대화 / 입력
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S08
+Route: /prompt
+
+## 디자인 원본
+
+- [S08-prompt-session.dc.html](../../../canvas/project/S08-prompt-session.dc.html)
+
+## 이미지
+
+- [S08-library__ios-day-light-ko.png](../../../exports/S08-library__ios-day-light-ko.png)
+- [S08-gen-refused__ios-day-light-ko.png](../../../exports/S08-gen-refused__ios-day-light-ko.png)
+- [S08-mine__ios-day-light-ko.png](../../../exports/S08-mine__ios-day-light-ko.png)
+- [S08-takeover__ios-day-light-en.png](../../../exports/S08-takeover__ios-day-light-en.png)
+- [S08-partner-typing__android-night-dark-ko.png](../../../exports/S08-partner-typing__android-night-dark-ko.png)
+- [S08-quota__ios-day-light-ko.png](../../../exports/S08-quota__ios-day-light-ko.png)
+- [S08-gen-refused-purpose__android-night-dark-ja.png](../../../exports/S08-gen-refused-purpose__android-night-dark-ja.png)
+
+## 상태와 상호작용
+
+- **캔버스 보드**: `S08-prompt-session`
+- **목적**: 공유 대화와 미리 보기, 점유 상태 6가지(비어 있음 / 내가 점유 / 상대가 점유(쓰는 중·만드는 중) / 내 점유 만료 임박 / 내 점유 만료 / 상대 만료 후 이어받기), 이어받기 경합, 동의 필요, 하루 3회 소진, 오프라인, 미지원 요청, 브랜드 요청 거절, 실패·재시도, 키보드.
+- **이동**: 방 탭의 꾸미기 → 모달 시트. 비어 있을 때 &quot;내가 꾸밀게요&quot;로 점유. 닫기 → 방.
+- 점유는 자동이 아니라 &quot;내가 꾸밀게요&quot;로 시작해요(상대가 의도치 않게 막히는 것 방지). 3분(가정) 입력이 없으면 풀리고 쓰던 글은 남아요.
+- 상대는 대화·미리 보기를 실시간 읽기 전용으로 봐요. 입력칸은 잠금 아이콘과 이유를 보여요.
+- AI 배지는 두지 않았어요(스펙). 결과 카드는 &quot;제안&quot;으로 말해요.
+- 탭 바는 모달 시트가 덮어요.
+- **긴 문구·언어 사례**: 점유 표시 칩은 두 줄 헤더(제목 + 칩)로 둬서 영어·일본어 이름이 길어도 줄바꿈되지 않아요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S08-free` | 비어 있음 (아무도 점유 안 함) · 내가 꾸밀게요 | `prompt.msg.status.released` `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.start` `prompt.start.help` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.free` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·ko·200%, Android·밤·어둡게·ja·200% |
+| `S08-empty` | 비어 있음 · 대화 없음(처음) | `prompt.history.empty` `prompt.start` `prompt.start.help` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.free` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-mine` | 내가 점유 · 입력 가능 | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 3 |
+| `S08-kbd` | 내가 점유 · 키보드 입력 중 (탭 바·도구 막대를 가리지 않는 모달) | `prompt.msg.result` `prompt.msg.me` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `prompt.kbd` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-sending` | 제출 중 · 입력 잠김 | `prompt.msg.me` `prompt.msg.time` `prompt.sending` `sample.partner` `prompt.input.partner` `a11y.input.ro` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-partner-typing` | 상대 점유 · 쓰는 중 (읽기 전용 실시간) | `prompt.msg.me` `prompt.msg.time` `sample.partner` `prompt.msg.partner` `prompt.partner.typing` `prompt.input.partner` `a11y.input.ro` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.partner` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S08-partner-working` | 상대 점유 · 미리 보기 만드는 중 | `sample.partner` `prompt.msg.partner` `prompt.msg.time` `prompt.partner.thinking` `prompt.input.partner` `a11y.input.ro` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.partner` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-expiring` | 내 점유 · 만료 임박 (30초 전) | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.expiring` `prompt.expiring.action` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-idle` | 내 점유 · 유휴로 해제됨 (쓰던 글 남음) | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.idle.me.title` `prompt.idle.me.body` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.idle.me.action` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.free` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-takeover` | 상대 유휴 만료 · 이어받기 (이전 미리 보기 유지) | `preview.badge` `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.msg.status.preview` `sample.partner` `prompt.takeover.title` `prompt.takeover.body` `prompt.takeover.action` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.free` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S08-takeover-lost` | 이어받기 경합 · 상대가 먼저 | `preview.badge` `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.msg.status.preview` `sample.partner` `prompt.input.partner` `a11y.input.ro` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.partner` `a11y.presence` `prompt.takeover.lost` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-consent` | 동의 필요 · 입력 막힘 | `prompt.consent.need` `prompt.consent.action` `a11y.input` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-quota` | 하루 3회 소진 | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.quota.title` `prompt.quota.body` `a11y.input` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-offline` | 오프라인 · 온라인 전용 | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `main.offline.title` `prompt.offline` `a11y.input` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-unsupported` | 지원하지 않는 요청 | `prompt.unsupported.title` `prompt.unsupported.body` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-brand` | 기존 캐릭터·브랜드 요청 거절 | `prompt.brand.refuse` `prompt.brand.action` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-fail` | 실패 · 재시도 | `prompt.msg.me` `prompt.msg.time` `prompt.fail.title` `prompt.fail.body` `common.retry` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-gen-refused` | 생성 요청 거절 · 저작권·브랜드 (이유 + 대안 + 횟수 안 씀) | `gen.refuse.title` `gen.refuse.ip` `gen.refuse.note` `gen.refuse.action` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 2 |
+| `S08-gen-refused-purpose` | 생성 요청 거절 · 배경·말풍선 밖의 목적(마스코트·캐릭터·소품) | `gen.refuse.title` `gen.refuse.purpose` `gen.refuse.note` `gen.refuse.action` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S08-gen-failed` | 생성 실패 · 재시도 1회 뒤에도 안 됨 (횟수 안 씀) | `prompt.msg.time` `gen.fail.title` `gen.fail.body` `common.retry` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-gen-disabled` | 새 장식 만들기 잠시 중단 (킬 스위치, 다른 꾸미기는 계속) | `gen.disabled.title` `gen.disabled.body` `sample.partner` `prompt.input.partner` `a11y.input.ro` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-library` | 우리 장식 보관함 (다시 쓰기 · 지우기 · 방에 놓인 장식도 지울 수 있음) | `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `gen.lib.title` `gen.lib.count` `gen.lib.byMe` `gen.lib.use` `gen.lib.delete` `sample.partner` `gen.lib.by` `gen.lib.delete.inuse` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S08-library-full` | 보관함이 가득 참 (설정값 상한) · 모델 호출 전에 막음 | `prompt.msg.time` `gen.lib.count` `gen.lib.title` `gen.lib.full` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S08-library-delete` | 장식 지우기 확인 | `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `gen.lib.delete.title` `gen.lib.delete.body` `gen.lib.delete.inuse` `gen.lib.delete.confirm` `common.cancel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+
+## 이동 및 뒤로
+
+F03: S07 → S08 → S09 → 적용 후 S07; S09 → S10 → 이전 미리보기; 필요 시 S12 동의. 뒤로: 대화/시트 또는 확인을 닫고 이전 단계로. 취소 시 방은 유지.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S08-AC-01: 상대가 점유 중이면 대화를 읽기 전용으로 표시한다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre></section><section><h2>S09 공유 미리 보기 / 적용 확인·취소</h2><figure><img loading="lazy" src="../../exports/S09-mine__ios-day-light-ko.png" alt="S09-mine__ios-day-light-ko.png"><figcaption>S09-mine__ios-day-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S09-confirm__ios-day-light-ko.png" alt="S09-confirm__ios-day-light-ko.png"><figcaption>S09-confirm__ios-day-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S09-gen-preview__ios-day-light-ko.png" alt="S09-gen-preview__ios-day-light-ko.png"><figcaption>S09-gen-preview__ios-day-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S09-partner__ios-day-light-ko.png" alt="S09-partner__ios-day-light-ko.png"><figcaption>S09-partner__ios-day-light-ko.png</figcaption></figure><pre># S09 공유 미리 보기 / 적용 확인·취소
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S09
+Route: /prompt (panel)
+
+## 디자인 원본
+
+- [S09-preview-confirm.dc.html](../../../canvas/project/S09-preview-confirm.dc.html)
+
+## 이미지
+
+- [S09-mine__ios-day-light-ko.png](../../../exports/S09-mine__ios-day-light-ko.png)
+- [S09-confirm__ios-day-light-ko.png](../../../exports/S09-confirm__ios-day-light-ko.png)
+- [S09-gen-preview__ios-day-light-ko.png](../../../exports/S09-gen-preview__ios-day-light-ko.png)
+- [S09-partner__ios-day-light-ko.png](../../../exports/S09-partner__ios-day-light-ko.png)
+
+## 상태와 상호작용
+
+- **캔버스 보드**: `S09-preview-confirm`
+- **목적**: 두 사람에게 같은 현재 방과 후보를 보여 주고, 점유자만 적용·취소·이전 미리 보기로 되돌리기(S10). 적용 전에 &quot;적용한 뒤에는 되돌릴 수 없어요&quot;를 확인. 현재 방/미리 보기 전환, 유효성 경고(보호 영역 자동 이동, 한도 초과), 세션 만료 직전, 적용 중·성공·취소, 네트워크·모델 오류, 버전 충돌.
+- **이동**: S08 → 미리 보기 → 적용(점유 해제 → 방) / 취소(현재 방 유지, 점유 해제).
+- 1단계의 &quot;나에게만 보여요&quot;는 폐기: 미리 보기는 공유 대화에 저장되어 **두 사람 모두에게 보여요**(방은 적용 전까지 안 바뀜).
+- 적용은 session owner + expected version + idempotency key(서버). 충돌이면 &quot;방이 방금 바뀌었어요&quot;.
+- **적용한 뒤에는 되돌릴 수 없어요**: 적용 버튼 위 안내와 적용 확인 다이얼로그(`S09-confirm`), 적용 완료 안내가 같은 말을 해요. 다시 적용하는 기능(redo)도 없어요.
+- **긴 문구·언어 사례**: 만료 직전 안내는 초 단위 변수(`{s}`)를 쓰고 두 줄까지 늘어나요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S09-mine` | 점유자 · 미리 보기 + 적용/취소 (공유 미리 보기) | `preview.changes` `preview.changes.list` `preview.shared` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 4 |
+| `S09-confirm` | 적용 확인 · 적용하면 되돌릴 수 없다고 알림 | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `preview.confirm.title` `preview.confirm.body` `common.cancel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-toggle` | 점유자 · 현재 방 보기로 전환 | `preview.changes` `preview.changes.list` `preview.shared` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-partner` | 상대 · 읽기 전용 (적용 버튼 비활성, 점유자 표시) | `preview.changes` `preview.changes.list` `preview.shared` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `sample.partner` `preview.partner.wait` `preview.partner.readonly` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.partner` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S09-warn-protect` | 경고 · 보호 영역을 가린 소품 자동 이동 | `preview.warn.protected` `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-warn-limit` | 경고 · 한도 초과, 줄인 제안 | `preview.suggest` `prompt.limit` `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-expiring` | 세션 만료 직전 | `preview.expiring` `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-applying` | 적용 중 | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.applying` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-applied` | 적용 완료 (점유 해제) | `preview.applied.title` `preview.applied.body` `sample.me` `prompt.msg.status.applied` `preview.view.current` `preview.view.candidate` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.free` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-cancelled` | 취소 (현재 방 유지, 점유 해제) | `prompt.start` `sample.me` `prompt.msg.status.cancelled` `preview.view.current` `preview.view.candidate` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.free` `a11y.presence` `preview.cancel.toast` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-apply-err` | 적용 실패 (네트워크) | `preview.apply.err.title` `preview.apply.err.body` `common.retry` `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-model-err` | 모델 오류 (미리 보기 생성 실패) | `prompt.msg.me` `prompt.msg.time` `prompt.fail.title` `preview.model.err` `common.retry` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S09-conflict` | 버전 충돌 (늦은 중복 적용 · 서버 거부) | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `preview.conflict.title` `preview.conflict.body` `common.confirm` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S09-gen-preview` | 새로 만든 장식이 들어간 미리 보기 (장식 표시 · 개수) | `gen.preview.count` `gen.badge` `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+
+## 이동 및 뒤로
+
+F03: S07 → S08 → S09 → 적용 후 S07; S09 → S10 → 이전 미리보기; 필요 시 S12 동의. 뒤로: 대화/시트 또는 확인을 닫고 이전 단계로. 취소 시 방은 유지.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S09-AC-01: 적용 전에 적용 후 되돌릴 수 없음을 확인한다.
+- [ ] S09-AC-02: 취소하면 현재 방을 유지한다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre></section><section><h2>S10 되돌리기 — 열린 대화 안에서만</h2><figure><img loading="lazy" src="../../exports/S10-confirm__ios-day-light-ko.png" alt="S10-confirm__ios-day-light-ko.png"><figcaption>S10-confirm__ios-day-light-ko.png</figcaption></figure><pre># S10 되돌리기 — 열린 대화 안에서만
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S10
+Route: /prompt (dialog)
+
+## 디자인 원본
+
+- [S10-undo.dc.html](../../../canvas/project/S10-undo.dc.html)
+
+## 이미지
+
+- [S10-confirm__ios-day-light-ko.png](../../../exports/S10-confirm__ios-day-light-ko.png)
+
+## 상태와 상호작용
+
+- **캔버스 보드**: `S10-undo`
+- **목적**: 점유자가 지금 열린 프롬프트 대화에서 방금 만든 변경을 취소하고 바로 앞 미리 보기로 돌아가요(없으면 현재 방 보기). 확인, 진행, 성공(점유는 그대로), 되돌릴 변경 없음, 상대 점유 중, 늦은 중복 요청(서버 충돌), 실패.
+- **이동**: S09의 &quot;이전 미리 보기로 되돌리기&quot; → 확인 다이얼로그 → 같은 미리 보기 화면.
+- **적용한 뒤에는 되돌릴 수 없어요.** 되돌리기는 아직 적용하지 않은 변경에만 있고 방 도구 막대에는 되돌리기 버튼이 없어요. 다시 적용(redo)도 없어요.
+- 되돌려도 점유와 대화는 그대로 이어져요(점유를 풀지 않아요). 되돌릴 수 있는 만큼은 이 대화에서 만든 미리 보기까지예요.
+- 되돌리기는 점유자만 할 수 있어서 상대가 점유 중이면 이유와 함께 막혀요.
+- **긴 문구·언어 사례**: 다이얼로그 본문은 3줄까지 늘어나요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S10-confirm` | 되돌리기 확인 (이 대화 안에서만) | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `undo.title` `undo.body` `undo.confirm` `common.cancel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 4 |
+| `S10-progress` | 되돌리는 중 | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `undo.progress` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S10-done` | 성공 · 바로 앞 미리 보기로 (점유는 그대로) | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `undo.done.title` `undo.done.body` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S10-none` | 되돌릴 변경 없음 (적용한 방은 되돌릴 수 없음) | `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `undo.none.title` `undo.none.body` `common.confirm` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S10-busy` | 상대가 점유 중 · 되돌릴 수 없음 | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `sample.partner` `preview.partner.wait` `preview.partner.readonly` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.partner` `a11y.presence` `undo.busy.title` `undo.busy.body` `common.confirm` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S10-conflict` | 늦은 중복 요청 · 서버 충돌 안전 상태 | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `undo.conflict.title` `undo.conflict.body` `common.confirm` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S10-error` | 되돌리기 실패 | `preview.changes` `preview.changes.list` `preview.badge` `preview.view.current` `preview.view.candidate` `preview.undo` `preview.applyHint` `preview.apply` `preview.cancel` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` `undo.err.title` `undo.err.body` `common.retry` `common.cancel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+
+## 이동 및 뒤로
+
+F03: S07 → S08 → S09 → 적용 후 S07; S09 → S10 → 이전 미리보기; 필요 시 S12 동의. 뒤로: 대화/시트 또는 확인을 닫고 이전 단계로. 취소 시 방은 유지.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S10-AC-01: 열린 대화 안에서 되돌리면 이전 미리보기로 돌아가고 방은 바뀌지 않는다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre></section><section><h2>S12 해외 AI 처리 동의</h2><figure><img loading="lazy" src="../../exports/S12-first__ios-light-ko.png" alt="S12-first__ios-light-ko.png"><figcaption>S12-first__ios-light-ko.png</figcaption></figure><pre># S12 해외 AI 처리 동의
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S12
+Route: /prompt/consent
+
+## 디자인 원본
+
+- [S12-ai-consent.dc.html](../../../canvas/project/S12-ai-consent.dc.html)
+
+## 이미지
+
+- [S12-first__ios-light-ko.png](../../../exports/S12-first__ios-light-ko.png)
+
+## 상태와 상호작용
+
+- **캔버스 보드**: `S12-ai-consent`
+- **목적**: 전송 정보, 목적, 처리 사업자·국가, 보관·철회, 두 사람이 함께 쓰는 방이라 동의는 사람마다 따로라는 설명. 동의 / 나중에 / 철회 / 철회됨.
+- **이동**: 꾸미기 첫 요청 직전(전체 화면 모달). 설정 &gt; AI 처리 동의(푸시)에서 상태 확인·철회.
+- 해외 사업자의 보관 기간은 법무 확인 전이라 `[법무 확인 후 입력]` 자리표시를 그대로 뒀어요.
+- 나중에 → 방 보기와 D-day는 그대로, 꾸미기만 잠겨요.
+- 동의 버튼은 항상 화면 아래에 고정이고 본문만 스크롤돼요.
+- **긴 문구·언어 사례**: 본문이 영어·일본어에서 길어져 스크롤 길이가 늘어요. 버튼은 화면에 고정.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S12-first` | 요청 직전 첫 동의 (상단) | `consent.title` `consent.lead` `consent.sent.label` `consent.sent.body` `consent.purpose.label` `consent.purpose.body` `consent.processor.label` `consent.processor.body` `consent.keep.label` `consent.keep.body` `consent.provider.keep` `consent.couple.label` `consent.couple.body` `consent.agree` `consent.later` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S12-end` | 스크롤 끝 · 동의 버튼은 항상 보임 | `consent.title` `consent.lead` `consent.sent.label` `consent.sent.body` `consent.purpose.label` `consent.purpose.body` `consent.processor.label` `consent.processor.body` `consent.keep.label` `consent.keep.body` `consent.provider.keep` `consent.couple.label` `consent.couple.body` `consent.agree` `consent.later` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·ko·200% |
+| `S12-later` | 나중에 → 방 보기는 유지 (꾸미기만 잠김) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` `consent.later.note` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S12-status-on` | 설정 · 동의 상태 (동의함) | `set.ai.consent` `consent.status.date` `consent.status.on` `consent.couple.body` `consent.sent.body` `consent.keep.body` `consent.withdraw` | iOS·밝게·ko, Android·어둡게·ko |
+| `S12-withdraw` | 철회 확인 | `consent.withdraw.title` `consent.withdraw.body` `consent.withdraw` `common.cancel` `set.ai.consent` `consent.status.date` `consent.status.on` `consent.couple.body` `consent.sent.body` `consent.keep.body` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S12-withdrawn` | 철회됨 (다시 동의 가능) | `set.ai.consent` `consent.status.off` `consent.couple.body` `consent.sent.body` `consent.keep.body` `consent.agree` `consent.withdraw.done` | iOS·밝게·ko, Android·어둡게·ko |
+
+## 이동 및 뒤로
+
+F03: S07 → S08 → S09 → 적용 후 S07; S09 → S10 → 이전 미리보기; 필요 시 S12 동의. 뒤로: 대화/시트 또는 확인을 닫고 이전 단계로. 취소 시 방은 유지.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S12-AC-01: 동의하지 않으면 AI 처리를 시작하지 않는다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre></section><section><h2>S24 S24 tab</h2><figure><img loading="lazy" src="../../exports/S24-partner__ios-day-light-ko.png" alt="S24-partner__ios-day-light-ko.png"><figcaption>S24-partner__ios-day-light-ko.png</figcaption></figure><pre># S24 S24 tab
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S24
+Route: /(tabs)/room
+
+## 디자인 원본
+
+- [S24-tab-room.dc.html](../../../canvas/project/S24-tab-room.dc.html)
+
+## 이미지
+
+- [S24-partner__ios-day-light-ko.png](../../../exports/S24-partner__ios-day-light-ko.png)
+
+## 상태와 상호작용
+
+| 상태 ID | 설명 | 사용하는 키 |
+|---|---|---|
+| `S24-first` | 방 · 첫 실행(마스코트만) + 꾸미기 안내 | `coach.room` `coach.ok` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` |
+| `S24-empty` | 방 · 비어 있음(새 방 그대로) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` |
+| `S24-normal` | 방 · 보통(꾸민 방) | `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` |
+| `S24-partner` | 방 · 상대가 꾸미는 중(실시간 읽기 전용 · 꾸미기가 지켜보기로 바뀜) | `sample.partner` `room.partnerLive` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.watch` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` |
+| `S24-loading` | 방 · 로딩 | `room.loading` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` |
+| `S24-offline` | 방 · 오프라인 읽기 전용 | `room.offline` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` |
+| `S24-error` | 방 · 동기화 실패 / 장면 복구 오류 | `room.syncFail.title` `room.syncFail.body` `common.retry` `a11y.pose.wave_main` `a11y.mascot` `a11y.pose.walk` `a11y.pose.cheer` `a11y.pose.lookup` `a11y.pose.lie` `a11y.pose.sleep` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `room.ctl.decorate` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `a11y.tab.sel` `tab.settings` |
+| `S24-modal-decorate` | 방 → 꾸미기(모달 시트 · 탭 바를 덮음) | `prompt.msg.me` `prompt.msg.time` `prompt.msg.result` `prompt.placeholder` `a11y.input` `a11y.send` `prompt.left` `prompt.idleHint` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.mine` `a11y.presence` |
+
+## 이동 및 뒤로
+
+F03: S07 → S08 → S09 → 적용 후 S07; S09 → S10 → 이전 미리보기; 필요 시 S12 동의. 뒤로: 대화/시트 또는 확인을 닫고 이전 단계로. 취소 시 방은 유지.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S24-AC-01: 방 탭을 선택하면 방 루트를 표시한다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre></section><h2>페이지별 번역 모음</h2><table><thead><tr><th>Key</th><th>한국어</th><th>English · draft G4</th><th>日本語 · draft G4</th></tr></thead><tbody><tr><th>a11y.dday</th><td>함께한 지 {n}일째, 2025년 6월 29일부터</td><td>Day {n} together, since June 29, 2025</td><td>一緒に過ごして{n}日目、2025年6月29日から</td></tr><tr><th>a11y.input</th><td>꾸미기 요청 입력칸</td><td>Decorating request field</td><td>飾り付けリクエストの入力欄</td></tr><tr><th>a11y.input.ro</th><td>{name}님이 꾸미는 중이라 입력할 수 없어요</td><td>Can't type: {name} is decorating</td><td>入力できません：{name}さんが飾っています</td></tr><tr><th>a11y.mascot</th><td>아루미, {pose}</td><td>Aroomi, {pose}</td><td>アルーミ、{pose}</td></tr><tr><th>a11y.pose.cheer</th><td>신나 있어요</td><td>cheering</td><td>はしゃいでいます</td></tr><tr><th>a11y.pose.lie</th><td>쉬고 있어요</td><td>resting</td><td>休んでいます</td></tr><tr><th>a11y.pose.lookup</th><td>올려다보고 있어요</td><td>looking up</td><td>見上げています</td></tr><tr><th>a11y.pose.sleep</th><td>자고 있어요</td><td>sleeping</td><td>眠っています</td></tr><tr><th>a11y.pose.walk</th><td>걷고 있어요</td><td>walking</td><td>歩いています</td></tr><tr><th>a11y.pose.wave_main</th><td>인사하고 있어요</td><td>waving</td><td>手を振っています</td></tr><tr><th>a11y.presence</th><td>꾸미기 상태: {state}</td><td>Decorating status: {state}</td><td>飾り付けの状態：{state}</td></tr><tr><th>a11y.send</th><td>요청 보내기</td><td>Send request</td><td>リクエストを送信</td></tr><tr><th>a11y.tab</th><td>{name} 탭, {total}개 중 {n}번째{sel}</td><td>{name} tab, {n} of {total}{sel}</td><td>{name}タブ、{total}件中{n}件目{sel}</td></tr><tr><th>a11y.tab.sel</th><td>, 선택됨</td><td>, selected</td><td>、選択中</td></tr><tr><th>a11y.tabbar</th><td>탭 막대</td><td>Tab bar</td><td>タブバー</td></tr><tr><th>coach.ok</th><td>알겠어요</td><td>Got it</td><td>わかりました</td></tr><tr><th>coach.room</th><td>꾸미기를 눌러 첫 방을 꾸며 보세요</td><td>Tap Decorate to style your first room</td><td>「飾る」をタップして最初の部屋を飾りましょう</td></tr><tr><th>common.cancel</th><td>취소</td><td>Cancel</td><td>キャンセル</td></tr><tr><th>common.close</th><td>닫기</td><td>Close</td><td>閉じる</td></tr><tr><th>common.confirm</th><td>확인</td><td>OK</td><td>OK</td></tr><tr><th>common.retry</th><td>다시 시도</td><td>Try again</td><td>もう一度試す</td></tr><tr><th>consent.agree</th><td>동의하고 계속</td><td>Agree and continue</td><td>同意して続ける</td></tr><tr><th>consent.couple.body</th><td>동의는 사람마다 따로 해요. 내 동의는 내가 보내는 요청에만 적용돼요. 요청에는 두 사람이 함께 꾸민 방 배치가 들어가요.</td><td>Consent is given per person. Yours applies only to requests you send. Requests include the room layout you two decorated together.</td><td>同意は一人ひとり別々です。あなたの同意は、あなたが送るリクエストにのみ適用されます。リクエストには、ふたりで飾った部屋の配置が含まれます。</td></tr><tr><th>consent.couple.label</th><td>두 사람이 함께 쓰는 방이에요</td><td>This room is shared by two</td><td>ふたりで使う部屋です</td></tr><tr><th>consent.keep.body</th><td>적용한 요청 글은 30일, 적용하지 않은 미리 보기는 24시간 뒤 아룸 서버에서 삭제돼요. 설정의 'AI 처리 동의'에서 언제든 철회할 수 있어요.</td><td>Applied requests are deleted from Aroom's servers after 30 days, and unapplied previews after 24 hours. You can withdraw any time in Settings under &quot;AI processing consent&quot;.</td><td>反映したリクエスト文は30日後、反映しなかったプレビューは24時間後に、アルームのサーバーから削除されます。設定の「AI処理への同意」からいつでも撤回できます。</td></tr><tr><th>consent.keep.label</th><td>보관과 철회</td><td>Retention and withdrawal</td><td>保管と撤回</td></tr><tr><th>consent.later</th><td>나중에</td><td>Not now</td><td>あとで</td></tr><tr><th>consent.later.note</th><td>동의하기 전까지는 꾸미기를 쓸 수 없어요. 방 보기와 D-day는 그대로예요.</td><td>You can't decorate until you agree. Viewing the room and the day count are unaffected.</td><td>同意するまで飾り付けは使えません。部屋の閲覧と日数表示はそのまま使えます。</td></tr><tr><th>consent.lead</th><td>꾸미기를 요청하면 아래 정보가 해외 AI 사업자의 서버로 전송돼요. 동의하지 않아도 D-day와 방 보기는 그대로 쓸 수 있어요.</td><td>When you ask to decorate, the information below is sent to an AI provider's servers overseas. Without consent, the day count and viewing the room still work.</td><td>飾り付けをリクエストすると、以下の情報が海外のAI事業者のサーバーに送信されます。同意しなくても、日数表示や部屋の閲覧は使えます。</td></tr><tr><th>consent.processor.body</th><td>Anthropic PBC(미국). 아룸 서버를 거쳐 전송돼요.</td><td>Anthropic PBC (United States). Sent through Aroom's servers.</td><td>Anthropic PBC（米国）。アルームのサーバーを経由して送信されます。</td></tr><tr><th>consent.processor.label</th><td>처리하는 곳</td><td>Processed by</td><td>処理する事業者</td></tr><tr><th>consent.provider.keep</th><td>해외 사업자의 보관 기간: [법무 확인 후 입력]</td><td>Provider retention period: [fill in after legal review]</td><td>海外事業者の保管期間：[法務確認後に記入]</td></tr><tr><th>consent.purpose.body</th><td>요청에 맞는 방 꾸미기 미리 보기를 만드는 것</td><td>To create a room preview that matches your request</td><td>リクエストに合った部屋のプレビューを作ること</td></tr><tr><th>consent.purpose.label</th><td>사용 목적</td><td>Purpose</td><td>利用目的</td></tr><tr><th>consent.sent.body</th><td>내가 쓴 요청 글과, 요청을 만드는 데 필요한 방 배치(소품 종류·위치·문구). 함께한 날짜, 이름, 이메일은 보내지 않아요.</td><td>The request you typed, and the room layout needed to build it (item types, positions, text). Your together-date, names and email are not sent.</td><td>入力したリクエスト文と、作成に必要な部屋の配置（小物の種類・位置・文言）。一緒になった日、名前、メールアドレスは送信しません。</td></tr><tr><th>consent.sent.label</th><td>보내는 정보</td><td>What's sent</td><td>送信する情報</td></tr><tr><th>consent.status.date</th><td>2026년 10월 24일</td><td>Oct 24, 2026</td><td>2026年10月24日</td></tr><tr><th>consent.status.off</th><td>동의하지 않음</td><td>Not agreed</td><td>未同意</td></tr><tr><th>consent.status.on</th><td>동의함 · {date}</td><td>Agreed · {date}</td><td>同意済み · {date}</td></tr><tr><th>consent.title</th><td>해외 AI로 방 꾸미기를 처리해요</td><td>Room decorating is processed by AI overseas</td><td>部屋の飾り付けは海外のAIで処理されます</td></tr><tr><th>consent.withdraw</th><td>동의 철회</td><td>Withdraw consent</td><td>同意を撤回</td></tr><tr><th>consent.withdraw.body</th><td>철회하면 요청이 더 이상 해외로 전송되지 않아요. 지금 방은 그대로 남고, 다시 꾸미려면 다시 동의해야 해요.</td><td>After you withdraw, requests are no longer sent overseas. The room stays as it is, and you'll need to agree again to decorate.</td><td>撤回すると、リクエストは海外に送信されなくなります。今の部屋はそのまま残り、また飾るには再度の同意が必要です。</td></tr><tr><th>consent.withdraw.done</th><td>동의를 철회했어요</td><td>Consent withdrawn</td><td>同意を撤回しました</td></tr><tr><th>consent.withdraw.title</th><td>동의를 철회할까요?</td><td>Withdraw your consent?</td><td>同意を撤回しますか？</td></tr><tr><th>date.since</th><td>2025년 6월 29일부터</td><td>since June 29, 2025</td><td>2025年6月29日から</td></tr><tr><th>dday.count</th><td>{n}일째</td><td>Day {n}</td><td>{n}日目</td></tr><tr><th>dday.eyebrow</th><td>함께한 지</td><td>Together</td><td>一緒に過ごして</td></tr><tr><th>gen.badge</th><td>새로 만든 장식</td><td>New decoration</td><td>新しい飾り</td></tr><tr><th>gen.disabled.body</th><td>이미 만든 장식과 다른 꾸미기는 그대로 쓸 수 있어요. 나중에 다시 와 주세요.</td><td>You can still use the decorations you made and the other ways to decorate. Please check back later.</td><td>すでに作った飾りやほかの飾り付けはそのまま使えます。またあとで来てください。</td></tr><tr><th>gen.disabled.title</th><td>새 장식 만들기를 잠시 쉬어요</td><td>New decorations are taking a break</td><td>新しい飾り作りはお休み中です</td></tr><tr><th>gen.fail.body</th><td>잠시 뒤 다시 말해 주세요. 방은 그대로예요. 오늘 횟수는 쓰지 않았어요.</td><td>Please try again in a moment. The room is unchanged, and this didn't use up today's limit.</td><td>しばらくしてからもう一度お試しください。部屋はそのままで、今日の回数も使っていません。</td></tr><tr><th>gen.fail.title</th><td>이번에는 만들지 못했어요</td><td>We couldn't make it this time</td><td>今回は作れませんでした</td></tr><tr><th>gen.lib.by</th><td>{name}님이 만들었어요</td><td>Made by {name}</td><td>{name}さんが作りました</td></tr><tr><th>gen.lib.byMe</th><td>내가 만들었어요</td><td>Made by you</td><td>あなたが作りました</td></tr><tr><th>gen.lib.chip</th><td>‘{label}’ 놓기</td><td>Place &quot;{label}&quot;</td><td>「{label}」を置く</td></tr><tr><th>gen.lib.count</th><td>{n}/{max}</td><td>{n}/{max}</td><td>{n}/{max}</td></tr><tr><th>gen.lib.delete</th><td>지우기</td><td>Delete</td><td>削除</td></tr><tr><th>gen.lib.delete.body</th><td>보관함에서 지우면 다시 찾을 수 없어요.</td><td>It will be gone from your collection and can't be brought back.</td><td>コレクションから消えて、元に戻せません。</td></tr><tr><th>gen.lib.delete.confirm</th><td>지우기</td><td>Delete</td><td>削除する</td></tr><tr><th>gen.lib.delete.inuse</th><td>지금 방에 놓여 있어요. 지우면 방에서도 사라져요.</td><td>It's in the room right now. Deleting it removes it from the room too.</td><td>いま部屋に置かれています。削除すると部屋からも消えます。</td></tr><tr><th>gen.lib.delete.title</th><td>이 장식을 지울까요?</td><td>Delete this decoration?</td><td>この飾りを削除しますか？</td></tr><tr><th>gen.lib.empty</th><td>아직 만든 장식이 없어요. 꾸미기에서 '벽 장식을 만들어 줘'처럼 말해 보세요.</td><td>No decorations yet. Try asking, like &quot;make me a wall decoration.&quot;</td><td>まだ飾りがありません。「壁の飾りを作って」のように話しかけてみてください。</td></tr><tr><th>gen.lib.full</th><td>보관함이 가득 찼어요. 쓰지 않는 장식을 지워 주세요.</td><td>Your collection is full. Please delete decorations you don't use.</td><td>コレクションがいっぱいです。使っていない飾りを削除してください。</td></tr><tr><th>gen.lib.title</th><td>우리 장식</td><td>Our decorations</td><td>ふたりの飾り</td></tr><tr><th>gen.lib.use</th><td>다시 쓰기</td><td>Use again</td><td>もう一度使う</td></tr><tr><th>gen.preview.count</th><td>새로 만든 장식 {n}개</td><td>{n} new decorations</td><td>新しい飾り{n}個</td></tr><tr><th>gen.refuse.action</th><td>다시 말해 보기</td><td>Try again</td><td>言い直す</td></tr><tr><th>gen.refuse.ip</th><td>이미 있는 캐릭터·브랜드·로고나 다른 사람의 작품을 닮은 그림은 만들 수 없어요. 저작권 문제가 생길 수 있어서예요. 대신 '연한 노란 별 무늬 벽 장식'처럼 모양과 색으로 말해 주세요.</td><td>We can't make art that copies existing characters, brands, logos or someone else's work, because it could cause copyright problems. Try describing shapes and colors instead, like &quot;a wall piece with soft yellow stars.&quot;</td><td>既存のキャラクター・ブランド・ロゴ、他の人の作品に似た絵は作れません。著作権の問題になるおそれがあるためです。「やわらかな黄色い星柄の壁飾り」のように、形と色で伝えてみてください。</td></tr><tr><th>gen.refuse.note</th><td>이번 요청은 오늘 횟수에 들어가지 않았어요.</td><td>This request didn't count toward today's limit.</td><td>このリクエストは今日の回数に含まれていません。</td></tr><tr><th>gen.refuse.people</th><td>실제 사람이나 유명인이 나오는 그림은 만들 수 없어요. 대신 '구름 사이로 달이 보이는 창밖 풍경'처럼 풍경이나 무늬로 말해 주세요.</td><td>We can't make pictures of real people or celebrities. Try a scene or pattern instead, like &quot;a window view with the moon between clouds.&quot;</td><td>実在の人物や有名人の絵は作れません。「雲の間に月が見える窓の外の景色」のように、風景や模様で伝えてみてください。</td></tr><tr><th>gen.refuse.personal</th><td>전화번호, 주소, 링크, QR 코드나 글자가 많은 그림은 만들 수 없어요. 글자는 방의 짧은 문구로 따로 넣을 수 있어요.</td><td>We can't make pictures with phone numbers, addresses, links, QR codes or lots of text. You can add short text to the room separately.</td><td>電話番号・住所・リンク・QRコード・文字の多い絵は作れません。文字は部屋の短い文として別に入れられます。</td></tr><tr><th>gen.refuse.photo</th><td>사진처럼 실제 같은 이미지는 만들 수 없어요. 아루미의 세계처럼 부드러운 손그림 느낌으로 말해 주세요.</td><td>We can't make realistic, photo-like images. Describe something soft and hand-drawn, like Aroomi's world.</td><td>写真のようにリアルな画像は作れません。アルーミの世界のような、やわらかな手描き風で伝えてみてください。</td></tr><tr><th>gen.refuse.purpose</th><td>배경, 말풍선, 작은 방 소품 장식만 만들 수 있어요. 캐릭터는 만들 수 없고, 아루미는 바꿀 수 없어요. '벽 아래 물결 띠'나 '동그란 쿠션'처럼 말해 주세요.</td><td>We can only make backgrounds, speech-bubble frames and small room props. We can't make characters, and Aroomi can't be changed. Try something like &quot;a wavy band along the wall&quot; or &quot;a round cushion.&quot;</td><td>作れるのは背景、吹き出しの飾り、小さな部屋の小物だけです。キャラクターは作れず、アルーミも変えられません。「壁の下の波模様の帯」や「丸いクッション」のように伝えてみてください。</td></tr><tr><th>gen.refuse.title</th><td>이 장식은 만들 수 없어요</td><td>We can't make that decoration</td><td>その飾りは作れません</td></tr><tr><th>gen.refuse.unsafe</th><td>성적이거나 폭력적이거나 누군가를 해치거나 차별하는 내용은 만들 수 없어요. 포근한 분위기의 장식으로 다시 말해 주세요.</td><td>We can't make anything sexual, violent, hateful or harmful. Try describing something cozy instead.</td><td>性的・暴力的・差別的な内容や、誰かを傷つける内容は作れません。ほっとするような飾りで言い直してみてください。</td></tr><tr><th>main.offline.title</th><td>인터넷에 연결되어 있지 않아요</td><td>You're offline</td><td>インターネットに接続されていません</td></tr><tr><th>obj.detail.kind.bubble</th><td>말풍선 틀</td><td>Speech-bubble frame</td><td>吹き出しの枠</td></tr><tr><th>obj.hidden.note</th><td>내 화면에서만 숨겼어요.</td><td>Hidden on your screen only.</td><td>あなたの画面でだけ非表示にしました。</td></tr><tr><th>obj.removed.notice</th><td>검토 결과 이 장식은 방에서 빠졌어요.</td><td>After review, this decoration was removed from the room.</td><td>確認の結果、この飾りは部屋から外されました。</td></tr><tr><th>obj.report</th><td>신고하기</td><td>Report</td><td>報告する</td></tr><tr><th>obj.report.scene</th><td>방 전체 신고</td><td>Report the whole room</td><td>部屋全体を報告</td></tr><tr><th>obj.reported</th><td>신고했어요 · 접수됨</td><td>Reported · received</td><td>報告しました・受付済み</td></tr><tr><th>preview.applied.body</th><td>적용한 변경은 되돌릴 수 없어요. 상대 화면에는 동기화되면 바로 바뀌어요.</td><td>Applied changes can't be undone. Your partner's screen updates as soon as it syncs.</td><td>反映した変更は元に戻せません。パートナーの画面は、同期され次第すぐに変わります。</td></tr><tr><th>preview.applied.title</th><td>적용했어요</td><td>Applied</td><td>反映しました</td></tr><tr><th>preview.apply</th><td>적용하기</td><td>Apply</td><td>反映する</td></tr><tr><th>preview.apply.err.body</th><td>방은 바뀌지 않았어요. 다시 시도해 주세요.</td><td>The room hasn't changed. Please try again.</td><td>部屋は変わっていません。もう一度お試しください。</td></tr><tr><th>preview.apply.err.title</th><td>적용하지 못했어요</td><td>Couldn't apply it</td><td>反映できませんでした</td></tr><tr><th>preview.applyHint</th><td>적용하면 두 사람의 방이 바뀌고, 적용한 뒤에는 되돌릴 수 없어요.</td><td>Applying changes the room for both of you, and it can't be undone once applied.</td><td>反映するとふたりの部屋が変わり、反映した後は元に戻せません。</td></tr><tr><th>preview.applying</th><td>적용하는 중이에요</td><td>Applying</td><td>反映しています</td></tr><tr><th>preview.badge</th><td>미리 보기 · 아직 적용되지 않았어요</td><td>Preview · not applied yet</td><td>プレビュー · まだ反映されていません</td></tr><tr><th>preview.cancel</th><td>취소</td><td>Cancel</td><td>キャンセル</td></tr><tr><th>preview.cancel.toast</th><td>취소했어요. 우리 방은 그대로예요.</td><td>Canceled. Your room stays the same.</td><td>キャンセルしました。部屋はそのままです。</td></tr><tr><th>preview.changes</th><td>변경 내용</td><td>Changes</td><td>変更内容</td></tr><tr><th>preview.changes.list</th><td>쿠션 · 조명 · 별 추가</td><td>Added a cushion, a lamp and a star</td><td>クッション・ランプ・星を追加</td></tr><tr><th>preview.confirm.body</th><td>두 사람의 방이 바뀌어요. 적용한 뒤에는 되돌릴 수 없어요. 적용하기 전에 미리 보기를 한 번 더 확인해 주세요.</td><td>Your shared room will change for both of you. It can't be undone once applied, so take one more look at the preview first.</td><td>ふたりの部屋が変わります。反映した後は元に戻せません。反映する前に、もう一度プレビューを確認してください。</td></tr><tr><th>preview.confirm.title</th><td>적용할까요?</td><td>Apply it?</td><td>反映しますか？</td></tr><tr><th>preview.conflict.body</th><td>최신 방을 불러왔어요. 미리 보기를 다시 만들어 주세요.</td><td>We loaded the latest room. Please create the preview again.</td><td>最新の部屋を読み込みました。プレビューをもう一度作ってください。</td></tr><tr><th>preview.conflict.title</th><td>방이 방금 바뀌었어요</td><td>The room just changed</td><td>部屋がたった今変更されました</td></tr><tr><th>preview.expiring</th><td>{s}초 뒤에 세션이 끝나요. 적용하지 않으면 미리 보기만 남아요.</td><td>The session ends in {s}s. If you don't apply, only the preview remains.</td><td>あと{s}秒でセッションが終わります。反映しない場合はプレビューだけが残ります。</td></tr><tr><th>preview.model.err</th><td>미리 보기를 만드는 중에 문제가 생겼어요. 방은 바뀌지 않았어요.</td><td>Something went wrong while creating the preview. The room hasn't changed.</td><td>プレビューの作成中に問題が起きました。部屋は変わっていません。</td></tr><tr><th>preview.partner.readonly</th><td>지금은 보기만 할 수 있어요</td><td>You can only watch for now</td><td>今は見ることだけできます</td></tr><tr><th>preview.partner.wait</th><td>{name}님이 적용할지 정하고 있어요</td><td>{name} is deciding whether to apply it</td><td>{name}さんが反映するか決めています</td></tr><tr><th>preview.shared</th><td>두 사람 모두에게 보이지만 방은 바뀌지 않았어요.</td><td>You both can see it, but the room hasn't changed.</td><td>ふたりに表示されていますが、部屋はまだ変わっていません。</td></tr><tr><th>preview.suggest</th><td>이렇게 줄여서 만들어 봤어요</td><td>Here's a trimmed version</td><td>こう減らして作ってみました</td></tr><tr><th>preview.undo</th><td>이전 미리 보기로 되돌리기</td><td>Go back to the previous preview</td><td>前のプレビューに戻す</td></tr><tr><th>preview.view.candidate</th><td>미리 보기</td><td>Preview</td><td>プレビュー</td></tr><tr><th>preview.view.current</th><td>현재 방</td><td>Current</td><td>今の部屋</td></tr><tr><th>preview.warn.limit</th><td>소품이 많아서 일부는 빼고 보여 드려요.</td><td>There are too many items, so a few are left out.</td><td>小物が多いため、一部を除いて表示しています。</td></tr><tr><th>preview.warn.protected</th><td>버튼이나 날짜 위젯을 가리는 소품은 위치를 자동으로 옮겼어요.</td><td>Items that covered the buttons or the day counter were moved automatically.</td><td>ボタンや日数ウィジェットを隠す小物は、自動で位置を動かしました。</td></tr><tr><th>prompt.brand.action</th><td>비슷한 소품으로 만들기</td><td>Make a similar item</td><td>似た小物で作る</td></tr><tr><th>prompt.brand.refuse</th><td>특정 캐릭터나 브랜드는 방에 넣을 수 없어요. 비슷한 분위기의 소품으로 만들어 볼까요?</td><td>Specific characters and brands can't go in the room. Want me to make an item with a similar mood instead?</td><td>特定のキャラクターやブランドは部屋に置けません。似た雰囲気の小物で作りましょうか？</td></tr><tr><th>prompt.consent.action</th><td>안내 보기</td><td>View details</td><td>詳細を見る</td></tr><tr><th>prompt.consent.need</th><td>꾸미려면 두 사람 모두 해외 AI 처리에 동의해야 해요</td><td>Both partners must agree to overseas AI processing before decorating</td><td>飾るには、ふたりとも海外でのAI処理に同意する必要があります</td></tr><tr><th>prompt.expiring</th><td>{s}초 뒤에 풀려요</td><td>Releases in {s}s</td><td>あと{s}秒で解除されます</td></tr><tr><th>prompt.expiring.action</th><td>계속하기</td><td>Keep going</td><td>続ける</td></tr><tr><th>prompt.fail.body</th><td>잠시 후 다시 시도해 주세요. 방은 바뀌지 않았어요.</td><td>Try again in a moment. The room hasn't changed.</td><td>しばらくしてからもう一度お試しください。部屋は変わっていません。</td></tr><tr><th>prompt.fail.title</th><td>미리 보기를 만들지 못했어요</td><td>Couldn't create a preview</td><td>プレビューを作れませんでした</td></tr><tr><th>prompt.free</th><td>지금은 아무도 꾸미고 있지 않아요</td><td>No one is decorating right now</td><td>今は誰も飾っていません</td></tr><tr><th>prompt.history.empty</th><td>아직 대화가 없어요. 원하는 분위기를 적어 보세요.</td><td>No conversation yet. Describe the mood you want.</td><td>まだ会話がありません。好きな雰囲気を書いてみてください。</td></tr><tr><th>prompt.idle.me.action</th><td>다시 꾸미기</td><td>Decorate again</td><td>もう一度飾る</td></tr><tr><th>prompt.idle.me.body</th><td>3분 동안 입력이 없었어요. 쓰던 글은 남아 있어요.</td><td>There was no input for 3 minutes. What you were typing is still here.</td><td>3分間入力がありませんでした。入力中の文章は残っています。</td></tr><tr><th>prompt.idle.me.title</th><td>꾸미기가 자동으로 풀렸어요</td><td>Decorating was released automatically</td><td>飾る権限が自動で解除されました</td></tr><tr><th>prompt.idleHint</th><td>3분 동안 아무것도 하지 않으면 자동으로 풀려요.</td><td>If nothing happens for 3 minutes, it's released automatically.</td><td>3分間何もしないと、自動で解除されます。</td></tr><tr><th>prompt.input.partner</th><td>{name}님이 꾸미는 중이라 지금은 쓸 수 없어요</td><td>{name} is decorating, so you can't type right now</td><td>{name}さんが飾っているため、今は入力できません</td></tr><tr><th>prompt.kbd</th><td>키보드 영역</td><td>Keyboard area</td><td>キーボード領域</td></tr><tr><th>prompt.left</th><td>오늘 {n}번 더 꾸밀 수 있어요</td><td>{n} more tries today</td><td>今日はあと{n}回試せます</td></tr><tr><th>prompt.limit</th><td>한 방에는 소품 16개, 문구 3개까지 둘 수 있어요. 일부를 줄여서 다시 제안했어요.</td><td>A room holds up to 16 items and 3 pieces of text. I trimmed the suggestion to fit.</td><td>部屋に置けるのは小物16個、文言3つまでです。収まるように減らして提案し直しました。</td></tr><tr><th>prompt.mine</th><td>내가 꾸미는 중</td><td>You're decorating</td><td>あなたが飾っています</td></tr><tr><th>prompt.msg.me</th><td>분위기를 조금 포근하게 바꿔 줘. 쿠션이랑 조명을 놓고 싶어.</td><td>Make it a bit cozier. I'd like a cushion and a lamp.</td><td>もう少し温かい雰囲気にして。クッションとランプを置きたい。</td></tr><tr><th>prompt.msg.partner</th><td>별도 하나만 더 달아 줘.</td><td>Add one more star too.</td><td>星ももうひとつ付けて。</td></tr><tr><th>prompt.msg.result</th><td>쿠션 1개, 조명 1개를 놓았어요. 미리 보기를 확인해 주세요.</td><td>I added 1 cushion and 1 lamp. Take a look at the preview.</td><td>クッションを1個、ランプを1個置きました。プレビューを確認してください。</td></tr><tr><th>prompt.msg.status.applied</th><td>{name}님이 적용했어요</td><td>{name} applied it</td><td>{name}さんが反映しました</td></tr><tr><th>prompt.msg.status.cancelled</th><td>{name}님이 취소했어요. 방은 그대로예요.</td><td>{name} canceled it. The room stays the same.</td><td>{name}さんがキャンセルしました。部屋はそのままです。</td></tr><tr><th>prompt.msg.status.preview</th><td>미리 보기를 만들었어요</td><td>Preview created</td><td>プレビューを作成しました</td></tr><tr><th>prompt.msg.status.released</th><td>꾸미기가 풀렸어요</td><td>Decorating was released</td><td>飾る権限が解除されました</td></tr><tr><th>prompt.msg.time</th><td>오후 9:14</td><td>9:14 PM</td><td>21:14</td></tr><tr><th>prompt.offline</th><td>인터넷에 연결되어야 꾸밀 수 있어요</td><td>You need an internet connection to decorate</td><td>飾るにはインターネット接続が必要です</td></tr><tr><th>prompt.partner</th><td>{name}님이 꾸미는 중</td><td>{name} is decorating</td><td>{name}さんが飾っています</td></tr><tr><th>prompt.partner.thinking</th><td>미리 보기를 만드는 중이에요</td><td>Creating a preview</td><td>プレビューを作成中です</td></tr><tr><th>prompt.partner.typing</th><td>{name}님이 쓰는 중…</td><td>{name} is typing…</td><td>{name}さんが入力中…</td></tr><tr><th>prompt.placeholder</th><td>어떻게 꾸미고 싶나요?</td><td>How would you like to decorate?</td><td>どんな部屋にしたいですか？</td></tr><tr><th>prompt.quota.body</th><td>하루 3번까지 쓸 수 있어요. 만들어지지 못했거나 거절된 요청은 세지 않아요. 내일 다시 이어서 꾸밀 수 있고, 지금 방은 그대로예요.</td><td>You can decorate up to 3 times a day. Requests that fail or are declined don't count. Pick it up again tomorrow — the room stays as it is.</td><td>1日3回まで使えます。作れなかったリクエストや断られたリクエストは数えません。明日また続けられます。今の部屋はそのままです。</td></tr><tr><th>prompt.quota.title</th><td>오늘 꾸미기를 모두 썼어요</td><td>You've used all of today's tries</td><td>今日の回数を使い切りました</td></tr><tr><th>prompt.send</th><td>보내기</td><td>Send</td><td>送信</td></tr><tr><th>prompt.sending</th><td>만드는 중이에요</td><td>Working on it</td><td>作成中です</td></tr><tr><th>prompt.start</th><td>내가 꾸밀게요</td><td>I'll decorate</td><td>私が飾る</td></tr><tr><th>prompt.start.help</th><td>시작하면 이 방을 내가 맡아요. 상대는 대화와 미리 보기를 볼 수만 있어요.</td><td>Once you start, you're in charge of the room. Your partner can only watch the conversation and preview.</td><td>始めると、あなたが部屋を担当します。パートナーは会話とプレビューを見るだけになります。</td></tr><tr><th>prompt.takeover.action</th><td>이어서 꾸미기</td><td>Take over</td><td>引き継ぐ</td></tr><tr><th>prompt.takeover.body</th><td>3분 넘게 활동이 없어서 이어받을 수 있어요. 지금까지의 대화와 미리 보기는 그대로 보여요.</td><td>There's been no activity for over 3 minutes, so you can take over. The conversation and preview so far stay visible.</td><td>3分以上操作がないため、引き継げます。これまでの会話とプレビューはそのまま表示されます。</td></tr><tr><th>prompt.takeover.lost</th><td>{name}님이 먼저 이어받았어요</td><td>{name} took over first</td><td>{name}さんが先に引き継ぎました</td></tr><tr><th>prompt.takeover.title</th><td>{name}님이 자리를 비웠어요</td><td>{name} seems to be away</td><td>{name}さんは席を外しているようです</td></tr><tr><th>prompt.title</th><td>함께 꾸미기</td><td>Decorate together</td><td>いっしょに飾る</td></tr><tr><th>prompt.unsupported.body</th><td>방에는 라이선스가 확인된 소품과 짧은 문구만 둘 수 있어요. 소품을 옮기거나 문구를 바꾸는 식으로 다시 말해 보세요.</td><td>Rooms can only hold licensed items and short text. Try asking to move an item or change a phrase.</td><td>部屋に置けるのは、ライセンス確認済みの小物と短い文言だけです。小物を動かす、文言を変えるなどの形でもう一度お願いしてください。</td></tr><tr><th>prompt.unsupported.title</th><td>이 요청은 만들 수 없어요</td><td>I can't make that</td><td>このリクエストは作れません</td></tr><tr><th>report.obj.done.title</th><td>신고를 접수했어요</td><td>Report received</td><td>報告を受け付けました</td></tr><tr><th>room.ctl.decorate</th><td>꾸미기</td><td>Decorate</td><td>飾る</td></tr><tr><th>room.ctl.settings</th><td>설정</td><td>Settings</td><td>設定</td></tr><tr><th>room.ddayHidden</th><td>날짜 위젯은 이 방에서 숨겨져 있어요. 메인 화면에서는 그대로 보여요.</td><td>The day counter is hidden in this room. It still shows on the home screen.</td><td>日数ウィジェットはこの部屋では非表示です。メイン画面ではそのまま表示されます。</td></tr><tr><th>room.loading</th><td>방을 불러오는 중이에요</td><td>Loading your room</td><td>部屋を読み込んでいます</td></tr><tr><th>room.mascot.missing</th><td>방에 아루미가 없어요. 누르면 기본 자리로 돌아와요.</td><td>Aroomi isn't in the room. Tap to bring Aroomi back to the default spot.</td><td>部屋にアルーミがいません。タップすると元の位置に戻ります。</td></tr><tr><th>room.mascot.recall</th><td>아루미 다시 부르기</td><td>Call Aroomi back</td><td>アルーミを呼び戻す</td></tr><tr><th>room.offline</th><td>인터넷이 끊겨서 보기만 할 수 있어요</td><td>You're offline, so the room is view-only</td><td>オフラインのため、表示のみ可能です</td></tr><tr><th>room.partnerChanged</th><td>{name}님이 방을 바꿨어요</td><td>{name} changed the room</td><td>{name}さんが部屋を変更しました</td></tr><tr><th>room.partnerLive</th><td>{name}님이 꾸미는 중 · 실시간으로 보고 있어요</td><td>{name} is decorating · live view</td><td>{name}さんが飾り中 · ライブ表示</td></tr><tr><th>room.protect.legend.ctl</th><td>방 도구 막대</td><td>Room toolbar</td><td>部屋のツールバー</td></tr><tr><th>room.protect.legend.dday</th><td>날짜 위젯</td><td>Day counter</td><td>日数ウィジェット</td></tr><tr><th>room.protect.legend.system</th><td>시스템 영역</td><td>System area</td><td>システム領域</td></tr><tr><th>room.protect.legend.tab</th><td>시스템 탭 막대</td><td>System tab bar</td><td>システムのタブバー</td></tr><tr><th>room.protect.legend.text</th><td>글자 가독성 영역</td><td>Text readability area</td><td>文字の可読領域</td></tr><tr><th>room.recover.action</th><td>다시 불러오기</td><td>Load again</td><td>もう一度読み込む</td></tr><tr><th>room.recover.body</th><td>저장된 방은 그대로 있어요. 다시 불러와 주세요.</td><td>Your saved room is untouched. Please try loading it again.</td><td>保存されている部屋はそのままです。もう一度読み込んでください。</td></tr><tr><th>room.recover.title</th><td>방 데이터를 읽지 못했어요</td><td>Couldn't read the room data</td><td>部屋のデータを読み込めませんでした</td></tr><tr><th>room.syncFail.body</th><td>마지막으로 확인한 방을 보여 드리고 있어요.</td><td>Showing the room as last seen.</td><td>最後に確認した部屋を表示しています。</td></tr><tr><th>room.syncFail.title</th><td>동기화하지 못했어요</td><td>Couldn't sync</td><td>同期できませんでした</td></tr><tr><th>room.syncing</th><td>동기화하는 중</td><td>Syncing</td><td>同期中</td></tr><tr><th>room.watch</th><td>지켜보기</td><td>Watch</td><td>見守る</td></tr><tr><th>sample.me</th><td>나</td><td>You</td><td>自分</td></tr><tr><th>sample.partner</th><td>하루</td><td>Haru</td><td>ハル</td></tr><tr><th>set.ai.consent</th><td>AI 처리 동의</td><td>AI processing consent</td><td>AI処理への同意</td></tr><tr><th>tab.home</th><td>홈</td><td>Home</td><td>ホーム</td></tr><tr><th>tab.room</th><td>방</td><td>Room</td><td>部屋</td></tr><tr><th>tab.settings</th><td>설정</td><td>Settings</td><td>設定</td></tr><tr><th>undo.body</th><td>이 대화에서 방금 만든 변경을 취소하고 바로 앞 미리 보기로 돌아가요. 방은 아직 바뀌지 않았어요. 적용한 방은 되돌릴 수 없어요.</td><td>This drops the change you just made in this conversation and goes back to the preview before it. The room hasn't changed. A room you already applied can't be undone.</td><td>この会話で作ったばかりの変更を取り消し、ひとつ前のプレビューに戻ります。部屋はまだ変わっていません。反映した部屋は元に戻せません。</td></tr><tr><th>undo.busy.body</th><td>{name}님만 이 미리 보기를 되돌릴 수 있어요.</td><td>Only {name} can undo this preview.</td><td>このプレビューを元に戻せるのは{name}さんだけです。</td></tr><tr><th>undo.busy.title</th><td>{name}님이 꾸미는 중이에요</td><td>{name} is decorating</td><td>{name}さんが飾っています</td></tr><tr><th>undo.confirm</th><td>되돌리기</td><td>Undo</td><td>元に戻す</td></tr><tr><th>undo.conflict.body</th><td>최신 미리 보기를 불러왔어요. 필요하면 다시 되돌려 주세요.</td><td>We loaded the latest preview. Undo again if you still need to.</td><td>最新のプレビューを読み込みました。必要であればもう一度元に戻してください。</td></tr><tr><th>undo.conflict.title</th><td>이미 되돌려졌거나 미리 보기가 바뀌었어요</td><td>It was already undone, or the preview changed</td><td>すでに元に戻されたか、プレビューが変更されました</td></tr><tr><th>undo.done.body</th><td>바로 앞 미리 보기예요.</td><td>This is the preview before it.</td><td>ひとつ前のプレビューです。</td></tr><tr><th>undo.done.title</th><td>되돌렸어요</td><td>Undone</td><td>元に戻しました</td></tr><tr><th>undo.err.body</th><td>미리 보기는 그대로예요. 다시 시도해 주세요.</td><td>The preview is unchanged. Please try again.</td><td>プレビューはそのままです。もう一度お試しください。</td></tr><tr><th>undo.err.title</th><td>되돌리지 못했어요</td><td>Couldn't undo</td><td>元に戻せませんでした</td></tr><tr><th>undo.none.body</th><td>이 대화에서 만든 변경이 아직 없어요. 이미 적용한 방은 되돌릴 수 없어요.</td><td>There are no changes from this conversation yet. A room you already applied can't be undone.</td><td>この会話で作った変更はまだありません。すでに反映した部屋は元に戻せません。</td></tr><tr><th>undo.none.title</th><td>되돌릴 변경이 없어요</td><td>Nothing to undo</td><td>元に戻せる変更がありません</td></tr><tr><th>undo.progress</th><td>되돌리는 중이에요</td><td>Undoing</td><td>元に戻しています</td></tr><tr><th>undo.title</th><td>이전 미리 보기로 되돌릴까요?</td><td>Go back to the previous preview?</td><td>前のプレビューに戻しますか？</td></tr></tbody></table></body></html>

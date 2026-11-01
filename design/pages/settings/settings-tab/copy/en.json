@@ -1,0 +1,14 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "set.offline.title": "You're offline",
+    "set.offline.body": "Room day/night and time zone can be changed once you're back online. This device's display settings still work.",
+    "lic.title": "Font and open-source licenses",
+    "lic.ofl": "SIL Open Font License 1.1",
+    "lic.inter": "Inter · © 2020 The Inter Project Authors",
+    "lic.notokr": "Noto Sans KR · The Noto Project",
+    "lic.notojp": "Noto Sans JP · The Noto Project",
+    "lic.view": "View full text",
+    "lic.note": "The fonts in Aroom are bundled under the licenses above."
+  }
+}

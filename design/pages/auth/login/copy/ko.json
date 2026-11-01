@@ -1,0 +1,27 @@
+{
+  "status": "source",
+  "strings": {
+    "login.redirect.title": "카카오로 이동하고 있어요",
+    "login.redirect.body": "로그인을 마치면 아룸으로 돌아와요.",
+    "login.processing": "로그인하는 중이에요",
+    "login.cancelled.title": "로그인을 취소했어요",
+    "login.cancelled.body": "원할 때 다시 시도할 수 있어요.",
+    "login.error.title": "로그인하지 못했어요",
+    "login.error.body": "잠시 후 다시 시도하거나 다른 방법을 골라 주세요.",
+    "login.email.title": "이메일 주소를 입력해 주세요",
+    "login.email.invalid": "이메일 주소 형식을 확인해 주세요.",
+    "login.email.send": "인증 코드 받기",
+    "login.code.title": "메일로 보낸 코드를 입력해 주세요",
+    "login.code.body": "{email}로 6자리 코드를 보냈어요. 메일의 링크를 눌러도 로그인할 수 있어요.",
+    "login.code.label": "인증 코드",
+    "login.code.confirm": "확인",
+    "login.code.resend": "코드 다시 받기",
+    "login.code.resendIn": "{s}초 뒤에 다시 받을 수 있어요",
+    "login.code.wrong": "코드가 맞지 않아요. 다시 확인해 주세요.",
+    "login.code.expired": "코드가 만료됐어요. 새 코드를 받아 주세요.",
+    "login.code.rate": "시도가 너무 많아요. {m}분 뒤에 다시 해 주세요.",
+    "login.other": "다른 방법으로 로그인",
+    "login.cancel": "로그인 취소",
+    "login.brandNote": "공식 버튼 에셋으로 교체"
+  }
+}

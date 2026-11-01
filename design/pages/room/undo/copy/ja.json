@@ -1,0 +1,19 @@
+{
+  "status": "draft: G4 native review pending",
+  "strings": {
+    "undo.title": "前のプレビューに戻しますか？",
+    "undo.body": "この会話で作ったばかりの変更を取り消し、ひとつ前のプレビューに戻ります。部屋はまだ変わっていません。反映した部屋は元に戻せません。",
+    "undo.confirm": "元に戻す",
+    "undo.progress": "元に戻しています",
+    "undo.done.title": "元に戻しました",
+    "undo.done.body": "ひとつ前のプレビューです。",
+    "undo.none.title": "元に戻せる変更がありません",
+    "undo.none.body": "この会話で作った変更はまだありません。すでに反映した部屋は元に戻せません。",
+    "undo.busy.title": "{name}さんが飾っています",
+    "undo.busy.body": "このプレビューを元に戻せるのは{name}さんだけです。",
+    "undo.conflict.title": "すでに元に戻されたか、プレビューが変更されました",
+    "undo.conflict.body": "最新のプレビューを読み込みました。必要であればもう一度元に戻してください。",
+    "undo.err.title": "元に戻せませんでした",
+    "undo.err.body": "プレビューはそのままです。もう一度お試しください。"
+  }
+}

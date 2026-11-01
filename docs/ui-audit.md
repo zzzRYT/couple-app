@@ -1,6 +1,6 @@
 # MVP UI audit
 
-Compared the MVP implementation with `design/tokens.json`, `screens.md`, `interaction-notes.md`, `i18n-copy.md`, and the corresponding canvas boards and exports. Photo, milestones and generated decorations are outside this MVP. The notes below identify gaps in the starting implementation; simulator verification is recorded separately when available.
+Compared the MVP implementation with `design/tokens.json`, `screens.md`, `interaction-notes.md`, `design/pages/`, and the corresponding canvas boards and exports. Photo, milestones and generated decorations are outside this MVP. The notes below identify gaps in the starting implementation; simulator verification is recorded separately when available.
 
 | Screen | Mismatch | Fix |
 | --- | --- | --- |

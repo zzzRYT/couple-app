@@ -1,1 +1,1 @@
-English and Japanese are drafts awaiting native-speaker review (G4). Regenerate from `design/i18n-copy.md` with `node tools/i18n/import-design-copy.mjs`.
+English and Japanese are drafts awaiting native-speaker review (G4). The source is `design/pages/**/copy/{ko,en,ja}.json`. Regenerate with `node tools/i18n/import-design-copy.mjs`; run `node tools/i18n/check-design-copy.mjs` to validate. Keys are emitted in sorted order.
