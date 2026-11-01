@@ -22,6 +22,7 @@
     "login.code.rate": "시도가 너무 많아요. {m}분 뒤에 다시 해 주세요.",
     "login.other": "다른 방법으로 로그인",
     "login.cancel": "로그인 취소",
-    "login.brandNote": "공식 버튼 에셋으로 교체"
+    "login.brandNote": "공식 버튼 에셋으로 교체",
+    "login.quick.title": "DEV · 테스트 계정으로 바로 입장"
   }
 }

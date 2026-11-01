@@ -304,6 +304,7 @@
   "login.kakao": "Kakaoで続ける",
   "login.other": "別の方法でログイン",
   "login.processing": "ログインしています",
+  "login.quick.title": "DEV · テストアカウントでログイン",
   "login.redirect.body": "ログインが終わると、アルームに戻ります。",
   "login.redirect.title": "Kakaoに移動しています",
   "login.title": "ログイン方法を選んでください",

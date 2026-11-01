@@ -22,6 +22,7 @@
     "login.code.rate": "試行回数が多すぎます。{m}分後にもう一度お試しください。",
     "login.other": "別の方法でログイン",
     "login.cancel": "ログインをやめる",
-    "login.brandNote": "公式ボタン素材に差し替え"
+    "login.brandNote": "公式ボタン素材に差し替え",
+    "login.quick.title": "DEV · テストアカウントでログイン"
   }
 }

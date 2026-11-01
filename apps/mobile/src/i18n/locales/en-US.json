@@ -304,6 +304,7 @@
   "login.kakao": "Continue with Kakao",
   "login.other": "Use another method",
   "login.processing": "Signing you in",
+  "login.quick.title": "DEV · Enter with a test account",
   "login.redirect.body": "You'll come back to Aroom after signing in.",
   "login.redirect.title": "Opening Kakao",
   "login.title": "Choose how to sign in",

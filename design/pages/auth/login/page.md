@@ -18,6 +18,8 @@ Route: /(auth)/login, /(auth)/email-code
 
 ## 상태와 상호작용
 
+개발 빌드의 테스트 계정 빠른 로그인은 `login.quick.title`을 사용합니다.
+
 - **캔버스 보드**: `S02-login`
 - **개정(2026-10-27, 소유자 결정)**: 제품 로그인은 Sign in with Apple만 보여요(iOS는 Apple 공식 버튼, 처리 중·취소·오류 상태는 그대로). 카카오 버튼은 플래그로 숨기고, 이메일 선택·코드 입력은 개발 빌드 전용 테스트 로그인으로만 남아요. Android는 당분간 Apple 버튼이 없어요(웹 흐름은 Services ID 설정 뒤). 아래 원래 설명과 `S01-return`의 `login.kakao`·`login.email`은 이 개정이 우선해요.
 - **목적**: 카카오·Apple·이메일 선택, OAuth 이동·복귀, 처리 중, 취소, 재시도, 이메일 코드 입력·재전송·만료·시도 과다.

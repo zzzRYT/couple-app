@@ -22,6 +22,7 @@
     "login.code.rate": "Too many attempts. Try again in {m} minutes.",
     "login.other": "Use another method",
     "login.cancel": "Cancel sign-in",
-    "login.brandNote": "Replace with official button asset"
+    "login.brandNote": "Replace with official button asset",
+    "login.quick.title": "DEV · Enter with a test account"
   }
 }
