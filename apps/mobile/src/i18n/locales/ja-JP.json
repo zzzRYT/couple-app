@@ -50,6 +50,7 @@
   "onb.lastUsed": "前回の方法",
   "onb.skip": "スキップ",
   "onb.pageOf": "{n} / {total}",
+  "login.quick.title": "DEV · テストアカウントでログイン",
   "login.title": "ログイン方法を選んでください",
   "login.kakao": "Kakaoで続ける",
   "login.apple": "Appleで続ける",
