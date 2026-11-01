@@ -21,3 +21,20 @@ it('turns the email login on only in the development EAS profile', () => {
   expect(eas.build.production.env.APP_VARIANT).toBe('production');
   expect(eas.submit).toBeUndefined();
 });
+it('rejects the quick login flag for preview and production builds', () => {
+  const original = { ...process.env };
+  try {
+    for (const variant of ['preview', 'production']) {
+      process.env.APP_VARIANT = variant;
+      process.env.EXPO_PUBLIC_DEV_QUICK_LOGIN = 'true';
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      expect(() => jest.isolateModules(() => require('../../../app.config'))).toThrow('EXPO_PUBLIC_DEV_QUICK_LOGIN');
+    }
+    process.env.APP_VARIANT = 'development';
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    expect(() => jest.isolateModules(() => require('../../../app.config'))).not.toThrow();
+  } finally { process.env = original; }
+  const eas = JSON.parse(readFileSync(join(__dirname, '../../../eas.json'), 'utf8'));
+  expect(eas.build.preview.env.EXPO_PUBLIC_DEV_QUICK_LOGIN).toBeUndefined();
+  expect(eas.build.production.env.EXPO_PUBLIC_DEV_QUICK_LOGIN).toBeUndefined();
+});

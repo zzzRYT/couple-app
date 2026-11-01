@@ -10,3 +10,7 @@
 - **Invite code pepper**: `supabase secrets set INVITE_CODE_PEPPER=<long random value>`.
 
 Remote project wiring (link, db push, seed, functions deploy, secrets, app env): `docs/remote-supabase-setup.md`.
+
+## Temporary local quick login
+
+The development-only quick login is restricted to local Supabase hosts and fixed test accounts. To remove it, delete `apps/mobile/src/features/auth/devQuickLogin`, its call sites in `LoginScreen.tsx` and the login route, the quick-login build guard and its tests, the `login.quick.title` translations and key, and the local launcher flag. Never enable it for a hosted project.

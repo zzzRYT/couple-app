@@ -8,6 +8,8 @@ import { useAppColor } from '../../theme/useAppColor';
 import { useType } from '../../theme/typography';
 import { authOptions as defaultOptions, type AuthOptions } from '../../config/auth';
 import { AppleButton } from './AppleButton';
+import { DevQuickLogin } from './devQuickLogin';
+import type { createSupabase } from '../../lib/supabase';
 import { ProviderButton } from './ProviderButton';
 import { EMAIL_PATTERN, type AuthPort, type Provider } from './authPort';
 
@@ -26,7 +28,7 @@ function Legal() {
   );
 }
 /** S02: product sign-in is Sign in with Apple; the email OTP flow exists only in development builds. */
-export function LoginScreen({ auth, lastUsed, onDone, onEmail, onBack, notice, options = defaultOptions }: { auth: AuthPort; lastUsed?: Provider; onDone: () => void; onEmail: (email: string) => void; onBack?: () => void; notice?: string; options?: AuthOptions }) {
+export function LoginScreen({ auth, lastUsed, onDone, onEmail, onBack, notice, quickLoginClient, options = defaultOptions }: { auth: AuthPort; lastUsed?: Provider; onDone: () => void; onEmail: (email: string) => void; onBack?: () => void; notice?: string; quickLoginClient?: ReturnType<typeof createSupabase>; options?: AuthOptions }) {
   const color = useAppColor();
   const { t } = useTranslation();
   const { emphasis } = useType();
@@ -87,6 +89,7 @@ export function LoginScreen({ auth, lastUsed, onDone, onEmail, onBack, notice, o
         {/* Development builds only (EXPO_PUBLIC_DEV_EMAIL_LOGIN); never part of the product sign-in. */}
         {options.devEmail && <Button label={t('login.email')} variant="secondary" icon="mail" onPress={() => setState({ kind: 'email', invalid: false, sending: false, failed: false })} />}
       </View>
+      {quickLoginClient && <DevQuickLogin client={quickLoginClient} onDone={onDone} />}
     </Screen>
   );
 }
