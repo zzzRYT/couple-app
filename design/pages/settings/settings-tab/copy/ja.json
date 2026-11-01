@@ -1,5 +1,6 @@
 {
   "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "set.offline.title": "オフラインです",
     "set.offline.body": "部屋の昼夜とタイムゾーンは、接続が戻ってから変更できます。この端末の表示設定は今でも変更できます。",

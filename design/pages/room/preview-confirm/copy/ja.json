@@ -1,5 +1,6 @@
 {
   "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "sample.me": "自分",
     "prompt.limit": "部屋に置けるのは小物16個、文言3つまでです。収まるように減らして提案し直しました。",

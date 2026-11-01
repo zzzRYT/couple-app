@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "end.progress": "종료하는 중이에요",
     "end.byPartner": "{name}님이 공간을 종료했어요",

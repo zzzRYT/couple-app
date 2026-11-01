@@ -1,5 +1,6 @@
 {
   "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "login.redirect.title": "Opening Kakao",
     "login.redirect.body": "You'll come back to Aroom after signing in.",

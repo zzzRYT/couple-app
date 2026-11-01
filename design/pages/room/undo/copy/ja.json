@@ -1,5 +1,6 @@
 {
   "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "undo.title": "前のプレビューに戻しますか？",
     "undo.body": "この会話で作ったばかりの変更を取り消し、ひとつ前のプレビューに戻ります。部屋はまだ変わっていません。反映した部屋は元に戻せません。",

@@ -1,5 +1,6 @@
 {
   "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "undo.title": "Go back to the previous preview?",
     "undo.body": "This drops the change you just made in this conversation and goes back to the preview before it. The room hasn't changed. A room you already applied can't be undone.",

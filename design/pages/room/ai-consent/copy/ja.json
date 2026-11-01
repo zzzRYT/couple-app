@@ -1,5 +1,6 @@
 {
   "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "consent.title": "部屋の飾り付けは海外のAIで処理されます",
     "consent.lead": "飾り付けをリクエストすると、以下の情報が海外のAI事業者のサーバーに送信されます。同意しなくても、日数表示や部屋の閲覧は使えます。",

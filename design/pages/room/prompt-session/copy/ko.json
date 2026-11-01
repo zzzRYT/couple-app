@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "prompt.partner.typing": "{name}님이 쓰는 중…",
     "prompt.partner.thinking": "미리 보기를 만드는 중이에요",

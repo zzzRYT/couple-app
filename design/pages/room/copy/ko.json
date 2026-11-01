@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "room.loading": "방을 불러오는 중이에요",
     "room.offline": "인터넷이 끊겨서 보기만 할 수 있어요",

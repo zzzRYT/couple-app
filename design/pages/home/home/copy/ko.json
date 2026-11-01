@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "date.sinceShort": "2025.06.29부터",
     "main.chip.waiting": "상대 초대 전",

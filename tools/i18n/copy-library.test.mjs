@@ -23,3 +23,16 @@ test('copy validation rejects missing translations, duplicate keys and placehold
     await assert.rejects(loadCopies(root), /Duplicate key/);
   } finally { await rm(root, { recursive: true, force: true }); }
 });
+
+test('proposal keys remain reviewable but are excluded from runtime translations', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'design-proposal-'));
+  const dir = join(root, 'page', 'copy');
+  try {
+    await mkdir(dir, { recursive: true });
+    for (const lang of ['ko', 'en', 'ja']) await writeFile(join(dir, `${lang}.json`), JSON.stringify({ status: 'draft', keyStatus: { 'login.pw.label': 'proposal' }, strings: { 'login.pw.label': 'Password' } }));
+    const { merged, all, proposals } = await loadCopies(root);
+    assert.equal(merged.en['login.pw.label'], undefined);
+    assert.equal(all.en['login.pw.label'], 'Password');
+    assert.deepEqual(proposals, ['login.pw.label']);
+  } finally { await rm(root, { recursive: true, force: true }); }
+});

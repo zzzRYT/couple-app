@@ -1,5 +1,6 @@
 {
   "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "join.title": "招待コードを入力してください",
     "join.body": "パートナーから受け取った8文字のコードを入力してください。",

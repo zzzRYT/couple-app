@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "report.title": "신고 · 연결 끊기",
     "report.what": "무엇을 신고할까요?",

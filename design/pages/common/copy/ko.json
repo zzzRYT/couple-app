@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "sample.partner": "하루",
     "date.since": "2025년 6월 29일부터",

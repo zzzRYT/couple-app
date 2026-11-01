@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "common.save": "저장",
     "main.invitePending.title": "상대를 기다리고 있어요",

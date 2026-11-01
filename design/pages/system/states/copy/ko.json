@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "join.haveCode": "초대 코드가 있어요",
     "join.createSpace": "새 공간 만들기",

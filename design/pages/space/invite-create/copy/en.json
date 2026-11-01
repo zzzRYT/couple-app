@@ -1,5 +1,6 @@
 {
   "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "invite.expiring": "Expiring soon · {m} min left",
     "invite.expired.title": "This code has expired",

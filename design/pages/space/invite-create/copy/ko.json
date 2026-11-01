@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "invite.expiring": "곧 만료돼요 · {m}분 남았어요",
     "invite.expired.title": "코드가 만료됐어요",

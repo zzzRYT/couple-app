@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "room.partnerLive": "{name}님이 꾸미는 중 · 실시간으로 보고 있어요",
     "room.watch": "지켜보기",

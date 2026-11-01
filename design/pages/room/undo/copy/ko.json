@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "undo.title": "이전 미리 보기로 되돌릴까요?",
     "undo.body": "이 대화에서 방금 만든 변경을 취소하고 바로 앞 미리 보기로 돌아가요. 방은 아직 바뀌지 않았어요. 적용한 방은 되돌릴 수 없어요.",

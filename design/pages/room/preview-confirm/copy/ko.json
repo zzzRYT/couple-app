@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "sample.me": "나",
     "prompt.limit": "한 방에는 소품 16개, 문구 3개까지 둘 수 있어요. 일부를 줄여서 다시 제안했어요.",

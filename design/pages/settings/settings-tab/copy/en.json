@@ -1,5 +1,6 @@
 {
   "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "set.offline.title": "You're offline",
     "set.offline.body": "Room day/night and time zone can be changed once you're back online. This device's display settings still work.",

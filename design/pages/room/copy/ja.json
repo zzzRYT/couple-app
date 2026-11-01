@@ -1,5 +1,6 @@
 {
   "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "room.loading": "部屋を読み込んでいます",
     "room.offline": "オフラインのため、表示のみ可能です",

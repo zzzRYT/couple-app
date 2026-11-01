@@ -1,3 +1,5 @@
+> 아티팩트가 정본이며 이 디렉터리는 미러입니다. 동기화 버전과 절차는 [ARTIFACT.md](../ARTIFACT.md), [design README](../README.md)를 확인하세요. 현재 보관본은 첫 동기화 전 기준선입니다.
+
 # design/canvas — 캔버스 원본
 
 Claude Design 캔버스의 프로젝트 파일을 그대로 내보낸 것이에요(`project/` 아래).

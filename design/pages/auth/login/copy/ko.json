@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "login.redirect.title": "카카오로 이동하고 있어요",
     "login.redirect.body": "로그인을 마치면 아룸으로 돌아와요.",

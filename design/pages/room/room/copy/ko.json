@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "room.ctl.settings": "설정",
     "room.syncing": "동기화하는 중",

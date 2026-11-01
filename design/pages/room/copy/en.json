@@ -1,5 +1,6 @@
 {
   "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "room.loading": "Loading your room",
     "room.offline": "You're offline, so the room is view-only",

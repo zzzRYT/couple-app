@@ -52,15 +52,16 @@
 
 [검토 순서](pages/index.md) · [브라우저 검토](pages/index.html) · [전체 보드/이미지 목록](pages/inventory.md) · [추적표](pages/traceability.md). 원본 보드와 PNG는 이동하지 않고 페이지에서 상대 링크합니다.
 
-UI 문구는 해당 페이지의 `copy/`에서만 바꾸고, 여러 페이지에서 쓰면 해당 기능 또는 `common/copy/`를 사용하세요.
+UI 문구는 정본인 아티팩트에서만 변경하세요. 저장소의 페이지·기능·공통 `copy/`는 동기화로 생성되는 미러입니다.
 
-화면을 추가하거나 바꿀 때: (1) `page.md`의 상태·이동·뒤로·접근성·`Sxx-AC-nn` 시나리오와 `feature.md`의 흐름을 갱신, (2) 세 언어 copy를 같은 소유 위치에서 갱신하고 draft 상태를 유지, (3) 보드와 PNG 링크 및 `copy-keys.json`을 갱신, (4) `pages/traceability.md`에 요구사항·테스트·결과를 연결, (5) 아래 명령으로 리소스와 검토 화면을 재생성하고 검사합니다. 승인자와 날짜는 Markdown에서만 기록합니다.
+화면을 추가하거나 바꿀 때: (1) 소유자가 [Claude Design 아티팩트](https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X)에 의견을 남기고, (2) 아티팩트에서 화면·흐름·세 언어 문구를 먼저 편집합니다. (3) 완전한 프로젝트를 내보낸 뒤 아래 명령으로 미러를 동기화해 검토 PR을 만듭니다. (4) 소유자 승인 후 별도 구현 PR에서 앱을 변경합니다. `proposal` 문구는 승인 전 앱에서 사용하지 않습니다. 추적표와 수락 시나리오는 미결정과 검토 상태를 기록합니다.
 
 ```sh
-node tools/i18n/import-design-copy.mjs
-node tools/i18n/check-design-copy.mjs
+python3 tools/design-sync/sync.py --from /path/to/exported/project --version ARTIFACT_VERSION_ID
 node --test tools/i18n/copy-library.test.mjs
-node tools/i18n/generate-design-review.mjs
+python3 -m unittest discover -s tools/design-sync -p 'test_*.py'
 ```
 
-검사기는 리터럴 및 알려진 네임스페이스의 문자열을 정적으로 확인합니다. 동적으로 만들어지는 키는 타입 검사와 수동 확인도 필요합니다. 미사용 경고는 런타임 사용 여부를 단정하지 않습니다. JSON은 키 순서만 정렬해 생성하며 세 언어의 영문·일문은 G4 검수 전 초안입니다. 과거 단일 문서는 [보관본](archive/i18n-copy-2026-11.md)입니다.
+동기화는 전체 보드와 번역을 검증한 뒤 미러·로캘을 갱신하며 변경·추가·삭제·proposal 키를 출력합니다. 각 `copy/*.json`과 검토 HTML은 생성물입니다. 동기화 전 기준선은 [ARTIFACT.md](ARTIFACT.md)에 표시합니다.
+
+검사기는 리터럴 및 알려진 네임스페이스의 문자열을 정적으로 확인합니다. 동적으로 만들어지는 키는 타입 검사와 수동 확인도 필요합니다. 미사용 경고는 런타임 사용 여부를 단정하지 않습니다. JSON은 키 순서만 정렬해 생성하며 영문·일문 검수 상태는 아티팩트 보드를 따릅니다. 과거 단일 문서는 [보관본](archive/i18n-copy-2026-11.md)입니다.

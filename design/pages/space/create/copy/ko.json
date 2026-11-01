@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "space.choice.title": "우리 공간을 시작해요",
     "space.choice.body": "새 공간을 만들거나 상대에게 받은 초대 코드로 참여할 수 있어요.",

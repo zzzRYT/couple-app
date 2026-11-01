@@ -1,5 +1,6 @@
 {
   "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "space.choice.title": "Start your space",
     "space.choice.body": "Create a new space or join with an invitation code from your partner.",

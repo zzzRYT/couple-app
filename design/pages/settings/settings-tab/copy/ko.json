@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "set.offline.title": "오프라인이에요",
     "set.offline.body": "방 낮·밤과 시간대는 연결된 뒤에 바꿀 수 있어요. 이 기기의 화면 설정은 지금도 바꿀 수 있어요.",

@@ -1,13 +1,17 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises';
-import { relative, join } from 'node:path';
+import { join } from 'node:path';
 import { loadCopies } from './copy-library.mjs';
 const root = 'design/pages';
-const { merged } = await loadCopies();
+const { all: merged, proposals } = await loadCopies();
+const artifact = await readFile('design/ARTIFACT.md', 'utf8');
+const version = artifact.match(/^버전: (.+)$/m)?.[1] ?? '미동기화';
+const canvas = JSON.parse(await readFile('design/canvas/project/canvas.json', 'utf8'));
 const esc = (s) => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
-const html = (title, body) => `<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>${esc(title)}</title><style>body{font:16px/1.55 system-ui,sans-serif;max-width:1100px;margin:auto;padding:24px;color:#352a2d;background:#fbf8f5}a{color:#804052}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:1em;border-radius:10px}img{max-width:300px;max-height:600px;object-fit:contain;border:1px solid #ddd;border-radius:8px}figure{display:inline-block;vertical-align:top;margin:8px}figcaption{max-width:300px;overflow-wrap:anywhere}table{border-collapse:collapse;background:white;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}td{overflow-wrap:anywhere}nav{margin-bottom:1em}</style><body>${body}</body></html>\n`;
-const table = (keys) => `<table><thead><tr><th>Key</th><th>한국어</th><th>English · draft G4</th><th>日本語 · draft G4</th></tr></thead><tbody>${keys.map((k) => `<tr><th>${esc(k)}</th>${['ko','en','ja'].map((l) => `<td>${esc(merged[l][k] ?? 'MISSING')}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+const html = (title, body) => `<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>${esc(title)}</title><style>body{font:16px/1.55 system-ui,sans-serif;max-width:1100px;margin:auto;padding:24px;color:#352a2d;background:#fbf8f5}a{color:#804052}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:1em;border-radius:10px}img{max-width:300px;max-height:600px;object-fit:contain;border:1px solid #ddd;border-radius:8px}figure{display:inline-block;vertical-align:top;margin:8px}figcaption{max-width:300px;overflow-wrap:anywhere}table{border-collapse:collapse;background:white;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}td{overflow-wrap:anywhere}nav{margin-bottom:1em}</style><body><p><strong>아티팩트 정본의 저장소 미러 · 버전 ${esc(version)} · 생성 파일은 수정하지 마세요. 상태 명세와 PNG는 아티팩트에 비해 오래되었을 수 있습니다.</strong> <a href="https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X">아티팩트</a></p>${body}</body></html>\n`;
+const table = (keys) => `<table><thead><tr><th>Key</th><th>한국어</th><th>English · draft G4</th><th>日本語 · draft G4</th></tr></thead><tbody>${keys.map((k) => `<tr><th>${esc(k)}${proposals.includes(k) ? " (proposal · 미승인)" : ""}</th>${['ko','en','ja'].map((l) => `<td>${esc(merged[l][k] ?? 'MISSING')}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 const folders = (await readdir(root, {withFileTypes:true})).filter((e) => e.isDirectory() && e.name !== 'common').map((e) => e.name).sort((a,b) => ['auth','space','home','room','settings','system','foundations','later-history'].indexOf(a)-['auth','space','home','room','settings','system','foundations','later-history'].indexOf(b));
 let index = '<h1>디자인 검토 순서</h1><p>승인은 각 Markdown 문서의 승인자와 승인일에 기록합니다.</p>';
+if (Array.isArray(canvas.pages)) { index += '<h2>아티팩트 페이지와 보드</h2>'; for (const page of canvas.pages) { index += `<h3>${esc(page.name)}</h3><ul>`; for (const [name, meta] of Object.entries(canvas.boards)) if (meta.page === page.id) index += `<li><a href="../canvas/project/${encodeURIComponent(name)}">${esc(meta.title || name)}</a></li>`; index += '</ul>'; } }
 for (const feature of folders) {
   const dir = join(root, feature); const doc = await readFile(join(dir,'feature.md'),'utf8');
   const pages = (await readdir(dir,{withFileTypes:true})).filter((e) => e.isDirectory() && e.name !== 'copy').map((e) => e.name).sort((a,b) => doc.indexOf(`(${a}/page.md)`) - doc.indexOf(`(${b}/page.md)`));

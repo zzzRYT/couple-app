@@ -1,5 +1,6 @@
 {
   "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "onb.p1.title": "ふたりで過ごした日を数えます",
     "onb.p1.body": "一緒に過ごし始めた日を決めると、メイン画面で今日が何日目か分かります。",

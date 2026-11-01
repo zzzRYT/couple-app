@@ -1,5 +1,6 @@
 {
   "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "consent.title": "Room decorating is processed by AI overseas",
     "consent.lead": "When you ask to decorate, the information below is sent to an AI provider's servers overseas. Without consent, the day count and viewing the room still work.",

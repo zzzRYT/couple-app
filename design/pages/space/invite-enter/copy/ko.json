@@ -1,5 +1,6 @@
 {
   "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
   "strings": {
     "join.title": "초대 코드를 입력해 주세요",
     "join.body": "상대에게 받은 8자리 코드를 입력해 주세요.",
