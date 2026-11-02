@@ -8,6 +8,8 @@
 
 ## 문서 안내
 
+`specs/002-couple-dday-v0/`에는 V0(첫 출시: 커플 D+Day, iOS·TestFlight) 명세·계획·작업과 Codex용 슬라이스별 handoff(`handoffs/`)가 있습니다. AI 방 꾸미기는 다음 버전(V1)입니다.
+
 `specs/001-couple-prompt-todo/`에는 기능 명세와 설계 자료가 있습니다.
 
 - `spec.md`: 제품 범위, 사용자 시나리오, 요구사항, 가정
