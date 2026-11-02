@@ -1,5 +1,4 @@
 import { router } from 'expo-router';
-import Constants from 'expo-constants';
 import { useTranslation } from 'react-i18next';
 import { formatAnniversary } from '../../../lib/dday';
 import { SettingsScreen } from '../../../features/settings/SettingsScreen';
@@ -7,6 +6,7 @@ import { logout } from '../../../features/settings/logout';
 import { useSpace } from '../../../features/space/SpaceContext';
 import { useApp } from '../../../lib/AppContext';
 import { clearPendingInvite } from '../../../lib/inviteLink';
+import { appVersionLabel } from '../../../config/version';
 
 export default function SettingsRoute() {
   const { auth, client, userId } = useApp();
@@ -27,7 +27,7 @@ export default function SettingsRoute() {
     try { await client.updateRoomMode(snapshot.space.spaceId, snapshot.roomThemeDocument.mode, timeZone, snapshot.versionNumber); }
     finally { await refresh(); }
   };
-  return <SettingsScreen onLogout={onLogout} version={Constants.expoConfig?.version} offline={state.offline}
+  return <SettingsScreen onLogout={onLogout} version={appVersionLabel()} offline={state.offline}
     space={snapshot ? { anniversary: formatAnniversary(snapshot.space.anniversaryDate, i18n.language), consent: me?.aiConsentState ?? 'not_given', roomMode: snapshot.roomThemeDocument.mode, timeZone: snapshot.space.timeZone } : null}
     onRoomMode={updateRoomMode} onTimeZone={updateTimeZone}
     onOpenDate={() => router.navigate('/home')} onOpenCover={() => router.navigate({ pathname: '/home', params: { cover: '1' } })} onOpenConsent={() => router.push('/prompt/consent')}

@@ -6,5 +6,7 @@ supabase/.temp/
 *.keystore
 *.p8
 .expo/
+apps/mobile/ios/
+apps/mobile/android/
 dist/
 coverage/
