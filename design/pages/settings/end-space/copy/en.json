@@ -1,0 +1,12 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "end.progress": "Ending your space",
+    "end.byPartner": "{name} ended the space",
+    "end.byPartnerDisconnect": "{name} disconnected",
+    "end.byPartnerDeleted": "Your partner deleted their account",
+    "end.err.title": "Couldn't end the space",
+    "end.err.body": "The space is unchanged. Please try again."
+  }
+}

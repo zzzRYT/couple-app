@@ -1,0 +1,31 @@
+{
+  "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "join.title": "초대 코드를 입력해 주세요",
+    "join.body": "상대에게 받은 8자리 코드를 입력해 주세요.",
+    "join.paste": "붙여넣기",
+    "join.check": "코드 확인",
+    "join.checking": "코드를 확인하고 있어요",
+    "join.found.heading": "이 공간에 참여할까요?",
+    "join.found.title": "{name}님의 공간이에요",
+    "join.found.body": "함께한 날짜는 {date}이에요. 참여하면 두 사람의 공간이 돼요.",
+    "join.accept": "참여하기",
+    "join.decline": "참여하지 않기",
+    "join.expired.title": "이 코드는 만료됐어요",
+    "join.expired.body": "상대에게 새 코드를 보내 달라고 해 주세요.",
+    "join.used.title": "이미 사용된 코드예요",
+    "join.used.body": "한 번 쓴 코드는 다시 쓸 수 없어요. 상대에게 새 코드를 요청해 주세요.",
+    "join.invalid.title": "코드가 맞지 않아요",
+    "join.invalid.body": "문자를 다시 확인해 주세요. 헷갈리는 0과 O, 1과 I는 코드에 쓰지 않아요.",
+    "join.full.title": "이미 두 사람이 있는 공간이에요",
+    "join.full.body": "이 공간에는 더 참여할 수 없어요. 상대에게 확인해 주세요.",
+    "join.hasSpace.title": "이미 다른 공간에 있어요",
+    "join.hasSpace.body": "한 번에 하나의 공간만 쓸 수 있어요. 지금 공간에서 먼저 나온 뒤(설정의 공간 종료) 코드를 다시 입력해 주세요.",
+    "join.hasSpace.action": "지금 공간 보기",
+    "join.ok.title": "참여했어요",
+    "join.ok.body": "{name}님과 함께하는 공간이 열렸어요.",
+    "join.ok.next": "메인으로 가기",
+    "join.err": "코드를 확인하지 못했어요. 인터넷 연결을 확인해 주세요."
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "join.haveCode": "I have an invite code",
+    "join.createSpace": "Create a new space",
+    "sys.server.title": "Our servers are having trouble",
+    "sys.server.body": "Please try again in a moment. Your room is unchanged.",
+    "sys.ai.title": "Decorating is unavailable for now",
+    "sys.ai.body": "The day count and viewing the room still work. Please try again later.",
+    "sys.login.title": "Your sign-in has expired",
+    "sys.login.body": "Sign in again to pick up where you left off.",
+    "sys.login.action": "Sign in again",
+    "sys.denied.title": "You can't open this space",
+    "sys.denied.body": "You're not a member of this space, or it has ended.",
+    "sys.old.title": "This room was decorated in a newer app version",
+    "sys.old.body": "Update the app to see it all. For now you're seeing the parts this version can read.",
+    "sys.old.action": "Update the app",
+    "sys.asset.title": "Some items couldn't be loaded",
+    "sys.asset.body": "The spots are left empty. They reload automatically when your connection improves.",
+    "sys.pending.title": "Waiting to sync",
+    "sys.pending.body": "It updates to the latest once you're connected.",
+    "sys.quota.title": "You've used all of today's tries",
+    "sys.empty.title": "Nothing to show yet",
+    "sys.empty.body": "Content will show up here once there is some.",
+    "sys.retry": "Try again"
+  }
+}

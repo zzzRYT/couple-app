@@ -12,7 +12,7 @@
 | [`tokens.json`](tokens.json) | 색(방 낮/밤 · 앱 밝게/어둡게/고대비), 글꼴·글자 크기, 간격, 모서리, 두께, 터치·안전 영역, 장면 규칙 | 구현 |
 | [`components.md`](components.md) | 모든 컴포넌트의 역할·변형·상태·접근성 이름. **시스템 컴포넌트(탭 바 등)와 직접 그리는 것의 구분** | 구현 |
 | [`screens.md`](screens.md) | 화면 16개(S11 기록은 뺌, S28 마일스톤 축하 추가) + 탭 단위 보기: 목적, 이동, 상태, 사용하는 번역 키, 긴 문구 사례 | 구현·QA |
-| [`i18n-copy.md`](i18n-copy.md) | 화면에 보이는 모든 문구의 키와 한국어·English·日本語 | 구현·번역 |
+| [`pages/`](pages/index.md) | 화면에 보이는 모든 문구의 키와 한국어·English·日本語 | 구현·번역 |
 | [`interaction-notes.md`](interaction-notes.md) | 내비게이션(탭 3개), 키보드·공유 시트, 미리 보기·확인·취소·되돌리기, 점유와 이어받기 시간, 오프라인·오류, 동기화 | 구현 |
 | [`contrast-report.md`](contrast-report.md) | WCAG 2.2 대비 464쌍(방 2 × 앱 2 × 보통/고대비 2 조합), 고친 이력, 에셋과 방 면 | 구현·QA |
 | [`assets-spec.md`](assets-spec.md) | 에셋 사양(카탈로그 24종 + 방 밖 일러스트 5종), **방향 A 스타일 가이드(일러스트레이터용)**, 마스코트 출처·권리(§8.1), 교체 절차, 납품 체크리스트 | 일러스트레이터·구현 |
@@ -37,7 +37,7 @@
 
 1. `handoff.md`를 읽고 결정이 필요한 항목(§4, §5)을 정리해요. 구현은 `specs/001-couple-prompt-todo/tasks.md`(구현 태스크 목록)대로 시작해요.
 2. `tokens.json`을 디자인 토큰으로 옮기고 `node design/tools/contrast-check.mjs`를 CI에 걸어요(토큰을 바꾸면 대비가 깨지는지 바로 알 수 있어요).
-3. 화면은 `screens.md`의 상태 ID(예: `S07-decorated`)를 `exports/`·`canvas/`의 같은 이름 프레임과 대조하며 구현해요. 문구는 `i18n-copy.md`의 키만 쓰세요.
+3. 화면은 `screens.md`의 상태 ID(예: `S07-decorated`)를 `exports/`·`canvas/`의 같은 이름 프레임과 대조하며 구현해요. 문구는 `design/pages/`의 키만 쓰세요.
 4. 에셋은 `assets-spec.md`와 `assets-manifest.csv`를 의뢰서에 첨부해서 일러스트레이터에게 보내요. 스케치(`assets-sketch/`)는 비율과 배치의 기준이고 최종 그림이 아니에요.
 
 ## 꼭 알아둘 것
@@ -46,3 +46,22 @@
 - 캔버스 그림은 **헤드리스 Chrome으로 렌더해 확인**했어요. 실기기·스크린 리더·시스템 탭 바의 실제 모습은 아직 확인하지 못했어요(`handoff.md` §8).
 - 앱 이름은 **아룸(Aroom)**, 캐릭터 이름은 **아루미(Aroomi)**, 슬로건은 **"Our little world, together."** 로 정해졌어요(일본어 표기 アルーム·アルーミ는 **초안(원어민 검수 G4 전)**, 상표·스토어 이름·도메인·bundle ID·운영 주체는 확인 전, `handoff.md` §16). 일반 오브젝트 그림과 지원 이메일 `[지원 이메일]`은 **자리표시**예요. **마스코트 그림은 소유자가 생성형 AI 도구로 만든 마스터를 그대로 쓰기로 한 것이고(재작업 없음, 약한 저작권 보호 위험 수용), 닮음 검사·법률 검토는 출시 전 권장이에요**(`handoff.md` §10.4). **마스코트는 앱이 제공하는 고정 캐릭터이고 이용자가 꾸미지 않아요**(꾸미기는 첫 버전 범위 밖, `handoff.md` §11). **마스코트는 화면 곳곳에 뿌리지 않아요**: 방 장면의 기본 오브젝트와 온보딩 히어로 1개에만 나오고, 나머지는 오브젝트 스케치로 만든 작은 일러스트예요. 캐릭터 자체는 캔버스 **캐릭터 섹션(C01~C05)** 에서 봐요.
 - 글꼴은 미리 보기에서만 Google Fonts를 불러와요. 실제 앱은 파일을 번들하고 원격 글꼴을 쓰지 않아요(라이선스 표기는 `tokens.json`의 `typography.fonts`와 캔버스 S19).
+
+
+## 페이지별 검토와 변경
+
+[검토 순서](pages/index.md) · [브라우저 검토](pages/index.html) · [전체 보드/이미지 목록](pages/inventory.md) · [추적표](pages/traceability.md). 원본 보드와 PNG는 이동하지 않고 페이지에서 상대 링크합니다.
+
+UI 문구는 정본인 아티팩트에서만 변경하세요. 저장소의 페이지·기능·공통 `copy/`는 동기화로 생성되는 미러입니다.
+
+화면을 추가하거나 바꿀 때: (1) 소유자가 [Claude Design 아티팩트](https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X)에 의견을 남기고, (2) 아티팩트에서 화면·흐름·세 언어 문구를 먼저 편집합니다. (3) 완전한 프로젝트를 내보낸 뒤 아래 명령으로 미러를 동기화해 검토 PR을 만듭니다. (4) 소유자 승인 후 별도 구현 PR에서 앱을 변경합니다. `proposal` 문구는 승인 전 앱에서 사용하지 않습니다. 추적표와 수락 시나리오는 미결정과 검토 상태를 기록합니다.
+
+```sh
+python3 tools/design-sync/sync.py --from /path/to/exported/project --version ARTIFACT_VERSION_ID
+node --test tools/i18n/copy-library.test.mjs
+python3 -m unittest discover -s tools/design-sync -p 'test_*.py'
+```
+
+동기화는 전체 보드와 번역을 검증한 뒤 미러·로캘을 갱신하며 변경·추가·삭제·proposal 키를 출력합니다. 각 `copy/*.json`과 검토 HTML은 생성물입니다. 동기화 전 기준선은 [ARTIFACT.md](ARTIFACT.md)에 표시합니다.
+
+검사기는 리터럴 및 알려진 네임스페이스의 문자열을 정적으로 확인합니다. 동적으로 만들어지는 키는 타입 검사와 수동 확인도 필요합니다. 미사용 경고는 런타임 사용 여부를 단정하지 않습니다. JSON은 키 순서만 정렬해 생성하며 영문·일문 검수 상태는 아티팩트 보드를 따릅니다. 과거 단일 문서는 [보관본](archive/i18n-copy-2026-11.md)입니다.

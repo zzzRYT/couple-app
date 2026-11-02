@@ -1,0 +1,28 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "sample.me": "自分",
+    "prompt.limit": "部屋に置けるのは小物16個、文言3つまでです。収まるように減らして提案し直しました。",
+    "prompt.msg.status.applied": "{name}さんが反映しました",
+    "prompt.msg.status.cancelled": "{name}さんがキャンセルしました。部屋はそのままです。",
+    "preview.shared": "ふたりに表示されていますが、部屋はまだ変わっていません。",
+    "preview.applying": "反映しています",
+    "preview.cancel.toast": "キャンセルしました。部屋はそのままです。",
+    "preview.confirm.title": "反映しますか？",
+    "preview.confirm.body": "ふたりの部屋が変わります。反映した後は元に戻せません。反映する前に、もう一度プレビューを確認してください。",
+    "preview.applied.title": "反映しました",
+    "preview.applied.body": "反映した変更は元に戻せません。パートナーの画面は、同期され次第すぐに変わります。",
+    "preview.warn.limit": "小物が多いため、一部を除いて表示しています。",
+    "preview.warn.protected": "ボタンや日数ウィジェットを隠す小物は、自動で位置を動かしました。",
+    "preview.suggest": "こう減らして作ってみました",
+    "preview.expiring": "あと{s}秒でセッションが終わります。反映しない場合はプレビューだけが残ります。",
+    "preview.apply.err.title": "反映できませんでした",
+    "preview.apply.err.body": "部屋は変わっていません。もう一度お試しください。",
+    "preview.model.err": "プレビューの作成中に問題が起きました。部屋は変わっていません。",
+    "preview.conflict.title": "部屋がたった今変更されました",
+    "preview.conflict.body": "最新の部屋を読み込みました。プレビューをもう一度作ってください。",
+    "gen.badge": "新しい飾り",
+    "gen.preview.count": "新しい飾り{n}個"
+  }
+}

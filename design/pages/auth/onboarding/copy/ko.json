@@ -1,0 +1,19 @@
+{
+  "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "onb.p1.title": "둘이 함께한 날을 세어요",
+    "onb.p1.body": "함께한 날짜를 정하면 메인 화면에서 오늘이 며칠째인지 볼 수 있어요.",
+    "onb.p2.title": "프롬프트로 우리 방을 꾸며요",
+    "onb.p2.body": "원하는 분위기를 글로 적으면 미리 보기가 나와요. 마음에 들 때만 적용해요.",
+    "onb.p3.title": "방에는 아루미가 함께 있어요",
+    "onb.p3.body": "방 한쪽에서 두 사람을 반겨 줘요.",
+    "onb.start": "시작하기",
+    "onb.hasAccount": "이미 계정이 있어요",
+    "onb.back.title": "다시 만나서 반가워요",
+    "onb.back.body": "지난번에 쓴 방법으로 로그인해 주세요.",
+    "onb.lastUsed": "최근 사용",
+    "onb.skip": "건너뛰기",
+    "onb.pageOf": "{n} / {total}"
+  }
+}

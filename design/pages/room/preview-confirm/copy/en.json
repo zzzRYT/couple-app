@@ -1,0 +1,28 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "sample.me": "You",
+    "prompt.limit": "A room holds up to 16 items and 3 pieces of text. I trimmed the suggestion to fit.",
+    "prompt.msg.status.applied": "{name} applied it",
+    "prompt.msg.status.cancelled": "{name} canceled it. The room stays the same.",
+    "preview.shared": "You both can see it, but the room hasn't changed.",
+    "preview.applying": "Applying",
+    "preview.cancel.toast": "Canceled. Your room stays the same.",
+    "preview.confirm.title": "Apply it?",
+    "preview.confirm.body": "Your shared room will change for both of you. It can't be undone once applied, so take one more look at the preview first.",
+    "preview.applied.title": "Applied",
+    "preview.applied.body": "Applied changes can't be undone. Your partner's screen updates as soon as it syncs.",
+    "preview.warn.limit": "There are too many items, so a few are left out.",
+    "preview.warn.protected": "Items that covered the buttons or the day counter were moved automatically.",
+    "preview.suggest": "Here's a trimmed version",
+    "preview.expiring": "The session ends in {s}s. If you don't apply, only the preview remains.",
+    "preview.apply.err.title": "Couldn't apply it",
+    "preview.apply.err.body": "The room hasn't changed. Please try again.",
+    "preview.model.err": "Something went wrong while creating the preview. The room hasn't changed.",
+    "preview.conflict.title": "The room just changed",
+    "preview.conflict.body": "We loaded the latest room. Please create the preview again.",
+    "gen.badge": "New decoration",
+    "gen.preview.count": "{n} new decorations"
+  }
+}

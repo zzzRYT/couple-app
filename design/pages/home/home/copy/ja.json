@@ -1,0 +1,31 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "date.sinceShort": "2025/06/29から",
+    "main.chip.waiting": "パートナー未招待",
+    "main.roomCard.night": "今、部屋は夜です",
+    "main.editSheet.saved": "日付を変更しました",
+    "main.lastSeen": "最終確認 {time}",
+    "main.lastSeen.sample": "21:12",
+    "main.mascot.alt": "アルーミ",
+    "a11y.cover.crop": "写真の切り抜き範囲",
+    "cover.me": "自分",
+    "cover.partner": "パートナー",
+    "cover.offline": "オフライン中は写真を変更できません",
+    "cover.crop.title": "表示する部分を合わせてください",
+    "cover.crop.hint": "ドラッグで移動、2本指で大きさを変えます。",
+    "cover.crop.done": "完了",
+    "cover.up.title": "写真をアップロード中",
+    "cover.err.title": "写真をアップロードできませんでした",
+    "cover.err.body": "インターネット接続を確認して、もう一度お試しください。今の写真はそのままです。",
+    "cover.rej.title": "この写真は使えません",
+    "cover.rej.body": "JPG・PNG・HEICの20MB以下の写真のみ使えます。",
+    "cover.load.err": "写真を読み込めませんでした",
+    "cover.removed": "背景写真を外しました",
+    "cover.updated": "背景写真を変更しました",
+    "cover.partner.changed": "{name}さんが背景写真を変更しました",
+    "cover.partner.removed": "{name}さんが背景写真を外しました",
+    "cover.loading": "写真を読み込み中"
+  }
+}

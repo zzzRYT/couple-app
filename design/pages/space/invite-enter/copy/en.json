@@ -1,0 +1,31 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "join.title": "Enter your invite code",
+    "join.body": "Enter the 8-character code your partner sent you.",
+    "join.paste": "Paste",
+    "join.check": "Check code",
+    "join.checking": "Checking the code",
+    "join.found.heading": "Join this space?",
+    "join.found.title": "{name}'s space",
+    "join.found.body": "You got together on {date}. Joining makes it your space for two.",
+    "join.accept": "Join",
+    "join.decline": "Don't join",
+    "join.expired.title": "This code has expired",
+    "join.expired.body": "Ask your partner to send a new code.",
+    "join.used.title": "This code was already used",
+    "join.used.body": "A code can only be used once. Ask your partner for a new one.",
+    "join.invalid.title": "That code isn't valid",
+    "join.invalid.body": "Check the characters. Codes never use 0/O or 1/I.",
+    "join.full.title": "This space already has two people",
+    "join.full.body": "You can't join this space. Check with your partner.",
+    "join.hasSpace.title": "You're already in another space",
+    "join.hasSpace.body": "You can only be in one space at a time. Leave your current space first (Settings › End space), then enter the code again.",
+    "join.hasSpace.action": "View current space",
+    "join.ok.title": "You're in",
+    "join.ok.body": "Your space with {name} is open.",
+    "join.ok.next": "Go to home",
+    "join.err": "Couldn't check the code. Check your internet connection."
+  }
+}

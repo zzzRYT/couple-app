@@ -1,0 +1,15 @@
+{
+  "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "set.offline.title": "오프라인이에요",
+    "set.offline.body": "방 낮·밤과 시간대는 연결된 뒤에 바꿀 수 있어요. 이 기기의 화면 설정은 지금도 바꿀 수 있어요.",
+    "lic.title": "글꼴·오픈소스 라이선스",
+    "lic.ofl": "SIL 오픈 폰트 라이선스 1.1",
+    "lic.inter": "Inter · © 2020 The Inter Project Authors",
+    "lic.notokr": "Noto Sans KR · Noto 프로젝트",
+    "lic.notojp": "Noto Sans JP · Noto 프로젝트",
+    "lic.view": "전문 보기",
+    "lic.note": "아룸의 글꼴은 위 라이선스에 따라 앱에 포함되어 있어요."
+  }
+}

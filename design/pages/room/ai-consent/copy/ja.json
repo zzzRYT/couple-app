@@ -1,0 +1,22 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "consent.title": "部屋の飾り付けは海外のAIで処理されます",
+    "consent.lead": "飾り付けをリクエストすると、以下の情報が海外のAI事業者のサーバーに送信されます。同意しなくても、日数表示や部屋の閲覧は使えます。",
+    "consent.sent.label": "送信する情報",
+    "consent.purpose.label": "利用目的",
+    "consent.purpose.body": "リクエストに合った部屋のプレビューを作ること",
+    "consent.processor.label": "処理する事業者",
+    "consent.processor.body": "Anthropic PBC（米国）。アルームのサーバーを経由して送信されます。",
+    "consent.keep.label": "保管と撤回",
+    "consent.provider.keep": "海外事業者の保管期間：[法務確認後に記入]",
+    "consent.couple.label": "ふたりで使う部屋です",
+    "consent.agree": "同意して続ける",
+    "consent.later": "あとで",
+    "consent.withdraw.title": "同意を撤回しますか？",
+    "consent.withdraw.body": "撤回すると、リクエストは海外に送信されなくなります。今の部屋はそのまま残り、また飾るには再度の同意が必要です。",
+    "consent.withdraw.done": "同意を撤回しました",
+    "consent.later.note": "同意するまで飾り付けは使えません。部屋の閲覧と日数表示はそのまま使えます。"
+  }
+}

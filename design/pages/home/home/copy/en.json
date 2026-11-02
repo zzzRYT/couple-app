@@ -1,0 +1,31 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "date.sinceShort": "Since Jun 29, 2025",
+    "main.chip.waiting": "Partner not invited yet",
+    "main.roomCard.night": "It's nighttime in your room",
+    "main.editSheet.saved": "Date updated",
+    "main.lastSeen": "Last checked {time}",
+    "main.lastSeen.sample": "9:12 PM",
+    "main.mascot.alt": "Aroomi",
+    "a11y.cover.crop": "Photo crop area",
+    "cover.me": "you",
+    "cover.partner": "your partner",
+    "cover.offline": "You can't change the photo while offline",
+    "cover.crop.title": "Choose the part to show",
+    "cover.crop.hint": "Drag to move, pinch to resize.",
+    "cover.crop.done": "Done",
+    "cover.up.title": "Uploading your photo",
+    "cover.err.title": "Couldn't upload the photo",
+    "cover.err.body": "Check your connection and try again. Your current photo is unchanged.",
+    "cover.rej.title": "This photo can't be used",
+    "cover.rej.body": "Only JPG, PNG or HEIC photos up to 20 MB can be used.",
+    "cover.load.err": "Couldn't load the photo",
+    "cover.removed": "Background photo removed",
+    "cover.updated": "Background photo updated",
+    "cover.partner.changed": "{name} changed the background photo",
+    "cover.partner.removed": "{name} removed the background photo",
+    "cover.loading": "Loading photo"
+  }
+}

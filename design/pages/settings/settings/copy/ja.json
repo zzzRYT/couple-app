@@ -1,0 +1,27 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "set.sec.account": "アカウント",
+    "set.logout.title": "ログアウトしますか？",
+    "set.logout.body": "ログアウトしても、スペースと部屋はそのままです。",
+    "set.name": "ニックネーム",
+    "set.cover.off": "なし",
+    "acct.delete.title": "アカウントを削除しますか？",
+    "acct.delete.lead": "すぐにログアウトされ、元に戻せません。",
+    "acct.delete.b1": "アカウントとプロフィール情報が削除されます",
+    "acct.delete.b2": "共有中のスペースがある場合は終了します。ふたりとも入れなくなり、部屋・写真・飾りが削除されます",
+    "acct.delete.b3": "同じアカウントで登録し直しても、以前の内容は戻りません",
+    "acct.delete.confirm": "アカウントを削除する",
+    "acct.delete.reauth.title": "本人確認が必要です",
+    "acct.delete.reauth.body": "安全のため、もう一度ログインしてください。",
+    "acct.delete.reauth.fail": "本人確認に失敗しました。もう一度お試しください。",
+    "acct.delete.progress": "アカウントを削除しています",
+    "acct.delete.done": "アカウントを削除しました",
+    "acct.delete.offline": "アカウントの削除にはインターネット接続が必要です",
+    "acct.delete.fail.title": "削除できませんでした",
+    "acct.delete.fail.body": "まだ何も削除されていません。しばらくしてからもう一度お試しください。",
+    "a11y.on": "オン",
+    "set.notif.sub.on": "オン · 記念日の午前9時"
+  }
+}

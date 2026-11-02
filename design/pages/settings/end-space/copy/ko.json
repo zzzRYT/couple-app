@@ -1,0 +1,12 @@
+{
+  "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "end.progress": "종료하는 중이에요",
+    "end.byPartner": "{name}님이 공간을 종료했어요",
+    "end.byPartnerDisconnect": "{name}님이 연결을 끊었어요",
+    "end.byPartnerDeleted": "상대가 계정을 삭제했어요",
+    "end.err.title": "종료하지 못했어요",
+    "end.err.body": "공간은 그대로예요. 다시 시도해 주세요."
+  }
+}

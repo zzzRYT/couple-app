@@ -1,0 +1,27 @@
+{
+  "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "space.choice.title": "우리 공간을 시작해요",
+    "space.choice.body": "새 공간을 만들거나 상대에게 받은 초대 코드로 참여할 수 있어요.",
+    "space.title": "함께한 날짜를 알려 주세요",
+    "space.body": "이 날짜부터 함께한 일수를 세어요. 나중에 설정에서 고칠 수 있어요.",
+    "space.date.label": "함께한 날짜",
+    "space.date.hint": "예: 2025년 6월 29일",
+    "space.date.future": "오늘 이후의 날짜는 고를 수 없어요.",
+    "space.date.invalid": "존재하지 않는 날짜예요. 다시 확인해 주세요.",
+    "space.tz.note": "방의 낮·밤은 지금 있는 곳의 시간대({tz})에 맞춰 바뀌어요. 설정에서 바꿀 수 있어요.",
+    "space.tz.name": "서울",
+    "space.create": "우리 공간 만들기",
+    "space.creating": "공간을 만들고 있어요",
+    "space.ok.title": "공간이 만들어졌어요",
+    "space.ok.body": "이제 상대를 초대해 주세요.",
+    "space.ok.next": "상대 초대하기",
+    "space.err.title": "공간을 만들지 못했어요",
+    "space.err.body": "인터넷 연결을 확인하고 다시 시도해 주세요.",
+    "space.date.pick": "날짜 고르기",
+    "space.year": "년",
+    "space.month": "월",
+    "space.day": "일"
+  }
+}

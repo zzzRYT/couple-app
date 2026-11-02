@@ -1,3 +1,5 @@
+> 아티팩트가 정본이며 이 디렉터리는 미러입니다. 동기화 버전과 절차는 [ARTIFACT.md](../ARTIFACT.md), [design README](../README.md)를 확인하세요. 현재 보관본은 첫 동기화 전 기준선입니다.
+
 # design/canvas — 캔버스 원본
 
 Claude Design 캔버스의 프로젝트 파일을 그대로 내보낸 것이에요(`project/` 아래).
@@ -17,3 +19,5 @@ Claude Design 캔버스의 프로젝트 파일을 그대로 내보낸 것이에�
 - **FigCraft 보기용 사본**: 이 폴더의 보드를 로컬 FigCraft 문서로 모으는 스크립트와 방법은 [`../figcraft/README.md`](../figcraft/README.md). 보드의 `/_blob/…` 주소는 [`blob-map.json`](blob-map.json)이 `../mascot/` 파일에 이어 줘요.
 - **마스코트 이미지**: 보드 안의 마스코트 `<img>`는 캔버스 에셋 저장소 주소(`/_blob/…`)를 가리켜서 이 저장소 안에서 열면 그림이 안 보여요. 같은 그림은 [`../mascot/`](../mascot/README.md)에 있어요(`harmonized/…@2x.png` = 화면에 쓴 파일, `cutouts/` = 가공 전 원본 컷아웃). 정확한 화면은 [`../exports/`](../exports/)의 PNG로 확인하세요.
 - **움직임**: 보드 안의 일부 요소는 CSS 애니메이션으로 움직여요(S04 떠다니는 편지, 공간 생성·로그인 처리의 오브젝트 순환 로더, S07·S24의 돌아다니는 마스코트). 동작 줄이기 설정에서는 멈춘 채로 보여요. `exports/`의 PNG는 정지 프레임이에요. 규칙은 `interaction-notes.md` §10~§12.
+
+- 화면별 검토·번역·PNG 연결은 [`../pages/index.md`](../pages/index.md)에서 시작하세요. 캔버스 원본은 보존합니다.

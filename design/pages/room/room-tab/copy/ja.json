@@ -1,0 +1,9 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "room.partnerLive": "{name}さんが飾り中 · ライブ表示",
+    "room.watch": "見守る",
+    "coach.room": "「飾る」をタップして最初の部屋を飾りましょう"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "end.progress": "終了しています",
+    "end.byPartner": "{name}さんがスペースを終了しました",
+    "end.byPartnerDisconnect": "{name}さんがつながりを終了しました",
+    "end.byPartnerDeleted": "相手がアカウントを削除しました",
+    "end.err.title": "終了できませんでした",
+    "end.err.body": "スペースはそのままです。もう一度お試しください。"
+  }
+}

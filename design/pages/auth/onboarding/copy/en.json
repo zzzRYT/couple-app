@@ -1,0 +1,19 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "onb.p1.title": "Count the days you've had together",
+    "onb.p1.body": "Set the date you got together and see which day it is on the home screen.",
+    "onb.p2.title": "Decorate your room with a prompt",
+    "onb.p2.body": "Describe the mood you want and see a preview. Apply it only when you like it.",
+    "onb.p3.title": "Aroomi lives in your room",
+    "onb.p3.body": "It greets the two of you from a corner of the room.",
+    "onb.start": "Get started",
+    "onb.hasAccount": "I already have an account",
+    "onb.back.title": "Welcome back",
+    "onb.back.body": "Sign in the way you did last time.",
+    "onb.lastUsed": "Last used",
+    "onb.skip": "Skip",
+    "onb.pageOf": "{n} of {total}"
+  }
+}

@@ -1,0 +1,307 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>settings</title><style>body{font:16px/1.55 system-ui,sans-serif;max-width:1100px;margin:auto;padding:24px;color:#352a2d;background:#fbf8f5}a{color:#804052}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:1em;border-radius:10px}img{max-width:300px;max-height:600px;object-fit:contain;border:1px solid #ddd;border-radius:8px}figure{display:inline-block;vertical-align:top;margin:8px}figcaption{max-width:300px;overflow-wrap:anywhere}table{border-collapse:collapse;background:white;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}td{overflow-wrap:anywhere}nav{margin-bottom:1em}</style><body><p><strong>아티팩트 정본의 저장소 미러 · 버전 미동기화 (기존 저장소 기준선) · 생성 파일은 수정하지 마세요. 상태 명세와 PNG는 아티팩트에 비해 오래되었을 수 있습니다.</strong> <a href="https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X">아티팩트</a></p><nav><a href="../index.html">전체</a> · <a href="feature.md">기능 편집</a></nav><h1>settings</h1><pre># settings
+
+승인자: 미승인
+승인일: 미정
+
+## 목적과 범위
+
+F04: S13 → S14 종료 또는 S15 신고; 동의 관리 → S12. 뒤로: 상세에서 설정으로; 종료 완료 후 S14 종료 안내. S27은 세 탭의 전역 내비게이션 참조.
+
+## 페이지
+
+- [S13 settings](settings/page.md)
+- [S14 end-space](end-space/page.md)
+- [S15 report-block](report-block/page.md)
+- [S26 settings-tab](settings-tab/page.md)
+- [S27 navigation](navigation/page.md)
+
+## 흐름과 뒤로 가기
+
+F04: S13 → S14 종료 또는 S15 신고; 동의 관리 → S12. 뒤로: 상세에서 설정으로; 종료 완료 후 S14 종료 안내. S27은 세 탭의 전역 내비게이션 참조.
+
+공통 플랫폼 뒤로 규칙: [interaction notes](../../interaction-notes.md#13-플랫폼-동작). 화면별 미결정은 각 페이지를 확인하세요.
+
+## 분류 결정
+
+S23/S24/S26은 각 탭의 참고 보드로 해당 기능에 배치. S27은 전체 탭 이동을 설명하지만 설정에 배치. S28은 홈과 방에 걸쳐 홈에 배치. 보류된 L-*는 V1과 분리. 초기 A/B/Main은 foundations에 보관합니다.
+</pre><ul><li><a href="settings/review.html">S13 설정 탭</a> — 승인자: 미승인 · 승인일: 미정</li><li><a href="end-space/review.html">S14 공간 종료</a> — 승인자: 미승인 · 승인일: 미정</li><li><a href="report-block/review.html">S15 신고 / 연결 끊기</a> — 승인자: 미승인 · 승인일: 미정</li><li><a href="settings-tab/review.html">S26 S26 tab</a> — 승인자: 미승인 · 승인일: 미정</li><li><a href="navigation/review.html">S27 navigation</a> — 승인자: 미승인 · 승인일: 미정</li></ul><section><h2>S13 설정 탭</h2><figure><img loading="lazy" src="../../exports/S13-top__ios-day-light-ko.png" alt="S13-top__ios-day-light-ko.png"><figcaption>S13-top__ios-day-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S13-notif-denied__ios-day-light-ko.png" alt="S13-notif-denied__ios-day-light-ko.png"><figcaption>S13-notif-denied__ios-day-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S13-delete-reauth__android-dark-ja.png" alt="S13-delete-reauth__android-dark-ja.png"><figcaption>S13-delete-reauth__android-dark-ja.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S13-delete-explain__ios-light-ko.png" alt="S13-delete-explain__ios-light-ko.png"><figcaption>S13-delete-explain__ios-light-ko.png</figcaption></figure><pre># S13 설정 탭
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S13
+Route: /(tabs)/settings, /settings/delete-account
+
+## 디자인 원본
+
+- [S13-settings.dc.html](../../../canvas/project/S13-settings.dc.html)
+
+## 이미지
+
+- [S13-top__ios-day-light-ko.png](../../../exports/S13-top__ios-day-light-ko.png)
+- [S13-notif-denied__ios-day-light-ko.png](../../../exports/S13-notif-denied__ios-day-light-ko.png)
+- [S13-delete-reauth__android-dark-ja.png](../../../exports/S13-delete-reauth__android-dark-ja.png)
+- [S13-delete-explain__ios-light-ko.png](../../../exports/S13-delete-explain__ios-light-ko.png)
+
+## 상태와 상호작용
+
+- **캔버스 보드**: `S13-settings, S26-tab-settings`
+- **목적**: 프로필/로그아웃/**계정 삭제(US10)**, 앱 언어(기기 언어 기본), 방 낮·밤 모드와 시간대(두 사람에게 적용), 앱 화면 모드·고대비(이 기기에만), 함께한 날짜, AI 동의, 앱 정보, 약관, 문의·신고, 공간 종료 진입.
+- **이동**: 탭 루트(설정). 언어·시간대 → 시트. AI 동의 관리·라이선스·공간 종료·문의·신고 → 푸시(탭 바 숨김).
+- 구역 제목으로 **어디에 적용되는지** 구분해요: &quot;방 · 두 사람에게 적용돼요&quot; / &quot;이 기기의 화면 · 이 기기에만 적용돼요&quot;.
+- &quot;공간 종료&quot;는 고정 컨트롤이 아니라 설정 안 위험 구역 한 줄(확인 단계 필수). 이는 스펙 FR-027 문구와 달라요(handoff.md).
+- 방 낮·밤·시간대는 공유 설정이라 오프라인에서는 잠겨요. 이 기기의 화면 설정은 오프라인에서도 바꿀 수 있어요.
+- **긴 문구·언어 사례**: 구역 제목이 영어·일본어에서 길어져 두 줄이 돼요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S13-loading` | 로딩 | `set.title` `set.loading` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-top` | 계정 · 공간 · 방 (낮·밤 모드는 두 사람에게 적용) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 2 |
+| `S13-bottom` | 이 기기 화면 · 언어 · 모드 · 고대비 · 앱 정보 · 공간 종료 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja 외 3 |
+| `S13-cover-sheet` | 홈 배경 사진 행 → 바꾸기 시트 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `cover.sheet.title` `sample.partner` `cover.by.time` `cover.by` `cover.sheet.pick` `cover.sheet.remove` `cover.sheet.note` `common.cancel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S13-room-night` | 방 모드 = 밤 선택 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S13-notif-off` | 알림 행 · 꺼짐(처음 상태, 이 기기에만 적용) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S13-notif-on` | 알림 행 · 켜짐(오전 9시) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.on` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S13-notif-denied` | 알림 행 · 기기에서 꺼져 있음(켜는 방법 안내) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.denied` `set.notif.denied.title` `set.notif.denied.body` `set.notif.denied.action` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko, iOS·낮·밝게·en, Android·밤·어둡게·ja |
+| `S13-hc-on` | 고대비 켬 (글자·컨트롤만 강화) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.on` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko·고대비, Android·밤·어둡게·ko·고대비 |
+| `S13-lang` | 언어 선택 시트 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `set.lang.sheet` `set.lang.system` `set.lang.note` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S13-tz` | 시간대 선택 시트 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `set.room.tz.pick` `set.room.tz.search` `set.room.tz.tokyo` `set.room.tz.la` `set.room.tz.ny` `set.room.tz.london` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S13-theme-dark` | 화면 모드 = 어둡게 선택 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S13-logout` | 로그아웃 확인 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `set.logout.title` `set.logout.body` `common.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-error` | 불러오기 오류 | `set.title` `set.err.title` `set.err.body` `common.retry` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-delete-explain` | 계정 삭제 · 결과 설명(체크 전) | `acct.delete.b1` `acct.delete.b2` `acct.delete.b3` `acct.delete.title` `acct.delete.lead` `end.check` `acct.delete.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 2 |
+| `S13-delete-checked` | 계정 삭제 · 확인 체크 후 활성 | `acct.delete.b1` `acct.delete.b2` `acct.delete.b3` `acct.delete.title` `acct.delete.lead` `end.check` `acct.delete.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-delete-reauth` | 계정 삭제 · 본인 확인(카카오·Apple·이메일 재로그인) | `acct.delete.b1` `acct.delete.b2` `acct.delete.b3` `acct.delete.title` `acct.delete.lead` `end.check` `acct.delete.confirm` `end.cancel` `acct.delete.reauth.title` `acct.delete.reauth.body` `login.kakao` `login.apple` `login.email` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S13-delete-reauth-fail` | 계정 삭제 · 본인 확인 실패 | `acct.delete.b1` `acct.delete.b2` `acct.delete.b3` `acct.delete.title` `acct.delete.lead` `end.check` `acct.delete.confirm` `end.cancel` `acct.delete.reauth.title` `acct.delete.reauth.body` `acct.delete.reauth.fail` `login.kakao` `login.apple` `login.email` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-delete-progress` | 계정 삭제 · 삭제하는 중 | `acct.delete.progress` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-delete-offline` | 계정 삭제 · 오프라인(대기열 없음, 온라인에서만) | `acct.delete.b1` `acct.delete.b2` `acct.delete.b3` `acct.delete.title` `acct.delete.lead` `end.check` `acct.delete.offline` `acct.delete.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-delete-fail` | 계정 삭제 · 요청 실패(아직 아무것도 지워지지 않음) | `acct.delete.b1` `acct.delete.b2` `acct.delete.b3` `acct.delete.title` `acct.delete.lead` `end.check` `acct.delete.fail.title` `acct.delete.fail.body` `common.retry` `acct.delete.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S13-delete-done` | 계정 삭제 · 완료 후 로그아웃 화면 | `main.appName` `brand.tagline` `login.title` `login.kakao` `login.apple` `login.email` `onb.legal.lead` `onb.legal.links` `onb.age` `acct.delete.done` | iOS·밝게·ko, Android·어둡게·ko |
+
+## 이동 및 뒤로
+
+F04: S13 → S14 종료 또는 S15 신고; 동의 관리 → S12. 뒤로: 상세에서 설정으로; 종료 완료 후 S14 종료 안내. S27은 세 탭의 전역 내비게이션 참조.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S13-AC-01: 설정에서 공간 종료와 신고 화면으로 이동할 수 있다.
+- [ ] S13-AC-02: 알림 권한이 거부된 경우 기기 설정 열기를 안내한다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre></section><section><h2>S14 공간 종료</h2><figure><img loading="lazy" src="../../exports/S14-partner-disconnect__ios-light-ko.png" alt="S14-partner-disconnect__ios-light-ko.png"><figcaption>S14-partner-disconnect__ios-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S14-confirm__ios-light-ko.png" alt="S14-confirm__ios-light-ko.png"><figcaption>S14-confirm__ios-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S14-partner-deleted__ios-light-ko.png" alt="S14-partner-deleted__ios-light-ko.png"><figcaption>S14-partner-deleted__ios-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S14-done__ios-light-ko.png" alt="S14-done__ios-light-ko.png"><figcaption>S14-done__ios-light-ko.png</figcaption></figure><pre># S14 공간 종료
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S14
+Route: /settings/end-space, /ended
+
+## 디자인 원본
+
+- [S14-end-space.dc.html](../../../canvas/project/S14-end-space.dc.html)
+
+## 이미지
+
+- [S14-partner-disconnect__ios-light-ko.png](../../../exports/S14-partner-disconnect__ios-light-ko.png)
+- [S14-confirm__ios-light-ko.png](../../../exports/S14-confirm__ios-light-ko.png)
+- [S14-partner-deleted__ios-light-ko.png](../../../exports/S14-partner-deleted__ios-light-ko.png)
+- [S14-done__ios-light-ko.png](../../../exports/S14-done__ios-light-ko.png)
+
+## 상태와 상호작용
+
+- **캔버스 보드**: `S14-end-space`
+- **목적**: 결과(삭제되고 되돌릴 수 없음)를 또렷하게 쓴 확인(체크 후에만 활성), 진행, 종료 직후 안내와 &quot;새 공간 시작하기&quot;, 상대가 종료한 경우, 상대가 연결을 끊은 경우, 상대가 계정을 삭제한 경우(이름 없이). **복구 기능과 보관 기간 안내는 없어요**(2026-10-27 결정 · 가정).
+- **이동**: 설정 &gt; 공간 종료(푸시) → 확인 → 종료 안내 화면(탭 구조 대신). &quot;새 공간 시작하기&quot; → S03(공간 만들기) 또는 S05(초대 코드 입력). 상대가 먼저 끝냈다면 앱을 열 때 같은 안내 화면이 보여요.
+- 종료는 소프트 삭제예요: 두 사람 모두 즉시 접근이 끊기고 서버가 내부적으로 일정 기간 뒤 완전히 삭제해요. 화면·문구는 기간이나 복구 방법을 말하지 않아요.
+- &quot;잘못 누른 느낌&quot;을 줄이지 않도록 결과 세 줄 + 체크박스 + 빨간 버튼.
+- 종료한 뒤 바로 새 공간을 만들거나 초대를 수락할 수 있어요(&quot;한 공간만&quot;은 활성 공간만 세요).
+- **긴 문구·언어 사례**: 결과 설명이 일본어에서 4줄까지 늘어나요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S14-entry` | 설정의 공간 종료 진입 (확인 단계 앞) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S14-confirm` | 종료 확인 · 결과 명시(삭제되고 되돌릴 수 없음, 체크 전) | `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S14-checked` | 확인 체크 후 활성 | `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S14-progress` | 종료 중 | `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` | iOS·밝게·ko, Android·어둡게·ko |
+| `S14-done` | 종료 직후 · 새 공간 시작하기 (기간·복구 안내 없음) | `end.done.title` `end.done.body` `end.newSpace` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 1 |
+| `S14-partner` | 상대가 종료한 경우 (내 화면) | `sample.partner` `end.byPartner` `end.done.title` `end.done.body` `end.newSpace` | iOS·밝게·ko, Android·어둡게·ko |
+| `S14-partner-disconnect` | 상대가 연결을 끊은 경우 (내 화면) | `sample.partner` `end.byPartnerDisconnect` `end.done.title` `end.done.body` `end.newSpace` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 1 |
+| `S14-partner-deleted` | 상대가 계정을 삭제한 경우 (내 화면 · 이름 없이) | `sample.partner` `end.byPartnerDeleted` `end.done.title` `end.done.body` `end.newSpace` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S14-error` | 종료 실패 | `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` `end.err.title` `end.err.body` `common.retry` `common.close` | iOS·밝게·ko, Android·어둡게·ko |
+
+## 이동 및 뒤로
+
+F04: S13 → S14 종료 또는 S15 신고; 동의 관리 → S12. 뒤로: 상세에서 설정으로; 종료 완료 후 S14 종료 안내. S27은 세 탭의 전역 내비게이션 참조.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S14-AC-01: 공간 종료를 확인한 뒤 종료 안내를 표시한다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre></section><section><h2>S15 신고 / 연결 끊기</h2><figure><img loading="lazy" src="../../exports/S15-obj-reason__ios-light-ko.png" alt="S15-obj-reason__ios-light-ko.png"><figcaption>S15-obj-reason__ios-light-ko.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S15-obj-sent__android-dark-ja.png" alt="S15-obj-sent__android-dark-ja.png"><figcaption>S15-obj-sent__android-dark-ja.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S15-block__android-dark-ja.png" alt="S15-block__android-dark-ja.png"><figcaption>S15-block__android-dark-ja.png</figcaption></figure><figure><img loading="lazy" src="../../exports/S15-block__ios-light-ko.png" alt="S15-block__ios-light-ko.png"><figcaption>S15-block__ios-light-ko.png</figcaption></figure><pre># S15 신고 / 연결 끊기
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S15
+Route: /settings/report
+
+## 디자인 원본
+
+- [S15-report-block.dc.html](../../../canvas/project/S15-report-block.dc.html)
+
+## 이미지
+
+- [S15-obj-reason__ios-light-ko.png](../../../exports/S15-obj-reason__ios-light-ko.png)
+- [S15-obj-sent__android-dark-ja.png](../../../exports/S15-obj-sent__android-dark-ja.png)
+- [S15-block__android-dark-ja.png](../../../exports/S15-block__android-dark-ja.png)
+- [S15-block__ios-light-ko.png](../../../exports/S15-block__ios-light-ko.png)
+
+## 상태와 상호작용
+
+- **캔버스 보드**: `S15-report-block`
+- **목적**: 대상(상대·공유 문구·방 장면) 선택, 사유, 자세한 내용(선택), 제출 성공·실패, 연결 끊기 확인과 결과, 지원 연락처.
+- **이동**: 설정 &gt; 문의·신고(푸시), 대화 메시지의 ⋯ &gt; 이 메시지 신고(시트).
+- 지원 연락처는 `[지원 이메일]` 자리표시예요.
+- **연결 끊기**(예전 이름 &quot;차단&quot;)는 &quot;상대는 방·대화를 볼 수 없고 이 공간이 종료돼요. 함께 쓰던 데이터는 삭제돼요&quot;라고 분명히 말해요(기간·복구 안내 없음)(결정). 신고와는 별개의 기능이에요. 구현의 문구 키·API 이름은 `report.block*`·`block` 그대로예요(계약 이름을 바꾸지 않으려고).
+- **긴 문구·언어 사례**: 사유 문구가 길어져도 한 줄에 라디오와 함께 줄바꿈돼요.
+
+| 상태 ID | 설명 | 사용하는 키 | 그린 조합 |
+|---|---|---|---|
+| `S15-entry` | 진입 · 설정의 문의·신고 → 신고 대상 고르기 | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `sample.partner` `report.block` `report.contact` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 4 |
+| `S15-msg-menu` | 진입 · 대화 메시지에서 신고 | `sample.partner` `prompt.msg.partner` `prompt.msg.time` `prompt.input.partner` `a11y.input.ro` `a11y.send` `a11y.pose.wave_main` `a11y.mascot` `date.since` `a11y.dday` `dday.eyebrow` `dday.count` `prompt.title` `prompt.partner` `a11y.presence` `report.msg.menu` `report.msg.menu.cancel` | iOS·낮·밝게·ko, Android·밤·어둡게·ko |
+| `S15-reason` | 사유 선택 | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `report.why` `report.reason.harass` `report.reason.inappropriate` `report.reason.privacy` `report.reason.other` `report.submit` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-detail` | 자세한 내용 입력 (선택) | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `report.why` `report.reason.harass` `report.reason.inappropriate` `report.reason.privacy` `report.reason.other` `report.detail` `report.detail.placeholder` `report.submit` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-sending` | 제출 중 | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `report.why` `report.reason.harass` `report.reason.inappropriate` `report.reason.privacy` `report.reason.other` `report.sending` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-done` | 제출 성공 · 지원 연락처 | `report.done.title` `report.done.body` `report.contact` `common.done` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-fail` | 제출 실패 (입력 유지) | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `report.why` `report.reason.harass` `report.reason.inappropriate` `report.reason.privacy` `report.reason.other` `report.fail.title` `report.fail.body` `common.retry` `report.submit` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-block` | 연결 끊기 확인 · 결과 설명 | `report.title` `report.target.partner` `report.target.text` `report.target.scene` `report.what` `sample.partner` `report.block` `report.block.title` `report.block.body` `report.block.confirm` `common.cancel` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S15-blocked` | 연결을 끊은 뒤 결과 (공간 종료 상태) | `end.done.title` `end.done.body` `end.newSpace` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-obj-reason` | 장식 신고 · 사유 선택 | `report.obj.title` `obj.detail.kind.bubble` `sample.partner` `gen.lib.by` `report.obj.lead` `report.obj.reason.copyright` `report.obj.reason.offensive` `report.obj.reason.personal` `report.obj.reason.other` `report.obj.send` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja 외 1 |
+| `S15-obj-note` | 장식 신고 · 선택 메모 (상대에게 안 보임) | `report.obj.title` `obj.detail.kind.bubble` `sample.partner` `gen.lib.by` `report.obj.reason.copyright` `report.obj.reason.offensive` `report.obj.reason.personal` `report.obj.reason.other` `report.obj.note` `report.obj.note.hint` `report.obj.send` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-obj-sent` | 장식 신고 · 접수 (내 화면에서 숨김) | `report.obj.done.title` `report.obj.done.body` `common.done` | iOS·밝게·ko, Android·어둡게·ko, iOS·밝게·en, Android·어둡게·ja |
+| `S15-obj-fail` | 장식 신고 · 보내지 못함 (입력 유지) | `report.obj.title` `obj.detail.kind.bubble` `sample.partner` `gen.lib.by` `report.obj.reason.copyright` `report.obj.reason.offensive` `report.obj.reason.personal` `report.obj.reason.other` `report.obj.fail.title` `report.obj.fail.body` `common.retry` `report.obj.send` | iOS·밝게·ko, Android·어둡게·ko |
+| `S15-obj-limit` | 장식 신고 · 오늘 한도(10건) 초과 | `report.obj.title` `obj.detail.kind.bubble` `sample.partner` `gen.lib.by` `report.obj.reason.copyright` `report.obj.reason.offensive` `report.obj.reason.personal` `report.obj.reason.other` `report.obj.limit` `report.obj.send` | iOS·밝게·ko, Android·어둡게·ko |
+
+## 이동 및 뒤로
+
+F04: S13 → S14 종료 또는 S15 신고; 동의 관리 → S12. 뒤로: 상세에서 설정으로; 종료 완료 후 S14 종료 안내. S27은 세 탭의 전역 내비게이션 참조.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S15-AC-01: 신고 사유를 선택하고 제출한 뒤 완료 상태를 표시한다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre></section><section><h2>S26 S26 tab</h2><figure><img loading="lazy" src="../../exports/S26-normal2__android-night-dark-ja.png" alt="S26-normal2__android-night-dark-ja.png"><figcaption>S26-normal2__android-night-dark-ja.png</figcaption></figure><pre># S26 S26 tab
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S26
+Route: /(tabs)/settings
+
+## 디자인 원본
+
+- [S26-tab-settings.dc.html](../../../canvas/project/S26-tab-settings.dc.html)
+
+## 이미지
+
+- [S26-normal2__android-night-dark-ja.png](../../../exports/S26-normal2__android-night-dark-ja.png)
+
+## 상태와 상호작용
+
+| 상태 ID | 설명 | 사용하는 키 |
+|---|---|---|
+| `S26-first` | 설정 · 첫 실행(AI 동의 전 · 언어는 기기 설정) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `consent.status.off` |
+| `S26-normal` | 설정 · 보통(위) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` |
+| `S26-normal2` | 설정 · 보통(아래) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` |
+| `S26-loading` | 설정 · 로딩 | `set.title` `set.loading` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` |
+| `S26-notif-denied` | 설정 · 마일스톤 알림이 기기에서 꺼져 있음 | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.denied` `set.notif.denied.title` `set.notif.denied.body` `set.notif.denied.action` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` |
+| `S26-offline` | 설정 · 오프라인(방 설정은 잠김) | `set.title` `set.offline.title` `set.offline.body` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` |
+| `S26-error` | 설정 · 불러오기 오류 | `set.title` `set.err.title` `set.err.body` `common.retry` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` |
+| `S26-push-consent` | 설정 → AI 처리 동의 관리(푸시) | `set.ai.consent` `consent.status.date` `consent.status.on` `consent.couple.body` `consent.sent.body` `consent.keep.body` `consent.withdraw` |
+| `S26-push-lic` | 설정 → 글꼴·오픈소스 라이선스(푸시) | `lic.title` `lic.note` `lic.inter` `lic.ofl` `lic.view` `lic.notokr` `lic.notojp` |
+| `S26-sheet-lang` | 설정 → 언어(시트) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.app` `set.sec.notif` `set.sec.ai` `set.sec.danger` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `set.lang.sheet` `set.lang.system` `set.lang.note` |
+| `S26-sheet-tz` | 설정 → 시간대(시트) | `set.title` `set.name.value` `set.login.kakao` `set.together` `set.together.value` `set.cover` `set.cover.on` `set.room.mode` `set.room.mode.auto` `set.room.mode.day` `set.room.mode.night` `set.room.mode.help` `set.room.now` `set.room.tz` `set.room.tz.value` `set.lang` `set.theme` `set.theme.system` `set.theme.light` `set.theme.dark` `set.hc` `set.hc.help` `a11y.off` `a11y.switch` `set.notif` `set.notif.sub.off` `set.notif.help` `set.ai.consent` `consent.status.on` `set.sec.info` `set.about.version` `set.about.licenses` `set.terms` `set.privacy` `set.support` `set.logout` `set.end` `set.end.help` `set.account.delete` `set.account.delete.sub` `set.sec.couple` `set.sec.room` `a11y.tabbar` `tab.home` `a11y.tab` `tab.room` `tab.settings` `a11y.tab.sel` `set.room.tz.pick` `set.room.tz.search` `set.room.tz.tokyo` `set.room.tz.la` `set.room.tz.ny` `set.room.tz.london` |
+| `S26-push-end` | 설정 → 공간 종료 확인(푸시 · 탭 바 숨김) | `end.title` `end.body` `end.b1` `end.b2` `end.b3` `end.check` `end.confirm` `end.cancel` |
+
+## 이동 및 뒤로
+
+F04: S13 → S14 종료 또는 S15 신고; 동의 관리 → S12. 뒤로: 상세에서 설정으로; 종료 완료 후 S14 종료 안내. S27은 세 탭의 전역 내비게이션 참조.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S26-AC-01: 설정 탭을 선택하면 설정 루트를 표시한다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre></section><section><h2>S27 navigation</h2><pre># S27 navigation
+
+승인자: 미승인
+승인일: 미정
+
+## 목적, ID, 경로
+
+ID: S27
+Route: 독립 라우트 없음 (참고 보드 또는 미구현)
+
+## 디자인 원본
+
+- [S27-navigation.dc.html](../../../canvas/project/S27-navigation.dc.html)
+
+## 이미지
+
+- 내보낸 PNG 없음; 위 보드 원본을 확인하세요.
+
+## 상태와 상호작용
+
+기존 화면별 텍스트 명세가 없는 참고 보드입니다.
+
+## 이동 및 뒤로
+
+F04: S13 → S14 종료 또는 S15 신고; 동의 관리 → S12. 뒤로: 상세에서 설정으로; 종료 완료 후 S14 종료 안내. S27은 세 탭의 전역 내비게이션 참조.
+
+## 접근성
+
+상태 표에 나열된 `a11y.*` 키를 스크린 리더 이름으로 사용합니다. 공통 접근성 및 200% 글자 규칙은 [interaction notes](../../../interaction-notes.md#10-접근성-상호작용)를 참조하세요. TODO: 해당 상태에 명시되지 않은 역할과 이름을 확인하세요.
+
+## 수락 시나리오
+
+- [ ] S27-AC-01: 푸시 화면이나 시트에서 뒤로 가면 해당 화면이나 시트를 먼저 닫는다.
+- [ ] S27-AC-02: 탭 루트에서 시스템 뒤로는 홈으로, 홈 루트에서는 앱 종료로 이어진다.
+
+## 열린 질문 / 추적
+
+TODO: 명세에 없는 disabled/offline 상태의 적용 여부와 정확한 뒤로 대상을 확인하세요. 시나리오와 요구사항·테스트·실행 결과는 [추적표](../../traceability.md)에 연결하세요.
+</pre></section><h2>페이지별 번역 모음</h2><table><thead><tr><th>Key</th><th>한국어</th><th>English · draft G4</th><th>日本語 · draft G4</th></tr></thead><tbody><tr><th>a11y.dday</th><td>함께한 지 {n}일째, 2025년 6월 29일부터</td><td>Day {n} together, since June 29, 2025</td><td>一緒に過ごして{n}日目、2025年6月29日から</td></tr><tr><th>a11y.input.ro</th><td>{name}님이 꾸미는 중이라 입력할 수 없어요</td><td>Can't type: {name} is decorating</td><td>入力できません：{name}さんが飾っています</td></tr><tr><th>a11y.mascot</th><td>아루미, {pose}</td><td>Aroomi, {pose}</td><td>アルーミ、{pose}</td></tr><tr><th>a11y.off</th><td>꺼짐</td><td>off</td><td>オフ</td></tr><tr><th>a11y.on</th><td>켜짐</td><td>on</td><td>オン</td></tr><tr><th>a11y.pose.wave_main</th><td>인사하고 있어요</td><td>waving</td><td>手を振っています</td></tr><tr><th>a11y.presence</th><td>꾸미기 상태: {state}</td><td>Decorating status: {state}</td><td>飾り付けの状態：{state}</td></tr><tr><th>a11y.send</th><td>요청 보내기</td><td>Send request</td><td>リクエストを送信</td></tr><tr><th>a11y.switch</th><td>{name}, {state}</td><td>{name}, {state}</td><td>{name}、{state}</td></tr><tr><th>a11y.tab</th><td>{name} 탭, {total}개 중 {n}번째{sel}</td><td>{name} tab, {n} of {total}{sel}</td><td>{name}タブ、{total}件中{n}件目{sel}</td></tr><tr><th>a11y.tab.sel</th><td>, 선택됨</td><td>, selected</td><td>、選択中</td></tr><tr><th>a11y.tabbar</th><td>탭 막대</td><td>Tab bar</td><td>タブバー</td></tr><tr><th>acct.delete.b1</th><td>내 계정과 프로필 정보가 삭제돼요</td><td>Your account and profile information are deleted</td><td>アカウントとプロフィール情報が削除されます</td></tr><tr><th>acct.delete.b2</th><td>함께 쓰는 공간이 있다면 종료돼요. 두 사람 모두 들어갈 수 없고 방·사진·장식이 삭제돼요</td><td>If you share a space, it ends. Neither of you can open it, and the room, photos and decorations are deleted</td><td>共有中のスペースがある場合は終了します。ふたりとも入れなくなり、部屋・写真・飾りが削除されます</td></tr><tr><th>acct.delete.b3</th><td>같은 계정으로 다시 가입해도 이전 내용은 돌아오지 않아요</td><td>Signing up again with the same login won't bring anything back</td><td>同じアカウントで登録し直しても、以前の内容は戻りません</td></tr><tr><th>acct.delete.confirm</th><td>계정 삭제하기</td><td>Delete account</td><td>アカウントを削除する</td></tr><tr><th>acct.delete.done</th><td>계정을 삭제했어요</td><td>Your account was deleted</td><td>アカウントを削除しました</td></tr><tr><th>acct.delete.fail.body</th><td>아직 아무것도 지워지지 않았어요. 잠시 뒤 다시 시도해 주세요.</td><td>Nothing was deleted yet. Please try again in a moment.</td><td>まだ何も削除されていません。しばらくしてからもう一度お試しください。</td></tr><tr><th>acct.delete.fail.title</th><td>삭제하지 못했어요</td><td>Couldn't delete it</td><td>削除できませんでした</td></tr><tr><th>acct.delete.lead</th><td>삭제하면 바로 로그아웃되고, 되돌릴 수 없어요.</td><td>You'll be signed out right away, and this can't be undone.</td><td>すぐにログアウトされ、元に戻せません。</td></tr><tr><th>acct.delete.offline</th><td>인터넷에 연결되어야 계정을 삭제할 수 있어요</td><td>You need an internet connection to delete your account</td><td>アカウントの削除にはインターネット接続が必要です</td></tr><tr><th>acct.delete.progress</th><td>계정을 삭제하는 중이에요</td><td>Deleting your account</td><td>アカウントを削除しています</td></tr><tr><th>acct.delete.reauth.body</th><td>계정을 지키기 위해 한 번 더 로그인해 주세요.</td><td>For your safety, please sign in once more.</td><td>安全のため、もう一度ログインしてください。</td></tr><tr><th>acct.delete.reauth.fail</th><td>본인 확인에 실패했어요. 다시 시도해 주세요.</td><td>We couldn't confirm it's you. Please try again.</td><td>本人確認に失敗しました。もう一度お試しください。</td></tr><tr><th>acct.delete.reauth.title</th><td>본인 확인이 필요해요</td><td>Please confirm it's you</td><td>本人確認が必要です</td></tr><tr><th>acct.delete.title</th><td>계정을 삭제할까요?</td><td>Delete your account?</td><td>アカウントを削除しますか？</td></tr><tr><th>brand.tagline</th><td>Our little world, together.</td><td>Our little world, together.</td><td>Our little world, together.</td></tr><tr><th>common.cancel</th><td>취소</td><td>Cancel</td><td>キャンセル</td></tr><tr><th>common.close</th><td>닫기</td><td>Close</td><td>閉じる</td></tr><tr><th>common.done</th><td>완료</td><td>Done</td><td>完了</td></tr><tr><th>common.retry</th><td>다시 시도</td><td>Try again</td><td>もう一度試す</td></tr><tr><th>consent.couple.body</th><td>동의는 사람마다 따로 해요. 내 동의는 내가 보내는 요청에만 적용돼요. 요청에는 두 사람이 함께 꾸민 방 배치가 들어가요.</td><td>Consent is given per person. Yours applies only to requests you send. Requests include the room layout you two decorated together.</td><td>同意は一人ひとり別々です。あなたの同意は、あなたが送るリクエストにのみ適用されます。リクエストには、ふたりで飾った部屋の配置が含まれます。</td></tr><tr><th>consent.keep.body</th><td>적용한 요청 글은 30일, 적용하지 않은 미리 보기는 24시간 뒤 아룸 서버에서 삭제돼요. 설정의 'AI 처리 동의'에서 언제든 철회할 수 있어요.</td><td>Applied requests are deleted from Aroom's servers after 30 days, and unapplied previews after 24 hours. You can withdraw any time in Settings under &quot;AI processing consent&quot;.</td><td>反映したリクエスト文は30日後、反映しなかったプレビューは24時間後に、アルームのサーバーから削除されます。設定の「AI処理への同意」からいつでも撤回できます。</td></tr><tr><th>consent.sent.body</th><td>내가 쓴 요청 글과, 요청을 만드는 데 필요한 방 배치(소품 종류·위치·문구). 함께한 날짜, 이름, 이메일은 보내지 않아요.</td><td>The request you typed, and the room layout needed to build it (item types, positions, text). Your together-date, names and email are not sent.</td><td>入力したリクエスト文と、作成に必要な部屋の配置（小物の種類・位置・文言）。一緒になった日、名前、メールアドレスは送信しません。</td></tr><tr><th>consent.status.date</th><td>2026년 10월 24일</td><td>Oct 24, 2026</td><td>2026年10月24日</td></tr><tr><th>consent.status.off</th><td>동의하지 않음</td><td>Not agreed</td><td>未同意</td></tr><tr><th>consent.status.on</th><td>동의함 · {date}</td><td>Agreed · {date}</td><td>同意済み · {date}</td></tr><tr><th>consent.withdraw</th><td>동의 철회</td><td>Withdraw consent</td><td>同意を撤回</td></tr><tr><th>cover.by</th><td>마지막 변경: {name} · {time}</td><td>Last changed: {name} · {time}</td><td>最終変更: {name} · {time}</td></tr><tr><th>cover.by.time</th><td>오늘 오후 9:14</td><td>Today, 9:14 PM</td><td>今日 21:14</td></tr><tr><th>cover.sheet.note</th><td>두 사람이 같은 사진을 봐요. 어느 쪽이든 바꾸거나 없앨 수 있고, 마지막에 바꾼 사진이 보여요.</td><td>You both see the same photo. Either of you can change or remove it, and the last change is the one shown.</td><td>ふたりに同じ写真が表示されます。どちらでも変更・削除でき、最後に変更した写真が表示されます。</td></tr><tr><th>cover.sheet.pick</th><td>앨범에서 고르기</td><td>Choose from your photos</td><td>アルバムから選ぶ</td></tr><tr><th>cover.sheet.remove</th><td>사진 없애기</td><td>Remove photo</td><td>写真を外す</td></tr><tr><th>cover.sheet.title</th><td>홈 배경 사진</td><td>Home background photo</td><td>ホームの背景写真</td></tr><tr><th>date.since</th><td>2025년 6월 29일부터</td><td>since June 29, 2025</td><td>2025年6月29日から</td></tr><tr><th>dday.count</th><td>{n}일째</td><td>Day {n}</td><td>{n}日目</td></tr><tr><th>dday.eyebrow</th><td>함께한 지</td><td>Together</td><td>一緒に過ごして</td></tr><tr><th>end.b1</th><td>두 사람 모두 접근이 중단돼요</td><td>Both of you lose access</td><td>ふたりともアクセスできなくなります</td></tr><tr><th>end.b2</th><td>방·사진·장식이 삭제돼요</td><td>The room, photos and decorations are deleted</td><td>部屋・写真・飾りが削除されます</td></tr><tr><th>end.b3</th><td>삭제된 내용은 되돌릴 수 없어요</td><td>Deleted content can't be brought back</td><td>削除された内容は元に戻せません</td></tr><tr><th>end.body</th><td>종료하면 두 사람 모두 D-day와 방에 들어갈 수 없어요. 함께 쓰던 방·사진·장식은 삭제되고 되돌릴 수 없어요.</td><td>Once ended, neither of you can open the day count or the room. The room, photos and decorations you shared will be deleted and can't be brought back.</td><td>終了すると、ふたりとも日数表示と部屋に入れなくなります。いっしょに使っていた部屋・写真・飾りは削除され、元に戻せません。</td></tr><tr><th>end.byPartner</th><td>{name}님이 공간을 종료했어요</td><td>{name} ended the space</td><td>{name}さんがスペースを終了しました</td></tr><tr><th>end.byPartnerDeleted</th><td>상대가 계정을 삭제했어요</td><td>Your partner deleted their account</td><td>相手がアカウントを削除しました</td></tr><tr><th>end.byPartnerDisconnect</th><td>{name}님이 연결을 끊었어요</td><td>{name} disconnected</td><td>{name}さんがつながりを終了しました</td></tr><tr><th>end.cancel</th><td>취소</td><td>Cancel</td><td>キャンセル</td></tr><tr><th>end.check</th><td>내용을 확인했어요</td><td>I understand</td><td>内容を確認しました</td></tr><tr><th>end.confirm</th><td>공간 종료하기</td><td>End space</td><td>スペースを終了する</td></tr><tr><th>end.done.body</th><td>함께 쓰던 데이터는 삭제돼요. 새 공간을 시작할 수 있어요.</td><td>The data you shared will be deleted. You can start a new space.</td><td>いっしょに使っていたデータは削除されます。新しいスペースを始められます。</td></tr><tr><th>end.done.title</th><td>공간을 종료했어요</td><td>Space ended</td><td>スペースを終了しました</td></tr><tr><th>end.err.body</th><td>공간은 그대로예요. 다시 시도해 주세요.</td><td>The space is unchanged. Please try again.</td><td>スペースはそのままです。もう一度お試しください。</td></tr><tr><th>end.err.title</th><td>종료하지 못했어요</td><td>Couldn't end the space</td><td>終了できませんでした</td></tr><tr><th>end.newSpace</th><td>새 공간 시작하기</td><td>Start a new space</td><td>新しいスペースを始める</td></tr><tr><th>end.progress</th><td>종료하는 중이에요</td><td>Ending your space</td><td>終了しています</td></tr><tr><th>end.title</th><td>공간을 종료할까요?</td><td>End this space?</td><td>スペースを終了しますか？</td></tr><tr><th>gen.lib.by</th><td>{name}님이 만들었어요</td><td>Made by {name}</td><td>{name}さんが作りました</td></tr><tr><th>lic.inter</th><td>Inter · © 2020 The Inter Project Authors</td><td>Inter · © 2020 The Inter Project Authors</td><td>Inter · © 2020 The Inter Project Authors</td></tr><tr><th>lic.note</th><td>아룸의 글꼴은 위 라이선스에 따라 앱에 포함되어 있어요.</td><td>The fonts in Aroom are bundled under the licenses above.</td><td>アルームのフォントは、上記のライセンスに基づいてアプリに同梱されています。</td></tr><tr><th>lic.notojp</th><td>Noto Sans JP · Noto 프로젝트</td><td>Noto Sans JP · The Noto Project</td><td>Noto Sans JP · Noto プロジェクト</td></tr><tr><th>lic.notokr</th><td>Noto Sans KR · Noto 프로젝트</td><td>Noto Sans KR · The Noto Project</td><td>Noto Sans KR · Noto プロジェクト</td></tr><tr><th>lic.ofl</th><td>SIL 오픈 폰트 라이선스 1.1</td><td>SIL Open Font License 1.1</td><td>SIL Open Font License 1.1</td></tr><tr><th>lic.title</th><td>글꼴·오픈소스 라이선스</td><td>Font and open-source licenses</td><td>フォント・オープンソースのライセンス</td></tr><tr><th>lic.view</th><td>전문 보기</td><td>View full text</td><td>全文を見る</td></tr><tr><th>login.apple</th><td>Apple로 계속하기</td><td>Continue with Apple</td><td>Appleで続ける</td></tr><tr><th>login.email</th><td>이메일로 계속하기</td><td>Continue with email</td><td>メールで続ける</td></tr><tr><th>login.kakao</th><td>카카오로 계속하기</td><td>Continue with Kakao</td><td>Kakaoで続ける</td></tr><tr><th>login.title</th><td>로그인 방법을 골라 주세요</td><td>Choose how to sign in</td><td>ログイン方法を選んでください</td></tr><tr><th>main.appName</th><td>아룸</td><td>Aroom</td><td>アルーム</td></tr><tr><th>obj.detail.kind.bubble</th><td>말풍선 틀</td><td>Speech-bubble frame</td><td>吹き出しの枠</td></tr><tr><th>onb.age</th><td>만 14세 이상만 사용할 수 있어요.</td><td>You must be 14 or older to use Aroom.</td><td>ご利用は14歳以上の方に限ります。</td></tr><tr><th>onb.legal.lead</th><td>계속하면 만 14세 이상이며 아래 내용에 동의하는 것으로 봐요.</td><td>By continuing, you confirm you are 14 or older and agree to the following.</td><td>続けると、14歳以上であり、以下に同意したものとみなされます。</td></tr><tr><th>onb.legal.links</th><td>이용약관 · 개인정보 처리방침</td><td>Terms of Use · Privacy Policy</td><td>利用規約 · プライバシーポリシー</td></tr><tr><th>prompt.input.partner</th><td>{name}님이 꾸미는 중이라 지금은 쓸 수 없어요</td><td>{name} is decorating, so you can't type right now</td><td>{name}さんが飾っているため、今は入力できません</td></tr><tr><th>prompt.msg.partner</th><td>별도 하나만 더 달아 줘.</td><td>Add one more star too.</td><td>星ももうひとつ付けて。</td></tr><tr><th>prompt.msg.time</th><td>오후 9:14</td><td>9:14 PM</td><td>21:14</td></tr><tr><th>prompt.partner</th><td>{name}님이 꾸미는 중</td><td>{name} is decorating</td><td>{name}さんが飾っています</td></tr><tr><th>prompt.title</th><td>함께 꾸미기</td><td>Decorate together</td><td>いっしょに飾る</td></tr><tr><th>report.block</th><td>{name}님과 연결 끊기</td><td>Disconnect from {name}</td><td>{name}さんとのつながりを終了</td></tr><tr><th>report.block.body</th><td>연결을 끊으면 {name}님은 이 공간의 방과 대화를 볼 수 없고, 이 공간이 종료돼요. 함께 쓰던 데이터는 삭제돼요.</td><td>If you disconnect, {name} can no longer see this space's room or conversation, and the space ends. The data you shared will be deleted.</td><td>つながりを終了すると、{name}さんはこのスペースの部屋や会話を見られなくなり、スペースが終了します。いっしょに使っていたデータは削除されます。</td></tr><tr><th>report.block.confirm</th><td>연결 끊기</td><td>Disconnect</td><td>つながりを終了する</td></tr><tr><th>report.block.done</th><td>연결을 끊었어요</td><td>Disconnected</td><td>つながりを終了しました</td></tr><tr><th>report.block.title</th><td>{name}님과 연결을 끊을까요?</td><td>Disconnect from {name}?</td><td>{name}さんとのつながりを終了しますか？</td></tr><tr><th>report.contact</th><td>문의: [지원 이메일]</td><td>Contact: [support email]</td><td>お問い合わせ：[サポートメール]</td></tr><tr><th>report.detail</th><td>자세한 내용 (선택)</td><td>Details (optional)</td><td>詳細（任意）</td></tr><tr><th>report.detail.placeholder</th><td>어떤 일이 있었는지 적어 주세요</td><td>Tell us what happened</td><td>何があったか書いてください</td></tr><tr><th>report.done.body</th><td>내용을 확인할 거예요. 처리 결과를 앱에서 따로 알려 드리지는 않아요.</td><td>We'll review it. We won't send you a separate result in the app.</td><td>内容を確認します。処理結果をアプリで別途お知らせすることはありません。</td></tr><tr><th>report.done.title</th><td>신고를 보냈어요</td><td>Report sent</td><td>通報を送信しました</td></tr><tr><th>report.fail.body</th><td>쓴 내용은 그대로 남아 있어요. 다시 시도해 주세요.</td><td>What you wrote is still here. Please try again.</td><td>入力した内容は残っています。もう一度お試しください。</td></tr><tr><th>report.fail.title</th><td>신고를 보내지 못했어요</td><td>Couldn't send the report</td><td>通報を送信できませんでした</td></tr><tr><th>report.msg.menu</th><td>이 메시지 신고</td><td>Report this message</td><td>このメッセージを通報</td></tr><tr><th>report.msg.menu.cancel</th><td>닫기</td><td>Close</td><td>閉じる</td></tr><tr><th>report.obj.done.body</th><td>이 장식은 내 화면에서 숨겼어요. 검토 뒤에 방에서 빼기로 하면 두 사람 화면 모두에서 사라져요.</td><td>We've hidden this decoration on your screen. If it's removed after review, it will disappear for both of you.</td><td>この飾りはあなたの画面で非表示にしました。確認の結果外すことになった場合は、ふたりの画面から消えます。</td></tr><tr><th>report.obj.done.title</th><td>신고를 접수했어요</td><td>Report received</td><td>報告を受け付けました</td></tr><tr><th>report.obj.fail.body</th><td>입력한 내용은 그대로예요. 잠시 뒤 다시 시도해 주세요.</td><td>What you wrote is still here. Please try again in a moment.</td><td>入力した内容はそのままです。しばらくしてからもう一度お試しください。</td></tr><tr><th>report.obj.fail.title</th><td>보내지 못했어요</td><td>Couldn't send the report</td><td>送れませんでした</td></tr><tr><th>report.obj.lead</th><td>어떤 점이 문제인가요?</td><td>What's wrong with it?</td><td>どんな点が問題ですか？</td></tr><tr><th>report.obj.limit</th><td>오늘은 신고를 더 보낼 수 없어요. 내일 다시 시도해 주세요.</td><td>You can't send more reports today. Please try again tomorrow.</td><td>今日はこれ以上報告できません。明日もう一度お試しください。</td></tr><tr><th>report.obj.note</th><td>자세한 내용(선택)</td><td>Details (optional)</td><td>詳しい内容（任意）</td></tr><tr><th>report.obj.note.hint</th><td>상대에게는 보이지 않아요.</td><td>Your partner won't see this.</td><td>相手には表示されません。</td></tr><tr><th>report.obj.reason.copyright</th><td>다른 사람의 그림·캐릭터·브랜드를 닮았어요</td><td>It looks like someone else's art, a character or a brand</td><td>他の人の絵・キャラクター・ブランドに似ています</td></tr><tr><th>report.obj.reason.offensive</th><td>불쾌하거나 성적·폭력적이에요</td><td>It's offensive, sexual or violent</td><td>不快、または性的・暴力的です</td></tr><tr><th>report.obj.reason.other</th><td>기타</td><td>Something else</td><td>その他</td></tr><tr><th>report.obj.reason.personal</th><td>개인정보가 들어 있어요</td><td>It contains personal information</td><td>個人情報が含まれています</td></tr><tr><th>report.obj.send</th><td>신고 보내기</td><td>Send report</td><td>報告を送る</td></tr><tr><th>report.obj.title</th><td>장식 신고</td><td>Report a decoration</td><td>飾りの報告</td></tr><tr><th>report.reason.harass</th><td>괴롭히거나 불쾌한 내용</td><td>Harassing or upsetting content</td><td>嫌がらせや不快な内容</td></tr><tr><th>report.reason.inappropriate</th><td>부적절한 문구나 장면</td><td>Inappropriate text or scene</td><td>不適切な文言やシーン</td></tr><tr><th>report.reason.other</th><td>기타</td><td>Something else</td><td>その他</td></tr><tr><th>report.reason.privacy</th><td>개인정보가 들어 있어요</td><td>It contains personal information</td><td>個人情報が含まれています</td></tr><tr><th>report.sending</th><td>보내는 중이에요</td><td>Sending</td><td>送信しています</td></tr><tr><th>report.submit</th><td>신고 보내기</td><td>Send report</td><td>通報を送信</td></tr><tr><th>report.target.partner</th><td>상대</td><td>My partner</td><td>パートナー</td></tr><tr><th>report.target.scene</th><td>방 장면</td><td>Room scene</td><td>部屋のシーン</td></tr><tr><th>report.target.text</th><td>공유된 문구</td><td>Shared text</td><td>共有された文言</td></tr><tr><th>report.title</th><td>신고 · 연결 끊기</td><td>Report or disconnect</td><td>通報・つながりを終了</td></tr><tr><th>report.what</th><td>무엇을 신고할까요?</td><td>What do you want to report?</td><td>何を通報しますか？</td></tr><tr><th>report.why</th><td>이유를 골라 주세요</td><td>Choose a reason</td><td>理由を選んでください</td></tr><tr><th>sample.partner</th><td>하루</td><td>Haru</td><td>ハル</td></tr><tr><th>set.about.licenses</th><td>글꼴·오픈소스 라이선스</td><td>Font and open-source licenses</td><td>フォント・オープンソースのライセンス</td></tr><tr><th>set.about.version</th><td>버전 {v}</td><td>Version {v}</td><td>バージョン{v}</td></tr><tr><th>set.account.delete</th><td>계정 삭제</td><td>Delete account</td><td>アカウントを削除</td></tr><tr><th>set.account.delete.sub</th><td>되돌릴 수 없어요</td><td>This can't be undone</td><td>元に戻せません</td></tr><tr><th>set.ai.consent</th><td>AI 처리 동의</td><td>AI processing consent</td><td>AI処理への同意</td></tr><tr><th>set.cover</th><td>홈 배경 사진</td><td>Home background photo</td><td>ホームの背景写真</td></tr><tr><th>set.cover.off</th><td>없음</td><td>None</td><td>なし</td></tr><tr><th>set.cover.on</th><td>설정됨</td><td>Set</td><td>設定済み</td></tr><tr><th>set.end</th><td>공간 종료</td><td>End space</td><td>スペースを終了</td></tr><tr><th>set.end.help</th><td>종료하면 함께 쓰던 데이터가 삭제돼요. 되돌릴 수 없어요.</td><td>Ending deletes the data you shared. This can't be undone.</td><td>終了すると、いっしょに使っていたデータが削除されます。元に戻せません。</td></tr><tr><th>set.err.body</th><td>인터넷 연결을 확인하고 다시 시도해 주세요.</td><td>Check your internet connection and try again.</td><td>インターネット接続を確認して、もう一度お試しください。</td></tr><tr><th>set.err.title</th><td>설정을 불러오지 못했어요</td><td>Couldn't load settings</td><td>設定を読み込めませんでした</td></tr><tr><th>set.hc</th><td>고대비</td><td>High contrast</td><td>ハイコントラスト</td></tr><tr><th>set.hc.help</th><td>글자와 버튼을 더 또렷하게 보여 줘요. 방 소품 그림은 그대로예요.</td><td>Makes text and controls stronger. Room item artwork stays the same.</td><td>文字とボタンをよりはっきり表示します。部屋の小物の絵は変わりません。</td></tr><tr><th>set.lang</th><td>언어</td><td>Language</td><td>言語</td></tr><tr><th>set.lang.note</th><td>방에 쓴 문구와 프롬프트는 번역되지 않고 쓴 그대로 보여요.</td><td>Text you write in the room and prompts are not translated; they appear as written.</td><td>部屋に書いた文言とプロンプトは翻訳されず、書いたとおりに表示されます。</td></tr><tr><th>set.lang.sheet</th><td>앱 언어</td><td>App language</td><td>アプリの言語</td></tr><tr><th>set.lang.system</th><td>기기 설정 따르기</td><td>Follow device</td><td>端末の設定に従う</td></tr><tr><th>set.loading</th><td>설정을 불러오는 중이에요</td><td>Loading settings</td><td>設定を読み込んでいます</td></tr><tr><th>set.login.kakao</th><td>카카오 로그인</td><td>Signed in with Kakao</td><td>Kakaoでログイン中</td></tr><tr><th>set.logout</th><td>로그아웃</td><td>Sign out</td><td>ログアウト</td></tr><tr><th>set.logout.body</th><td>로그아웃해도 공간과 방은 그대로예요.</td><td>Signing out doesn't change your space or room.</td><td>ログアウトしても、スペースと部屋はそのままです。</td></tr><tr><th>set.logout.title</th><td>로그아웃할까요?</td><td>Sign out?</td><td>ログアウトしますか？</td></tr><tr><th>set.name</th><td>별명</td><td>Nickname</td><td>ニックネーム</td></tr><tr><th>set.name.value</th><td>지우</td><td>Jiu</td><td>ジウ</td></tr><tr><th>set.notif</th><td>마일스톤 알림</td><td>Milestone notifications</td><td>記念日の通知</td></tr><tr><th>set.notif.denied.action</th><td>기기 설정 열기</td><td>Open device settings</td><td>端末の設定を開く</td></tr><tr><th>set.notif.denied.body</th><td>기기 설정에서 아룸 알림을 켜면 기념일에 받을 수 있어요.</td><td>Turn on Aroom notifications in your device settings to receive them on milestone days.</td><td>端末の設定でアルームの通知をオンにすると、記念日に受け取れます。</td></tr><tr><th>set.notif.denied.title</th><td>알림이 꺼져 있어요</td><td>Notifications are turned off</td><td>通知がオフです</td></tr><tr><th>set.notif.help</th><td>다가오는 기념일을 이 기기에 예약해 두고 오전 9시에 알려 줘요. 상대 기기는 따로 정해요.</td><td>Upcoming milestones are scheduled on this device and delivered at 9:00 am. Your partner's device is set separately.</td><td>近づく記念日をこの端末に予約し、午前9時にお知らせします。パートナーの端末は別に設定します。</td></tr><tr><th>set.notif.sub.denied</th><td>기기에서 알림이 꺼져 있어요</td><td>Notifications are off on this device</td><td>端末で通知がオフです</td></tr><tr><th>set.notif.sub.off</th><td>꺼짐 · 이 기기에만 적용돼요</td><td>Off · applies to this device only</td><td>オフ · この端末のみ</td></tr><tr><th>set.notif.sub.on</th><td>켜짐 · 기념일 오전 9시</td><td>On · 9:00 am on milestone days</td><td>オン · 記念日の午前9時</td></tr><tr><th>set.offline.body</th><td>방 낮·밤과 시간대는 연결된 뒤에 바꿀 수 있어요. 이 기기의 화면 설정은 지금도 바꿀 수 있어요.</td><td>Room day/night and time zone can be changed once you're back online. This device's display settings still work.</td><td>部屋の昼夜とタイムゾーンは、接続が戻ってから変更できます。この端末の表示設定は今でも変更できます。</td></tr><tr><th>set.offline.title</th><td>오프라인이에요</td><td>You're offline</td><td>オフラインです</td></tr><tr><th>set.privacy</th><td>개인정보 처리방침</td><td>Privacy Policy</td><td>プライバシーポリシー</td></tr><tr><th>set.room.mode</th><td>방의 낮·밤</td><td>Room day / night</td><td>部屋の昼と夜</td></tr><tr><th>set.room.mode.auto</th><td>시간대 따라</td><td>By time zone</td><td>時間帯に合わせる</td></tr><tr><th>set.room.mode.day</th><td>낮</td><td>Day</td><td>昼</td></tr><tr><th>set.room.mode.help</th><td>'시간대 따라'는 두 사람의 공간 시간대에 맞춰 오전 6시부터 오후 6시까지 낮으로 보여 줘요.</td><td>&quot;By time zone&quot; follows your shared space time zone. Day runs from 6 AM to 6 PM.</td><td>「時間帯に合わせる」は、二人のスペースのタイムゾーンに従います。午前6時から午後6時までは昼として表示します。</td></tr><tr><th>set.room.mode.night</th><td>밤</td><td>Night</td><td>夜</td></tr><tr><th>set.room.now</th><td>지금 방은 {mode}이에요</td><td>The room is showing {mode} now</td><td>今、部屋は{mode}です</td></tr><tr><th>set.room.tz</th><td>시간대</td><td>Time zone</td><td>タイムゾーン</td></tr><tr><th>set.room.tz.la</th><td>로스앤젤레스 (UTC-8)</td><td>Los Angeles (UTC-8)</td><td>ロサンゼルス（UTC-8）</td></tr><tr><th>set.room.tz.london</th><td>런던 (UTC+0)</td><td>London (UTC+0)</td><td>ロンドン（UTC+0）</td></tr><tr><th>set.room.tz.ny</th><td>뉴욕 (UTC-5)</td><td>New York (UTC-5)</td><td>ニューヨーク（UTC-5）</td></tr><tr><th>set.room.tz.pick</th><td>시간대 고르기</td><td>Choose a time zone</td><td>タイムゾーンを選ぶ</td></tr><tr><th>set.room.tz.search</th><td>도시 검색</td><td>Search cities</td><td>都市を検索</td></tr><tr><th>set.room.tz.tokyo</th><td>도쿄 (UTC+9)</td><td>Tokyo (UTC+9)</td><td>東京（UTC+9）</td></tr><tr><th>set.room.tz.value</th><td>서울 (UTC+9)</td><td>Seoul (UTC+9)</td><td>ソウル（UTC+9）</td></tr><tr><th>set.sec.account</th><td>계정</td><td>Account</td><td>アカウント</td></tr><tr><th>set.sec.ai</th><td>AI 처리</td><td>AI processing</td><td>AI処理</td></tr><tr><th>set.sec.app</th><td>이 기기의 화면 · 이 기기에만 적용돼요</td><td>This device's display · applies to this device only</td><td>この端末の表示 · この端末のみに適用されます</td></tr><tr><th>set.sec.couple</th><td>우리 공간</td><td>Our space</td><td>ふたりのスペース</td></tr><tr><th>set.sec.danger</th><td>공간</td><td>Space</td><td>スペース</td></tr><tr><th>set.sec.info</th><td>앱 정보</td><td>About</td><td>アプリ情報</td></tr><tr><th>set.sec.notif</th><td>알림</td><td>Notifications</td><td>通知</td></tr><tr><th>set.sec.room</th><td>방 · 두 사람에게 적용돼요</td><td>Room · applies to both of you</td><td>部屋 · ふたりに適用されます</td></tr><tr><th>set.support</th><td>문의 · 신고</td><td>Contact and reports</td><td>お問い合わせ・通報</td></tr><tr><th>set.terms</th><td>이용약관</td><td>Terms of Use</td><td>利用規約</td></tr><tr><th>set.theme</th><td>화면 모드</td><td>Appearance</td><td>外観</td></tr><tr><th>set.theme.dark</th><td>어둡게</td><td>Dark</td><td>ダーク</td></tr><tr><th>set.theme.light</th><td>밝게</td><td>Light</td><td>ライト</td></tr><tr><th>set.theme.system</th><td>기기 설정</td><td>Device</td><td>端末設定</td></tr><tr><th>set.title</th><td>설정</td><td>Settings</td><td>設定</td></tr><tr><th>set.together</th><td>함께한 날짜</td><td>Together since</td><td>一緒になった日</td></tr><tr><th>set.together.value</th><td>2025년 6월 29일</td><td>June 29, 2025</td><td>2025年6月29日</td></tr><tr><th>tab.home</th><td>홈</td><td>Home</td><td>ホーム</td></tr><tr><th>tab.room</th><td>방</td><td>Room</td><td>部屋</td></tr><tr><th>tab.settings</th><td>설정</td><td>Settings</td><td>設定</td></tr></tbody></table></body></html>

@@ -1,0 +1,25 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "room.ctl.settings": "Settings",
+    "room.syncing": "Syncing",
+    "room.partnerChanged": "{name} changed the room",
+    "room.recover.title": "Couldn't read the room data",
+    "room.recover.body": "Your saved room is untouched. Please try loading it again.",
+    "room.recover.action": "Load again",
+    "room.ddayHidden": "The day counter is hidden in this room. It still shows on the home screen.",
+    "room.protect.legend.system": "System area",
+    "room.protect.legend.ctl": "Room toolbar",
+    "room.protect.legend.dday": "Day counter",
+    "room.protect.legend.text": "Text readability area",
+    "room.protect.legend.tab": "System tab bar",
+    "obj.report": "Report",
+    "obj.report.scene": "Report the whole room",
+    "obj.reported": "Reported · received",
+    "obj.hidden.note": "Hidden on your screen only.",
+    "obj.removed.notice": "After review, this decoration was removed from the room.",
+    "room.mascot.recall": "Call Aroomi back",
+    "room.mascot.missing": "Aroomi isn't in the room. Tap to bring Aroomi back to the default spot."
+  }
+}

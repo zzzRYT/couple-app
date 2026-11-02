@@ -1,0 +1,8 @@
+{
+  "status": "source",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "a11y.coach": "안내: {text}",
+    "coach.home": "방 탭에서 우리 방을 꾸며 보세요"
+  }
+}

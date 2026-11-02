@@ -1,0 +1,25 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "room.ctl.settings": "設定",
+    "room.syncing": "同期中",
+    "room.partnerChanged": "{name}さんが部屋を変更しました",
+    "room.recover.title": "部屋のデータを読み込めませんでした",
+    "room.recover.body": "保存されている部屋はそのままです。もう一度読み込んでください。",
+    "room.recover.action": "もう一度読み込む",
+    "room.ddayHidden": "日数ウィジェットはこの部屋では非表示です。メイン画面ではそのまま表示されます。",
+    "room.protect.legend.system": "システム領域",
+    "room.protect.legend.ctl": "部屋のツールバー",
+    "room.protect.legend.dday": "日数ウィジェット",
+    "room.protect.legend.text": "文字の可読領域",
+    "room.protect.legend.tab": "システムのタブバー",
+    "obj.report": "報告する",
+    "obj.report.scene": "部屋全体を報告",
+    "obj.reported": "報告しました・受付済み",
+    "obj.hidden.note": "あなたの画面でだけ非表示にしました。",
+    "obj.removed.notice": "確認の結果、この飾りは部屋から外されました。",
+    "room.mascot.recall": "アルーミを呼び戻す",
+    "room.mascot.missing": "部屋にアルーミがいません。タップすると元の位置に戻ります。"
+  }
+}

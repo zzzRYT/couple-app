@@ -17,6 +17,9 @@ jobs:
         with:
           deno-version: v2.x
       - run: pnpm install --frozen-lockfile
+      - run: python3 -m unittest discover -s tools/design-sync -p 'test_*.py'
+      - run: node --test tools/i18n/copy-library.test.mjs
+      - run: node tools/i18n/check-design-copy.mjs
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm --filter @couple/scene-contract test

@@ -1,0 +1,22 @@
+{
+  "status": "draft: G4 native review pending",
+  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "strings": {
+    "invite.expiring": "まもなく期限切れ · 残り{m}分",
+    "invite.expired.title": "コードの期限が切れました",
+    "invite.expired.body": "新しいコードを作って、パートナーにもう一度送ってください。",
+    "invite.copied": "コピーしました",
+    "invite.shareMsg": "ふたりのスペースに来てね。 {link} 招待コード：{code}（24時間以内に入力してください）",
+    "invite.shareSheet.title": "共有",
+    "invite.shareCancelled": "共有をキャンセルしました。コードはそのまま使えます。",
+    "invite.reissue.title": "新しいコードを作りますか？",
+    "invite.reissue.body": "今のコードはすぐに使えなくなります。パートナーがまだ入力していない場合は、新しいコードを送る必要があります。",
+    "invite.waiting.title": "パートナーを待っています",
+    "invite.waiting.body": "パートナーがコードを入力したあと、アプリを開くとここで確認できます。",
+    "invite.generating": "コードを作っています",
+    "invite.err.title": "コードを作れませんでした",
+    "invite.err.body": "インターネット接続を確認して、もう一度お試しください。",
+    "invite.later": "あとで招待する",
+    "invite.once": "1回だけ使えます"
+  }
+}
