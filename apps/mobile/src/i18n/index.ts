@@ -5,6 +5,9 @@ import * as SecureStore from 'expo-secure-store';
 import ko from './locales/ko-KR.json';
 import en from './locales/en-US.json';
 import ja from './locales/ja-JP.json';
+import v0Ko from './locales/v0/ko-KR.json';
+import v0En from './locales/v0/en-US.json';
+import v0Ja from './locales/v0/ja-JP.json';
 
 export type Locale = 'ko-KR' | 'en-US' | 'ja-JP';
 type Storage = { getItemAsync(key: string): Promise<string | null>; setItemAsync(key: string, value: string): Promise<void> };
@@ -21,7 +24,7 @@ export async function createI18n(options: { deviceLocale?: string; storage?: Sto
   const language = explicit ?? supported(options.deviceLocale ?? getLocales()[0]?.languageTag) ?? 'en-US';
   const instance = createInstance();
   await instance.use(initReactI18next).init({
-    lng: language, fallbackLng: 'en-US', resources: { 'ko-KR': { translation: ko }, 'en-US': { translation: en }, 'ja-JP': { translation: ja } },
+    lng: language, fallbackLng: 'en-US', resources: { 'ko-KR': { translation: { ...ko, ...v0Ko } }, 'en-US': { translation: { ...en, ...v0En } }, 'ja-JP': { translation: { ...ja, ...v0Ja } } },
     keySeparator: false, interpolation: { prefix: '{', suffix: '}', escapeValue: false },
   });
   return instance;
