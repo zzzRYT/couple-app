@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aroom.jinjinstar.com/schemas/widget-snapshot-v1.json",
+  "title": "V1 widget snapshot (App Group, schemaVersion 1)",
+  "description": "Written atomically by the app into the App Group container; read by the iOS widget extension. No tokens, user ids, emails, memos or birth years. Names are for home-screen widgets only; lock-screen layouts must not render them.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "writtenAt",
+    "state",
+    "locale",
+    "strings",
+    "entries"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "writtenAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "spaceId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Space the data belongs to (lets the app detect a stale snapshot after reconnecting to a new space). Not a user id."
+    },
+    "state": {
+      "enum": [
+        "normal",
+        "pending",
+        "none",
+        "ended"
+      ],
+      "description": "none = signed out or no space; ended = space ended; pending = partner not joined; normal = connected."
+    },
+    "locale": {
+      "enum": [
+        "ko-KR",
+        "en-US",
+        "ja-JP"
+      ]
+    },
+    "timeZone": {
+      "type": "string",
+      "description": "IANA space time zone; required unless state is none or ended."
+    },
+    "startDate": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "names": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "me": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "partner": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 40
+        }
+      }
+    },
+    "strings": {
+      "type": "object",
+      "description": "Pre-translated short strings in `locale` (the extension has no i18n). Keys mirror the copy keys used by the widget layouts.",
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 120
+      }
+    },
+    "entries": {
+      "type": "array",
+      "description": "One entry per space-time-zone midnight, starting today, at least 35 days ahead when state is normal or pending; a single entry otherwise.",
+      "minItems": 1,
+      "maxItems": 400,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "date",
+          "showAt"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "showAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "00:00 of `date` in the space time zone, as an absolute instant."
+          },
+          "dayCount": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "today": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/item"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The anniversary shown as 'today' (priority 주년 > 일수 > 생일 > 직접 > 시즌); omit or null when none."
+          },
+          "next": {
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "$ref": "#/$defs/item"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "kind",
+        "title",
+        "date",
+        "daysLeft"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Occurrence key from src/lib/anniversaries.ts, e.g. d150, y2, season:pepero:2026, custom:<uuid>:2026, bday:partner:2026."
+        },
+        "kind": {
+          "enum": [
+            "days",
+            "years",
+            "birthday",
+            "season",
+            "custom"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 60,
+          "description": "Already localized display title."
+        },
+        "date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "daysLeft": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "privacySensitive": {
+          "type": "boolean",
+          "description": "true for custom titles and birthday titles that contain a name."
+        }
+      }
+    }
+  }
+}
