@@ -19,6 +19,6 @@ export function computeMilestoneView(startDate: string, timeZone: string, nowIso
   }
   occurrences.sort((a, b) => a.date.localeCompare(b.date) || (a.kind === 'years' ? -1 : b.kind === 'years' ? 1 : 0));
   const today = occurrences.find((item) => item.date === todayDate) ?? null;
-  const upcoming = occurrences.filter((item) => item.date > todayDate).slice(0, 3);
-  return { today, dayCount: count.dayCount, next: upcoming[0] ?? null, upcoming };
+  const future = occurrences.filter((item) => item.date > todayDate);
+  return { today, dayCount: count.dayCount, next: future[0] ?? null, upcoming: future.slice(1, 4) };
 }

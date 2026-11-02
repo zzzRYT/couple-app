@@ -7,6 +7,12 @@ it('V0-NF-02 shares keys and nests decided brand names', async () => {
   expect(Object.keys(ko)).toHaveLength(279);
   expect(Object.keys(en).sort()).toEqual(Object.keys(ko).sort());
   expect(Object.keys(ja).sort()).toEqual(Object.keys(ko).sort());
+  const placeholders = (value: string) => [...new Set(value.match(/\{[^{}]+\}/g) ?? [])].sort();
+  for (const key of Object.keys(ko) as (keyof typeof ko)[]) {
+    if (['date.long', 'date.short', 'date.md'].includes(key)) continue;
+    expect(placeholders(en[key])).toEqual(placeholders(ko[key]));
+    expect(placeholders(ja[key])).toEqual(placeholders(ko[key]));
+  }
   for (const locale of [ko, en, ja]) {
     for (const [key, value] of Object.entries(locale)) {
       if (key !== 'app.name' && key !== 'mascot.name') {

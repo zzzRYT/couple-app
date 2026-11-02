@@ -42,6 +42,11 @@ export function spacesHandler(deps: Deps) {
     }),
     route('PATCH', '/spaces/:spaceId/anniversary', ({ userId, params, body, deps }) =>
       deps.db.rpc('update_anniversary', { actor: userId, target: uuidParam(params.spaceId), anniversary: calendarDate(body.anniversaryDate), expected: str(body.expectedUpdatedAt, 64) })),
+    route('PATCH', '/spaces/:spaceId/time-zone', ({ userId, params, body, deps }) => {
+      const timeZone = str(body.timeZone, 64);
+      try { new Intl.DateTimeFormat('en-US', { timeZone }).format(0); } catch { throw new AppError('INVALID_REQUEST'); }
+      return deps.db.rpc('update_space_time_zone', { actor: userId, target: uuidParam(params.spaceId), tz: timeZone, expected: str(body.expectedUpdatedAt, 64) });
+    }),
     route('PATCH', '/spaces/:spaceId/room-mode', ({ userId, params, body, deps }) => {
       const change = roomMode(body);
       return deps.db.rpc('update_room_mode', { actor: userId, target: uuidParam(params.spaceId), new_mode: change.mode, new_time_zone: change.timeZone, expected_version: change.expected });

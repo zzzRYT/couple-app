@@ -9,10 +9,12 @@ export type RoomPresentation = { schemaVersion: 1; visible: boolean; x: number; 
 export type RoomThemeDocument = { schemaVersion: 1; mode: 'day' | 'night' | 'follow_time'; timeZone: string; day: unknown; night: unknown };
 /** `warnAt`, `idleSeconds` and `warnSeconds` come from the server settings; a lease read from an older server lacks them. */
 export type PromptSession = { sessionId: string; ownerUserId: string; expiresAt: string; status: 'occupied' | 'released' | 'expired'; warnAt?: string; idleSeconds?: number; warnSeconds?: number };
+export type Birthday = { month: number; day: number };
+export type CustomAnniversary = { id: string; title: string; memo: string | null; date: string; repeat: 'yearly' | 'once'; createdBy: string | null; createdAt: string; updatedBy: string | null; updatedAt: string; version: number };
 export type Snapshot = {
-  space: { spaceId: string; status: 'active'; anniversaryDate: string; timeZone: string; memberCount: number; updatedAt: string; invitation: { status: string; expiresAt: string } | null };
+  space: { spaceId: string; status: 'active'; anniversaryDate: string; timeZone: string; memberCount: number; updatedAt: string; invitation: { status: string; expiresAt: string } | null; anniversaryChangedBy: string | null; anniversaryChangedAt: string | null };
   features: { generation: boolean; generatedRender: boolean }; versionNumber: number; sceneDocument: SceneDocument; roomPresentation: RoomPresentation; roomThemeDocument: RoomThemeDocument;
-  promptSession: PromptSession | null; catalogVersion: number | string; serverTime: string; members: { userId: string; aiConsentState: 'not_given' | 'granted' | 'revoked' }[]; me: { userId: string };
+  promptSession: PromptSession | null; catalogVersion: number | string; serverTime: string; members: { userId: string; aiConsentState: 'not_given' | 'granted' | 'revoked'; displayName: string | null; birthday: Birthday | null; hasBirthday: boolean }[]; me: { userId: string; displayName: string | null; birthday: (Birthday & { year: number | null }) | null }; anniversaries: CustomAnniversary[];
 };
 export type HomeCover = { status: 'none' | 'ready'; version: number; signedUrl?: string; signedUrlExpiresAt?: string; crop?: { x: number; y: number; width: number; height: number }; uploadedBy: string | null; updatedAt: string | null };
 export type MySpace = { active: { spaceId: string } | null; ended: { kind: 'ended' | 'disconnect' | 'account_deleted'; by: 'me' | 'partner'; at: string } | null };
@@ -40,10 +42,12 @@ export function createClient(api: Api) {
     updateAnniversary: (spaceId: string, anniversaryDate: string, expectedUpdatedAt: string) => api.json<{ anniversaryDate: string; updatedAt: string; milestonesReset: string[] }>(routes.anniversary(spaceId), { method: 'PATCH', body: { anniversaryDate, expectedUpdatedAt } }),
     updateRoomMode: (spaceId: string, mode: RoomThemeDocument['mode'], timeZone: string, expectedCurrentVersion: number) => api.json<{ versionNumber: number; mode: RoomThemeDocument['mode']; timeZone: string }>(routes.roomMode(spaceId), { method: 'PATCH', body: { mode, timeZone, expectedCurrentVersion }, keyInBody: true }),
     createInvitation: (spaceId: string) => api.json<{ invitationId: string; code: string; expiresAt: string }>(routes.createInvitation(spaceId), { method: 'POST', body: { expiresInSeconds: 86400 } }),
-    previewInvitation: (code: string) => api.json<{ anniversaryDate: string; memberCount: number }>(routes.previewInvitation(), { method: 'POST', body: { code } }),
+    previewInvitation: (code: string) => api.json<{ anniversaryDate: string; memberCount: number; displayName: string | null; timeZone: string }>(routes.previewInvitation(), { method: 'POST', body: { code } }),
     acceptInvitation: (code: string) => api.json<{ spaceId: string; memberCount: number }>(routes.acceptInvitation(), { method: 'POST', body: { code } }),
     preferences: () => api.json<{ locale: Locale | null; uiTheme: 'system' | 'light' | 'dark' }>(routes.preferences()),
     savePreferences: (locale: Locale | null, uiTheme: 'system' | 'light' | 'dark') => api.json<void>(routes.preferences(), { method: 'PATCH', body: { locale, uiTheme } }),
+    saveMemberProfile: (displayName: string, birthday: (Birthday & { year: number | null }) | null) => api.json<{ displayName: string; birthday: (Birthday & { year: number | null }) | null }>(routes.memberProfile(), { method: 'PUT', body: { displayName, birthday }, keyInBody: true }),
+    updateTimeZone: (spaceId: string, timeZone: string, expectedUpdatedAt: string) => api.json<{ timeZone: string; updatedAt: string }>(routes.timeZone(spaceId), { method: 'PATCH', body: { timeZone, expectedUpdatedAt }, keyInBody: true }),
     conversation: (spaceId: string) => api.json<Conversation>(routes.conversation(spaceId)),
     acquire: (spaceId: string) => api.json<PromptSession>(routes.acquire(spaceId), { method: 'POST', body: {}, keyInBody: true }),
     heartbeat: (spaceId: string, sessionId: string) => api.json<PromptSession>(routes.session(spaceId, sessionId, 'heartbeat'), { method: 'POST', body: {} }),

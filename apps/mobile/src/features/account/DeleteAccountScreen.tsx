@@ -22,9 +22,9 @@ export function reauthChoices(options: AuthOptions, provider?: Provider): Provid
  * S13 account deletion: consequences and a checkmark, then sign in again (same login UI), then the request. Nothing is sent
  * offline and nothing is queued; before acceptance a failure changes nothing. No days, no restore and no grace period are shown.
  */
-export function DeleteAccountScreen({ reauth, onSubmit, onFinished, onCancel, provider, options = defaultOptions }: {
+export function DeleteAccountScreen({ reauth, onSubmit, onFinished, onCancel, provider, options = defaultOptions, v0 = false }: {
   reauth: ReauthPort; onSubmit: (reauth: Reauth) => Promise<SubmitResult>; onFinished: (outcome: 'accepted' | 'signedOut') => Promise<void>;
-  onCancel: () => void; provider?: Provider; options?: AuthOptions;
+  onCancel: () => void; provider?: Provider; options?: AuthOptions; v0?: boolean;
 }) {
   const color = useAppColor();
   const { t } = useTranslation();
@@ -58,25 +58,25 @@ export function DeleteAccountScreen({ reauth, onSubmit, onFinished, onCancel, pr
   }
   return (
     <Screen onBack={onCancel} footer={<>
-      <Button label={banner === 'fail' ? t('common.retry') : t('acct.delete.confirm')} variant="danger" disabled={!checked} onPress={() => { setBanner(null); setReauthFailed(false); setPhase('reauth'); }} />
+      <Button label={banner === 'fail' ? t('common.retry') : v0 ? t('set.delete.reauth', { provider: 'Apple' }) : t('acct.delete.confirm')} variant="danger" disabled={!checked} onPress={() => { setBanner(null); setReauthFailed(false); if (v0) void confirmIdentity(reauth.apple); else setPhase('reauth'); }} />
       <Button label={t('end.cancel')} variant="ghost" onPress={onCancel} />
     </>}>
-      <AppText variant="title" accessibilityRole="header">{t('acct.delete.title')}</AppText>
-      <AppText tone="text2">{t('acct.delete.lead')}</AppText>
+      <AppText variant="title" accessibilityRole="header">{t(v0 ? 'set.delete.title' : 'acct.delete.title')}</AppText>
+      <AppText tone="text2">{t(v0 ? 'set.delete.body' : 'acct.delete.lead')}</AppText>
       <View style={{ gap: tokens.spacing[2], padding: tokens.spacing[4], borderRadius: tokens.radius.card, borderWidth: tokens.border.outline.normal, borderColor: color.danger, backgroundColor: color.dangerBg }}>
-        {(['acct.delete.b1', 'acct.delete.b2', 'acct.delete.b3'] as const).map((key) => (
+        {(v0 ? ['set.delete.i1', 'set.delete.i2', 'set.delete.i3'] : ['acct.delete.b1', 'acct.delete.b2', 'acct.delete.b3']).map((key) => (
           <View key={key} style={{ flexDirection: 'row', gap: tokens.spacing[2] }}>
             <View style={{ paddingTop: 2 }}><Icon name={key === 'acct.delete.b3' ? 'warn' : 'check'} size={20} color={color.danger} /></View>
             <AppText style={{ flex: 1 }}>{t(key)}</AppText>
           </View>
         ))}
       </View>
-      <Pressable accessibilityRole="checkbox" accessibilityState={{ checked }} accessibilityLabel={t('end.check')} onPress={() => setChecked((value) => !value)}
+      <Pressable accessibilityRole="checkbox" accessibilityState={{ checked }} accessibilityLabel={t(v0 ? 'set.confirm.check' : 'end.check')} onPress={() => setChecked((value) => !value)}
         style={{ minHeight: tokens.touch.minimum, flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[2] }}>
         <View style={{ width: 24, height: 24, borderWidth: tokens.border.outline.normal, borderColor: color.line, borderRadius: 8, backgroundColor: checked ? color.danger : color.surface, alignItems: 'center', justifyContent: 'center' }}>
           {checked && <Icon name="check" size={16} color={color.onDanger} />}
         </View>
-        <AppText style={{ flexShrink: 1 }}>{t('end.check')}</AppText>
+        <AppText style={{ flexShrink: 1 }}>{t(v0 ? 'set.confirm.check' : 'end.check')}</AppText>
       </Pressable>
       {banner === 'offline' && <Banner kind="offline" text={t('acct.delete.offline')} />}
       {banner === 'fail' && <Banner kind="danger" text={t('acct.delete.fail.title')} body={t('acct.delete.fail.body')} />}

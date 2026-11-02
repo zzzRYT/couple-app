@@ -5,7 +5,7 @@ import { AppText, Banner, Button, Card, Screen } from '../../ui/components';
 import { CodeInput } from '../../ui/CodeBoxes';
 import { Spot } from '../../ui/Spot';
 import { ApiError, errorBodyKey, errorKey } from '../../lib/errors';
-import { formatAnniversary } from '../../lib/dday';
+import { dayCount, formatAnniversary } from '../../lib/dday';
 import { parseInvite } from '../../lib/inviteLink';
 import { tokens } from '../../theme/tokens';
 
@@ -15,10 +15,10 @@ export function maskInviteInput(value: string): string {
   return clean.length > 4 ? `${clean.slice(0, 4)}-${clean.slice(4)}` : clean;
 }
 type Problem = { code: string } | { rateMinutes: number } | 'network';
-type Step = 'enter' | 'checking' | { found: { anniversaryDate: string } } | 'accepting' | { joined: string };
-/** S05 join. The data model has no partner names, so the confirm step shows only the shared date. */
+type Step = 'enter' | 'checking' | { found: { anniversaryDate: string; displayName?: string | null; timeZone?: string } } | 'accepting' | { joined: string };
+/** S05 join with the valid invitation's limited preview. */
 export function JoinScreen({ previewInvitation, acceptInvitation, onJoined, onOpenSpace, readClipboard, onBack, initialCode, alreadyInSpace }: {
-  previewInvitation: (code: string) => Promise<{ anniversaryDate: string }>; acceptInvitation: (code: string) => Promise<{ spaceId: string }>;
+  previewInvitation: (code: string) => Promise<{ anniversaryDate: string; displayName?: string | null; timeZone?: string }>; acceptInvitation: (code: string) => Promise<{ spaceId: string }>;
   onJoined: (spaceId: string) => void; onOpenSpace: () => void; readClipboard?: () => Promise<string>; onBack?: () => void; initialCode?: string | null; alreadyInSpace?: boolean;
 }) {
   const { t, i18n } = useTranslation();
@@ -45,7 +45,7 @@ export function JoinScreen({ previewInvitation, acceptInvitation, onJoined, onOp
   }
   async function accept() {
     setStep('accepting');
-    try { setStep({ joined: (await acceptInvitation(code)).spaceId }); } catch (error) { fail(error); }
+    try { onJoined((await acceptInvitation(code)).spaceId); } catch (error) { fail(error); }
   }
   if (typeof step === 'object' && 'joined' in step) {
     return (
@@ -62,10 +62,10 @@ export function JoinScreen({ previewInvitation, acceptInvitation, onJoined, onOp
         <Button label={t('join.accept')} loading={step === 'accepting'} onPress={() => void accept()} />
         <Button label={t('join.decline')} variant="ghost" disabled={step === 'accepting'} onPress={() => setStep('enter')} />
       </>}>
-        <AppText variant="title" accessibilityRole="header">{t('join.found.heading')}</AppText>
+        <AppText variant="title" accessibilityRole="header">{t('join.found.title')}</AppText>
         {found && <Card style={{ flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[3] }}>
           <Spot kind="gift" scale={0.6} />
-          <AppText tone="text2" style={{ flex: 1 }}>{t('join.found.body', { date: formatAnniversary(found.anniversaryDate, i18n.language) })}</AppText>
+          <View style={{ flex: 1 }}><AppText variant="heading">{t('join.found.who', { name: found.displayName ?? t('home.pending.partner') })}</AppText><AppText tone="text2">{t('start.join.found.body', { date: formatAnniversary(found.anniversaryDate, i18n.language), n: (() => { const result = dayCount(found.anniversaryDate, new Date().toISOString(), found.timeZone ?? 'UTC'); return result.ok ? result.dayCount : 0; })() })}</AppText></View>
         </Card>}
       </Screen>
     );

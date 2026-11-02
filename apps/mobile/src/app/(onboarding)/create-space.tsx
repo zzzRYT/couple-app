@@ -1,15 +1,10 @@
 import { router } from 'expo-router';
 import { getCalendars } from 'expo-localization';
-import { CreateSpaceScreen } from '../../features/onboarding/CreateSpaceScreen';
-import { useApp } from '../../lib/AppContext';
-import { useSpace } from '../../features/space/SpaceContext';
+import { V0DateScreen } from '../../features/onboarding/V0DateScreen';
+import { useCreateFlow } from '../../features/onboarding/CreateFlowContext';
 import { useNow } from '../../lib/useNow';
 export default function CreateSpaceRoute() {
-  const { client } = useApp();
-  const { reload, queueInviteAfterActivation } = useSpace();
-  const now = useNow();
+  const { date, setDate } = useCreateFlow();
   const timeZone = getCalendars()[0]?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
-  return <CreateSpaceScreen createSpace={client.createSpace} now={now} timeZone={timeZone}
-    onCreated={() => { queueInviteAfterActivation(); void reload(); }}
-    onBack={() => router.dismissTo('/choose-space')} onOpenSpace={() => { void reload(); }} />;
+  return <V0DateScreen initial={date} now={useNow()} timeZone={timeZone} onBack={() => router.dismissTo('/choose-space')} onNext={(next) => { setDate(next); router.push('/profile'); }} />;
 }

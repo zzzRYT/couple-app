@@ -1,0 +1,11 @@
+begin;
+select plan(5);
+insert into auth.users (id,aud,role,email) values ('00000000-0000-0000-0000-000000000071','authenticated','authenticated','v0-profile@example.invalid');
+select is(public.set_member_profile('00000000-0000-0000-0000-000000000071','  하루  ',2::smallint,29::smallint,null)->>'displayName','하루','V0-F02-AC-03 trims name');
+select throws_ok($$select public.set_member_profile('00000000-0000-0000-0000-000000000071',' ',null,null,null)$$,'P0001','INVALID_REQUEST','empty name rejected');
+select throws_ok($$select public.set_member_profile('00000000-0000-0000-0000-000000000071','하루',2::smallint,30::smallint,null)$$,'P0001','INVALID_REQUEST','invalid birthday rejected');
+select throws_ok($$select public.set_member_profile('00000000-0000-0000-0000-000000000071','하루',2::smallint,29::smallint,2025::smallint)$$,'P0001','INVALID_REQUEST','invalid birth year rejected');
+update public.user_profile set status='deleting' where user_id='00000000-0000-0000-0000-000000000071';
+select throws_ok($$select public.set_member_profile('00000000-0000-0000-0000-000000000071','하루',null,null,null)$$,'P0001','ACCOUNT_DELETING','deleting account rejected');
+select * from finish();
+rollback;

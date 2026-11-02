@@ -1,4 +1,5 @@
-import { router, useFocusEffect } from 'expo-router';
+import { Redirect, router, useFocusEffect } from 'expo-router';
+import { V0_FEATURES } from '../../config/features';
 import { useCallback, useRef } from 'react';
 import { RoomScreen } from '../../features/room/RoomScreen';
 import { useRoom } from '../../features/room/useRoom';
@@ -7,6 +8,10 @@ import { useSpace } from '../../features/space/SpaceContext';
 import { useNow } from '../../lib/useNow';
 import { useMilestone } from '../../features/milestone/useMilestone';
 export default function RoomRoute() {
+  if (!V0_FEATURES.room) return <Redirect href="/home" />;
+  return <RoomContent />;
+}
+function RoomContent() {
   const { client, userId } = useApp();
   const { spaceId, state, refresh } = useSpace();
   const milestone = useMilestone(spaceId, userId, !state.offline && state.status !== 'error', client, 'room', state.offline,

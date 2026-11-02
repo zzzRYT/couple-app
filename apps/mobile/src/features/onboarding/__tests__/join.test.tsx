@@ -17,17 +17,16 @@ it('masks input as 4-4 and ignores case, spaces and hyphens', () => {
 });
 
 it('confirms the space and accepts the invitation', async () => {
-  const preview = jest.fn().mockResolvedValue({ anniversaryDate: '2025-06-29', memberCount: 1 });
+  const preview = jest.fn().mockResolvedValue({ anniversaryDate: '2025-06-29', memberCount: 1, displayName: '하루', timeZone: 'Asia/Seoul' });
   const { screen, input, check, onJoined, acceptInvitation } = await setup(preview);
   await fireEvent.changeText(input(), 'k7m4q9xp');
   await check();
   expect(preview).toHaveBeenCalledWith('K7M4Q9XP');
   expect(await screen.findByText(screen.t('join.found.heading'))).toBeTruthy();
-  expect(screen.getByText(screen.t('join.found.body', { date: '2025년 6월 29일' }))).toBeTruthy();
+  expect(screen.getByText(screen.t('join.found.who', { name: '하루' }))).toBeTruthy();
+  expect(screen.getByText(/사귄 날은 2025년 6월 29일/)).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: screen.t('join.accept') }));
   expect(acceptInvitation).toHaveBeenCalledWith('K7M4Q9XP');
-  expect(await screen.findByText(screen.t('join.ok.title'))).toBeTruthy();
-  await fireEvent.press(screen.getByRole('button', { name: screen.t('join.ok.next') }));
   expect(onJoined).toHaveBeenCalledWith('s1');
 });
 
@@ -96,13 +95,14 @@ it('pastes an invite link as a code', async () => {
 it('does not offer back while accepting or after the server has joined the space', async () => {
   let finish: (value: { spaceId: string }) => void = () => {};
   const accept = jest.fn(() => new Promise<{ spaceId: string }>((resolve) => { finish = resolve; }));
-  const screen = await renderWithI18n(<JoinScreen previewInvitation={jest.fn().mockResolvedValue({ anniversaryDate: '2025-06-29' })} acceptInvitation={accept} onJoined={jest.fn()} onOpenSpace={jest.fn()} onBack={jest.fn()} />);
+  const onJoined = jest.fn();
+  const screen = await renderWithI18n(<JoinScreen previewInvitation={jest.fn().mockResolvedValue({ anniversaryDate: '2025-06-29' })} acceptInvitation={accept} onJoined={onJoined} onOpenSpace={jest.fn()} onBack={jest.fn()} />);
   await fireEvent.changeText(screen.getByLabelText(screen.t('join.title')), 'AAAABBBB');
   await fireEvent.press(screen.getByRole('button', { name: screen.t('join.check') }));
   expect(screen.getByTestId('screen-back')).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: screen.t('join.accept') }));
   expect(screen.queryByTestId('screen-back')).toBeNull();
   await act(async () => { finish({ spaceId: 's1' }); });
-  expect(screen.getByText(screen.t('join.ok.title'))).toBeTruthy();
+  expect(onJoined).toHaveBeenCalledWith('s1');
   expect(screen.queryByTestId('screen-back')).toBeNull();
 });

@@ -3,11 +3,12 @@ import { AppState } from 'react-native';
 import type { Snapshot } from '../../lib/client';
 import { isNetworkError, type RealtimePort } from '../../lib/realtime';
 import type { SpaceState } from './types';
+import { writeV0Cache } from './v0Cache';
 const OFFLINE_RETRY_MS = 15_000;
 const SAFETY_POLL_MS = 60_000;
 const initialState: SpaceState = { status: 'loading', snapshot: null, offline: false, lastSyncedAt: null };
 /** Fetches the snapshot on open, on foreground, on Realtime hints and periodically while offline; the last good copy stays readable. */
-export function useSnapshotSync(spaceId: string | null, fetchSnapshot: (spaceId: string) => Promise<Snapshot>, realtime: RealtimePort, onGone?: () => void) {
+export function useSnapshotSync(spaceId: string | null, fetchSnapshot: (spaceId: string) => Promise<Snapshot>, realtime: RealtimePort, onGone?: () => void, userId?: string | null) {
   const [state, setState] = useState<SpaceState>(initialState);
   const fetchRef = useRef(fetchSnapshot);
   fetchRef.current = fetchSnapshot;
@@ -29,11 +30,12 @@ export function useSnapshotSync(spaceId: string | null, fetchSnapshot: (spaceId:
       const current = stateRef.current.snapshot;
       if (current && (snapshot.versionNumber < current.versionNumber || Date.parse(snapshot.serverTime) < Date.parse(current.serverTime))) return;
       setState({ status: 'ready', snapshot, offline: false, lastSyncedAt: snapshot.serverTime });
+      if (userId) void writeV0Cache(userId, snapshot).catch(() => undefined);
     } catch (error) {
       setState((current) => ({ ...current, status: 'error', offline: isNetworkError(error) }));
       if (!isNetworkError(error)) goneRef.current?.();
     }
-  }, [spaceId]);
+  }, [spaceId, userId]);
   useEffect(() => {
     if (!spaceId) return;
     void refresh();
@@ -75,5 +77,6 @@ export function useSnapshotSync(spaceId: string | null, fetchSnapshot: (spaceId:
     return () => clearInterval(timer);
   }, [state.offline, joined, foreground, refresh]);
   const reset = useCallback(() => setState(initialState), []);
-  return { state, refresh, reset };
+  const seedOffline = useCallback((snapshot: Snapshot, savedAt: string) => setState({ status: 'ready', snapshot, offline: true, lastSyncedAt: savedAt }), []);
+  return { state, refresh, reset, seedOffline };
 }

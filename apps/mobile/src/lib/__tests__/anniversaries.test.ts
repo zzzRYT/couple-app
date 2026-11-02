@@ -12,3 +12,11 @@ describe('V0-DR-01…03, V0-DR-05 milestone dates', () => {
     expect(view.next).toEqual(expect.objectContaining({ key: 'd100', date: '2024-04-09' }));
   });
 });
+
+import fixtures from '../__fixtures__/anniversaries.json';
+it('V0-DR-01…03, V0-DR-05 matches calendar fixtures across time zones', () => {
+  for (const item of fixtures.cases) {
+    const actual = computeMilestoneView(item.start, item.zone, item.now);
+    expect(actual).toEqual({ dayCount: item.dayCount, today: item.today, next: item.next, upcoming: item.upcoming });
+  }
+});

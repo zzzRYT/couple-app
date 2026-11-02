@@ -1,18 +1,31 @@
+import { useEffect, useState } from 'react';
+import { Image } from 'react-native';
+import * as Notifications from 'expo-notifications';
 import { useTranslation } from 'react-i18next';
-import { EndedScreen } from '../features/lifecycle/EndedScreen';
-import { partnerLabel } from '../features/prompt/PromptPanel';
 import { useSpace } from '../features/space/SpaceContext';
 import { useApp } from '../lib/AppContext';
-
-/** Notice for an ended space. Acknowledging it clears it on the server, then the person starts over from the create-or-join choice. */
+import { clearV0LocalData } from '../features/space/v0LocalData';
+import { readV0Cache } from '../features/space/v0Cache';
+import { AppText, Button, Screen } from '../ui/components';
+import { mascotPoses } from '../scene/catalog';
 export default function EndedRoute() {
-  const { t } = useTranslation();
-  const { client } = useApp();
-  const { ended, entry, reload } = useSpace();
-  const hasActiveSpace = entry === 'active';
+  const { t } = useTranslation(); const { client, userId } = useApp(); const { ended, reload, state } = useSpace();
+  const [name, setName] = useState<string | null>(null); const [busy, setBusy] = useState(false); const [error, setError] = useState(false);
+  const snapshot = state.snapshot;
+  useEffect(() => {
+    if (!ended || !userId) return;
+    let active = true;
+    void (async () => {
+      const cached = await readV0Cache(userId);
+      const members = snapshot?.members ?? cached?.snapshotV0Part.members ?? [];
+      if (active && ended.kind !== 'account_deleted') setName(members.find((member) => member.userId !== userId)?.displayName ?? null);
+      await clearV0LocalData(userId, snapshot?.space.spaceId ?? cached?.spaceId).catch(() => undefined);
+      await Notifications.cancelAllScheduledNotificationsAsync().catch(() => undefined);
+    })();
+    return () => { active = false; };
+  }, [ended, userId, snapshot]);
   if (!ended) return null;
-  return (
-    <EndedScreen ended={ended} hasActiveSpace={hasActiveSpace} partnerName={partnerLabel(t)}
-        onContinue={async () => { await client.ackEnded(); await reload(); }} />
-  );
+  const title = ended.kind === 'account_deleted' ? 'end.byPartnerDeleted' : ended.by === 'me' ? 'end.done.title' : ended.kind === 'disconnect' ? 'end.byPartnerDisconnect' : 'end.byPartner';
+  const proceed = async () => { setBusy(true); setError(false); try { await client.ackEnded(); await reload(); } catch { setError(true); } finally { setBusy(false); } };
+  return <Screen center footer={<Button label={t('state.ended.cta')} loading={busy} onPress={() => void proceed()} />}><Image accessibilityElementsHidden importantForAccessibility="no" source={mascotPoses.sleep} resizeMode="contain" style={{ width: 160, height: 160, alignSelf: 'center' }} /><AppText variant="title" align="center">{t(title, { name: name ?? t('home.pending.partner') })}</AppText><AppText tone="text2" align="center">{t('state.ended.body')}</AppText>{error && <AppText tone="danger">{t('state.error.title')}</AppText>}</Screen>;
 }

@@ -5,6 +5,8 @@ export type AppGate =
   | { kind: 'signedOut' }
   | { kind: 'sessionExpired' }
   | { kind: 'needsOnboardingChoice'; pendingInvite: string | null }
+  | { kind: 'needsProfile' }
+  | { kind: 'offlineEmpty' }
   | { kind: 'ended'; notice: MySpace['ended'] }
   | { kind: 'active'; spaceId: string };
 
@@ -13,11 +15,12 @@ export type AppGateInput = {
   sessionLoaded: boolean;
   hasSession: boolean;
   sessionExpired?: boolean;
-  entry: 'loading' | 'active' | 'ended' | 'none' | 'error';
+  entry: 'loading' | 'active' | 'ended' | 'none' | 'error' | 'offlineEmpty';
   spaceId?: string | null;
   ended?: MySpace['ended'];
   pendingInviteLoaded: boolean;
   pendingInvite?: string | null;
+  snapshotProfile?: string | null;
 };
 
 /** Pure routing decision shared by the root navigator and transition tests. */
@@ -26,7 +29,12 @@ export function appGate(input: AppGateInput): AppGate {
   if (input.sessionExpired) return { kind: 'sessionExpired' };
   if (!input.hasSession) return { kind: 'signedOut' };
   if (!input.pendingInviteLoaded || input.entry === 'loading' || input.entry === 'error') return { kind: 'booting' };
+  if (input.entry === 'offlineEmpty') return { kind: 'offlineEmpty' };
   if (input.entry === 'ended' && input.ended) return { kind: 'ended', notice: input.ended };
-  if (input.entry === 'active' && input.spaceId) return { kind: 'active', spaceId: input.spaceId };
+  if (input.entry === 'active' && input.spaceId) {
+    if (input.snapshotProfile === undefined) return { kind: 'booting' };
+    if (input.snapshotProfile === null) return { kind: 'needsProfile' };
+    return { kind: 'active', spaceId: input.spaceId };
+  }
   return { kind: 'needsOnboardingChoice', pendingInvite: input.pendingInvite ?? null };
 }

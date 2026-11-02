@@ -102,6 +102,7 @@ export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion
         {copyCode && <Button label={t('invite.copy')} accessibilityLabel={t('a11y.copy')} icon="copy" variant="secondary" onPress={copy} />}
         <Button label={t('invite.reissue')} variant="ghost" onPress={() => setConfirmReissue(true)} />
       </>}
+      {onLater && <Button label={t('start.invite.home')} variant="ghost" onPress={onLater} />}
     </>}>
       <AppText variant="title" accessibilityRole="header">{t('invite.title')}</AppText>
       <AppText tone="text2">{t('invite.body')}</AppText>
