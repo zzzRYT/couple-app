@@ -7,7 +7,7 @@ Token shorthand: `L.x` = `color.app.light.normal.x`, `D.x` = `color.app.dark.nor
 ## 1. Board header facts
 
 - Eyebrow: `AROOM · V0 · D+DAY · 시작`. Page `<title>`: `V0 시작 · 로그인 · 연결`. H1: `V0-01 시작 (로그인 · 연결)`.
-- Description (verbatim): "V1의 첫 경험이에요. Apple 로그인 하나, 사귄 날 입력, 내 이름과 생일, 그리고 S03~S05의 초대·참여 동작을 그대로 써요. 만든 초대 코드는 홈에서도 계속 보여요(PR 26)."
+- Description (verbatim): "V0의 첫 경험이에요. Apple 로그인 하나, 사귄 날 입력, 내 이름과 생일, 그리고 S03~S05의 초대·참여 동작을 그대로 써요. 만든 초대 코드는 홈에서도 계속 보여요(PR 26)."
 - Section 1 `iOS · 밝은 앱 · 한국어`, flow text (verbatim):
   - 만드는 사람: 소개 → 시작 방법 → 사귄 날 → 이름·생일 → 초대 코드 → 홈(상대 대기).
   - 초대받은 사람: 소개 → 시작 방법 → 코드 입력 → 참여 확인 → 이름·생일 → 연결 완료 → 알림 안내.
@@ -270,7 +270,7 @@ Only intro, date, invite, connected (+ ja notify). All use: bg #2B2320, frame ri
 | Ref | What the board says |
 |---|---|
 | S01 | intro: "S01·S02를 한 화면으로"; "S01 3장 소개를 1장으로 줄였어요. 방·프롬프트 소개는 빠져요." |
-| S02 | "Apple 시스템 시트·취소·오류: S02 그대로 (S02-apple · S02-cancel · S02-error). V1 로그인은 Apple 하나뿐이에요." |
+| S02 | "Apple 시스템 시트·취소·오류: S02 그대로 (S02-apple · S02-cancel · S02-error). V0 로그인은 Apple 하나뿐이에요." |
 | S03 | date: "S03 날짜 상자 재사용"; description "S03~S05의 초대·참여 동작을 그대로 써요" |
 | S04 | invite: "S04 동작 · 만든 뒤에도 계속 보임"; "초대 코드 만료 임박·만료·재발급·공유 시트·복사 토스트·네트워크 오류: S04 그대로." |
 | S05 | enter: "S05 재사용 · 오류 상태는 S05 그대로"; found: "S05-found 변형"; "코드 만료·사용됨·틀림·인원 초과·이미 다른 공간·네트워크 오류: S05 그대로." |

@@ -64,7 +64,7 @@ Implementation: use `.widgetURL` on small/accessory widgets and `Link` on each m
 - 잠금 화면 위젯에는 이름을 넣지 않아요. 직접 추가한 제목은 privacySensitive로 표시해 잠금 상태 데이터 숨김 설정을 따르게 해요(오너 확인).
 
 ### 1.6 Android (Later) (verbatim)
-- V1은 iOS만. Android 홈 화면 위젯은 다음 단계예요(Glance/AppWidget 또는 expo-widgets의 Android 지원).
+- V0은 iOS만. Android 홈 화면 위젯은 다음 단계예요(Glance/AppWidget 또는 expo-widgets의 Android 지원).
 - Android 잠금 화면 위젯은 기기에 따라 달라요: Google은 Pixel Tablet에 이미 있고 Android 16 QPR1부터 AOSP 폰·태블릿에 열린다고 안내해요. 제조사 지원·개인 정보 노출은 그때 다시 봐요.
 
 ### 1.7 위젯 갤러리 이름 · 설명 (verbatim)

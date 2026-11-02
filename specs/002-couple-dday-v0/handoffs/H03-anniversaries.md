@@ -4,9 +4,9 @@
 |---|---|
 | Slice | S3 · tasks T301–T309 in `../tasks.md` |
 | Requirements | V0-F04, V0-F05, V0-F06, V0-F07, V0-F08, V0-F09 (birthday/custom/season cards + priority), V0-F12-AC-02 (partner-wait hint), V0-DR-01…06, V0-EC-01/-04/-05/-06/-08/-12 |
-| Depends on | **H02 merged** (snapshot fields `displayName`/`birthday`/`hasBirthday`/`anniversaries`, i18n overlay with all V0 keys, `src/lib/anniversaries.ts` v1 + fixture, 기념일 tab placeholder, V1 home, `V0-set-me`). Owner approval of S2 on TestFlight or simulator proof |
+| Depends on | **H02 merged** (snapshot fields `displayName`/`birthday`/`hasBirthday`/`anniversaries`, i18n overlay with all V0 keys, `src/lib/anniversaries.ts` v0 + fixture, 기념일 tab placeholder, V0 home, `V0-set-me`). Owner approval of S2 on TestFlight or simulator proof |
 | Unblocks | H04 (widget data needs the full engine), H05 (notification plan needs occurrences) |
-| Branch / PR | `v1/s3-anniversaries` → PR to `main`, non-draft, do not merge |
+| Branch / PR | `v0/s3-anniversaries` → PR to `main`, non-draft, do not merge |
 | Design source | artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X, version `1793598115-fafc`, boards V0-04 (list/detail), V0-05 (add/edit), V0-02 (home celebration variants) |
 
 No design-tool access is needed: `./design/V0-04-anniv.md`, `./design/V0-05-anniv-edit.md`, `./design/V0-02-03-home-states.md`, `./design/foundations.md` and `./design/copy-v0.md` are part of this handoff and were verified against the boards. Never invent a missing value; use the extract's `verify against board <id>` note and report it.
@@ -17,7 +17,7 @@ Make the 기념일 tab real: one date-ordered list of day milestones (50·100·1
 
 ## 2. Prerequisites and current code
 
-- After H02: `src/lib/anniversaries.ts` (`computeMilestoneView`, `Occurrence` type), `src/lib/__fixtures__/anniversaries.json`, `src/app/(tabs)/anniversaries/index.tsx` placeholder, `features/home/V1HomeScreen.tsx` + `CelebrationCard.tsx`, `features/settings/V1SettingsScreen.tsx` + `src/app/settings/me.tsx`, overlay keys (`anniv.*`, `edit.*`, `home.*`, `date.*`) already in `src/i18n/locales/v1/*.json`. Re-read them before you start; if H02 deviated from its handoff, follow the merged code and note it.
+- After H02: `src/lib/anniversaries.ts` (`computeMilestoneView`, `Occurrence` type), `src/lib/__fixtures__/anniversaries.json`, `src/app/(tabs)/anniversaries/index.tsx` placeholder, `features/home/V0HomeScreen.tsx` + `CelebrationCard.tsx`, `features/settings/V0SettingsScreen.tsx` + `src/app/settings/me.tsx`, overlay keys (`anniv.*`, `edit.*`, `home.*`, `date.*`) already in `src/i18n/locales/v0/*.json`. Re-read them before you start; if H02 deviated from its handoff, follow the merged code and note it.
 - Server today: `supabase/functions/_shared/milestones.ts:4` `DAY_MILESTONES = [50, 100, 200, 300, 500, 1000]`; `computeMilestones` returns `{dayCount, today, celebration, upcoming (≤3), history}`; `functions/milestones/index.ts` records history via `record_milestones` with optimistic `VERSION_CONFLICT` retry. `supabase/migrations/20261102000700_milestones.sql:5` (`milestone_key` check `^(d(50|100|200|300|500|1000)|y[1-9][0-9]*)$`) and `:15` (`milestone_days in (50,100,200,300,500,1000)`) reject 150. The time zone in those RPCs is `coalesce(room_theme_document->>'timeZone', couple_space.time_zone)`.
 - Parity tests: `supabase/functions/_shared/__tests__/parity.test.ts`, `dday.test.ts`, `milestones.test.ts`; app `src/lib/__tests__/{dday,milestones}.test.ts`, fixture `src/lib/__fixtures__/dday.json`.
 - Idempotent mutations: `route()` in `_shared/http.ts` is idempotent by default (header `Idempotency-Key` or body `idempotencyKey`); client `api.json(..., { keyInBody: true })`.
@@ -46,11 +46,11 @@ Kind → icon/tile (from V0-04 §2 "Kind icons"; exact SVG paths are in the extr
 
 ## 5. Data model and API contract
 
-Exactly `../data-model.md` §1.4 and §1.5 and `../contracts/v1-api.md` (snapshot `members[].birthday` + `hasBirthday` + `anniversaries`, `POST/PATCH/DELETE /spaces/:spaceId/anniversaries…`, milestone list change).
+Exactly `../data-model.md` §1.4 and §1.5 and `../contracts/v0-api.md` (snapshot `members[].birthday` + `hasBirthday` + `anniversaries`, `POST/PATCH/DELETE /spaces/:spaceId/anniversaries…`, milestone list change).
 
 Migrations:
-- `supabase/migrations/20261103000400_v1_milestones.sql` — widen both check constraints to include 150 (keep 500/1000 so old rows stay valid). They are unnamed in `20261102000700_milestones.sql:5,15`; Postgres names them `milestone_celebration_milestone_key_check` and `milestone_celebration_check` — confirm with `select conname, pg_get_constraintdef(oid) from pg_constraint where conrelid = 'public.milestone_celebration'::regclass` before writing `alter table public.milestone_celebration drop constraint …, add constraint milestone_celebration_milestone_key_check check (milestone_key ~ '^(d(50|100|150|200|300|500|1000)|y[1-9][0-9]*)$'), add constraint milestone_celebration_check check (…same shape with 150…)`, and assert the new definitions in pgTAP. The time-zone unification of the milestone RPCs already happened in H02's `…200` migration — do not redo it.
-- `supabase/migrations/20261103000500_v1_custom_anniversary.sql` — `space_anniversary` table, RLS (member select of non-deleted rows; no direct writes), RPCs `create_custom_anniversary`, `update_custom_anniversary`, `delete_custom_anniversary` (security definer, `require_member`, version check, soft delete, `notify_space(target,'anniversary',…)`), `space_snapshot` redefinition (start from H02's `20261103000300_v1_snapshot.sql`, not the older definitions) adding `anniversaries` and the birthday disclosure rule (partner `{month, day}` only when both have one; `hasBirthday` always; never the partner's year).
+- `supabase/migrations/20261103000400_v0_milestones.sql` — widen both check constraints to include 150 (keep 500/1000 so old rows stay valid). They are unnamed in `20261102000700_milestones.sql:5,15`; Postgres names them `milestone_celebration_milestone_key_check` and `milestone_celebration_check` — confirm with `select conname, pg_get_constraintdef(oid) from pg_constraint where conrelid = 'public.milestone_celebration'::regclass` before writing `alter table public.milestone_celebration drop constraint …, add constraint milestone_celebration_milestone_key_check check (milestone_key ~ '^(d(50|100|150|200|300|500|1000)|y[1-9][0-9]*)$'), add constraint milestone_celebration_check check (…same shape with 150…)`, and assert the new definitions in pgTAP. The time-zone unification of the milestone RPCs already happened in H02's `…200` migration — do not redo it.
+- `supabase/migrations/20261103000500_v0_custom_anniversary.sql` — `space_anniversary` table, RLS (member select of non-deleted rows; no direct writes), RPCs `create_custom_anniversary`, `update_custom_anniversary`, `delete_custom_anniversary` (security definer, `require_member`, version check, soft delete, `notify_space(target,'anniversary',…)`), `space_snapshot` redefinition (start from H02's `20261103000300_v0_snapshot.sql`, not the older definitions) adding `anniversaries` and the birthday disclosure rule (partner `{month, day}` only when both have one; `hasBirthday` always; never the partner's year).
 
 Server code:
 - `_shared/milestones.ts`: `DAY_MILESTONES = [50, 100, 150, 200, 300] as const`. Keep `computeMilestones` signature; keep the 7-day celebration window and the same-day anniversary priority.
@@ -64,7 +64,7 @@ App:
 
 ## 6. Implementation steps
 
-1. Branch `v1/s3-anniversaries`; write failing tests (§7).
+1. Branch `v0/s3-anniversaries`; write failing tests (§7).
 2. **Engine (T304)** — extend `src/lib/anniversaries.ts`. This shape is canonical (plan §4 points here; H04 and H05 reuse its input type as `AnniversaryInput`):
    ```ts
    export type Occurrence = { key: string; kind: 'days' | 'years' | 'birthday' | 'season' | 'custom'; date: string; n?: number;
@@ -82,8 +82,8 @@ App:
 4. **List (T305)** — `features/anniversaries/AnniversaryList.tsx` (pure props: `view`, `filter`, `pastOpen`, callbacks) + route `src/app/(tabs)/anniversaries/index.tsx` (uses `useSpace()` snapshot, `useNow()`, offline state: + button disabled with dashed style, no queue).
 5. **Detail (T306)** — `features/anniversaries/AnniversaryDetail.tsx` + **root** route `src/app/anniversary/[key].tsx`, registered as `<Stack.Screen name="anniversary/[key]" />` in the active `Stack.Protected` (a sibling inside `(tabs)` would have no trigger, no back stack, and would keep the tab bar the board omits). Param = `encodeURIComponent(occurrence key)` (keys contain `:`); resolve via the engine; for custom also look up by `customId`. Unknown key (e.g. deleted while open) → back to list.
 6. **Edit (T307)** — `features/anniversaries/AnniversaryEdit.tsx` + route `src/app/anniversary-edit.tsx` registered as `presentation: 'fullScreenModal'` (or `modal` — the extract says full-screen sheet; verify against board V0-edit-new) inside the active `Stack.Protected` in `_layout.tsx`. Form state: title, date, repeat, memo, notify. Dirty check excludes nothing (treat notify change as dirty; report as assumed). Save: create or update with `expectedVersion`; conflict → `Alert.alert(t('edit.conflict.title',{name}), t('edit.conflict.body'))`, then replace form values with the refreshed snapshot row and keep the screen open; gone → alert `edit.gone.*` then close to list; network error → toast `edit.save.err`, keep input, a retry reuses the same idempotency key (generate once per form session). Success → close, toast `edit.saved` on the list. Delete (edit mode footer and custom detail) → alert `edit.delete.title` / `edit.delete.body` with destructive `common.delete` → toast `edit.deleted`.
-7. **Per-anniversary notify value (A-19)** — store locally now so H05 only reads it: `features/notifications/preferences.ts` with `getAnniversaryNotify(userId, customId): 'default' | 'off'` and `setAnniversaryNotify(...)`, persisted as a JSON **object** `{ "offIds": [] }` in the file `v1-notify-<userId>.json` in the app document directory (`expo-file-system`; not secure-store, whose values should stay small). H05 adds the other `NotifyPrefs` fields to the same object — never store a bare array.
-8. **Home (T308)** — feed `V1HomeScreen` from `computeAnniversaries`: the next card shows the first upcoming occurrence; the celebration card replaces it when a candidate exists and is not dismissed (days/years: server `celebration` + `seenByMe`; others: local key `v1.celebration.seen.<spaceId>.<userId>`). Upcoming list = next 3 after the card item. Rows/card tap → detail route.
+7. **Per-anniversary notify value (A-19)** — store locally now so H05 only reads it: `features/notifications/preferences.ts` with `getAnniversaryNotify(userId, customId): 'default' | 'off'` and `setAnniversaryNotify(...)`, persisted as a JSON **object** `{ "offIds": [] }` in the file `v0-notify-<userId>.json` in the app document directory (`expo-file-system`; not secure-store, whose values should stay small). H05 adds the other `NotifyPrefs` fields to the same object — never store a bare array.
+8. **Home (T308)** — feed `V0HomeScreen` from `computeAnniversaries`: the next card shows the first upcoming occurrence; the celebration card replaces it when a candidate exists and is not dismissed (days/years: server `celebration` + `seenByMe`; others: local key `v0.celebration.seen.<spaceId>.<userId>`). Upcoming list = next 3 after the card item. Rows/card tap → detail route.
 9. **Settings (T309)** — `V0-set-me` shows `set.me.birthday.partnerWait` when the partner `hasBirthday === false`; list's "내 생일 넣기" navigates there.
 10. Run §8; attach simulator screenshots for every screen id in §3 (light/dark ko; en+ja for the list and edit-filled).
 
@@ -93,13 +93,13 @@ App:
 |---|---|---|
 | V0-DR-01…06, V0-F04-AC-01, V0-F06-AC-01, V0-F08-AC-04, V0-EC-01/-05/-08, V0-NF-05 | `src/lib/__tests__/anniversaries.test.ts` (fixture-driven) + Deno `_shared/__tests__/anniversaries.test.ts` (same fixture) | dates, windows, ordering, priority, no pre-start items, 150 present, 500/1000 absent, app = server |
 | V0-F04-AC-01, V0-EC-06 | Deno `_shared/__tests__/milestones.test.ts`, pgTAP `supabase/tests/milestone.test.sql` | d150 recorded; old d500 row still valid; tz from `couple_space`; start-date change resets future milestones only |
-| V0-F05-AC-01, -02, V0-EC-12 | pgTAP `supabase/tests/v1_custom_anniversary.test.sql` (snapshot part) | partner birthday hidden until both set; never a year; `hasBirthday` |
+| V0-F05-AC-01, -02, V0-EC-12 | pgTAP `supabase/tests/v0_custom_anniversary.test.sql` (snapshot part) | partner birthday hidden until both set; never a year; `hasBirthday` |
 | V0-F07-AC-03, -08, -09, -10, -12, V0-EC-04 | Deno `functions/spaces/__tests__/anniversaries.test.ts`, pgTAP same file, `src/lib/__tests__/api.test.ts` | create/replay idempotent (same key on retry), update conflict, gone on deleted, validation limits, non-member NOT_FOUND, RLS blocks direct writes; profile updates stay last-write-wins |
 | V0-F08-AC-01…03, V0-F05-AC-01, -04, V0-F06-AC-01 | `features/anniversaries/__tests__/list.test.tsx` | sections, filter, badge, D-n colors (≤14 primary), today pill, past toggle text with count, bwait/mine rows, a11y label |
 | V0-F04-AC-02, V0-F05-AC-03, V0-F07-AC-05 | `features/anniversaries/__tests__/detail.test.tsx` | read-only auto/birthday, rule text per kind, by/byMe line, delete alert |
 | V0-F07-AC-01…11 | `features/anniversaries/__tests__/edit.test.tsx` | save lock, counters, once/past chip, discard alert on dirty, conflict → latest values, gone → close, save error keeps input + same key, offline disabled |
-| V0-F09-AC-02, -04, -05 | `features/home/__tests__/V1HomeScreen.test.tsx` | season/birthday/custom card on the day only, priority, local dismissal |
-| V0-F12-AC-02 | `features/settings/__tests__/v1Settings.test.tsx` | partner-wait hint |
+| V0-F09-AC-02, -04, -05 | `features/home/__tests__/V0HomeScreen.test.tsx` | season/birthday/custom card on the day only, priority, local dismissal |
+| V0-F12-AC-02 | `features/settings/__tests__/v0Settings.test.tsx` | partner-wait hint |
 
 ## 8. Verification commands
 
@@ -132,6 +132,6 @@ Notification scheduling and the settings notification screens (H05); widgets (H0
 
 ## 12. PR rules and hand-back protocol
 
-- Branch `v1/s3-anniversaries`, base `main`, **non-draft**, title `S3: anniversaries — 150 days, birthdays, season days, custom CRUD`. **Do not merge.**
+- Branch `v0/s3-anniversaries`, base `main`, **non-draft**, title `S3: anniversaries — 150 days, birthdays, season days, custom CRUD`. **Do not merge.**
 - PR body: summary; scenario → test table with results; commands; screenshots per screen id; migrations; design substitutions and §10 defaults used; anything unverified.
 - Follow the status protocol in your launch brief; `done` with the full PR URL; `needs-decision` for any product/design question.

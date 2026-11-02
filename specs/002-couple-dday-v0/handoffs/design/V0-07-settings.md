@@ -30,10 +30,10 @@ The board has no interaction script (`DCLogic.renderVals()` returns `{}`). Navig
 - `알림 문구: 자동 기념일은 이름 없이 "오늘은 빼빼로데이예요", 직접 추가는 제목을 보일지 오너 결정(v0-scope.md Q4).`
 
 **계정** (this card is drawn infoBg `#E1EDF5` with info border `#2D5E86`; the other two cards are bg/divider)
-- `로그인은 Apple 하나(이메일·앱 비밀번호 제안은 V1에 없음). 계정 삭제 본인 확인은 "Apple로 다시 로그인해 확인"이고 Apple 토큰 해지를 꼭 불러요.`
+- `로그인은 Apple 하나(이메일·앱 비밀번호 제안은 V0에 없음). 계정 삭제 본인 확인은 "Apple로 다시 로그인해 확인"이고 Apple 토큰 해지를 꼭 불러요.`
 - `연결 끊기 = S14 공간 종료와 같은 결과: 두 사람 모두 공간을 잃고 날짜·기념일·생일 공유가 지워져요. 상대는 다음에 열 때 V0-state-ended.`
 - `로그아웃·연결 끊기·계정 삭제 때 이 기기의 예약 알림과 위젯 공유 데이터(App Group)를 지워요.`
-- `신고·차단(S15)은 V1 설정에서 빼요(두 사람만 쓰는 공간이라). 필요하면 문의하기로 받아요 — 오너 확인.`
+- `신고·차단(S15)은 V0 설정에서 빼요(두 사람만 쓰는 공간이라). 필요하면 문의하기로 받아요 — 오너 확인.`
 
 The rules above are summarised here as the topics the task listed:
 - **Start date change:** confirm first, then it applies to both people. The partner's home shows a one-time banner. Copy key `home.partnerEdited` = `{name}님이 사귄 날을 {date}로 바꿨어요`. The rules text quotes the shorter `"하루님이 사귄 날을 바꿨어요"`.
@@ -439,16 +439,16 @@ Layout and text are identical to light. Only colors change.
 | S13 time-zone sheet | "화면 S13의 시간대 고르기 시트를 재사용해요." Reached from `기준 시간대`. It applies to both people; V0-00-flow says this happens after confirmation. | **No.** The sheet is not drawn. The existing code sheet (`set.room.tz.pick`, IANA list with search) is the S13 implementation, but its value display differs (board `서울 (UTC+9)` vs code IANA id). Whether a confirm step exists for time-zone changes: verify against board V0-set-main. |
 | S14 end space | "연결 끊기 = S14 공간 종료와 같은 결과". Partner gets `V0-state-ended` on next open. V0-00-flow: the ended side can start again via `V0-start-choose`. | Only the confirm screen. The S14 progress, done and error screens are **not** drawn; the code has `end.progress`, `end.done.*`, `end.err.*`. The initiator's post-disconnect destination is not stated. |
 | Account deletion progress / fail / done (S13 account flow) | Not mentioned on V0-07 apart from the confirm screen. | No. The code has `acct.delete.progress`, `acct.delete.fail.*`, `acct.delete.done`; the board neither confirms nor removes them. |
-| S15 report/block | Removed from V1 settings. Use 문의하기 instead (owner to confirm). | n/a |
+| S15 report/block | Removed from V0 settings. Use 문의하기 instead (owner to confirm). | n/a |
 | S16 common states | Not referenced on V0-07. V0-03-states says the remaining common states (login expired, update required, no permission) stay "S16 그대로". | No |
 | V0-state-ended | The partner's screen after a disconnect or delete. | Lives on the V0-03 board |
 
 ---
 
-## 5. Existing `SettingsScreen.tsx` vs board: remove, hide or change for V1
+## 5. Existing `SettingsScreen.tsx` vs board: remove, hide or change for V0
 | Existing (code, key) | Board evidence | Action |
 |---|---|---|
-| Section `set.sec.room` "방 · 두 사람에게 적용돼요": row `set.room.mode`, the 3 room-mode buttons, `set.room.mode.help` | Board note: "방 낮·밤 … 빼고". Flow: "방 낮·밤 설정" out of V1. | **Remove** |
+| Section `set.sec.room` "방 · 두 사람에게 적용돼요": row `set.room.mode`, the 3 room-mode buttons, `set.room.mode.help` | Board note: "방 낮·밤 … 빼고". Flow: "방 낮·밤 설정" out of V0. | **Remove** |
 | `set.room.tz` row (inside the room section) | It moves to `우리` as `기준 시간대` with value `서울 (UTC+9)` and the `set.us.tz.note` footer | **Move and relabel** |
 | Section `set.sec.couple` "우리 공간": `set.together` 함께한 날짜 | Becomes `우리` › `사귄 날`, which opens V0-set-start. A partner row is added. | **Change** |
 | `set.cover` 홈 배경 사진 | "배경 사진 … 빼고". Flow: S06 cover out. | **Remove** |

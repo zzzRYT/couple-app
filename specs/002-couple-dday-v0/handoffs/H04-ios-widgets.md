@@ -6,7 +6,7 @@
 | Requirements | V0-F11 (V0-F11-AC-01 … -09), V0-NF-04, parts of V0-F12-AC-07/-08/-10 and V0-F13-AC-05 (clear widget data) |
 | Depends on | **H01 merged** (EAS build/submit path — the PoC must run on a store-signed TestFlight build) and **H03 merged** (`computeAnniversaries`, custom anniversaries, birthdays in the snapshot). Owner approval of S3 |
 | Unblocks | H05 (shares the "data changed" hook points), H06 |
-| Branch / PR | `v1/s4-widgets` → PR to `main`, non-draft, do not merge. **Two checkpoints**: push the PoC (T401) first and report `needs-decision` with the PoC result before building all layouts |
+| Branch / PR | `v0/s4-widgets` → PR to `main`, non-draft, do not merge. **Two checkpoints**: push the PoC (T401) first and report `needs-decision` with the PoC result before building all layouts |
 | Design source | artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X, version `1793598115-fafc`, board V0-06 (widgets) + `copy-v0-widgets` |
 
 `./design/V0-06-widgets.md` (verified: sizes, paddings, per-appearance colors, fonts, states, icon SVG paths, verbatim notes), `./design/foundations.md` and `./design/copy-v0.md` are part of this handoff. Do not invent missing values; the extract's §6 lists what the board leaves open.
@@ -18,7 +18,7 @@ The owner's core ask is "see our D+Day on the home screen and lock screen". Buil
 ## 2. Prerequisites and current code
 
 - After H01: `eas.json` `testflight` profile (store, channel `preview`), `release-ios.yml`, `runtimeVersion: fingerprint` (adding an extension changes the fingerprint → this slice ships as a **new build**, never OTA).
-- After H02/H03: `src/lib/anniversaries.ts` (`computeAnniversaries`, `Occurrence`), snapshot fields (`me`, `members[]`, `anniversaries`), `features/space/v1Cache.ts`, logout/disconnect/ended/delete paths in `features/settings/logout.ts`, `features/lifecycle/*`, `features/account/deleteAccount.ts` (`clearDeviceAfterDeletion`).
+- After H02/H03: `src/lib/anniversaries.ts` (`computeAnniversaries`, `Occurrence`), snapshot fields (`me`, `members[]`, `anniversaries`), `features/space/v0Cache.ts`, logout/disconnect/ended/delete paths in `features/settings/logout.ts`, `features/lifecycle/*`, `features/account/deleteAccount.ts` (`clearDeviceAfterDeletion`).
 - `apps/mobile/app.config.ts`: scheme `['aroom-dev', 'aroom']` for non-production variants; plugins list; `src/config/identity.ts` holds ids (add `appGroupId` and `widgetBundleIdSuffix` here as parameters, values for the `.dev` app: `group.com.jinjinstar.aroom.dev`, `com.jinjinstar.aroom.dev.widgets`; production values stay placeholders, A-02). `src/config/__tests__/identity.test.ts:17` fails on any other `.js`/`.ts` file under `apps/mobile` that spells `com.jinjinstar.aroom`, so every id in plugin config, target config or tests must be derived from `identity.ts`.
 - Expo SDK 58 `expo-widgets` (docs: https://docs.expo.dev/versions/v58.0.0/sdk/widgets/): config plugin creates the extension + App Group; widgets are declared with families; the widget component runs in an isolated runtime with Expo UI SwiftUI components only (no hooks, no app state, no async); the app calls `updateSnapshot` / `updateTimeline` / `reload`. Fallback: `@bacons/apple-targets` (https://github.com/EvanBacon/expo-apple-targets) + Swift `TimelineProvider` reading the App Group JSON. Verify the exact package APIs and versions you install; record them in the PR.
 
@@ -78,12 +78,12 @@ Deep links (the board writes `mopiru://…`, drawn before the name decision D-08
 
 ## 6. Implementation steps
 
-1. Branch `v1/s4-widgets`.
+1. Branch `v0/s4-widgets`.
 2. **T401 PoC (stop after it)**:
    - `npx expo install expo-widgets` (SDK 58). Add the plugin in `app.config.ts` with the extension bundle id `${iosBundleId}.widgets` and App Group from `identity.ts`; families as in §4; one trivial widget that renders a number read from the shared snapshot.
    - App side: a dev-only button is **not** allowed in shipped UI; instead write `{ schemaVersion: 1, state: 'normal', … minimal }` from `SpaceContext` after the first snapshot so the PoC shows the real D+N.
    - Run `npx expo prebuild -p ios --clean` locally to inspect the generated extension target, entitlements (`com.apple.security.application-groups` on both targets) and Info.plist; do not commit `ios/` (CNG; H01 adds `apps/mobile/ios/` to `.gitignore` — add it yourself if missing).
-   - Push the branch; ask firstmate/owner (`needs-decision`) to run Release iOS on this branch (the workflow builds the default branch unless dispatched on the PR branch — dispatch on `v1/s4-widgets`) and to add the small + circular widgets on a phone. Owner steps §9.1–9.3 must be done first.
+   - Push the branch; ask firstmate/owner (`needs-decision`) to run Release iOS on this branch (the workflow builds the default branch unless dispatched on the PR branch — dispatch on `v0/s4-widgets`) and to add the small + circular widgets on a phone. Owner steps §9.1–9.3 must be done first.
    - Decision rule: works → continue with expo-widgets. Signing/App Group/SDK failure that you cannot fix in two attempts → switch to `@bacons/apple-targets` + Swift (`targets/widget/` with `expo-target.config.js`, Swift `TimelineProvider` decoding the same JSON) and report why.
 3. **T402** `snapshot.ts` + tests (§7) — pure, independent of the widget library.
 4. **T403** `writer.ts` + hook points + tests with the native module mocked.
@@ -103,7 +103,7 @@ Deep links (the board writes `mopiru://…`, drawn before the name decision D-08
 
 | Decision | Default |
 |---|---|
-| Which small variant is the default (기본 / 다음 / mascot) | 기본; expose the others only if expo-widgets supports multiple small widgets cheaply — otherwise V1 ships 기본 only |
+| Which small variant is the default (기본 / 다음 / mascot) | 기본; expose the others only if expo-widgets supports multiple small widgets cheaply — otherwise V0 ships 기본 only |
 | Gauge meaning (drawn at ~70%) | progress toward the next anniversary: `1 − daysLeft / (days between previous and next occurrence)`; mark "verify against board" |
 | Does "다가오는 기념일" reuse the D+Day medium/large layout | separate kind with the list-only layout (no hero) if drawn; else reuse and report |
 | Mascot PNG size/pose | `mascot_wave_main` from the app assets at @2x/@3x; hidden in tinted/clear/lock |
@@ -114,7 +114,7 @@ Deep links (the board writes `mopiru://…`, drawn before the name decision D-08
 
 1. Apple Developer → Identifiers → App Groups → + → `group.com.jinjinstar.aroom.dev`.
 2. Identifiers → `com.jinjinstar.aroom.dev` → enable **App Groups** → configure → select the group. Identifiers → + → App IDs → `com.jinjinstar.aroom.dev.widgets` (description "Aroom dev widgets") → enable **App Groups** with the same group. (EAS can create the extension identifier during credentials setup; App Groups assignment must still be checked here.)
-3. `cd apps/mobile && npx eas-cli@latest credentials -p ios` → profile `testflight` → let EAS regenerate the provisioning profiles for **both** targets (app and `.widgets`) so they include the App Group. Then GitHub → Actions → Release iOS → Run workflow **on branch `v1/s4-widgets`**.
+3. `cd apps/mobile && npx eas-cli@latest credentials -p ios` → profile `testflight` → let EAS regenerate the provisioning profiles for **both** targets (app and `.widgets`) so they include the App Group. Then GitHub → Actions → Release iOS → Run workflow **on branch `v0/s4-widgets`**.
 4. On both phones: install the TestFlight build → long-press home screen → + → search the app → add D+Day small and medium; lock screen → customise → add circular and rectangular. Report what you see (photo) for the PoC checkpoint, then later run the full checklist in `../quickstart.md` §위젯 (iOS 18 tinted: home screen edit → Customize → Tinted; iOS 26 clear: Clear).
 5. Approve the slice against board V0-06 frames.
 
@@ -124,7 +124,7 @@ Android widgets, configurable widgets (AppIntent), Live Activities, StandBy-spec
 
 ## 11. PR rules and hand-back protocol
 
-- Branch `v1/s4-widgets`, base `main`, **non-draft**, title `S4: iOS widgets (home + lock screen) via App Group`. **Do not merge.**
+- Branch `v0/s4-widgets`, base `main`, **non-draft**, title `S4: iOS widgets (home + lock screen) via App Group`. **Do not merge.**
 - Checkpoint 1: after T401 push, append `needs-decision` (PoC ready for the owner's device run; options: continue with expo-widgets / switch to Swift) per your launch brief, wait for the answer, then continue.
 - PR body: PoC result; library and versions; scenario → test table; device photos per family/appearance/state; §8 defaults used; list of design values that differ from the board and why.
 - Report `done` with the full PR URL.

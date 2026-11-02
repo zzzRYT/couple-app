@@ -1,4 +1,4 @@
-# Specification Analysis Report (speckit-analyze): 002-couple-dday-v1
+# Specification Analysis Report (speckit-analyze): 002-couple-dday-v0
 
 **Date**: 2026-11-02 · **Artifacts**: spec.md, plan.md, data-model.md, contracts/, tasks.md, handoffs/ · **Constitution**: 1.0.0
 
@@ -36,8 +36,8 @@ A-02 production id, A-03 tester method, A-04 OTA provider, A-05 closed-phone syn
 An independent read-only review checked every cited path, line, RPC and copy key against the code and found 43 issues (9 high). All were applied in this PR; the high ones:
 
 - OTA preview updates now run with `APP_VARIANT=preview` and `--environment preview` (otherwise the fingerprint runtime and Supabase env differ from the TestFlight build).
-- Offline cold start: `resolveEntry` must use the per-user V1 cache on network errors (today it falls into the old error screen).
-- The plain invite code is kept on the device (`v1.invite.<spaceId>`), because the server stores only its hash.
+- Offline cold start: `resolveEntry` must use the per-user V0 cache on network errors (today it falls into the old error screen).
+- The plain invite code is kept on the device (`v0.invite.<spaceId>`), because the server stores only its hash.
 - S2 home ignores server `d500`/`d1000` celebrations until S3 changes the server list (owner decision Q5).
 - Creator saves the profile before creating the space (no mid-flow gate flip); `(onboarding)` guard covers `needsProfile`.
 - Milestone RPCs move to `couple_space.time_zone` already in S2 (with the new time-zone RPC).
@@ -47,3 +47,7 @@ An independent read-only review checked every cited path, line, RPC and copy key
 ## Update: owner name decision (2026-11-02)
 
 The owner decided the names: app 아룸 / Aroom / アルーム, mascot 아루미 / Aroomi / アルーミ (ja from the repo's existing i18n). A-01 moved from assumed defaults to decision D-08 in spec.md; plan §7, H02 §6 (overlay generator values, forbidden-literal list, particle fix), H01, H04, H06, README and `design/copy-v0.md`'s header follow it. Korean particle check: only `widget.none.title` needs a change (아룸 has a final consonant → "아룸을 시작해요"); 아루미 keeps "아루미가". Production bundle id, App Store visibility and the other release decisions stay open.
+
+## Update: version naming (2026-11-02)
+
+The owner named this release V0 (V1 = the later AI room-decorating version). The feature folder is now `specs/002-couple-dday-v0/` (also `handoffs/H02-v0-shell-home.md`, `contracts/v0-api.md`); every title, prose mention, identifier suggestion (`V0_FEATURES`, `locales/v0/`, `v0.*` device keys, `v0:` notification ids, `20261103…_v0_*` migrations) and handoff branch name (`v0/s1-…`) now says V0. Board page names drawn before the decision (e.g. `Later · V1 이후 (기록)`) stay verbatim. Decision D-09 in spec.md.

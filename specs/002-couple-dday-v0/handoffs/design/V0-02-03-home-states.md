@@ -15,7 +15,7 @@ Copy keys come from `copy-v0.md`.
 - Sections: "iOS · 밝은 앱 · 한국어" (6 frames), "iOS · 어두운 앱 · 한국어" (3), "영어 · 일본어" (4), "규칙" (3 cards).
 - Rules card "홈에 있는 것":
   - Order top→bottom: 앱 이름 · 모피(인사) · 두 사람 이름 · 함께한 지 · D+N(가장 큼) · 사귄 날 · 다음 기념일 카드 · 다가오는 기념일 3개 · 전체 보기.
-  - Cover photo (S06), "우리 방" card/button and the room tab are hidden in V1. Tabs = 홈 · 기념일 · 설정 (3).
+  - Cover photo (S06), "우리 방" card/button and the room tab are hidden in V0. Tabs = 홈 · 기념일 · 설정 (3).
   - Editing the start date is NOT a home button; it moves to 설정 › 사귄 날 (applies to both people, so it goes through a confirmation).
 - Rules card "축하 카드 (S28 단순화)":
   - On an anniversary day, opening the app shows the celebration card IN PLACE OF the next-anniversary card. No "기념 방 꾸미기 제안" button.
@@ -37,7 +37,7 @@ Copy keys come from `copy-v0.md`.
   - 다시 시도 repeats the same request from the start. Widgets keep showing the last successful data.
 - Rule "오프라인":
   - If last-successful data exists on device, show home/list/detail from it with an "오프라인 · 마지막 확인 시각" strip on top.
-  - Offline: add/edit/delete/change-start-date buttons are disabled (dashed outline) and tapping does NOT queue anything (V1 kept simple).
+  - Offline: add/edit/delete/change-start-date buttons are disabled (dashed outline) and tapping does NOT queue anything (V0 kept simple).
   - When the date rolls over, D+N and D-n are recomputed on device (space time zone). Partner changes made meanwhile apply after reconnecting.
   - No stored data → V0-state-offline-empty.
 - Rule "상대가 없을 때" (info-blue card):
@@ -266,7 +266,7 @@ Top→bottom (body padding 6/20, gap 14):
 | V0-03 | state-loading, state-error, state-offline, state-offline-empty, state-ended, state-ended-deleted | state-error, state-offline | state-error (light) | state-offline (light) |
 
 ## 4. References to older screens (what the V0 boards say)
-- **S06 메인 D-day**: V0-home is "S06 메인 D-day의 V0 변형"; S06 cover photo, "우리 방" card/button and room tab are hidden in V1; date-counting rules are "기존 S06 · 스펙 규칙 그대로". Existing `HomeScreen.tsx` is S06 (cover picker, room card, open-room and edit-date buttons, edit-date sheet): all of those leave the V0 home.
+- **S06 메인 D-day**: V0-home is "S06 메인 D-day의 V0 변형"; S06 cover photo, "우리 방" card/button and room tab are hidden in V0; date-counting rules are "기존 S06 · 스펙 규칙 그대로". Existing `HomeScreen.tsx` is S06 (cover picker, room card, open-room and edit-date buttons, edit-date sheet): all of those leave the V0 home.
 - **S16 공통 오류·빈·로딩·오프라인**: V0-03 adapts S16 to the V0 home; 로그인 만료 · 앱 업데이트 필요 · 권한 없음 stay exactly as S16.
 - **S28 마일스톤 축하**: celebration card is "S28 단순화"; the 7-day late rule is "S28 규칙"; S28's "기념 방 꾸미기 제안" button is dropped (code: remove `milestone.action.suggest`, `PresetEntry`, `MilestoneBubble` preset path from home). Copy keys renamed: `milestone.body.today` → `home.today.body.season`, `milestone.body.late` → `home.today.late`, `a11y.milestone.close` → `home.today.close`.
 - **S29 공통 모션**: only moving source; V0 celebration card hop/twinkle (`cpl-hop`, `cpl-twinkle` per V0-01) are drawn in the reduced-motion still pose.

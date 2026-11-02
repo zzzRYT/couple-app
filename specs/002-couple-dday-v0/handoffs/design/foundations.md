@@ -1,4 +1,4 @@
-# Design foundations — couple D+Day V1 (V0 design)
+# Design foundations — couple D+Day V0 (V0 design)
 Verified 2026-11-02: 104 claims checked, 4 corrected.
 
 Sources: slim boards `V0-00-flow`, `S19-type-tokens`, `S20-accessibility`, `S22-components` (artifact M2WFQCFnVzoWbHNhJPCz5X v1793598115-fafc).
@@ -10,8 +10,8 @@ Legend: OK = same as board · MISMATCH = differs · n/a = not in code.
 
 ## 1. V0-00 flow board (verbatim, ko)
 
-Header: `AROOM · V0 · D+DAY · 2026-11-02` — "V0 흐름 · 개요 (커플 D+Day V1)"
-> 방 꾸미기는 다음 버전으로 미루고, 두 사람이 연결해서 D+Day와 기념일을 보고 위젯으로 확인하는 앱을 V1으로 먼저 내요. 이 페이지는 전체 흐름, 범위, 날짜 규칙, 누가 무엇을 바꾸는지를 모았어요.
+Header: `AROOM · V0 · D+DAY · 2026-11-02` — "V0 흐름 · 개요 (커플 D+Day V0)"
+> 방 꾸미기는 다음 버전으로 미루고, 두 사람이 연결해서 D+Day와 기념일을 보고 위젯으로 확인하는 앱을 V0으로 먼저 내요. 이 페이지는 전체 흐름, 범위, 날짜 규칙, 누가 무엇을 바꾸는지를 모았어요.
 
 Legend: 같은 ID가 각 페이지의 프레임 이름이에요. 기존 보드에 이미 있는 상태(로그인 시트, 초대 오류 등)는 다시 그리지 않고 점선 칸으로 가리켜요. 실선 칸 = 이번에 그린 V0 프레임 · 점선 칸 = 기존 보드 그대로 재사용 · 파란 칸 = 시스템 · 앱 밖 · 붉은 칸 = 끝나는 동작
 
@@ -24,14 +24,14 @@ Legend: 같은 ID가 각 페이지의 프레임 이름이에요. 기존 보드�
 6. **설정**: V0-set-main 설정 → V0-set-me 이름 · 생일 → V0-set-start-confirm 사귄 날 바꾸기 (확인) → V0-set-notify 알림 · 거부됨 → V0-set-lang / mode 언어 · 화면 모드 → V0-set-disconnect / delete 연결 끊기 · 계정 삭제
 7. **끝날 때**: 상대가 연결 끊기 · 계정 삭제 (상대 기기에서) → 다음 앱 열기 또는 열린 동안 Realtime → V0-state-ended 공간이 끝났어요 → V0-start-choose 새로 시작하기
 
-### 1.2 범위 — V1 (= V0 디자인) 범위
+### 1.2 범위 — V0 (= V0 디자인) 범위
 - F01 Apple 로그인 · F02 커플 연결(공간 만들기 + 사귄 날, 초대 코드, 코드 입력) · F03 홈 D+Day
 - F04 자동 기념일(50·100·150·200·300일, 매년 주년) · F05 생일(각자 입력, 둘 다 넣으면 공개) · F06 시즌(빼빼로데이 11/11, 크리스마스 12/25)
 - F07 직접 추가 기념일(두 사람 공유, 추가·편집·삭제) · F08 기념일 목록·상세 · F09 당일 축하 카드
 - F10 로컬 알림(시간·미리 알림·종류) · F11 iOS 홈 화면·잠금 화면 위젯 · F12 최소 설정 · F13 시스템 상태 · F14 출시 자동화·OTA(화면 없음)
 - 자세한 ID 표와 열린 질문: the V0 scope notes (summarised in `../../spec.md`)
 
-**V1에서 빼는 것** (보드는 지우지 않고 Later 페이지로)
+**V0에서 빼는 것** (보드는 지우지 않고 Later 페이지로)
 - 방 · 방 탭 · 프롬프트 꾸미기 · 미리 보기 · 되돌리기 · 해외 AI 처리 동의 · 기념 방 꾸미기 제안 · 기록
 - 홈 배경 사진 커버(S06) · 방 낮·밤 설정 · 신고·차단(S15)
 - 이메일 로그인 · 앱 비밀번호 제안 · 카카오 로그인 · Android 앱과 위젯 · 서버 푸시 · 음력 생일
@@ -41,7 +41,7 @@ Legend: 같은 ID가 각 페이지의 프레임 이름이에요. 기존 보드�
 ### 1.3 상호작용 규칙 (date / calculation rules)
 **날짜 세기 (기존 S06 · 스펙 규칙 그대로)**
 - 사귄 날 당일 = 1일째 = D+1. 달력 날짜 차 + 1, 공간의 IANA 시간대(기본 Asia/Seoul) 자정 기준.
-- N일 기념일 = 사귄 날 + (N − 1)일. 기존 서버 목록에는 150일이 없어서 V1 백엔드에서 더해야 해요(500·1000일은 오너 목록에 없어 V1에서 빠짐 — 열린 질문).
+- N일 기념일 = 사귄 날 + (N − 1)일. 기존 서버 목록에는 150일이 없어서 V0 백엔드에서 더해야 해요(500·1000일은 오너 목록에 없어 V0에서 빠짐 — 열린 질문).
 - 주년 = 같은 달력 날짜(365일 단위 아님) → 1주년은 366일째. 2월 29일 시작은 평년 2월 28일. 같은 날이면 주년이 우선.
 - 생일은 양력 월·일(연도 선택), 2월 29일 생일은 평년 2월 28일.
 
@@ -67,7 +67,7 @@ Legend: 같은 ID가 각 페이지의 프레임 이름이에요. 기존 보드�
 - 불러오기는 전부 아니면 없음(2026-11-01 규칙). 오프라인은 마지막 데이터로 읽기만.
 
 ### 1.4 출시 메모 — `OWNER DECISION PENDING` (권장 · 오너 결정 대기)
-- V1은 TestFlight로 오너와 여자친구에게 먼저: GitHub workflow_dispatch → EAS Build → EAS Submit → TestFlight.
+- V0은 TestFlight로 오너와 여자친구에게 먼저: GitHub workflow_dispatch → EAS Build → EAS Submit → TestFlight.
 - JS·문구·자산은 EAS Update(OTA) preview 채널에서 확인 후 production으로. 위젯 extension·권한·네이티브 변경은 새 빌드.
 - 첫 빌드는 .dev 테스트 bundle id(com.jinjinstar.aroom.dev, 위젯 extension은 별도 id)로. 이름 확정 전 production 등록은 하지 않아요.
 
@@ -77,11 +77,11 @@ Legend: 같은 ID가 각 페이지의 프레임 이름이에요. 기존 보드�
 - 대비는 S19 토큰 그대로(밝게·어둡게). 색만으로 구분하지 않아요.
 
 ### 1.6 보드 지도
-V0 · 시작: V0-01 시작 + 문구 · V0 · 홈·D+Day: V0-02 홈, V0-03 시스템 상태 + 문구 · V0 · 기념일: V0-04 목록·상세, V0-05 추가·편집 + 문구 · V0 · 위젯: V0-06 위젯 + 문구 · V0 · 설정: V0-07 설정 + 문구 · 공통 문구(탭·기념일 이름·날짜 형식·버튼): 이 페이지 오른쪽 "문구 · V0 공통" · Later 페이지: 방·꾸미기, V1 이후(기록). 기존 S·C 보드는 그대로 남아 있어요.
+V0 · 시작: V0-01 시작 + 문구 · V0 · 홈·D+Day: V0-02 홈, V0-03 시스템 상태 + 문구 · V0 · 기념일: V0-04 목록·상세, V0-05 추가·편집 + 문구 · V0 · 위젯: V0-06 위젯 + 문구 · V0 · 설정: V0-07 설정 + 문구 · 공통 문구(탭·기념일 이름·날짜 형식·버튼): 이 페이지 오른쪽 "문구 · V0 공통" · Later 페이지: 방·꾸미기, V0 이후(기록). 기존 S·C 보드는 그대로 남아 있어요.
 
 ### 1.7 Open questions / pending decisions on the board
-- 500·1000일 기념일: 오너 목록에 없어 V1에서 빠짐 — **열린 질문**.
-- 150일: 기존 서버 목록에 없음 → V1 백엔드에서 추가 필요 (decision made; work item).
+- 500·1000일 기념일: 오너 목록에 없어 V0에서 빠짐 — **열린 질문**.
+- 150일: 기존 서버 목록에 없음 → V0 백엔드에서 추가 필요 (decision made; work item).
 - 출시 메모 전체: **OWNER DECISION PENDING**.
 - 나머지 열린 질문은 `the V0 scope notes (summarised in `../../spec.md`)` 참조 (not read here).
 
@@ -114,7 +114,7 @@ App modes are independent of room day/night. Outline width: normal **2px**, high
 | infoBg | #E1EDF5 | #E1EDF5 | #25364A | #25364A | OK |
 | focus | #2D5E86 | #1D4A6E | #9CC6E4 | #B9DBF2 | OK |
 
-Room (Later in V1; listed for completeness) — day / night: wall #FBF1E3/#2B2320 · floor #F3E0C4/#352A25 · line #4A3426/#E8D3BC · frame #C99A6B/#7A5C48 · sky #E6F0F7/#2F3050 · sun #F7D98B/#F7D98B · star #F7D98B/#FFF4DF · glass #FFF8EC/#3A2F2A — tokens.ts OK.
+Room (Later in V0; listed for completeness) — day / night: wall #FBF1E3/#2B2320 · floor #F3E0C4/#352A25 · line #4A3426/#E8D3BC · frame #C99A6B/#7A5C48 · sky #E6F0F7/#2F3050 · sun #F7D98B/#F7D98B · star #F7D98B/#FFF4DF · glass #FFF8EC/#3A2F2A — tokens.ts OK.
 
 Illustration palette (S19) — all OK in `tokens.color.illustration.palette`: peach #F4B79B · butter #F7D98B · sage #A8C6A0 · sage2 #8FB68A · sky #AACBE2 · sky2 #8DB6D2 · pink #F2A7B4 · rose #E88A9B · cream #FFF4DF · terra #D98B63 · wood #C99A6B · ice #E6F0F7 · lav #C9B8E8 · aqua #9ED8CB · dark #7A5C48.
 
@@ -290,7 +290,7 @@ Room-only pieces on S22 (Later): room toolbar pill (52 high, padding 8 × 10, 15
 - [ ] Decorative images hidden from screen readers (`importantForAccessibility="no"` / `accessibilityElementsHidden`); mascot image named `a11y.mascot` "모피, {pose}".
 - [ ] State changes announced once via `role=status` (don't interrupt typing); countdowns not read every second.
 - [ ] Dialog: `role=dialog aria-modal`, focus to title, return focus on close.
-- [ ] VoiceOver names (ko / en / ja) relevant to V1:
+- [ ] VoiceOver names (ko / en / ja) relevant to V0:
 
 | key | 한국어 | English | 日本語 |
 |---|---|---|---|

@@ -1,4 +1,4 @@
-# Specification Quality Checklist: 커플 D+Day V1
+# Specification Quality Checklist: 커플 D+Day V0
 
 **Purpose**: spec.md가 계획 단계로 넘어갈 만큼 완전하고 품질이 충분한지 확인
 **Created**: 2026-11-02

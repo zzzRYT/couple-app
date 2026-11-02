@@ -1,4 +1,4 @@
-# V1 API Contract (Edge Functions)
+# V0 API Contract (Edge Functions)
 
 All routes follow the existing conventions in `supabase/functions/_shared/http.ts`: bearer auth required, JSON bodies, mutations are idempotent (client sends `Idempotency-Key` header or `idempotencyKey` in the body — `api.json(..., { keyInBody: true })` in `apps/mobile/src/lib/api.ts`), errors are `{ "error": { "code": <ErrorCode>, "retryable": bool, ...extra } }` with the codes in `supabase/functions/_shared/errors.ts`. No new error codes.
 

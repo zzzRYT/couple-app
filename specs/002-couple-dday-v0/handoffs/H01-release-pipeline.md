@@ -6,10 +6,10 @@
 | Requirements | V0-F14 (V0-F14-AC-01 … -06), part of V0-F12-AC-09 (version row) |
 | Depends on | nothing; can run in parallel with H02 |
 | Unblocks | every later TestFlight check; H04's App Group PoC needs this build path |
-| Branch / PR | `v1/s1-release-pipeline` → PR to `main`, non-draft, do not merge |
+| Branch / PR | `v0/s1-release-pipeline` → PR to `main`, non-draft, do not merge |
 | Design source | artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X, version `1793598115-fafc`, board `V0-00` "출시 메모" (no screens in this slice) |
 
-You do not need (and cannot use) the design tool. Everything you need is in this file and the spec folder `specs/002-couple-dday-v1/`.
+You do not need (and cannot use) the design tool. Everything you need is in this file and the spec folder `specs/002-couple-dday-v0/`.
 
 ## 1. Goal and why
 
@@ -33,7 +33,7 @@ In: T101–T109. Out: any screen redesign (H02+), widgets (H04), notification co
 
 ## 4. Design extract (board V0-00 "출시 메모", verbatim, marked `OWNER DECISION PENDING` on the board)
 
-- V1은 TestFlight로 오너와 여자친구에게 먼저: GitHub workflow_dispatch → EAS Build → EAS Submit → TestFlight.
+- V0은 TestFlight로 오너와 여자친구에게 먼저: GitHub workflow_dispatch → EAS Build → EAS Submit → TestFlight.
 - JS·문구·자산은 EAS Update(OTA) preview 채널에서 확인 후 production으로. 위젯 extension·권한·네이티브 변경은 새 빌드.
 - 첫 빌드는 .dev 테스트 bundle id(com.jinjinstar.aroom.dev, 위젯 extension은 별도 id)로. 이름 확정 전 production 등록은 하지 않아요.
 
@@ -115,7 +115,7 @@ Pin action versions (`@v4`, `@v8`), no `secrets.*` other than `EXPO_TOKEN`, no `
 
 ## 6. Implementation steps
 
-1. Branch `v1/s1-release-pipeline` from `main`.
+1. Branch `v0/s1-release-pipeline` from `main`.
 2. Write T101 first: `tools/tests/release-config.test.mjs` (Node `node:test`, no new deps). It must assert:
    - `apps/mobile/eas.json` parses and validates with `@expo/eas-json` (`EasJsonAccessor`/`EasJsonUtils` — check the installed API), has `build.testflight` with `distribution: "store"`, `channel: "preview"`, `autoIncrement: true`, `env.APP_VARIANT === "preview"`; `build.production.channel === "production"`; `submit.testflight.ios.appleTeamId === "43ZASDF2J7"`.
    - Evaluating the app config for `APP_VARIANT=preview` gives bundle id `com.jinjinstar.aroom.dev`, `runtimeVersion.policy === 'fingerprint'`, `updates.url` ending with the project id. Load it with `process.env.APP_VARIANT = 'preview'; const { default: config } = await import('../../apps/mobile/app.config.ts?v=preview');` — Node 22 strips TypeScript types natively (on by default from 22.18; `.nvmrc` and CI use 22) and `app.config.ts` already imports `./src/config/identity.ts` with its extension. If your Node lacks type stripping, run the test with `--experimental-strip-types` in the CI line.
@@ -187,6 +187,6 @@ Production bundle id/App Store listing (G2/A-02), external testers and Beta App 
 
 ## 13. PR rules and hand-back protocol
 
-- One PR, branch `v1/s1-release-pipeline`, base `main`, **non-draft**, title `S1: release pipeline (EAS Build/Submit/Update, TestFlight)`. **Do not merge.**
+- One PR, branch `v0/s1-release-pipeline`, base `main`, **non-draft**, title `S1: release pipeline (EAS Build/Submit/Update, TestFlight)`. **Do not merge.**
 - PR body: summary; table `scenario id → test file → result`; commands run with pass/fail; "Owner-only steps pending: §10 1–8"; anything you could not verify.
 - Follow the status protocol in your own launch brief (append `working`/`done`/`needs-decision`/`blocked` lines). Report `done` with the full PR URL. Use `needs-decision` for anything in §12 or any product/design question; never guess a design fact.

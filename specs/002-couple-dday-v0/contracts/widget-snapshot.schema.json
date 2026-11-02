@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://aroom.jinjinstar.com/schemas/widget-snapshot-v1.json",
-  "title": "V1 widget snapshot (App Group, schemaVersion 1)",
+  "$id": "https://aroom.jinjinstar.com/schemas/widget-snapshot-v0.json",
+  "title": "V0 widget snapshot (App Group, schemaVersion 1)",
   "description": "Written atomically by the app into the App Group container; read by the iOS widget extension. No tokens, user ids, emails, memos or birth years. Names are for home-screen widgets only; lock-screen layouts must not render them.",
   "type": "object",
   "additionalProperties": false,

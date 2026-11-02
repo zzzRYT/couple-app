@@ -291,7 +291,7 @@ Dark today-pill, placeholder, empty state, past-expanded: not drawn — verify a
 
 ## 4. References to other screens / rules
 - "날짜 계산 (기존 S06·스펙 규칙)" — reuses S06 메인 D-day counting rules (D+1 on start day, calendar-day diff + 1, space timezone midnight).
-- V0-00 flow board: "날짜 세기 (기존 S06 · 스펙 규칙 그대로)"; "N일 기념일 = 사귄 날 + (N − 1)일. 기존 서버 목록에는 150일이 없어서 V1 백엔드에서 더해야 해요(500·1000일은 오너 목록에 없어 V1에서 빠짐 — 열린 질문)."; "주년 = 같은 달력 날짜(365일 단위 아님) → 1주년은 366일째. 2월 29일 시작은 평년 2월 28일. 같은 날이면 주년이 우선."; "생일은 양력 월·일(연도 선택), 2월 29일 생일은 평년 2월 28일."; "직접 추가 기념일: 두 사람 누구나 추가·편집·삭제(삭제는 확인). 동시 편집은 버전 확인 후 충돌 안내."; "자동 기념일: 아무도 못 고침. 알림만 각 기기에서 종류별로."; "홈 · 기념일 · 설정 3개(시스템 UITabBar). 기존 "방" 탭은 숨기고 "기념일" 탭이 그 자리에 와요."; 기념일 당일 → "로컬 알림 09:00", V0-home-today 축하 카드, V0-anniv-list-today.
+- V0-00 flow board: "날짜 세기 (기존 S06 · 스펙 규칙 그대로)"; "N일 기념일 = 사귄 날 + (N − 1)일. 기존 서버 목록에는 150일이 없어서 V0 백엔드에서 더해야 해요(500·1000일은 오너 목록에 없어 V0에서 빠짐 — 열린 질문)."; "주년 = 같은 달력 날짜(365일 단위 아님) → 1주년은 366일째. 2월 29일 시작은 평년 2월 28일. 같은 날이면 주년이 우선."; "생일은 양력 월·일(연도 선택), 2월 29일 생일은 평년 2월 28일."; "직접 추가 기념일: 두 사람 누구나 추가·편집·삭제(삭제는 확인). 동시 편집은 버전 확인 후 충돌 안내."; "자동 기념일: 아무도 못 고침. 알림만 각 기기에서 종류별로."; "홈 · 기념일 · 설정 3개(시스템 UITabBar). 기존 "방" 탭은 숨기고 "기념일" 탭이 그 자리에 와요."; 기념일 당일 → "로컬 알림 09:00", V0-home-today 축하 카드, V0-anniv-list-today.
 - Copy reuse: `anniv.detail.notify` = 기존 `set.sec.notif`; `anniv.days` = `milestone.label.day`; `anniv.years` = `milestone.label.anniv`; tabs/a11y reuse `tab.*`, `a11y.tab*`.
 - V0-05 기념일 추가·편집 (separate board) = target of +/편집; V0-07 settings (notify) = target of 알림 설정 열기.
 
