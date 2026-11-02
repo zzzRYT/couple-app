@@ -38,7 +38,7 @@ S1과 S2는 코드가 겹치지 않아 동시에 진행할 수 있다(S2의 Test
 
 ### 기반
 - [ ] **T201** [P] `src/config/features.ts` + `src/config/__tests__/features.test.ts`, `src/app/__tests__/routes.test.tsx` 갱신(방·프롬프트·신고·커버 경로로 못 감). — V0-NF-06, V0-F03-AC-05
-- [ ] **T202** [P] i18n overlay: `handoffs/design/copy-v0.md`를 `apps/mobile/src/i18n/locales/v1/copy-v0.md`로 복사하고 생성기 `tools/i18n/build-v1-overlay.mjs`가 V0 문구 278개 전부를 `src/i18n/locales/v1/{ko-KR,en-US,ja-JP}.json`으로 만든다(브랜드 이름 → `$t(app.name)`/`$t(mascot.name)` 치환, `mascot.name` 추가). `src/i18n/index.ts` 병합, `src/i18n/v1Keys.d.ts`, `src/i18n/__tests__/v1Overlay.test.ts`(세 언어 키 일치, 브랜드 리터럴 금지, `$t(app.name)` 해석). — V0-NF-02
+- [ ] **T202** [P] i18n overlay: `handoffs/design/copy-v0.md`를 `apps/mobile/src/i18n/locales/v1/copy-v0.md`로 복사하고 생성기 `tools/i18n/build-v1-overlay.mjs`가 V0 문구 278개 전부를 `src/i18n/locales/v1/{ko-KR,en-US,ja-JP}.json`으로 만든다(보드의 모피루·모피 → `$t(app.name)`/`$t(mascot.name)` 치환, `app.name` = 아룸/Aroom/アルーム, `mascot.name` = 아루미/Aroomi/アルーミ, "아룸" 뒤 조사 보정; D-08). `src/i18n/index.ts` 병합, `src/i18n/v1Keys.d.ts`, `src/i18n/__tests__/v1Overlay.test.ts`(세 언어 키 일치, 브랜드 리터럴 금지, `$t(app.name)` 해석). — V0-NF-02
 - [ ] **T203** 서버: 마이그레이션 `20261103000100_v1_member_profile.sql`, `…200_v1_space_time_zone.sql`, `…300_v1_snapshot.sql` + pgTAP `supabase/tests/v1_member_profile.test.sql`, `v1_space_time_zone.test.sql`, `rls_snapshot.test.sql` 확장. — V0-F02-AC-03, V0-F12-AC-04, -05
 - [ ] **T204** 서버: `functions/profile/index.ts` `PUT /profile/member`, `functions/spaces/index.ts` `PATCH /spaces/:id/time-zone` + Deno 테스트(`profile/__tests__/profile.test.ts` 확장, `spaces/__tests__/time_zone.test.ts`). — V0-F02-AC-03, V0-F12-AC-04, -05
 - [ ] **T205** 앱 클라이언트: `client.ts` 타입(`Snapshot.members[].displayName/birthday`, `me`, `anniversaries`, `space.anniversaryChangedBy/At`), `routes.ts` 경로, `saveMemberProfile`, `updateTimeZone`. `lib/__tests__/api.test.ts` 확장.
@@ -81,7 +81,7 @@ S1과 S2는 코드가 겹치지 않아 동시에 진행할 수 있다(S2의 Test
 - [ ] **T401** **App Group PoC 먼저**: `expo-widgets` 설치·plugin(`app.config.ts`), extension id `com.jinjinstar.aroom.dev.widgets`, App Group `group.com.jinjinstar.aroom.dev`(`identity.ts` 매개변수), 숫자 하나 쓰기 → small·circular 표시. TestFlight 빌드로 오너 기기 확인. 실패 시 `@bacons/apple-targets` 경로로 전환하고 PR에 이유 기록. — V0-F11-AC-01
 - [ ] **T402** [P] `features/widgets/snapshot.ts`(순수: V1 데이터 → 스키마 JSON, 35일 entries, 상태 4종, 개인 정보 규칙) + `__tests__/snapshot.test.ts`(JSON Schema 검증 포함). — V0-F11-AC-05~07, -09, V0-NF-04
 - [ ] **T403** `features/widgets/writer.ts`(원자적 쓰기 + reload, 호출 지점: 동기화 성공·변경·포그라운드·로그아웃·종료·탈퇴·언어). — V0-F11-AC-09, V0-F13-AC-05, V0-F12-AC-07, -08, -10
-- [ ] **T404** 위젯 레이아웃: systemSmall(기본·다음·모피), systemMedium, systemLarge, accessoryCircular(+gauge), accessoryRectangular, accessoryInline × 외관 — `apps/mobile/widgets/`(expo-widgets) 또는 `targets/widget/`(Swift). 글꼴 번들(A-11). — V0-F11-AC-02, -03, -05, -06, -08
+- [ ] **T404** 위젯 레이아웃: systemSmall(기본·다음·마스코트 — 보드 이름 '모피'), systemMedium, systemLarge, accessoryCircular(+gauge), accessoryRectangular, accessoryInline × 외관 — `apps/mobile/widgets/`(expo-widgets) 또는 `targets/widget/`(Swift). 글꼴 번들(A-11). — V0-F11-AC-02, -03, -05, -06, -08
 - [ ] **T405** 딥링크와 위젯 갤러리 문구, 기기 체크리스트(quickstart §위젯) 수행 기록. — V0-F11-AC-04, -08
 
 ---

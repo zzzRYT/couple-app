@@ -94,14 +94,15 @@ Add `saveMemberProfile(displayName, birthday)` and `updateTimeZone(spaceId, time
 - Copy `./design/copy-v0.md` to `apps/mobile/src/i18n/locales/v1/copy-v0.md` (verbatim).
 - New script `tools/i18n/build-v1-overlay.mjs` (Node, no deps) parses the `| \`key\` | ko | en | ja | status |` rows and writes `apps/mobile/src/i18n/locales/v1/{ko-KR,en-US,ja-JP}.json` (all 278 rows plus `mascot.name` = 279 keys, so later slices need no copy work) and `apps/mobile/src/i18n/v1Keys.d.ts`. It must:
   - unescape `\|`, turn `⏎` into `\n`;
-  - add `mascot.name` = 모피 / Mopi / モピ (the board name; spec A-01);
-  - in every value except `app.name` and `mascot.name`, replace the brand words with nesting: 모피루/Mopiru/モピル → `$t(app.name)`, then 모피/Mopi/モピ → `$t(mascot.name)` (longest first);
+  - set the decided names (spec D-08): `app.name` = 아룸 / Aroom / アルーム (overriding the board's 모피루 row) and add `mascot.name` = 아루미 / Aroomi / アルーミ (the ja values are the repo's existing `main.appName` / `mascot.name`);
+  - in every other value, replace the board's brand words with nesting: 모피루/Mopiru/モピル → `$t(app.name)`, then 모피/Mopi/モピ → `$t(mascot.name)` (longest first);
+  - fix Korean particles after `$t(app.name)` (아룸 ends in a consonant): `$t(app.name)를|가|는|와|로` → `을|이|은|과|으로`. In the V0 copy this changes only `widget.none.title` (→ "$t(app.name)을 시작해요"). 아루미 ends in a vowel, so "$t(mascot.name)가" stays;
   - fail on duplicate keys or a row count other than 278.
 - The overlay has 279 keys (278 rows + `mascot.name`). `date.long`, `date.short`, `date.md` use `{M}` (month name) in English but `{m}` in ko/ja — callers pass both `m` and `M`; exempt these three keys from any placeholder-parity check.
 - `src/i18n/index.ts`: merge `{ ...base, ...overlay }` per locale (overlay wins — only `join.found.title` changes meaning; check every screen that used it). Keep the existing interpolation config; i18next nesting (`$t(…)`) works with it — prove it in a test.
 - Use V1 keys in new/changed screens; do not delete old keys (hidden screens still compile).
-- Test `src/i18n/__tests__/v1Overlay.test.ts`: same key set in ko/en/ja; no value outside the two brand keys contains `모피루|Mopiru|モピル|모피|Mopi|モピ|아룸|Aroom|아루미`; `t('widget.none.title')` renders "모피루를 시작해요"; `t('dday.big', { n: 492 })` renders "D+492" / "Day 492" / "492日目". Name it `V0-NF-02 …`.
-- Korean particles after the brand name (을/를, 이/가) depend on the final name; leave them as drawn (A-01).
+- Test `src/i18n/__tests__/v1Overlay.test.ts`: same key set in ko/en/ja; no value outside the two brand keys contains `아룸|Aroom|アルーム|아루미|Aroomi|アルーミ|모피루|Mopiru|モピル|모피|Mopi|モピ`; `t('widget.none.title')` renders "아룸을 시작해요" / "Start Aroom" / "アルームをはじめよう"; `t('home.today.body.season')` renders "아루미가 둘의 오늘을 함께 축하해요."; `t('dday.big', { n: 492 })` renders "D+492" / "Day 492" / "492日目". Name it `V0-NF-02 …`.
+- Board copy and the design extracts still show 모피루/모피 (drawn before the name decision); always render the decided names through the brand keys. Existing repo keys that already say 아룸/아루미 stay as they are.
 - iOS display name stays `APP_IDENTITY.name` (`Aroom (preview)` for TestFlight). Do not change `identity.ts` names.
 
 ## 7. Implementation steps
@@ -174,7 +175,6 @@ Two-simulator check (optional but recommended): firstmate's `cpl-pairtest` scrip
 | Tap target of next card / upcoming rows | 기념일 tab (H03 switches to detail) |
 | Pull-to-refresh on home | keep the existing `RefreshControl` (not drawn, harmless) |
 | `notify.os.*` copy | not used (iOS draws its own permission alert) |
-| App/mascot name | brand keys only (A-01) |
 | Age notice on the intro (board drops it; 001 FR-058 requires 14+) | keep the existing `onb.age` line under the terms line |
 | Back in the connect flow | back button (`FlowBack`) only — swipe stays disabled as in PR #24 (`(onboarding)/_layout.tsx` `gestureEnabled: false`) |
 

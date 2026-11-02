@@ -33,7 +33,7 @@ In: T401–T405. Out: Android widgets, widget configuration/intents (no user-con
 | Notes, sizes, tap targets, refresh, constraints, appearance, gallery names | `design/V0-06-widgets.md` §1.1–1.7 | Verbatim board notes. Two widget kinds: **D+Day** (small, medium, large, circular, rectangular, inline) and **다가오는 기념일** (medium, large). Gallery previews show the placeholder look, not sample data. |
 | Fonts | §1.8 | Display Gaegu 700 (ko/en) / Yomogi (ja; only 400 exists — never fake-bold); emphasis Noto Sans KR / Zen Maru Gothic; body Gowun Dodum / Zen Maru; lock screen Noto Sans KR only; line height 1.25×. Bundle the font files in the extension; if impossible, numbers use SF Rounded (`.fontDesign(.rounded)`) — A-11, report which. |
 | Colors per appearance | §1.9, §2.4, §2.8 | Light/dark hex → tokens; tinted/clear: only the D+N number and heart are `widgetAccentable`; colored tiles become bare line icons. Dark widget bg is `#2B2320` (dark `bg`, not `surface`). |
-| systemSmall (3 variants: 기본 / 다음 / 모피) | §2.1 | 158×158 drawn, padding 14. Which variant ships by default: §8 decision. |
+| systemSmall (3 variants: 기본 / 다음 / mascot — board name "모피", now 아루미) | §2.1 | 158×158 drawn, padding 14. Which variant ships by default: §8 decision. |
 | systemMedium | §2.2 | 3 anniversaries, no dates. |
 | systemLarge | §2.3 | 5 anniversaries with dates, mascot. |
 | accessoryCircular (+gauge), Rectangular, Inline | §2.5–2.7 | No names; custom titles privacy-sensitive; gauge semantics not on the board (§8). |
@@ -74,7 +74,7 @@ Writer (`features/widgets/writer.ts`): serialise, write atomically (write temp +
 
 Timeline policy: entries at each `showAt`; `.atEnd` reload policy. When the last entry is in the past (app not opened for >35 days), show the last entry with D+N computed by the extension if Swift is used; with expo-widgets, show the last entry (stale) — record which in the PR.
 
-Deep links (board writes `mopiru://…` but the app name is undecided, A-01): use the configured scheme (`aroom-dev` for the TestFlight variant, from `app.config.ts`) with expo-router paths — small/accessory → `/home`; medium/large rows → `/anniversary/<encodeURIComponent(occurrence key)>` (H03 root route), rest → `/home`; today → `/home` (card is there); pending → `/home` (invite card); none → `/` (start). Build the scheme from config, never hard-code `mopiru`. Detail links use H03's root route: `/anniversary/<encodeURIComponent(key)>`.
+Deep links (the board writes `mopiru://…`, drawn before the name decision D-08; the app is Aroom): use the configured scheme (`aroom-dev` for the TestFlight variant, from `app.config.ts`) with expo-router paths — small/accessory → `/home`; medium/large rows → `/anniversary/<encodeURIComponent(occurrence key)>` (H03 root route), rest → `/home`; today → `/home` (card is there); pending → `/home` (invite card); none → `/` (start). Build the scheme from config, never hard-code `mopiru`. Detail links use H03's root route: `/anniversary/<encodeURIComponent(key)>`.
 
 ## 6. Implementation steps
 
@@ -103,7 +103,7 @@ Deep links (board writes `mopiru://…` but the app name is undecided, A-01): us
 
 | Decision | Default |
 |---|---|
-| Which small variant is the default (기본 / 다음 / 모피) | 기본; expose the others only if expo-widgets supports multiple small widgets cheaply — otherwise V1 ships 기본 only |
+| Which small variant is the default (기본 / 다음 / mascot) | 기본; expose the others only if expo-widgets supports multiple small widgets cheaply — otherwise V1 ships 기본 only |
 | Gauge meaning (drawn at ~70%) | progress toward the next anniversary: `1 − daysLeft / (days between previous and next occurrence)`; mark "verify against board" |
 | Does "다가오는 기념일" reuse the D+Day medium/large layout | separate kind with the list-only layout (no hero) if drawn; else reuse and report |
 | Mascot PNG size/pose | `mascot_wave_main` from the app assets at @2x/@3x; hidden in tinted/clear/lock |

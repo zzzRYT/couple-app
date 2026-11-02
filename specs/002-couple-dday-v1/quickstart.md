@@ -39,4 +39,4 @@ node tools/ci/check-migrations.mjs && node tools/ci/check-functions-boot.mjs
 - [ ] 로그아웃 뒤 예약 0개(V0-F10-AC-07, SC-006).
 
 ### 접근성 (S6)
-- [ ] 글자 크기 200%에서 모든 V1 화면 잘림 없음, VoiceOver로 탭·D+N·기념일 행·위젯 읽기, 동작 줄이기에서 모피 정지(V0-NF-01).
+- [ ] 글자 크기 200%에서 모든 V1 화면 잘림 없음, VoiceOver로 탭·D+N·기념일 행·위젯 읽기, 동작 줄이기에서 아루미 정지(V0-NF-01).

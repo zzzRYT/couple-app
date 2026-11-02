@@ -13,7 +13,7 @@
 
 ## Requirement Completeness
 
-- [x] [NEEDS CLARIFICATION] 표시가 남아 있지 않다(미정 항목은 "가정한 기본값" 표 A-01~A-23)
+- [x] [NEEDS CLARIFICATION] 표시가 남아 있지 않다(미정 항목은 "가정한 기본값" 표 A-02~A-25)
 - [x] 요구 사항은 테스트 가능하고 모호하지 않다(각각 AC ID가 있음)
 - [x] 성공 기준은 측정 가능하다
 - [x] 성공 기준은 기술 중립적이다(SC-001의 워크플로는 오너 요구)

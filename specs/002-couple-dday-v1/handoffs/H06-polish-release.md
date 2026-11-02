@@ -25,7 +25,7 @@ Before the owner hands the app to their partner for daily use: no clipped Japane
 
 ## 3. Scope
 
-In: T601–T606. Out: new features, the production bundle id / App Store listing / public release (G2, A-01), legal approval of policy text (owner), moving copy into `design/` (PR 25 follow-up only, T606).
+In: T601–T606. Out: new features, the production bundle id / App Store listing / public release (G2, A-02), legal approval of policy text (owner), moving copy into `design/` (PR 25 follow-up only, T606).
 
 ## 4. Design extract index (what "matches the board" means here)
 

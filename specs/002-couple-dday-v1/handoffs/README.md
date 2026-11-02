@@ -37,13 +37,16 @@ A slice is accepted only when all of these hold; then the next handoff is dispat
 - The PR is merged by the configured merge authority (workers never merge).
 - Native changes (H04 widget extension, any new native module or config-plugin change) always go through Release iOS, never OTA (`runtimeVersion` is `fingerprint`).
 
+## Decided names
+
+Owner decision D-08 (2026-11-02): the app is **아룸 / Aroom / アルーム** and the mascot **아루미 / Aroomi / アルーミ**. The boards, `design/copy-v0.md` and the design extracts were drawn with 모피루/Mopiru · 모피/Mopi; treat every such occurrence as the brand key `app.name` / `mascot.name` (H02 §6 generates the overlay with the decided names and fixes the Korean particle after 아룸, e.g. "아룸을 시작해요").
+
 ## Owner decisions still open (assumed defaults in use)
 
 Full table: `../spec.md` → "Decisions and Assumed Defaults". The ones that change what a worker builds:
 
 | ID | Open decision | Assumed default used by the handoffs | Affects |
 |---|---|---|---|
-| A-01 | App and mascot name (boards: 모피루/Mopiru · 모피/Mopi; repo: Aroom/아루미) | i18n brand keys `app.name`, `mascot.name` with the board values; every other string nests them; iOS display name stays `APP_IDENTITY.name`; Korean particles revisited when the name is final | H02, H04, H06 |
 | A-02 | Production bundle id | not registered; TestFlight uses `com.jinjinstar.aroom.dev`, widgets `com.jinjinstar.aroom.dev.widgets`, group `group.com.jinjinstar.aroom.dev` | H01, H04 |
 | A-03 | TestFlight tester method | internal testers (ASC users, least privilege) | H01 owner steps |
 | A-04 | OTA provider | EAS Update, channels `preview`/`production`, runtime `fingerprint` | H01 |

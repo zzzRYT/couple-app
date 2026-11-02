@@ -29,7 +29,7 @@ No violations (plan "Constitution Check"). Principle V (reversible): hidden feat
 
 ## Remaining open items (owner)
 
-A-01 app name, A-02 production id, A-03 tester method, A-04 OTA provider, A-05 closed-phone sync, A-23 support email/terms, A-25 fonts — defaults are in place; none blocks H01 or H02.
+A-02 production id, A-03 tester method, A-04 OTA provider, A-05 closed-phone sync, A-23 support email/terms, A-25 fonts — defaults are in place; none blocks H01 or H02.
 
 ## Second pass: code-grounded review of the handoffs (2026-11-02)
 
@@ -43,3 +43,7 @@ An independent read-only review checked every cited path, line, RPC and copy key
 - Milestone RPCs move to `couple_space.time_zone` already in S2 (with the new time-zone RPC).
 - Widget schema allows `today` to be null/omitted; one canonical `computeAnniversaries` shape (H03).
 - Retry after a failed save reuses the same idempotency key (`api.ts` gains `idempotencyKey`); `gone` uses the existing `NOT_FOUND:{json}` error convention.
+
+## Update: owner name decision (2026-11-02)
+
+The owner decided the names: app 아룸 / Aroom / アルーム, mascot 아루미 / Aroomi / アルーミ (ja from the repo's existing i18n). A-01 moved from assumed defaults to decision D-08 in spec.md; plan §7, H02 §6 (overlay generator values, forbidden-literal list, particle fix), H01, H04, H06, README and `design/copy-v0.md`'s header follow it. Korean particle check: only `widget.none.title` needs a change (아룸 has a final consonant → "아룸을 시작해요"); 아루미 keeps "아루미가". Production bundle id, App Store visibility and the other release decisions stay open.

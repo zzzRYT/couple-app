@@ -189,8 +189,9 @@ RLS 규칙: `space_anniversary`는 `select`만 `is_space_member(space_id)`로 �
 
 - `src/i18n/locales/v1/{ko-KR,en-US,ja-JP}.json` 새 overlay. `createI18n`이 기본 리소스 위에 병합(같은 키면 overlay 우선 — 예: `invite.title`). 생성기(`tools/i18n/import-design-copy.mjs`)와 `design/`은 건드리지 않는다. PR 25의 design-sync가 병합되면 overlay를 정본 문구 파일로 옮기는 후속 작업을 둔다(S6 T606).
 - `keys.d.ts`도 생성 파일이므로 overlay 키 타입은 `src/i18n/v1Keys.d.ts`에 두고, overlay JSON과 함께 생성기 `tools/i18n/build-v1-overlay.mjs`가 만든다(키 279개 = 문구 278 + `mascot.name`).
-- 브랜드: `app.name`과 `mascot.name`(값은 보드대로 모피루·모피, A-01)만 이름을 담고, 다른 V1 문구는 `$t(app.name)`·`$t(mascot.name)` nesting으로 참조한다. 테스트: V1 overlay 값 가운데 브랜드 키가 아닌 값에 `모피루|Mopiru|モピル|모피|Mopi|モピ|아룸|Aroom|아루미`가 직접 있으면 실패. 한국어 조사는 이름이 정해질 때 다시 본다(A-01).
-- iOS 표시 이름은 `identity.ts`의 `APP_IDENTITY.name`(지금 `Aroom`)을 그대로 쓰고 이름이 정해지면 바꾼다. 알림 권한 창의 앱 이름은 OS가 표시 이름으로 그린다.
+- 브랜드(D-08): `app.name` = 아룸 / Aroom / アルーム, `mascot.name` = 아루미 / Aroomi / アルーミ(일본어는 저장소의 기존 값)만 이름을 담고, 다른 V1 문구는 `$t(app.name)`·`$t(mascot.name)` nesting으로 참조한다. 보드 문구의 모피루·모피는 생성기가 nesting으로 바꾼다. 테스트: V1 overlay 값 가운데 브랜드 키가 아닌 값에 `아룸|Aroom|アルーム|아루미|Aroomi|アルーミ|모피루|Mopiru|モピル|모피|Mopi|モピ`가 직접 있으면 실패.
+- 한국어 조사: "아룸"은 받침(ㅁ)이 있어 뒤 조사가 을·이·은·과·으로가 된다. 보드 문구 가운데 해당하는 것은 `widget.none.title`("모피루를 시작해요" → "아룸을 시작해요") 하나다. "아루미"는 받침이 없어 "아루미가"는 그대로다. 생성기가 `$t(app.name)를|가|는|와|로` → `을|이|은|과|으로`로 고치고 테스트로 확인한다.
+- iOS 표시 이름은 `identity.ts`의 `APP_IDENTITY.name`(`Aroom`)이다. 알림 권한 창의 앱 이름은 OS가 표시 이름으로 그린다. production bundle id는 아직 정하지 않았다(A-02).
 
 ### 8. 출시 파이프라인 (S1)
 
