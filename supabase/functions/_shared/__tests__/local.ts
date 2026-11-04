@@ -7,7 +7,7 @@ let cached: { url: string; serviceKey: string; anonKey: string; mailUrl?: string
 export async function localEnv() {
   if (cached) return cached;
   const fromEnv = Deno.env.get('SUPABASE_URL'), key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'), anon = Deno.env.get('SUPABASE_ANON_KEY');
-  if (fromEnv && key && anon) return (cached = { url: fromEnv, serviceKey: key, anonKey: anon });
+  if (fromEnv && key && anon) return (cached = { url: fromEnv, serviceKey: key, anonKey: anon, mailUrl: Deno.env.get('SUPABASE_MAIL_URL') });
   for (const [cmd, args] of [['supabase', ['status', '-o', 'json']], ['npx', ['--no-install', 'supabase', 'status', '-o', 'json']]] as const) {
     try {
       const out = await new Deno.Command(cmd, { args: [...args], stdout: 'piped', stderr: 'null' }).output();
@@ -53,7 +53,7 @@ export async function call(handler: (r: Request) => Promise<Response>, user: Tes
   return { status: response.status, body: text ? JSON.parse(text) : null };
 }
 export async function sql(query: string): Promise<unknown> {
-  const out = await new Deno.Command('docker', { args: ['exec', 'supabase_db_couple-app', 'psql', '-U', 'postgres', '-tAc', query], stdout: 'piped', stderr: 'piped' }).output();
+  const out = await new Deno.Command('docker', { args: ['exec', Deno.env.get('SUPABASE_DB_CONTAINER') ?? 'supabase_db_couple-app', 'psql', '-U', 'postgres', '-tAc', query], stdout: 'piped', stderr: 'piped' }).output();
   if (!out.success) throw new Error(new TextDecoder().decode(out.stderr));
   return new TextDecoder().decode(out.stdout).trim();
 }
