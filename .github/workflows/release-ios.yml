@@ -1,0 +1,41 @@
+name: Release iOS
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: EAS build profile
+        type: choice
+        options: [testflight]
+        default: testflight
+      submit:
+        description: Submit to TestFlight after a successful build
+        type: boolean
+        default: true
+concurrency:
+  group: release-ios
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+        working-directory: .
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: '${{ secrets.EXPO_TOKEN }}'
+      - name: Check submit configuration
+        if: inputs.submit
+        run: node -e "const j=require('./eas.json');if(j.submit.testflight.ios.ascAppId==='ASC_APP_ID_REQUIRED'){console.error('Set submit.testflight.ios.ascAppId in apps/mobile/eas.json (owner step)');process.exit(1)}"
+      - name: Build (and submit on success)
+        run: eas build --platform ios --profile ${{ inputs.profile }} --non-interactive --wait ${{ inputs.submit && '--auto-submit-with-profile testflight' || '' }}

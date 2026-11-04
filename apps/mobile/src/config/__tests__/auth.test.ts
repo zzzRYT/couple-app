@@ -19,7 +19,7 @@ it('turns the email login on only in the development EAS profile', () => {
   expect(eas.build.preview.env.EXPO_PUBLIC_DEV_EMAIL_LOGIN).toBeUndefined();
   expect(eas.build.production.env.EXPO_PUBLIC_DEV_EMAIL_LOGIN).toBeUndefined();
   expect(eas.build.production.env.APP_VARIANT).toBe('production');
-  expect(eas.submit).toBeUndefined();
+  expect(eas.submit.testflight.ios.ascAppId).toBe('ASC_APP_ID_REQUIRED');
 });
 it('rejects the quick login flag for preview and production builds', () => {
   const original = { ...process.env };

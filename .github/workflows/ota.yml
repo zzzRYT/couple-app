@@ -1,0 +1,62 @@
+name: OTA
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: OTA destination channel
+        type: choice
+        options: [preview, production]
+        default: preview
+      message:
+        description: Required for preview updates
+        type: string
+        required: false
+      group:
+        description: Required for production republish
+        type: string
+        required: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+        working-directory: .
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: '${{ secrets.EXPO_TOKEN }}'
+      - name: Validate required input
+        env:
+          CHANNEL: ${{ inputs.channel }}
+          MESSAGE: ${{ inputs.message }}
+          GROUP: ${{ inputs.group }}
+        run: |
+          if [ "$CHANNEL" = preview ] && [ -z "$MESSAGE" ]; then
+            echo 'A non-empty message is required for preview OTA updates.' >&2
+            exit 1
+          fi
+          if [ "$CHANNEL" = production ] && [ -z "$GROUP" ]; then
+            echo 'A non-empty group is required for production republish.' >&2
+            exit 1
+          fi
+      - name: Publish preview update
+        if: inputs.channel == 'preview'
+        env:
+          APP_VARIANT: preview
+          EXPO_PUBLIC_APP_VARIANT: preview
+          MESSAGE: ${{ inputs.message }}
+        run: eas update --channel preview --environment preview --platform ios --message "$MESSAGE" --non-interactive
+      - name: Republish production update
+        if: inputs.channel == 'production'
+        env:
+          GROUP: ${{ inputs.group }}
+        run: eas update:republish --group "$GROUP" --destination-channel production --non-interactive

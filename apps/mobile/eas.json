@@ -28,12 +28,35 @@
       },
       "environment": "preview"
     },
+    "testflight": {
+      "distribution": "store",
+      "channel": "preview",
+      "autoIncrement": true,
+      "env": {
+        "APP_VARIANT": "preview",
+        "EXPO_PUBLIC_APP_VARIANT": "preview"
+      },
+      "environment": "preview",
+      "ios": {
+        "resourceClass": "default"
+      }
+    },
     "production": {
+      "channel": "production",
+      "autoIncrement": true,
       "env": {
         "APP_VARIANT": "production",
         "EXPO_PUBLIC_APP_VARIANT": "production"
       },
       "environment": "production"
+    }
+  },
+  "submit": {
+    "testflight": {
+      "ios": {
+        "ascAppId": "ASC_APP_ID_REQUIRED",
+        "appleTeamId": "43ZASDF2J7"
+      }
     }
   }
 }
