@@ -4,8 +4,10 @@ import { snapshotFixture } from '../../test/fixtures';
 import { LOCALES, cappedTexts, renderSweep, unlabeledTouchables } from '../../test/a11y';
 import { computeAnniversaries } from '../../lib/anniversaries';
 import type { MilestoneCelebration } from '../../lib/client';
+import { CelebrationCard } from '../../features/home/CelebrationCard';
 import { V0HomeScreen } from '../../features/home/V0HomeScreen';
 import { V0Error, V0Loading } from '../../features/home/states';
+import { ListRow } from '../../ui/components';
 import { AnniversaryList } from '../../features/anniversaries/AnniversaryList';
 import { AnniversaryDetail } from '../../features/anniversaries/AnniversaryDetail';
 import { AnniversaryEdit } from '../../features/anniversaries/AnniversaryEdit';
@@ -103,5 +105,37 @@ describe('V0-NF-01 large text wraps instead of shrinking or clipping', () => {
     const large = await renderSweep(SCREENS['anniversary list']!(), 'ko-KR', 2);
     expect(cappedTexts(large.screen.toJSON())).toEqual([]);
     large.restore();
+  });
+});
+
+describe('V0-NF-01 layouts that were clipped or squeezed on a 200% simulator', () => {
+  const json = (screen: { toJSON: () => unknown }) => JSON.stringify(screen.toJSON());
+  it('stacks a list row label above its value so the label keeps its width', async () => {
+    const { screen, restore } = await renderSweep(<ListRow label="Partner" value="Haru · Connected" onPress={noop} />, 'en-US', 2);
+    expect(json(screen)).not.toContain('"textAlign":"right"');
+    restore();
+    const normal = await renderSweep(<ListRow label="Partner" value="Haru · Connected" onPress={noop} />, 'en-US', 1);
+    expect(json(normal.screen)).toContain('"textAlign":"right"');
+    normal.restore();
+  });
+  it.each(LOCALES)('moves the edit title under the Cancel/Save row at 200%% in %s', async (locale: Locale) => {
+    const large = await renderSweep(<AnniversaryEdit {...editBase} />, locale, 2);
+    const header = (JSON.parse(json(large.screen)) as { children: { children: { children: { type: string; children: unknown[] }[] }[] }[] }).children[0]!.children[0]!;
+    expect(header.children).toHaveLength(2);
+    large.restore();
+    const normal = await renderSweep(<AnniversaryEdit {...editBase} />, locale, 1);
+    const flat = (JSON.parse(json(normal.screen)) as { children: { children: { children: unknown[] }[] }[] }).children[0]!.children[0]!;
+    expect(flat.children).toHaveLength(1);
+    normal.restore();
+  });
+  it('puts the celebration card text on its own full-width line at 200% and keeps one row otherwise', async () => {
+    const card = { id: 'c', key: 'k', kind: 'day', days: 500, milestoneDate: '2026-11-10', daysAgo: 0, seenByMe: false, presetAvailable: false, presetId: 'milestone-day' } as unknown as MilestoneCelebration;
+    const large = await renderSweep(<CelebrationCard celebration={card} startDate="2025-06-29" disabled={false} onSeen={noop} />, 'ko-KR', 2);
+    expect(json(large.screen)).not.toContain('"flexDirection":"row","alignItems":"center"},"children":[{"type":"Image"');
+    expect(large.screen.getByLabelText(large.t('home.today.close'))).toBeTruthy();
+    large.restore();
+    const normal = await renderSweep(<CelebrationCard celebration={card} startDate="2025-06-29" disabled={false} onSeen={noop} />, 'ko-KR', 1);
+    expect(JSON.stringify(normal.screen.toJSON())).toContain('{"type":"Image"');
+    normal.restore();
   });
 });

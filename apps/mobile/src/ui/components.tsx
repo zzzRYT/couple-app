@@ -7,6 +7,7 @@ import { useAppColor } from '../theme/useAppColor';
 import { useType, type TypeVariant } from '../theme/typography';
 import { Icon, type IconName } from './Icon';
 import { useReducedMotion } from './motion';
+import { useLargeText } from './textScale';
 import { FlowBackAction } from './FlowBack';
 import { useDisplayAppearance } from '../features/settings/preferences';
 
@@ -207,12 +208,15 @@ export function ListRow({ label, onPress, icon, value, danger = false, disabled 
   const color = useAppColor();
   const { type } = useType();
   const ink = danger ? color.danger : color.text;
+  const stacked = useLargeText() && !!value;
   return (
     <Pressable testID={testID} accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? (value ? `${label}, ${value}` : label)} accessibilityState={{ disabled }} disabled={disabled} onPress={onPress}
       style={({ pressed }) => ({ minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[2], paddingVertical: tokens.spacing[2], borderBottomWidth: last ? 0 : 1, borderColor: color.divider, opacity: disabled ? 0.5 : pressed ? 0.7 : 1 })}>
       {icon && <Icon name={icon} size={22} color={ink} />}
-      <Text {...WORD_BREAK} style={[type('body'), { color: ink, flex: 1 }]}>{label}</Text>
-      {value ? <Text {...WORD_BREAK} style={[type('bodySm'), { color: color.text2, flexShrink: 1, textAlign: 'right' }]}>{value}</Text> : null}
+      {stacked ? <View style={{ flex: 1 }}><Text {...WORD_BREAK} style={[type('body'), { color: ink }]}>{label}</Text><Text {...WORD_BREAK} style={[type('bodySm'), { color: color.text2 }]}>{value}</Text></View> : <>
+        <Text {...WORD_BREAK} style={[type('body'), { color: ink, flex: 1 }]}>{label}</Text>
+        {value ? <Text {...WORD_BREAK} style={[type('bodySm'), { color: color.text2, flexShrink: 1, textAlign: 'right' }]}>{value}</Text> : null}
+      </>}
       <Icon name="forward" size={18} color={color.text2} />
     </Pressable>
   );
