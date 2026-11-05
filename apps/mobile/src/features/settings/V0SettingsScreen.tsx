@@ -11,11 +11,7 @@ import { earlyLabel, formatNotifyTime } from '../notifications/labels';
 import { useNotifySettings } from '../notifications/useNotifyPrefs';
 import { usePreferences } from './preferences';
 import { TimeZoneSheet } from './TimeZoneSheet';
-function zoneLabel(zone: string, locale: string) {
-  const name = new Intl.DateTimeFormat(locale, { timeZone: zone, timeZoneName: 'longGeneric' }).formatToParts(new Date()).find((p) => p.type === 'timeZoneName')?.value ?? zone;
-  const offset = new Intl.DateTimeFormat('en-US', { timeZone: zone, timeZoneName: 'shortOffset' }).formatToParts(new Date()).find((p) => p.type === 'timeZoneName')?.value ?? 'GMT';
-  return `${name} (${offset.replace('GMT', 'UTC')})`;
-}
+import { zoneLabel } from './zoneLabel';
 export function V0SettingsScreen({ snapshot, offline, version, onLogout, onZone, navigate }: { snapshot: Snapshot; offline: boolean; version: string; onLogout: () => Promise<void>; onZone: (zone: string) => Promise<void>; navigate: (route: 'me' | 'start-date' | 'notifications' | 'language' | 'appearance' | 'disconnect' | 'delete-account') => void }) {
   const { t, i18n } = useTranslation(); const color = useAppColor(); const preferences = usePreferences(); const clearance = useTabBarClearance();
   const [zone, setZone] = useState(false), [confirm, setConfirm] = useState(false), [busy, setBusy] = useState(false), [error, setError] = useState(false);

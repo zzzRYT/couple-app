@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppColor } from '../../theme/useAppColor';
 import { AppText, Button, useTabBarClearance } from '../../ui/components';
 import { Icon } from '../../ui/Icon';
+import { useLargeText } from '../../ui/textScale';
 import { mascotPoses } from '../../scene/catalog';
 import { parseCalendarDate } from '../../lib/dday';
 import type { Occurrence, computeAnniversaries } from '../../lib/anniversaries';
@@ -16,15 +17,15 @@ export function AnniversaryList({ view, filter, pastOpen, offline, birthdayState
   view: ViewModel; filter: 'all' | 'custom'; pastOpen: boolean; offline: boolean; birthdayState: 'mine' | 'wait' | 'none'; partner: string;
   onFilter: (filter: 'all' | 'custom') => void; onPast: () => void; onAdd: () => void; onItem: (item: Occurrence) => void; onBirthday: () => void;
 }) {
-  const { t, i18n } = useTranslation(); const color = useAppColor(); const insets = useSafeAreaInsets(); const clearance = useTabBarClearance();
+  const { t, i18n } = useTranslation(); const color = useAppColor(); const insets = useSafeAreaInsets(); const clearance = useTabBarClearance(); const large = useLargeText();
   const select = (items: Occurrence[]) => filter === 'custom' ? items.filter((item) => item.kind === 'custom') : items;
   const today = select(view.todayItems), upcoming = select(view.upcoming), past = select(view.past);
   const row = (item: Occurrence) => {
     const title = occurrenceTitle(item, partner, t), left = relativeDate(item.date, view.today, t);
     const delta = (parseCalendarDate(item.date)! - parseCalendarDate(view.today)!) / 86_400_000;
     return <Pressable key={item.key} accessibilityRole="button" accessibilityLabel={t('anniv.row.a11y', { title, date: formattedDate(item.date, i18n.language, true), left })} onPress={() => onItem(item)} style={{ minHeight: 64, paddingHorizontal: 14, paddingVertical: 6, gap: 12, flexDirection: 'row', alignItems: 'center', backgroundColor: delta === 0 ? color.surface2 : color.surface }}>
-      <KindTile item={item} /><View style={{ flex: 1 }}><View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}><AppText numberOfLines={1} style={{ flexShrink: 1, fontWeight: '700' }}>{title}</AppText>{item.kind === 'custom' && filter === 'all' && <AppText tone="text2" style={{ borderWidth: 1, borderColor: color.border, borderRadius: 999, paddingHorizontal: 6, fontSize: 11 }}>{t('anniv.badge.custom')}</AppText>}</View><AppText tone="text2" style={{ fontSize: 13 }}>{formattedDate(item.date, i18n.language, false)}</AppText></View>
-      <AppText tone={delta === 0 ? 'onPrimary' : delta < 0 ? 'text2' : delta <= 14 ? 'primary' : 'text'} style={[{ fontWeight: '700', fontSize: 15 }, delta === 0 && { backgroundColor: color.primary, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 2 }]}>{left}</AppText>
+      <KindTile item={item} /><View style={{ flex: 1 }}><View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6 }}><AppText numberOfLines={large ? undefined : 1} style={{ flexShrink: 1, fontWeight: '700' }}>{title}</AppText>{item.kind === 'custom' && filter === 'all' && <AppText tone="text2" style={{ borderWidth: 1, borderColor: color.border, borderRadius: 999, paddingHorizontal: 6, fontSize: 11 }}>{t('anniv.badge.custom')}</AppText>}</View><AppText tone="text2" style={{ fontSize: 13 }}>{formattedDate(item.date, i18n.language, false)}</AppText>{large && <AppText tone={delta === 0 ? 'onPrimary' : delta < 0 ? 'text2' : delta <= 14 ? 'primary' : 'text'} style={[{ fontWeight: '700', fontSize: 15, flexShrink: 0, alignSelf: 'flex-start' }, delta === 0 && { backgroundColor: color.primary, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 2 }]}>{left}</AppText>}</View>
+      {!large && <AppText tone={delta === 0 ? 'onPrimary' : delta < 0 ? 'text2' : delta <= 14 ? 'primary' : 'text'} style={[{ fontWeight: '700', fontSize: 15, flexShrink: 0 }, delta === 0 && { backgroundColor: color.primary, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 2 }]}>{left}</AppText>}
     </Pressable>;
   };
   const showBirthday = filter === 'all' && birthdayState !== 'none';
