@@ -56,3 +56,13 @@ it('sends shared room mode changes with version and idempotency contract fields'
   expect(JSON.parse(call.mock.calls[0][1].body)).toEqual({ mode: 'night', timeZone: 'Asia/Tokyo', expectedCurrentVersion: 2, idempotencyKey: 'room-mode-key' });
   expect(call.mock.calls[0][1].headers['Idempotency-Key']).toBe('room-mode-key');
 });
+it('reuses a caller-provided idempotency key across separate save attempts', async () => {
+  const call = jest.fn().mockResolvedValue({ status: 200 });
+  const api = createApi(call, () => 'generated');
+  await api.request('/test', { method: 'POST', body: {}, keyInBody: true, idempotencyKey: 'form-session' });
+  await api.request('/test', { method: 'POST', body: {}, keyInBody: true, idempotencyKey: 'form-session' });
+  for (const [, request] of call.mock.calls) {
+    expect(request.headers['Idempotency-Key']).toBe('form-session');
+    expect(JSON.parse(request.body).idempotencyKey).toBe('form-session');
+  }
+});

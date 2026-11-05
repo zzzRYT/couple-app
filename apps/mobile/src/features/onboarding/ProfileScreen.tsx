@@ -10,7 +10,7 @@ function graphemes(value: string): string[] {
   const Segmenter = (Intl as unknown as { Segmenter?: new (locale?: string, options?: { granularity: 'grapheme' }) => { segment: (value: string) => Iterable<{ segment: string }> } }).Segmenter;
   return Segmenter ? Array.from(new Segmenter(undefined, { granularity: 'grapheme' }).segment(value), (part) => part.segment) : Array.from(value);
 }
-export function ProfileScreen({ onSave, onBack, initialName = '', initialBirthday = null, editing = false }: { onSave: (name: string, birthday: ProfileBirthday | null) => Promise<void>; onBack?: () => void; initialName?: string; initialBirthday?: ProfileBirthday | null; editing?: boolean }) {
+export function ProfileScreen({ onSave, onBack, initialName = '', initialBirthday = null, editing = false, partnerWait }: { onSave: (name: string, birthday: ProfileBirthday | null) => Promise<void>; onBack?: () => void; initialName?: string; initialBirthday?: ProfileBirthday | null; editing?: boolean; partnerWait?: string }) {
   const { t } = useTranslation();
   const [name, setName] = useState(initialName);
   const [birthday, setBirthday] = useState<ProfileBirthday | null>(initialBirthday);
@@ -32,6 +32,8 @@ export function ProfileScreen({ onSave, onBack, initialName = '', initialBirthda
     <BirthdayField value={birthday} includeYear={includeYear} onChange={setBirthday} />
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}><AppText>{t('start.profile.year')}</AppText><Switch accessibilityLabel={t('start.profile.year')} value={includeYear} onValueChange={(value) => { setIncludeYear(value); if (!value && birthday) setBirthday({ ...birthday, year: null }); }} /></View>
     <AppText tone="text2" variant="bodySm">{t('start.profile.birthdayHint')}</AppText>
+    {partnerWait && <AppText tone="text2" variant="bodySm">{partnerWait}</AppText>}
+
     {failed && <AppText tone="danger">{t('state.error.title')}</AppText>}
   </Screen>;
 }

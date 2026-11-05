@@ -11,6 +11,7 @@ export type RoomThemeDocument = { schemaVersion: 1; mode: 'day' | 'night' | 'fol
 export type PromptSession = { sessionId: string; ownerUserId: string; expiresAt: string; status: 'occupied' | 'released' | 'expired'; warnAt?: string; idleSeconds?: number; warnSeconds?: number };
 export type Birthday = { month: number; day: number };
 export type CustomAnniversary = { id: string; title: string; memo: string | null; date: string; repeat: 'yearly' | 'once'; createdBy: string | null; createdAt: string; updatedBy: string | null; updatedAt: string; version: number };
+export type AnniversaryFields = Pick<CustomAnniversary, 'title' | 'memo' | 'date' | 'repeat'>;
 export type Snapshot = {
   space: { spaceId: string; status: 'active'; anniversaryDate: string; timeZone: string; memberCount: number; updatedAt: string; invitation: { status: string; expiresAt: string } | null; anniversaryChangedBy: string | null; anniversaryChangedAt: string | null };
   features: { generation: boolean; generatedRender: boolean }; versionNumber: number; sceneDocument: SceneDocument; roomPresentation: RoomPresentation; roomThemeDocument: RoomThemeDocument;
@@ -40,6 +41,9 @@ export function createClient(api: Api) {
     ackEnded: () => api.json<void>(routes.ackEnded(), { method: 'POST', body: {} }),
     submitReport: (spaceId: string, input: ReportInput) => api.json<{ reportId: string }>(routes.report(spaceId), { method: 'POST', body: input }),
     updateAnniversary: (spaceId: string, anniversaryDate: string, expectedUpdatedAt: string) => api.json<{ anniversaryDate: string; updatedAt: string; milestonesReset: string[] }>(routes.anniversary(spaceId), { method: 'PATCH', body: { anniversaryDate, expectedUpdatedAt } }),
+    createAnniversary: (spaceId: string, fields: AnniversaryFields, idempotencyKey: string) => api.json<CustomAnniversary>(routes.anniversaries(spaceId), { method: 'POST', body: fields, keyInBody: true, idempotencyKey }),
+    updateAnniversaryItem: (spaceId: string, id: string, fields: AnniversaryFields, expectedVersion: number, idempotencyKey: string) => api.json<CustomAnniversary>(routes.anniversaryItem(spaceId, id), { method: 'PATCH', body: { ...fields, expectedVersion }, keyInBody: true, idempotencyKey }),
+    deleteAnniversaryItem: (spaceId: string, id: string, expectedVersion: number, idempotencyKey: string) => api.json<void>(routes.anniversaryItem(spaceId, id), { method: 'DELETE', body: { expectedVersion }, keyInBody: true, idempotencyKey }),
     updateRoomMode: (spaceId: string, mode: RoomThemeDocument['mode'], timeZone: string, expectedCurrentVersion: number) => api.json<{ versionNumber: number; mode: RoomThemeDocument['mode']; timeZone: string }>(routes.roomMode(spaceId), { method: 'PATCH', body: { mode, timeZone, expectedCurrentVersion }, keyInBody: true }),
     createInvitation: (spaceId: string) => api.json<{ invitationId: string; code: string; expiresAt: string }>(routes.createInvitation(spaceId), { method: 'POST', body: { expiresInSeconds: 86400 } }),
     previewInvitation: (code: string) => api.json<{ anniversaryDate: string; memberCount: number; displayName: string | null; timeZone: string }>(routes.previewInvitation(), { method: 'POST', body: { code } }),

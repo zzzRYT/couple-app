@@ -1,7 +1,7 @@
 import { randomUUID } from 'expo-crypto';
 import { ApiError } from './errors';
 type Caller = (path: string, request: RequestInit) => Promise<Response>;
-type RequestOptions = { method?: string; body?: Record<string, unknown>; retries?: number; keyInBody?: boolean; timeoutMs?: number };
+type RequestOptions = { method?: string; body?: Record<string, unknown>; retries?: number; keyInBody?: boolean; timeoutMs?: number; idempotencyKey?: string };
 export function createApi(call: Caller, makeId: () => string = randomUUID) {
   const api = {
     /** One key per logical mutation; retries of the same call reuse it, in the header and (when the contract asks) in the body. */
@@ -9,7 +9,7 @@ export function createApi(call: Caller, makeId: () => string = randomUUID) {
       const method = options.method ?? 'GET';
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
       const mutation = !['GET', 'HEAD'].includes(method.toUpperCase());
-      const key = mutation ? makeId() : undefined;
+      const key = mutation ? (options.idempotencyKey ?? makeId()) : undefined;
       if (key) headers['Idempotency-Key'] = key;
       const body = options.keyInBody && key ? { ...options.body, idempotencyKey: key } : options.body;
       const init: RequestInit = { method, headers, ...(body === undefined ? {} : { body: JSON.stringify(body) }) };

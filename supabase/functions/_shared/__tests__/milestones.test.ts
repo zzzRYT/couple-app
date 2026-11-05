@@ -2,7 +2,7 @@ import { assertEquals } from 'jsr:@std/assert@1';
 import { chooseCurrentMilestone, computeMilestones } from '../milestones.ts';
 
 Deno.test('all configured day marks use day one as the start date', () => {
-  for (const days of [50,100,200,300,500,1000]) {
+  for (const days of [50,100,150,200,300]) {
     const date = new Date(Date.UTC(2024,0,1)); date.setUTCDate(date.getUTCDate()+days-1);
     assertEquals(computeMilestones('2024-01-01','Asia/Seoul',date.toISOString()).celebration?.key,`d${days}`);
   }

@@ -1,7 +1,7 @@
 import { parseCalendarDate } from './dday.ts';
 
 const DAY_MS = 86_400_000;
-const DAY_MILESTONES = [50, 100, 200, 300, 500, 1000] as const;
+const DAY_MILESTONES = [50, 100, 150, 200, 300] as const;
 export type MilestoneKind = 'day' | 'anniversary';
 export type Milestone = {
   key: string; kind: MilestoneKind; milestoneDate: string; daysAgo: number;

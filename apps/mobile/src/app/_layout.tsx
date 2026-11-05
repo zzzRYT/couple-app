@@ -59,6 +59,8 @@ function AppNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
     <Stack.Protected guard={gate.kind === 'ended'}><Stack.Screen name="ended" /></Stack.Protected>
     <Stack.Protected guard={gate.kind === 'active'}>
       <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="anniversary/[key]" />
+      <Stack.Screen name="anniversary-edit" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
       <Stack.Screen name="invite" />
       <Stack.Screen name="connected" />
       <Stack.Screen name="join-has-space" />
