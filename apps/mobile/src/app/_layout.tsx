@@ -17,13 +17,14 @@ import { PreferencesProvider } from '../features/settings/preferences';
 import { V0_FEATURES } from '../config/features';
 import { V0Error, V0Loading } from '../features/home/states';
 import { useNotificationSync } from '../features/notifications/useNotificationSync';
+import { installNativeWidgets } from '../features/widgets/nativeWidgets';
 
 void SplashScreen.preventAutoHideAsync();
 Notifications.setNotificationHandler({ handleNotification: async () => ({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false }) });
 export default function RootLayout() {
   const [loaded, error] = useFonts(fontAssets);
   const [translator, setTranslator] = useState<i18n | null>(null);
-  useEffect(() => { void createI18n().then(setTranslator); }, []);
+  useEffect(() => { void createI18n().then((created) => { installNativeWidgets(created); setTranslator(created); }); }, []);
   useEffect(() => {
     if ((loaded || error) && translator) void SplashScreen.hideAsync();
   }, [loaded, error, translator]);

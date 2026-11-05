@@ -26,6 +26,11 @@ export function formattedMonthDay(date: string, language: string): string {
   if (language.startsWith('ja')) return `${month}月${day}日`;
   return `${new Intl.DateTimeFormat(language, { timeZone: 'UTC', month: 'short' }).format(value)} ${day}`;
 }
+export function formattedYearMonthDay(date: string, language: string): string {
+  const year = date.slice(0, 4), monthDay = formattedMonthDay(date, language);
+  if (language.startsWith('ko')) return `${year}년 ${monthDay}`;
+  return language.startsWith('ja') ? `${year}年${monthDay}` : `${monthDay}, ${year}`;
+}
 export function relativeDate(date: string, today: string, t: TFunction): string {
   const delta = (parseCalendarDate(date)! - parseCalendarDate(today)!) / 86_400_000;
   return delta === 0 ? t('dday.today') : delta < 0 ? t('dday.ago', { n: -delta }) : delta === 1 ? t('dday.left.one') : t('dday.left', { n: delta });
