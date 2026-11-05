@@ -1,7 +1,7 @@
 import { appGate, type AppGateInput } from '../appGate';
 
 const notice = { kind: 'ended' as const, by: 'partner' as const, at: '2026-10-29T00:00:00Z' };
-const ready: AppGateInput = { fontsLoaded: true, sessionLoaded: true, hasSession: true, entry: 'none', pendingInviteLoaded: true };
+const ready: AppGateInput = { fontsLoaded: true, sessionLoaded: true, hasSession: true, entry: 'none', pendingInviteLoaded: true, snapshotProfile: '하루' };
 
 it.each([
   ['fonts loading', { ...ready, fontsLoaded: false }, 'booting'],
@@ -36,4 +36,11 @@ it.each([
   ['expired session signs in again', { ...ready, sessionExpired: false, entry: 'active', spaceId: 'space-1' }, 'active'],
 ] as const)('transition: %s → %s', (_event, input, expected) => {
   expect(appGate(input).kind).toBe(expected);
+});
+
+it('V0-F02-AC-08 waits for a snapshot and requires a missing member profile', () => {
+  const input = { fontsLoaded: true, sessionLoaded: true, hasSession: true, entry: 'active' as const, spaceId: 'space', pendingInviteLoaded: true };
+  expect(appGate({ ...input, snapshotProfile: undefined })).toEqual({ kind: 'booting' });
+  expect(appGate({ ...input, snapshotProfile: null })).toEqual({ kind: 'needsProfile' });
+  expect(appGate({ ...input, snapshotProfile: '하루' })).toEqual({ kind: 'active', spaceId: 'space' });
 });

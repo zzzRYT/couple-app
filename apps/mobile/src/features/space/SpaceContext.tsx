@@ -5,7 +5,7 @@ type SpaceValue = ReturnType<typeof useSpaceSnapshot> & { inviteAfterActivation:
 const SpaceContext = createContext<SpaceValue | null>(null);
 export function SpaceProvider({ children }: { children: ReactNode }) {
   const { client, realtime, userId } = useApp();
-  const value = useSpaceSnapshot({ client, realtime });
+  const value = useSpaceSnapshot({ client, realtime, userId });
   const [inviteAfterActivation, setInviteAfterActivation] = useState(false);
   const { reload } = value;
   useEffect(() => { if (userId) void reload(); }, [userId, reload]);

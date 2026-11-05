@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AppText, Banner, Button, Screen, TextField } from '../../ui/components';
 import { CycleLoader } from '../../ui/CycleLoader';
@@ -12,17 +12,15 @@ import { DevQuickLogin } from './devQuickLogin';
 import type { createSupabase } from '../../lib/supabase';
 import { ProviderButton } from './ProviderButton';
 import { EMAIL_PATTERN, type AuthPort, type Provider } from './authPort';
+import { mascotPoses } from '../../scene/catalog';
 
 type OAuthProvider = 'kakao' | 'apple';
 type State = { kind: 'choose' } | { kind: 'redirect'; provider: OAuthProvider } | { kind: 'cancelled' | 'error'; provider: OAuthProvider } | { kind: 'email'; invalid: boolean; sending: boolean; failed: boolean };
 function Legal() {
-  const color = useAppColor();
   const { t } = useTranslation();
-  const { emphasis } = useType();
   return (
     <View style={{ alignItems: 'center', gap: 2 }}>
-      <AppText variant="caption" tone="text2" align="center">{t('onb.legal.lead')}</AppText>
-      <AppText style={[emphasis(12), { color: color.primary, textDecorationLine: 'underline' }]}>{t('onb.legal.links')}</AppText>
+      <AppText variant="caption" tone="text2" align="center">{t('start.intro.terms')}</AppText>
       <AppText variant="caption" tone="text2" align="center">{t('onb.age')}</AppText>
     </View>
   );
@@ -69,16 +67,7 @@ export function LoginScreen({ auth, lastUsed, onDone, onEmail, onBack, notice, q
     );
   }
   return (
-    <Screen onBack={onBack} footer={<Legal />}>
-      <View style={{ alignItems: 'center', gap: 2, paddingTop: tokens.spacing[2] }}>
-        <AppText variant="heading" align="center">{t('main.appName')}</AppText>
-        <AppText variant="caption" tone="text2" align="center">{t('brand.tagline')}</AppText>
-      </View>
-      <AppText variant="title" accessibilityRole="header">{t('login.title')}</AppText>
-      {notice && state.kind === 'choose' && <Banner kind="success" text={notice} />}
-      {(state.kind === 'cancelled' || state.kind === 'error') && (
-        <Banner kind={state.kind === 'error' ? 'danger' : 'info'} text={t(`login.${state.kind}.title`)} body={t(`login.${state.kind}.body`)} action={{ label: t('common.retry'), onPress: () => void signIn(state.provider) }} />
-      )}
+    <Screen onBack={onBack} footer={<>
       <View style={{ gap: tokens.spacing[2] }}>
         {options.apple === 'native' && <View style={{ gap: tokens.spacing[0] }}>
           {lastUsed === 'apple' && <AppText style={[emphasis(13), { color: color.primary }]}>{t('onb.lastUsed')}</AppText>}
@@ -90,6 +79,19 @@ export function LoginScreen({ auth, lastUsed, onDone, onEmail, onBack, notice, q
         {options.devEmail && <Button label={t('login.email')} variant="secondary" icon="mail" onPress={() => setState({ kind: 'email', invalid: false, sending: false, failed: false })} />}
       </View>
       {quickLoginClient && <DevQuickLogin client={quickLoginClient} onDone={onDone} />}
+      <Legal />
+    </>}>
+      <View style={{ alignItems: 'center', gap: 2, paddingTop: tokens.spacing[2] }}>
+        <Image accessibilityLabel={t('mascot.alt.wave')} source={mascotPoses.wave_main} resizeMode="contain" style={{ width: 150, height: 150 }} />
+        <AppText variant="title" align="center">{t('app.name')}</AppText>
+        <AppText variant="caption" tone="text2" align="center">{t('app.slogan')}</AppText>
+      </View>
+      <AppText variant="title" align="center" accessibilityRole="header">{t('start.intro.title')}</AppText>
+      <View style={{ gap: tokens.spacing[2] }}>{(['start.intro.f1', 'start.intro.f2', 'start.intro.f3'] as const).map((key) => <AppText key={key}>{t(key)}</AppText>)}</View>
+      {notice && state.kind === 'choose' && <Banner kind="success" text={notice} />}
+      {(state.kind === 'cancelled' || state.kind === 'error') && (
+        <Banner kind={state.kind === 'error' ? 'danger' : 'info'} text={t(`login.${state.kind}.title`)} body={t(`login.${state.kind}.body`)} action={{ label: t('common.retry'), onPress: () => void signIn(state.provider) }} />
+      )}
     </Screen>
   );
 }

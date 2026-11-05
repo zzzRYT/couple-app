@@ -6,6 +6,7 @@ import { InviteScreen } from '../features/onboarding/InviteScreen';
 import { useApp } from '../lib/AppContext';
 import { useSpace } from '../features/space/SpaceContext';
 import { LoadingScreen } from '../ui/CycleLoader';
+import { saveV0Invite } from '../features/space/v0LocalData';
 
 export default function InviteRoute() {
   const { client } = useApp();
@@ -13,9 +14,11 @@ export default function InviteRoute() {
   const { t } = useTranslation();
   const snapshot = state.snapshot;
   const spaceId = snapshot?.space.spaceId;
-  const createInvitation = useCallback(() => {
+  const createInvitation = useCallback(async () => {
     if (!spaceId) return Promise.reject(new Error('Space is not ready'));
-    return client.createInvitation(spaceId);
+    const invite = await client.createInvitation(spaceId);
+    await saveV0Invite(spaceId, { code: invite.code, expiresAt: invite.expiresAt });
+    return invite;
   }, [client, spaceId]);
   const closeInvite = useCallback(() => router.back(), []);
   if (!snapshot) return <LoadingScreen label={t('common.loading')} />;

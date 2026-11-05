@@ -44,19 +44,19 @@ function Column({ field, values, selected, unit, onChange }: { field: Field; val
   );
 }
 /** Three-column wheel (not a calendar). Days always list 1-31 so impossible dates are reported by validation instead of silently clamped. */
-export function DateWheel({ value, onChange, maxYear }: { value: DateParts; onChange: (value: DateParts) => void; maxYear: number }) {
+export function DateWheel({ value, onChange, maxYear, minYear = maxYear - 80, includeYear = true }: { value: DateParts; onChange: (value: DateParts) => void; maxYear: number; minYear?: number; includeYear?: boolean }) {
   const color = useAppColor();
   const { t, i18n } = useTranslation();
   const range = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i);
-  const values = { year: range(maxYear - 80, maxYear), month: range(1, 12), day: range(1, 31) };
+  const values = { year: range(minYear, maxYear), month: range(1, 12), day: range(1, 31) };
   return (
     <View accessibilityLabel={t('a11y.dateField')} style={{ flexDirection: 'row', paddingVertical: 4, borderWidth: tokens.border.outline.normal, borderColor: color.line, borderRadius: tokens.radius.card, backgroundColor: color.surface }}>
-      {fieldOrder(i18n.language).map((field) => <Column key={field} field={field} values={values[field]} selected={value[field]} unit={t(unitKey[field])} onChange={(next) => onChange({ ...value, [field]: next })} />)}
+      {fieldOrder(i18n.language).filter((field) => includeYear || field !== 'year').map((field) => <Column key={field} field={field} values={values[field]} selected={value[field]} unit={t(unitKey[field])} onChange={(next) => onChange({ ...value, [field]: next })} />)}
     </View>
   );
 }
 /** S03-form: three outlined boxes; tapping one opens the wheel in a sheet (S03-picker). */
-export function DateField({ value, onChange, maxYear, error }: { value: DateParts; onChange: (value: DateParts) => void; maxYear: number; error?: boolean }) {
+export function DateField({ value, onChange, maxYear, error, renderPreview }: { value: DateParts; onChange: (value: DateParts) => void; maxYear: number; error?: boolean; renderPreview?: (draft: DateParts) => React.ReactNode }) {
   const color = useAppColor();
   const { t, i18n } = useTranslation();
   const { emphasis } = useType();
@@ -74,6 +74,7 @@ export function DateField({ value, onChange, maxYear, error }: { value: DatePart
       </View>
       <BottomSheet visible={open} title={t('space.date.pick')} onClose={() => setOpen(false)}>
         <DateWheel value={draft} maxYear={maxYear} onChange={setDraft} />
+        {renderPreview?.(draft)}
         <Button label={t('common.done')} onPress={() => { onChange(draft); setOpen(false); }} />
       </BottomSheet>
     </>

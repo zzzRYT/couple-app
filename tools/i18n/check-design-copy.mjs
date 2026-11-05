@@ -1,9 +1,14 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import ts from 'typescript';
+import { execFileSync } from 'node:child_process';
 import { loadCopies } from './copy-library.mjs';
 const { merged } = await loadCopies();
-const keys = new Set(Object.keys(merged.ko));
+// H02's generated V0 overlay is a second canonical copy source layered over the
+// mirrored base copy. Validate its generation before accepting its keys.
+execFileSync(process.execPath, ['tools/i18n/build-v0-overlay.mjs', '--check'], { stdio: 'inherit' });
+const overlay = JSON.parse(await readFile('apps/mobile/src/i18n/locales/v0/ko-KR.json', 'utf8'));
+const keys = new Set([...Object.keys(merged.ko), ...Object.keys(overlay)]);
 for (const [lang, locale] of [['ko', 'ko-KR'], ['en', 'en-US'], ['ja', 'ja-JP']]) {
   const generated = JSON.parse(await readFile(`apps/mobile/src/i18n/locales/${locale}.json`, 'utf8'));
   const sourceKeys = Object.keys(merged[lang]).sort();

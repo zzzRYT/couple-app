@@ -1,0 +1,1474 @@
+{
+  "cases": [
+    {
+      "start": "2024-02-29",
+      "zone": "Asia/Seoul",
+      "now": "2024-02-29T03:00:00Z",
+      "dayCount": 1,
+      "today": null,
+      "next": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2024-04-18",
+        "n": 50
+      },
+      "upcoming": [
+        {
+          "key": "d100",
+          "kind": "days",
+          "date": "2024-06-07",
+          "n": 100
+        },
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2024-07-27",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2024-09-15",
+          "n": 200
+        }
+      ]
+    },
+    {
+      "start": "2024-02-29",
+      "zone": "America/New_York",
+      "now": "2024-04-18T16:00:00Z",
+      "dayCount": 50,
+      "today": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2024-04-18",
+        "n": 50
+      },
+      "next": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2024-06-07",
+        "n": 100
+      },
+      "upcoming": [
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2024-07-27",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2024-09-15",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2024-12-24",
+          "n": 300
+        }
+      ]
+    },
+    {
+      "start": "2024-02-29",
+      "zone": "Europe/London",
+      "now": "2024-06-07T11:00:00Z",
+      "dayCount": 100,
+      "today": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2024-06-07",
+        "n": 100
+      },
+      "next": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2024-07-27",
+        "n": 150
+      },
+      "upcoming": [
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2024-09-15",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2024-12-24",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2025-02-28",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "start": "2024-02-29",
+      "zone": "Pacific/Auckland",
+      "now": "2024-07-27T00:00:00Z",
+      "dayCount": 150,
+      "today": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2024-07-27",
+        "n": 150
+      },
+      "next": {
+        "key": "d200",
+        "kind": "days",
+        "date": "2024-09-15",
+        "n": 200
+      },
+      "upcoming": [
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2024-12-24",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2025-02-28",
+          "n": 1
+        },
+        {
+          "key": "y2",
+          "kind": "years",
+          "date": "2026-02-28",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "start": "2024-02-29",
+      "zone": "Asia/Tokyo",
+      "now": "2025-02-28T03:00:00Z",
+      "dayCount": 366,
+      "today": {
+        "key": "y1",
+        "kind": "years",
+        "date": "2025-02-28",
+        "n": 1
+      },
+      "next": {
+        "key": "y2",
+        "kind": "years",
+        "date": "2026-02-28",
+        "n": 2
+      },
+      "upcoming": [
+        {
+          "key": "y3",
+          "kind": "years",
+          "date": "2027-02-28",
+          "n": 3
+        },
+        {
+          "key": "y4",
+          "kind": "years",
+          "date": "2028-02-29",
+          "n": 4
+        },
+        {
+          "key": "y5",
+          "kind": "years",
+          "date": "2029-02-28",
+          "n": 5
+        }
+      ]
+    },
+    {
+      "start": "2025-06-29",
+      "zone": "Asia/Seoul",
+      "now": "2025-06-29T03:00:00Z",
+      "dayCount": 1,
+      "today": null,
+      "next": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2025-08-17",
+        "n": 50
+      },
+      "upcoming": [
+        {
+          "key": "d100",
+          "kind": "days",
+          "date": "2025-10-06",
+          "n": 100
+        },
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2025-11-25",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2026-01-14",
+          "n": 200
+        }
+      ]
+    },
+    {
+      "start": "2025-06-29",
+      "zone": "America/New_York",
+      "now": "2025-08-17T16:00:00Z",
+      "dayCount": 50,
+      "today": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2025-08-17",
+        "n": 50
+      },
+      "next": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2025-10-06",
+        "n": 100
+      },
+      "upcoming": [
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2025-11-25",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2026-01-14",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2026-04-24",
+          "n": 300
+        }
+      ]
+    },
+    {
+      "start": "2025-06-29",
+      "zone": "Europe/London",
+      "now": "2025-10-06T11:00:00Z",
+      "dayCount": 100,
+      "today": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2025-10-06",
+        "n": 100
+      },
+      "next": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2025-11-25",
+        "n": 150
+      },
+      "upcoming": [
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2026-01-14",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2026-04-24",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2026-06-29",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "start": "2025-06-29",
+      "zone": "Pacific/Auckland",
+      "now": "2025-11-24T23:00:00Z",
+      "dayCount": 150,
+      "today": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2025-11-25",
+        "n": 150
+      },
+      "next": {
+        "key": "d200",
+        "kind": "days",
+        "date": "2026-01-14",
+        "n": 200
+      },
+      "upcoming": [
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2026-04-24",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2026-06-29",
+          "n": 1
+        },
+        {
+          "key": "y2",
+          "kind": "years",
+          "date": "2027-06-29",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "start": "2025-06-29",
+      "zone": "Asia/Tokyo",
+      "now": "2026-06-29T03:00:00Z",
+      "dayCount": 366,
+      "today": {
+        "key": "y1",
+        "kind": "years",
+        "date": "2026-06-29",
+        "n": 1
+      },
+      "next": {
+        "key": "y2",
+        "kind": "years",
+        "date": "2027-06-29",
+        "n": 2
+      },
+      "upcoming": [
+        {
+          "key": "y3",
+          "kind": "years",
+          "date": "2028-06-29",
+          "n": 3
+        },
+        {
+          "key": "y4",
+          "kind": "years",
+          "date": "2029-06-29",
+          "n": 4
+        },
+        {
+          "key": "y5",
+          "kind": "years",
+          "date": "2030-06-29",
+          "n": 5
+        }
+      ]
+    },
+    {
+      "start": "2024-01-01",
+      "zone": "Asia/Seoul",
+      "now": "2024-01-01T03:00:00Z",
+      "dayCount": 1,
+      "today": null,
+      "next": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2024-02-19",
+        "n": 50
+      },
+      "upcoming": [
+        {
+          "key": "d100",
+          "kind": "days",
+          "date": "2024-04-09",
+          "n": 100
+        },
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2024-05-29",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2024-07-18",
+          "n": 200
+        }
+      ]
+    },
+    {
+      "start": "2024-01-01",
+      "zone": "America/New_York",
+      "now": "2024-02-19T17:00:00Z",
+      "dayCount": 50,
+      "today": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2024-02-19",
+        "n": 50
+      },
+      "next": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2024-04-09",
+        "n": 100
+      },
+      "upcoming": [
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2024-05-29",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2024-07-18",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2024-10-26",
+          "n": 300
+        }
+      ]
+    },
+    {
+      "start": "2024-01-01",
+      "zone": "Europe/London",
+      "now": "2024-04-09T11:00:00Z",
+      "dayCount": 100,
+      "today": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2024-04-09",
+        "n": 100
+      },
+      "next": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2024-05-29",
+        "n": 150
+      },
+      "upcoming": [
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2024-07-18",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2024-10-26",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2025-01-01",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "start": "2024-01-01",
+      "zone": "Pacific/Auckland",
+      "now": "2024-05-29T00:00:00Z",
+      "dayCount": 150,
+      "today": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2024-05-29",
+        "n": 150
+      },
+      "next": {
+        "key": "d200",
+        "kind": "days",
+        "date": "2024-07-18",
+        "n": 200
+      },
+      "upcoming": [
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2024-10-26",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2025-01-01",
+          "n": 1
+        },
+        {
+          "key": "y2",
+          "kind": "years",
+          "date": "2026-01-01",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "start": "2024-01-01",
+      "zone": "Asia/Tokyo",
+      "now": "2024-12-31T03:00:00Z",
+      "dayCount": 366,
+      "today": null,
+      "next": {
+        "key": "y1",
+        "kind": "years",
+        "date": "2025-01-01",
+        "n": 1
+      },
+      "upcoming": [
+        {
+          "key": "y2",
+          "kind": "years",
+          "date": "2026-01-01",
+          "n": 2
+        },
+        {
+          "key": "y3",
+          "kind": "years",
+          "date": "2027-01-01",
+          "n": 3
+        },
+        {
+          "key": "y4",
+          "kind": "years",
+          "date": "2028-01-01",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "start": "2026-01-01",
+      "zone": "Asia/Seoul",
+      "now": "2026-01-01T03:00:00Z",
+      "dayCount": 1,
+      "today": null,
+      "next": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2026-02-19",
+        "n": 50
+      },
+      "upcoming": [
+        {
+          "key": "d100",
+          "kind": "days",
+          "date": "2026-04-10",
+          "n": 100
+        },
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2026-05-30",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2026-07-19",
+          "n": 200
+        }
+      ]
+    },
+    {
+      "start": "2026-01-01",
+      "zone": "America/New_York",
+      "now": "2026-02-19T17:00:00Z",
+      "dayCount": 50,
+      "today": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2026-02-19",
+        "n": 50
+      },
+      "next": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2026-04-10",
+        "n": 100
+      },
+      "upcoming": [
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2026-05-30",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2026-07-19",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2026-10-27",
+          "n": 300
+        }
+      ]
+    },
+    {
+      "start": "2026-01-01",
+      "zone": "Europe/London",
+      "now": "2026-04-10T11:00:00Z",
+      "dayCount": 100,
+      "today": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2026-04-10",
+        "n": 100
+      },
+      "next": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2026-05-30",
+        "n": 150
+      },
+      "upcoming": [
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2026-07-19",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2026-10-27",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2027-01-01",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "start": "2026-01-01",
+      "zone": "Pacific/Auckland",
+      "now": "2026-05-30T00:00:00Z",
+      "dayCount": 150,
+      "today": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2026-05-30",
+        "n": 150
+      },
+      "next": {
+        "key": "d200",
+        "kind": "days",
+        "date": "2026-07-19",
+        "n": 200
+      },
+      "upcoming": [
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2026-10-27",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2027-01-01",
+          "n": 1
+        },
+        {
+          "key": "y2",
+          "kind": "years",
+          "date": "2028-01-01",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "start": "2026-01-01",
+      "zone": "Asia/Tokyo",
+      "now": "2027-01-01T03:00:00Z",
+      "dayCount": 366,
+      "today": {
+        "key": "y1",
+        "kind": "years",
+        "date": "2027-01-01",
+        "n": 1
+      },
+      "next": {
+        "key": "y2",
+        "kind": "years",
+        "date": "2028-01-01",
+        "n": 2
+      },
+      "upcoming": [
+        {
+          "key": "y3",
+          "kind": "years",
+          "date": "2029-01-01",
+          "n": 3
+        },
+        {
+          "key": "y4",
+          "kind": "years",
+          "date": "2030-01-01",
+          "n": 4
+        },
+        {
+          "key": "y5",
+          "kind": "years",
+          "date": "2031-01-01",
+          "n": 5
+        }
+      ]
+    },
+    {
+      "start": "2023-11-05",
+      "zone": "Asia/Seoul",
+      "now": "2023-11-05T03:00:00Z",
+      "dayCount": 1,
+      "today": null,
+      "next": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2023-12-24",
+        "n": 50
+      },
+      "upcoming": [
+        {
+          "key": "d100",
+          "kind": "days",
+          "date": "2024-02-12",
+          "n": 100
+        },
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2024-04-02",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2024-05-22",
+          "n": 200
+        }
+      ]
+    },
+    {
+      "start": "2023-11-05",
+      "zone": "America/New_York",
+      "now": "2023-12-24T17:00:00Z",
+      "dayCount": 50,
+      "today": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2023-12-24",
+        "n": 50
+      },
+      "next": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2024-02-12",
+        "n": 100
+      },
+      "upcoming": [
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2024-04-02",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2024-05-22",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2024-08-30",
+          "n": 300
+        }
+      ]
+    },
+    {
+      "start": "2023-11-05",
+      "zone": "Europe/London",
+      "now": "2024-02-12T12:00:00Z",
+      "dayCount": 100,
+      "today": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2024-02-12",
+        "n": 100
+      },
+      "next": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2024-04-02",
+        "n": 150
+      },
+      "upcoming": [
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2024-05-22",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2024-08-30",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2024-11-05",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "start": "2023-11-05",
+      "zone": "Pacific/Auckland",
+      "now": "2024-04-01T23:00:00Z",
+      "dayCount": 150,
+      "today": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2024-04-02",
+        "n": 150
+      },
+      "next": {
+        "key": "d200",
+        "kind": "days",
+        "date": "2024-05-22",
+        "n": 200
+      },
+      "upcoming": [
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2024-08-30",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2024-11-05",
+          "n": 1
+        },
+        {
+          "key": "y2",
+          "kind": "years",
+          "date": "2025-11-05",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "start": "2023-11-05",
+      "zone": "Asia/Tokyo",
+      "now": "2024-11-04T03:00:00Z",
+      "dayCount": 366,
+      "today": null,
+      "next": {
+        "key": "y1",
+        "kind": "years",
+        "date": "2024-11-05",
+        "n": 1
+      },
+      "upcoming": [
+        {
+          "key": "y2",
+          "kind": "years",
+          "date": "2025-11-05",
+          "n": 2
+        },
+        {
+          "key": "y3",
+          "kind": "years",
+          "date": "2026-11-05",
+          "n": 3
+        },
+        {
+          "key": "y4",
+          "kind": "years",
+          "date": "2027-11-05",
+          "n": 4
+        }
+      ]
+    },
+    {
+      "start": "2020-02-29",
+      "zone": "Asia/Seoul",
+      "now": "2020-02-29T03:00:00Z",
+      "dayCount": 1,
+      "today": null,
+      "next": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2020-04-18",
+        "n": 50
+      },
+      "upcoming": [
+        {
+          "key": "d100",
+          "kind": "days",
+          "date": "2020-06-07",
+          "n": 100
+        },
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2020-07-27",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2020-09-15",
+          "n": 200
+        }
+      ]
+    },
+    {
+      "start": "2020-02-29",
+      "zone": "America/New_York",
+      "now": "2020-04-18T16:00:00Z",
+      "dayCount": 50,
+      "today": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2020-04-18",
+        "n": 50
+      },
+      "next": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2020-06-07",
+        "n": 100
+      },
+      "upcoming": [
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2020-07-27",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2020-09-15",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2020-12-24",
+          "n": 300
+        }
+      ]
+    },
+    {
+      "start": "2020-02-29",
+      "zone": "Europe/London",
+      "now": "2020-06-07T11:00:00Z",
+      "dayCount": 100,
+      "today": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2020-06-07",
+        "n": 100
+      },
+      "next": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2020-07-27",
+        "n": 150
+      },
+      "upcoming": [
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2020-09-15",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2020-12-24",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2021-02-28",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "start": "2020-02-29",
+      "zone": "Pacific/Auckland",
+      "now": "2020-07-27T00:00:00Z",
+      "dayCount": 150,
+      "today": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2020-07-27",
+        "n": 150
+      },
+      "next": {
+        "key": "d200",
+        "kind": "days",
+        "date": "2020-09-15",
+        "n": 200
+      },
+      "upcoming": [
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2020-12-24",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2021-02-28",
+          "n": 1
+        },
+        {
+          "key": "y2",
+          "kind": "years",
+          "date": "2022-02-28",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "start": "2020-02-29",
+      "zone": "Asia/Tokyo",
+      "now": "2021-02-28T03:00:00Z",
+      "dayCount": 366,
+      "today": {
+        "key": "y1",
+        "kind": "years",
+        "date": "2021-02-28",
+        "n": 1
+      },
+      "next": {
+        "key": "y2",
+        "kind": "years",
+        "date": "2022-02-28",
+        "n": 2
+      },
+      "upcoming": [
+        {
+          "key": "y3",
+          "kind": "years",
+          "date": "2023-02-28",
+          "n": 3
+        },
+        {
+          "key": "y4",
+          "kind": "years",
+          "date": "2024-02-29",
+          "n": 4
+        },
+        {
+          "key": "y5",
+          "kind": "years",
+          "date": "2025-02-28",
+          "n": 5
+        }
+      ]
+    },
+    {
+      "start": "2026-03-01",
+      "zone": "Asia/Seoul",
+      "now": "2026-03-01T03:00:00Z",
+      "dayCount": 1,
+      "today": null,
+      "next": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2026-04-19",
+        "n": 50
+      },
+      "upcoming": [
+        {
+          "key": "d100",
+          "kind": "days",
+          "date": "2026-06-08",
+          "n": 100
+        },
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2026-07-28",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2026-09-16",
+          "n": 200
+        }
+      ]
+    },
+    {
+      "start": "2026-03-01",
+      "zone": "America/New_York",
+      "now": "2026-04-19T16:00:00Z",
+      "dayCount": 50,
+      "today": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2026-04-19",
+        "n": 50
+      },
+      "next": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2026-06-08",
+        "n": 100
+      },
+      "upcoming": [
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2026-07-28",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2026-09-16",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2026-12-25",
+          "n": 300
+        }
+      ]
+    },
+    {
+      "start": "2026-03-01",
+      "zone": "Europe/London",
+      "now": "2026-06-08T11:00:00Z",
+      "dayCount": 100,
+      "today": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2026-06-08",
+        "n": 100
+      },
+      "next": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2026-07-28",
+        "n": 150
+      },
+      "upcoming": [
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2026-09-16",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2026-12-25",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2027-03-01",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "start": "2026-03-01",
+      "zone": "Pacific/Auckland",
+      "now": "2026-07-28T00:00:00Z",
+      "dayCount": 150,
+      "today": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2026-07-28",
+        "n": 150
+      },
+      "next": {
+        "key": "d200",
+        "kind": "days",
+        "date": "2026-09-16",
+        "n": 200
+      },
+      "upcoming": [
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2026-12-25",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2027-03-01",
+          "n": 1
+        },
+        {
+          "key": "y2",
+          "kind": "years",
+          "date": "2028-03-01",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "start": "2026-03-01",
+      "zone": "Asia/Tokyo",
+      "now": "2027-03-01T03:00:00Z",
+      "dayCount": 366,
+      "today": {
+        "key": "y1",
+        "kind": "years",
+        "date": "2027-03-01",
+        "n": 1
+      },
+      "next": {
+        "key": "y2",
+        "kind": "years",
+        "date": "2028-03-01",
+        "n": 2
+      },
+      "upcoming": [
+        {
+          "key": "y3",
+          "kind": "years",
+          "date": "2029-03-01",
+          "n": 3
+        },
+        {
+          "key": "y4",
+          "kind": "years",
+          "date": "2030-03-01",
+          "n": 4
+        },
+        {
+          "key": "y5",
+          "kind": "years",
+          "date": "2031-03-01",
+          "n": 5
+        }
+      ]
+    },
+    {
+      "start": "2022-12-31",
+      "zone": "Asia/Seoul",
+      "now": "2022-12-31T03:00:00Z",
+      "dayCount": 1,
+      "today": null,
+      "next": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2023-02-18",
+        "n": 50
+      },
+      "upcoming": [
+        {
+          "key": "d100",
+          "kind": "days",
+          "date": "2023-04-09",
+          "n": 100
+        },
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2023-05-29",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2023-07-18",
+          "n": 200
+        }
+      ]
+    },
+    {
+      "start": "2022-12-31",
+      "zone": "America/New_York",
+      "now": "2023-02-18T17:00:00Z",
+      "dayCount": 50,
+      "today": {
+        "key": "d50",
+        "kind": "days",
+        "date": "2023-02-18",
+        "n": 50
+      },
+      "next": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2023-04-09",
+        "n": 100
+      },
+      "upcoming": [
+        {
+          "key": "d150",
+          "kind": "days",
+          "date": "2023-05-29",
+          "n": 150
+        },
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2023-07-18",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2023-10-26",
+          "n": 300
+        }
+      ]
+    },
+    {
+      "start": "2022-12-31",
+      "zone": "Europe/London",
+      "now": "2023-04-09T11:00:00Z",
+      "dayCount": 100,
+      "today": {
+        "key": "d100",
+        "kind": "days",
+        "date": "2023-04-09",
+        "n": 100
+      },
+      "next": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2023-05-29",
+        "n": 150
+      },
+      "upcoming": [
+        {
+          "key": "d200",
+          "kind": "days",
+          "date": "2023-07-18",
+          "n": 200
+        },
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2023-10-26",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2023-12-31",
+          "n": 1
+        }
+      ]
+    },
+    {
+      "start": "2022-12-31",
+      "zone": "Pacific/Auckland",
+      "now": "2023-05-29T00:00:00Z",
+      "dayCount": 150,
+      "today": {
+        "key": "d150",
+        "kind": "days",
+        "date": "2023-05-29",
+        "n": 150
+      },
+      "next": {
+        "key": "d200",
+        "kind": "days",
+        "date": "2023-07-18",
+        "n": 200
+      },
+      "upcoming": [
+        {
+          "key": "d300",
+          "kind": "days",
+          "date": "2023-10-26",
+          "n": 300
+        },
+        {
+          "key": "y1",
+          "kind": "years",
+          "date": "2023-12-31",
+          "n": 1
+        },
+        {
+          "key": "y2",
+          "kind": "years",
+          "date": "2024-12-31",
+          "n": 2
+        }
+      ]
+    },
+    {
+      "start": "2022-12-31",
+      "zone": "Asia/Tokyo",
+      "now": "2023-12-31T03:00:00Z",
+      "dayCount": 366,
+      "today": {
+        "key": "y1",
+        "kind": "years",
+        "date": "2023-12-31",
+        "n": 1
+      },
+      "next": {
+        "key": "y2",
+        "kind": "years",
+        "date": "2024-12-31",
+        "n": 2
+      },
+      "upcoming": [
+        {
+          "key": "y3",
+          "kind": "years",
+          "date": "2025-12-31",
+          "n": 3
+        },
+        {
+          "key": "y4",
+          "kind": "years",
+          "date": "2026-12-31",
+          "n": 4
+        },
+        {
+          "key": "y5",
+          "kind": "years",
+          "date": "2027-12-31",
+          "n": 5
+        }
+      ]
+    }
+  ]
+}

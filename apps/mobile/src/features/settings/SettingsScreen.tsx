@@ -1,15 +1,14 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
+import { TimeZoneSheet } from './TimeZoneSheet';
 import { ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { usePreferences, type DisplayMode } from './preferences';
 import type { Locale } from '../../i18n';
 import { useAppColor } from '../../theme/useAppColor';
 import { tokens } from '../../theme/tokens';
-import { AppText, Banner, BottomSheet, Button, Card, Dialog, GUTTER, ListRow, SectionLabel, TextField, useTabBarClearance } from '../../ui/components';
+import { AppText, Banner, BottomSheet, Button, Card, Dialog, GUTTER, ListRow, SectionLabel, useTabBarClearance } from '../../ui/components';
 
 type SpaceRows = { anniversary: string; consent: 'not_given' | 'granted' | 'revoked'; roomMode: 'day' | 'night' | 'follow_time'; timeZone: string };
-const fallbackZones = ['Asia/Seoul', 'Asia/Tokyo', 'Asia/Taipei', 'Asia/Singapore', 'Asia/Bangkok', 'Asia/Dubai', 'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'America/Los_Angeles', 'America/Denver', 'America/Chicago', 'America/New_York', 'Pacific/Auckland'];
-const supportedZones = (Intl as typeof Intl & { supportedValuesOf?: (key: 'timeZone') => string[] }).supportedValuesOf?.('timeZone') ?? fallbackZones;
 const languages: { locale: Locale | null; label: string; value: string }[] = [
   { locale: null, label: 'set.lang.system', value: 'system' },
   { locale: 'ko-KR', label: '한국어', value: 'ko' },
@@ -24,16 +23,11 @@ export function SettingsScreen({ onLogout, space, version, offline = false, onRo
   const preferences = usePreferences();
   const [confirming, setConfirming] = useState(false);
   const [sheet, setSheet] = useState<'language' | 'timezone' | 'licenses' | null>(null);
-  const [zoneQuery, setZoneQuery] = useState('');
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
   const [roomFailed, setRoomFailed] = useState(false);
   const [roomSaving, setRoomSaving] = useState(false);
   const clearance = useTabBarClearance();
-  const filteredZones = useMemo(() => {
-    const choices = zoneQuery.trim() ? supportedZones : [...fallbackZones, ...(space ? [space.timeZone] : [])];
-    return [...new Set(choices)].filter((zone) => zone.toLowerCase().includes(zoneQuery.trim().toLowerCase()));
-  }, [zoneQuery, space?.timeZone]);
   async function confirm() {
     setBusy(true);
     setFailed(false);
@@ -62,7 +56,7 @@ export function SettingsScreen({ onLogout, space, version, offline = false, onRo
           </View>
           <AppText variant="bodySm" tone="text2">{t('set.room.mode.help')}</AppText>
           {offline && <Banner kind="offline" text={t('set.offline.body')} />}
-          <ListRow icon="globe" label={t('set.room.tz')} value={space.timeZone} onPress={() => { setZoneQuery(''); setSheet('timezone'); }} disabled={offline || !onTimeZone} />
+          <ListRow icon="globe" label={t('set.room.tz')} value={space.timeZone} onPress={() => setSheet('timezone')} disabled={offline || !onTimeZone} />
         </Card>
         {roomFailed && <Banner kind="danger" text={t('sys.server.title')} body={t('sys.server.body')} />}
         <SectionLabel text={t('set.sec.couple')} />
@@ -111,10 +105,7 @@ export function SettingsScreen({ onLogout, space, version, offline = false, onRo
         {languages.map(({ locale, label, value }) => <ListRow key={value} label={locale ? label : t(label)} value={(preferences.locale ?? 'system') === (locale ?? 'system') ? '✓' : undefined} onPress={async () => { try { await preferences.setLocale(locale); setSheet(null); } catch { setSheet('language'); } }} />)}
         <AppText variant="bodySm" tone="text2">{t('set.lang.note')}</AppText>
       </BottomSheet>
-      <BottomSheet visible={sheet === 'timezone'} title={t('set.room.tz.pick')} onClose={() => setSheet(null)}>
-        <TextField label={t('set.room.tz.search')} value={zoneQuery} onChangeText={setZoneQuery} autoCapitalize="none" autoCorrect={false} />
-        {filteredZones.map((zone) => <ListRow key={zone} label={zone} value={space?.timeZone === zone ? '✓' : undefined} disabled={offline || roomSaving} onPress={() => { if (space?.timeZone !== zone) void selectTimeZone(zone); else setSheet(null); }} />)}
-      </BottomSheet>
+      <TimeZoneSheet visible={sheet === 'timezone'} timeZone={space?.timeZone} disabled={offline || roomSaving} onClose={() => setSheet(null)} onSelect={(zone) => { if (space?.timeZone !== zone) void selectTimeZone(zone); else setSheet(null); }} />
       <BottomSheet visible={sheet === 'licenses'} title={t('lic.title')} onClose={() => setSheet(null)}>
         <AppText>{t('lic.ofl')}</AppText>
         <AppText>{t('lic.inter')}</AppText>
