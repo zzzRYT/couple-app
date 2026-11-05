@@ -59,6 +59,12 @@ class SyncTests(unittest.TestCase):
             for lang in sync.LANGS:
                 (root/f'design/pages/auth/login/copy/{lang}.json').write_text(json.dumps({'status':'source','strings':{}}))
             (root/'apps/mobile/src/i18n/locales').mkdir(parents=True)
+            repo = HERE.parents[1]
+            shutil.copytree(repo/'apps/mobile/src/i18n/locales/v0', root/'apps/mobile/src/i18n/locales/v0')
+            shutil.copyfile(repo/'apps/mobile/src/i18n/v0Keys.d.ts', root/'apps/mobile/src/i18n/v0Keys.d.ts')
+            v0_copy = Path('specs/002-couple-dday-v0/handoffs/design/copy-v0.md')
+            (root/v0_copy).parent.mkdir(parents=True)
+            shutil.copyfile(repo/v0_copy, root/v0_copy)
             (root/'tools').mkdir()
             shutil.copytree(HERE.parent/'i18n', root/'tools/i18n')
             (root/'node_modules').symlink_to(HERE.parents[1]/'node_modules', target_is_directory=True)

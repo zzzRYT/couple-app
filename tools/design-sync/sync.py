@@ -175,6 +175,11 @@ def sync(project, version):
         candidate = Path(temp)
         shutil.copytree(ROOT/'design', candidate/'design')
         shutil.copytree(ROOT/'apps/mobile/src', candidate/'apps/mobile/src')
+        (candidate/'tools/i18n').mkdir(parents=True)
+        shutil.copyfile(ROOT/'tools/i18n/build-v0-overlay.mjs', candidate/'tools/i18n/build-v0-overlay.mjs')
+        v0_design = Path('specs/002-couple-dday-v0/handoffs/design/copy-v0.md')
+        (candidate/v0_design).parent.mkdir(parents=True)
+        shutil.copyfile(ROOT/v0_design, candidate/v0_design)
         pages = candidate/'design/pages'
         for path in pages.rglob('copy'):
             if path.is_dir():
