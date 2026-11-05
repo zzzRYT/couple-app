@@ -54,7 +54,7 @@
   "submit": {
     "testflight": {
       "ios": {
-        "ascAppId": "ASC_APP_ID_REQUIRED",
+        "ascAppId": "6831056066",
         "appleTeamId": "43ZASDF2J7"
       }
     }

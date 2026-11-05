@@ -16,7 +16,8 @@ test('V0-F14-AC-01 testflight profile is store signed and submits after a succes
   assert.equal(eas.build.testflight.env.APP_VARIANT, 'preview');
   assert.equal(eas.build.production.channel, 'production');
   assert.equal(eas.submit.testflight.ios.appleTeamId, '43ZASDF2J7');
-  assert.equal(eas.submit.testflight.ios.ascAppId, 'ASC_APP_ID_REQUIRED');
+  await EasJsonUtils.getSubmitProfileAsync(accessor, 'ios', 'testflight');
+  assert.equal(eas.submit.testflight.ios.ascAppId, '6831056066');
   const workflow = await read('.github/workflows/release-ios.yml');
   assert.match(workflow, /workflow_dispatch/);
   const buildStep = workflow.split('      - name: Build (and submit on success)')[1];
