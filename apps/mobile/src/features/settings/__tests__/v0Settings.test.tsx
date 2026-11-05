@@ -18,3 +18,7 @@ it('V0-F13-AC-03 disables shared edits while offline', async () => {
   const screen = await renderWithI18n(<V0SettingsScreen snapshot={snapshotFixture()} offline version="0.1" onLogout={jest.fn()} onZone={jest.fn()} navigate={navigate} />);
   expect(screen.getByRole('button', { name: /사귄 날/ }).props.accessibilityState.disabled).toBe(true);
 });
+it('V0-NF-02 draws the time-zone row as the board does, not from the engine zone names', async () => {
+  const screen = await renderWithI18n(<V0SettingsScreen snapshot={snapshotFixture()} offline={false} version="0.1" onLogout={jest.fn()} onZone={jest.fn()} navigate={jest.fn()} />);
+  expect(screen.getByText('서울 (UTC+9)')).toBeTruthy();
+});

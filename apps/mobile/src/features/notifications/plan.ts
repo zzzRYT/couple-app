@@ -21,7 +21,7 @@ function zoneFormat(timeZone: string) {
   return format;
 }
 /** Milliseconds the zone's wall clock is ahead of UTC at this instant. */
-function zoneOffset(instant: number, timeZone: string): number {
+export function zoneOffset(instant: number, timeZone: string): number {
   const part: Record<string, number> = {};
   for (const { type, value } of zoneFormat(timeZone).formatToParts(new Date(instant))) part[type] = Number(value);
   return Date.UTC(part.year!, part.month! - 1, part.day!, part.hour! % 24, part.minute, part.second) - Math.floor(instant / 1000) * 1000;
