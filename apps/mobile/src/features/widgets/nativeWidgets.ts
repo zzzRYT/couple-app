@@ -26,7 +26,11 @@ export function widgetPort(widgets: Timeline[], scheme: string): WidgetPort {
 /** A build reports a widgets directory only when the extension's App Group is configured; every other build stays a no-op. */
 export function installNativeWidgets(translator: i18n) {
   if (Platform.OS !== 'ios' || !requireOptionalNativeModule<{ widgetsDirectory?: string | null }>('ExpoWidgets')?.widgetsDirectory) return;
-  // eslint-disable-next-line @typescript-eslint/no-require-imports -- loaded only here: creating a widget writes its layout to the App Group
-  const { widgets } = require('./definitions') as typeof import('./definitions');
-  installWidgets({ port: widgetPort(widgets, appScheme(Constants.expoConfig?.scheme)), translator });
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- loaded only here: creating a widget writes its layout to the App Group
+    const { widgets } = require('./definitions') as typeof import('./definitions');
+    installWidgets({ port: widgetPort(widgets, appScheme(Constants.expoConfig?.scheme)), translator });
+  } catch {
+    /* This runs before the first screen: a broken extension costs the widgets, never the app. */
+  }
 }
