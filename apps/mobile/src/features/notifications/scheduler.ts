@@ -1,17 +1,13 @@
 import * as Notifications from 'expo-notifications';
 import type { AnniversaryInput } from '../../lib/anniversaries';
+import { serialQueue } from '../../lib/serialQueue';
 import { notificationPermission } from './permissions';
 import { planNotifications, type PlannedNotification } from './plan';
 import { readNotifyPrefs } from './preferences';
 
 const isV0 = (identifier: string) => identifier.startsWith('v0:');
 /** One at a time: a cancel on logout must land after any sync already running, or that sync would re-add what it removed. */
-let queue: Promise<unknown> = Promise.resolve();
-function queued<T>(task: () => Promise<T>): Promise<T> {
-  const run = queue.then(task, task);
-  queue = run.catch(() => undefined);
-  return run;
-}
+const queued = serialQueue();
 async function applyPlan(plan: PlannedNotification[]) {
   const wanted = new Map(plan.map((item) => [item.id, item]));
   const scheduled = new Set<string>();

@@ -9,6 +9,7 @@ import { useApp } from '../../lib/AppContext';
 import { clearPendingInvite } from '../../lib/inviteLink';
 import { supabaseReauth } from '../../lib/reauth';
 import { clearV0LocalData } from '../../features/space/v0LocalData';
+import { clearWidgets } from '../../features/widgets/writer';
 
 /** Pushed over the tabs (S13-delete-*). Once accepted the person is signed out and the entry gate shows the sign-in screen. */
 export default function DeleteAccountRoute() {
@@ -19,7 +20,7 @@ export default function DeleteAccountRoute() {
     onSubmit={(input) => submitDeletion(() => client.deleteAccount(input))}
     onFinished={async (outcome) => {
       if (userId) await clearV0LocalData(userId, state.snapshot?.space.spaceId).catch(() => undefined);
-      await clearDeviceAfterDeletion(outcome, { signOut: auth.signOut, cancelNotifications: cancelAllNotifications, clearPendingInvite, resetSpace: reset });
+      await clearDeviceAfterDeletion(outcome, { signOut: auth.signOut, cancelNotifications: cancelAllNotifications, clearWidgets: () => clearWidgets('none'), clearPendingInvite, resetSpace: reset });
       clearSessionExpired();
     }}
     onCancel={() => router.back()} />;

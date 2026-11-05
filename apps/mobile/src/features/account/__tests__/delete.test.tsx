@@ -163,11 +163,12 @@ describe('request and local clean-up', () => {
     const deps = {
       signOut: jest.fn(async () => { order.push(`signOut:${farewell.get()}`); }),
       cancelNotifications: jest.fn(async () => { order.push('notifications'); }),
+      clearWidgets: jest.fn(async () => { order.push('widgets'); }),
       clearPendingInvite: jest.fn(async () => { order.push('invite'); }),
       resetSpace: jest.fn(() => { order.push('space'); }),
     };
     await clearDeviceAfterDeletion('accepted', deps);
-    expect(order).toEqual(['notifications', 'invite', 'space', 'signOut:true']);
+    expect(order).toEqual(['notifications', 'widgets', 'invite', 'space', 'signOut:true']);
     farewell.set(false);
     await clearDeviceAfterDeletion('signedOut', { ...deps, cancelNotifications: jest.fn().mockRejectedValue(new Error('x')) });
     expect(farewell.get()).toBe(false);

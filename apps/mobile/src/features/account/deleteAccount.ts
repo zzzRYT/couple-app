@@ -33,12 +33,14 @@ type LocalDeps = {
   signOut: () => Promise<void>;
   /** Every local notification this app scheduled; the server cannot reach them (FR-071 c). */
   cancelNotifications: () => Promise<void>;
+  clearWidgets: () => Promise<void>;
   clearPendingInvite: () => Promise<void>;
   resetSpace: () => void;
 };
-/** After acceptance: drop device-only data (scheduled notifications, pending invite, cached space) and sign out locally. */
+/** After acceptance: drop device-only data (scheduled notifications, widgets, pending invite, cached space) and sign out locally. */
 export async function clearDeviceAfterDeletion(outcome: 'accepted' | 'signedOut', deps: LocalDeps): Promise<void> {
   await deps.cancelNotifications().catch(() => undefined);
+  await deps.clearWidgets().catch(() => undefined);
   await deps.clearPendingInvite().catch(() => undefined);
   deps.resetSpace();
   // Set before signing out so the login screen shows "Your account was deleted" on its first frame.
