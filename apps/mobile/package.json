@@ -8,6 +8,7 @@
     "test": "jest --runInBand"
   },
   "dependencies": {
+    "@expo/ui": "~58.0.27",
     "@shopify/react-native-skia": "2.14.0",
     "@supabase/supabase-js": "^2.118.0",
     "expo": "~58.0.19",
@@ -29,6 +30,7 @@
     "expo-splash-screen": "~58.0.11",
     "expo-status-bar": "~58.0.4",
     "expo-updates": "~58.0.20",
+    "expo-widgets": "~58.0.27",
     "i18next": "^26.5.11",
     "react": "19.3.0",
     "react-dom": "19.3.0",
@@ -45,6 +47,7 @@
     "@types/react": "~19.2.0",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
+    "babel-preset-expo": "~58.0.20",
     "jest": "^30.5.2",
     "jest-expo": "^58.0.12",
     "react-test-renderer": "19.3.0",

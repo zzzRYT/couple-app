@@ -115,6 +115,7 @@ Deep links (the board writes `mopiru://…`, drawn before the name decision D-08
 1. Apple Developer → Identifiers → App Groups → + → `group.com.jinjinstar.aroom.dev`.
 2. Identifiers → `com.jinjinstar.aroom.dev` → enable **App Groups** → configure → select the group. Identifiers → + → App IDs → `com.jinjinstar.aroom.dev.widgets` (description "Aroom dev widgets") → enable **App Groups** with the same group. (EAS can create the extension identifier during credentials setup; App Groups assignment must still be checked here.)
 3. `cd apps/mobile && npx eas-cli@latest credentials -p ios` → profile `testflight` → let EAS regenerate the provisioning profiles for **both** targets (app and `.widgets`) so they include the App Group. Then GitHub → Actions → Release iOS → Run workflow **on branch `v0/s4-widgets`**.
+3a. Only after step 3: set `IOS_WIDGETS_SIGNED = true` in `apps/mobile/src/config/identity.ts` and merge that one line. Until then store builds leave the extension out, so Release iOS keeps working without the App Group.
 4. On both phones: install the TestFlight build → long-press home screen → + → search the app → add D+Day small and medium; lock screen → customise → add circular and rectangular. Report what you see (photo) for the PoC checkpoint, then later run the full checklist in `../quickstart.md` §위젯 (iOS 18 tinted: home screen edit → Customize → Tinted; iOS 26 clear: Clear).
 5. Approve the slice against board V0-06 frames.
 

@@ -22,7 +22,7 @@ const DAY_MS = 86_400_000;
 const ENTRY_DAYS = 36;
 const MAX_NEXT = 5;
 /** The extension has no i18n, so it gets every string its layouts use; the ones with placeholders stay templates it fills in. */
-const STRING_KEYS = ['app.name', 'dday.big', 'dday.left', 'dday.left.one', 'dday.since', 'dday.today', 'dday.together', 'home.pending.partner', 'widget.a11y', 'widget.ended', 'widget.lock.days', 'widget.next', 'widget.none.body', 'widget.none.title', 'widget.pending', 'widget.pending.body', 'widget.today'];
+const STRING_KEYS = ['app.name', 'dday.big', 'dday.left', 'dday.left.one', 'dday.since', 'dday.today', 'dday.together', 'home.pending.partner', 'widget.a11y', 'widget.ended', 'widget.gallery.list.name', 'widget.lock.days', 'widget.next', 'widget.none.body', 'widget.none.title', 'widget.pending', 'widget.pending.body', 'widget.today'];
 const PLACEHOLDERS = { n: '{n}', title: '{title}', left: '{left}', date: '{date}' };
 
 function widgetItem(item: Occurrence, today: string, partner: string, t: Translate): WidgetItem {

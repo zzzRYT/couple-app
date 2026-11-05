@@ -1,4 +1,4 @@
-import { APP_IDENTITY, EAS_PROJECT, appVariant } from './src/config/identity.ts';
+import { APP_IDENTITY, EAS_PROJECT, IOS_WIDGETS_SIGNED, appVariant } from './src/config/identity.ts';
 
 // APP_VARIANT comes from the EAS build profile (eas.json). Development and preview builds use the separate .dev
 // bundle id so the owner can register it with Apple before the production name check (G2).
@@ -12,6 +12,25 @@ if (variant !== 'development' && process.env.EXPO_PUBLIC_DEV_QUICK_LOGIN === 'tr
   throw new Error('EXPO_PUBLIC_DEV_QUICK_LOGIN must not be set for preview or production builds');
 }
 
+const iosBundleId = dev ? APP_IDENTITY.devIosBundleId : APP_IDENTITY.iosBundleId;
+const widgets = IOS_WIDGETS_SIGNED || process.env.IOS_WIDGETS === 'true';
+const widgetDefinitions = 'src/features/widgets/definitions.ts';
+const homeFamilies = ['systemMedium', 'systemLarge'];
+const ddayFamilies = ['systemSmall', ...homeFamilies, 'accessoryCircular', 'accessoryRectangular', 'accessoryInline'];
+// Listed before expo-widgets: mods run last-added first, and this one needs the extension target that plugin creates.
+const widgetPlugins = [
+  './plugins/withWidgetResources.js',
+  ['expo-widgets', {
+    bundleIdentifier: `${iosBundleId}${APP_IDENTITY.widgetBundleIdSuffix}`,
+    groupIdentifier: dev ? APP_IDENTITY.devAppGroupId : APP_IDENTITY.appGroupId,
+    // The names are Localizable.strings keys: SwiftUI looks these literals up in the extension bundle.
+    widgets: [
+      { name: 'DDayWidget', displayName: 'widget.gallery.dday.name', description: 'widget.gallery.dday.desc', ios: { supportedFamilies: ddayFamilies, contentMarginsDisabled: true, initialLayout: widgetDefinitions } },
+      { name: 'ListWidget', displayName: 'widget.gallery.list.name', description: 'widget.gallery.list.desc', ios: { supportedFamilies: homeFamilies, contentMarginsDisabled: true, initialLayout: widgetDefinitions } },
+    ],
+  }],
+];
+
 export default {
   expo: {
     name: dev ? `${APP_IDENTITY.name} (${variant})` : APP_IDENTITY.name,
@@ -23,9 +42,9 @@ export default {
     version: '1.0.0',
     runtimeVersion: { policy: 'fingerprint' },
     updates: { url: `https://u.expo.dev/${EAS_PROJECT.projectId}` },
-    ios: { bundleIdentifier: dev ? APP_IDENTITY.devIosBundleId : APP_IDENTITY.iosBundleId, icon: { light: './assets/icon/icon.png', dark: './assets/icon/icon-dark.png', tinted: './assets/icon/icon-tinted.png' }, usesAppleSignIn: true, associatedDomains: ['applinks:aroom.jinjinstar.com'], infoPlist: { ITSAppUsesNonExemptEncryption: false } },
+    ios: { bundleIdentifier: iosBundleId, icon: { light: './assets/icon/icon.png', dark: './assets/icon/icon-dark.png', tinted: './assets/icon/icon-tinted.png' }, usesAppleSignIn: true, associatedDomains: ['applinks:aroom.jinjinstar.com'], infoPlist: { ITSAppUsesNonExemptEncryption: false } },
     android: { package: dev ? APP_IDENTITY.devAndroidApplicationId : APP_IDENTITY.androidApplicationId, adaptiveIcon: { foregroundImage: './assets/icon/adaptive-icon-foreground.png', backgroundColor: '#FBF1E3', monochromeImage: './assets/icon/adaptive-icon-monochrome.png' }, intentFilters: [{ action: 'VIEW', autoVerify: true, data: [{ scheme: 'https', host: 'aroom.jinjinstar.com', pathPrefix: '/i/' }], category: ['BROWSABLE', 'DEFAULT'] }] },
-    plugins: ['expo-router', 'expo-apple-authentication'],
+    plugins: ['expo-router', 'expo-apple-authentication', ...(widgets ? widgetPlugins : [])],
     extra: { eas: { projectId: EAS_PROJECT.projectId }, appVariant: variant },
   },
 };
