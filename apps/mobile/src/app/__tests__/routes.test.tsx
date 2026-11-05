@@ -14,6 +14,12 @@ it('keeps the end-space, report and ended-notice screens outside the tab group s
   expect(readdirSync(resolve(app, '(tabs)/settings'))).toEqual(['index.tsx']);
 });
 
+it('V0-F11-AC-08 keeps the routes the widget links open', () => {
+  const app = resolve(__dirname, '..');
+  expect(readdirSync(resolve(app, '(tabs)'))).toContain('home.tsx');
+  expect(readdirSync(resolve(app, 'anniversary'))).toContain('[key].tsx');
+});
+
 it('V0-F03-AC-05 registers the three V0 tab triggers in order', () => {
   const layout = readFileSync(resolve(__dirname, '../(tabs)/_layout.tsx'), 'utf8');
   const names = [...layout.matchAll(/<NativeTabs\.Trigger name="([^"]+)"/g)].map((match) => match[1]);
