@@ -52,7 +52,7 @@ describe('V0-set-main 알림 section', () => {
     mockPermission = { granted: false, status: 'undetermined' };
     const { screen } = await main();
     requestPermission.mockImplementationOnce(async () => { mockPermission = { granted: true, status: 'granted' }; return mockPermission; });
-    await act(async () => { fireEvent(screen.getByRole('switch', { name: screen.t('set.notify.toggle') }), 'valueChange', true); });
+    await act(async () => { fireEvent.press(screen.getByRole('switch', { name: screen.t('set.notify.toggle') })); });
     await waitFor(async () => { expect((await readNotifyPrefs(USER)).enabled).toBe(true); });
   });
   it('reflects saved values', async () => {
