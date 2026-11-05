@@ -89,7 +89,7 @@ export function widgetLayout(props: WidgetProps, env: WidgetEnvironment) {
   const dayRow = (size: number, tone: string) => label(props.day, fonts.bold, size, tone);
   const leftText = (value: string, size: number) => label(value, fonts.bold, size, color.primary, [layoutPriority(1)]);
   const todayPill = (size: number) => <Link destination={props.url}><HStack spacing={6} modifiers={[padding({ vertical: 5, horizontal: 8 }), background(color.divider, shapes.roundedRectangle({ cornerRadius: 10 }))]}>{image('sparkle', 16, color.primary)}{label(today!.line, fonts.bold, size, color.text)}<Spacer /></HStack></Link>;
-  const mediumRow = (row: WidgetRow) => <Link key={row.url} destination={row.url}><HStack spacing={7}>{kindTile(row, 22, 12, 20)}{label(row.title, fonts.medium, 13, color.text)}<Spacer />{leftText(row.left, 13)}</HStack></Link>;
+  const mediumRow = (row: WidgetRow) => <Link key={row.url} destination={row.url}><HStack spacing={7}>{kindTile(row, 22, 12, 20)}{label(row.title, fonts.medium, 13, color.text, [frame({ maxWidth: Infinity, alignment: 'leading' })])}{leftText(row.left, 13)}</HStack></Link>;
   const largeRow = (row: WidgetRow) => <Link key={row.url} destination={row.url}><HStack spacing={9}>{kindTile(row, 26, 14, 24)}<VStack alignment="leading" spacing={0}>{label(row.title, fonts.bold, 14, color.text)}{label(row.date, fonts.body, 11, color.text2)}</VStack><Spacer />{leftText(row.left, 14)}</HStack></Link>;
 
   switch (family) {
@@ -184,7 +184,7 @@ export function widgetLayout(props: WidgetProps, env: WidgetEnvironment) {
         {big(props.day, ja ? 32 : 38, color.text)}
         <Spacer />
         {rule([padding({ bottom: 7 })])}
-        {next ? <HStack spacing={6}>{image(next.icon, 14, color.primary)}{label(next.title, fonts.bold, 12, color.text)}<Spacer />{leftText(next.left, 12)}</HStack> : null}
+        {next ? <HStack spacing={6}>{image(next.icon, 14, color.primary)}{label(next.title, fonts.bold, 12, color.text, [frame({ maxWidth: Infinity, alignment: 'leading' })])}{leftText(next.left, 12)}</HStack> : null}
       </>);
   }
 }
