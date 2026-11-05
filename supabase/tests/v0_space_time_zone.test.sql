@@ -4,7 +4,7 @@ insert into auth.users (id,aud,role,email) values ('00000000-0000-0000-0000-0000
 create temp table ctx as select (public.create_space('00000000-0000-0000-0000-000000000072','2025-01-01','UTC')->>'spaceId')::uuid as id;
 select is(public.update_space_time_zone('00000000-0000-0000-0000-000000000072',(select id from ctx),'Asia/Seoul',(select updated_at from public.couple_space where id=(select id from ctx)))->>'timeZone','Asia/Seoul','V0-F12-AC-05 updates zone');
 select throws_ok($$select public.update_space_time_zone('00000000-0000-0000-0000-000000000072',(select id from ctx),'Bad/Zone',now())$$,'P0001','INVALID_REQUEST','unknown zone rejected');
-select throws_ok($$select public.update_space_time_zone('00000000-0000-0000-0000-000000000072',(select id from ctx),'UTC','2000-01-01')$$,'P0001','VERSION_CONFLICT','stale version rejected');
+select throws_ok($$select public.update_space_time_zone('00000000-0000-0000-0000-000000000072',(select id from ctx),'UTC','2000-01-01')$$,'P0001','VERSION_CONFLICT','V0-EC-04 stale version rejected');
 select ok(position('lock_space_session' in pg_get_functiondef('public.update_space_time_zone(uuid,uuid,text,timestamp with time zone)'::regprocedure)) = 0,'does not lock prompt session');
 select * from finish();
 rollback;

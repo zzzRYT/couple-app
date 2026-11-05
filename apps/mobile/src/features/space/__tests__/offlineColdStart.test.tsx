@@ -16,7 +16,7 @@ it('V0-EC-02 seeds the last snapshot when the space lookup is offline', async ()
   expect(hook.result.current.state.snapshot?.space.spaceId).toBe('space-1');
   expect(hook.result.current.state.offline).toBe(true);
 });
-it('V0-EC-03 opens offline empty when no cache exists', async () => {
+it('V0-EC-03 and V0-F13-AC-04 open offline empty when no cache exists', async () => {
   (readV0Cache as jest.Mock).mockResolvedValue(null);
   const client = { mySpace: jest.fn().mockRejectedValue(new TypeError('offline')), snapshot: jest.fn() };
   const realtime = memoryRealtime();
