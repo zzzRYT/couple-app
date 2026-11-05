@@ -45,6 +45,39 @@ test('V0-F14-AC-03 preview runtime uses fingerprint and preview OTA environment'
   assert.match(ota, /eas update --channel preview --environment preview --platform ios/);
 });
 
+test('store builds leave the widget extension out until its signing exists', async () => {
+  const prior = process.env.IOS_WIDGETS;
+  delete process.env.IOS_WIDGETS;
+  try {
+    const { default: config } = await import('../../apps/mobile/app.config.ts?v=store');
+    const { IOS_WIDGETS_SIGNED } = await import('../../apps/mobile/src/config/identity.ts');
+    assert.equal(config.expo.plugins.some((plugin) => plugin[0] === 'expo-widgets'), IOS_WIDGETS_SIGNED);
+  } finally {
+    if (prior !== undefined) process.env.IOS_WIDGETS = prior;
+  }
+  const eas = JSON.parse(await read('apps/mobile/eas.json'));
+  assert.equal(eas.build['development-simulator'].env.IOS_WIDGETS, 'true');
+  assert.equal(eas.build.testflight.env.IOS_WIDGETS, undefined);
+});
+
+test('V0-F11-AC-01 the extension and the app share the App Group of their variant', async () => {
+  const prior = { widgets: process.env.IOS_WIDGETS, variant: process.env.APP_VARIANT };
+  process.env.IOS_WIDGETS = 'true';
+  process.env.APP_VARIANT = 'preview';
+  try {
+    const { default: config } = await import('../../apps/mobile/app.config.ts?v=widgets');
+    const [, options] = config.expo.plugins.find((plugin) => plugin[0] === 'expo-widgets');
+    assert.equal(options.bundleIdentifier, `${config.expo.ios.bundleIdentifier}.widgets`);
+    assert.equal(options.groupIdentifier, `group.${config.expo.ios.bundleIdentifier}`);
+    assert.deepEqual(options.widgets.map((widget) => widget.name), ['DDayWidget', 'ListWidget']);
+  } finally {
+    for (const [name, value] of [['IOS_WIDGETS', prior.widgets], ['APP_VARIANT', prior.variant]]) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
+  }
+});
+
 test('V0-F14-AC-04 production OTA republishes the checked preview group', async () => {
   const ota = await read('.github/workflows/ota.yml');
   assert.match(ota, /eas update:republish --group .*--destination-channel production/);

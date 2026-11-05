@@ -18,6 +18,9 @@
       "extends": "development",
       "ios": {
         "simulator": true
+      },
+      "env": {
+        "IOS_WIDGETS": "true"
       }
     },
     "preview": {
