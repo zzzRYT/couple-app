@@ -67,6 +67,7 @@ function AppNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
       <Stack.Screen name="anniversary-edit" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
       <Stack.Screen name="invite" />
       <Stack.Screen name="connected" />
+      <Stack.Screen name="notify-intro" options={{ gestureEnabled: false }} />
       <Stack.Screen name="join-has-space" />
       <Stack.Screen name="settings/end-space" />
       <Stack.Screen name="settings/me" />
