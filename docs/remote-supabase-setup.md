@@ -11,7 +11,7 @@ Supabase 대시보드에서 개인 계정으로 새 프로젝트를 만든다: �
 ```bash
 npx supabase login                          # 브라우저로 로그인
 npx supabase link --project-ref <project-ref>
-npx supabase db push                        # supabase/migrations 전부 적용
+npx supabase db push --remote               # supabase/migrations 전부 적용 (CLI 3부터 --remote가 없으면 로컬 대상)
 psql "<대시보드의 Connection string(URI)>" -f supabase/seed/catalog.sql   # 카탈로그 24개, 1회 (db push는 시드를 돌리지 않음)
 ```
 
