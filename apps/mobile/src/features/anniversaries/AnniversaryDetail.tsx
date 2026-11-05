@@ -9,7 +9,7 @@ export function AnniversaryDetail({ item, custom, today, startDate, partner, use
   const { t, i18n } = useTranslation();
   const title = occurrenceTitle(item, partner, t), date = formattedDate(item.date, i18n.language, true);
   const md = formattedMonthDay(item.date, i18n.language);
-  const rule = item.kind === 'days' ? `${t('anniv.rule.days', { start: formattedDate(startDate, i18n.language, true), n: item.n })}\n${t('anniv.detail.auto')}` : item.kind === 'years' ? `${t('anniv.rule.years', { md })}\n${t('anniv.detail.auto')}` : item.kind === 'birthday' ? t('anniv.rule.birthday', { md }) : t('anniv.rule.fixed', { md });
+  const rule = item.kind === 'days' ? `${t('anniv.rule.days', { start: formattedDate(startDate, i18n.language, true), n: item.n })}\n${t('anniv.detail.auto')}` : item.kind === 'years' ? `${t('anniv.rule.years', { md })}\n${t('anniv.detail.auto')}` : item.kind === 'birthday' ? t('anniv.rule.birthday', { md }) : item.kind === 'season' ? `${t('anniv.rule.fixed', { md })}\n${t('anniv.detail.auto.fixed')}` : t('anniv.rule.fixed', { md });
   const notification = notify === 'off' ? t('anniv.notify.off') : notifyDefault;
   const info = (label: string, value: string) => <View style={{ gap: 2, paddingVertical: 8 }}><AppText tone="text2" style={{ fontWeight: '700', fontSize: 13 }}>{label}</AppText><AppText>{value}</AppText></View>;
   return <Screen onBack={onBack} footer={custom ? <Button variant="ghost" label={t('edit.delete')} disabled={offline} onPress={onDelete} /> : undefined}>
