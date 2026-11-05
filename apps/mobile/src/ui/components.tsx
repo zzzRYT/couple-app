@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, TextInput, View, type TextInputProps, type TextProps, type ViewStyle } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Switch, Text, TextInput, View, type TextInputProps, type TextProps, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme/tokens';
@@ -215,6 +215,22 @@ export function ListRow({ label, onPress, icon, value, danger = false, disabled 
       {value ? <Text {...WORD_BREAK} style={[type('bodySm'), { color: color.text2, flexShrink: 1, textAlign: 'right' }]}>{value}</Text> : null}
       <Icon name="forward" size={18} color={color.text2} />
     </Pressable>
+  );
+}
+/** Row with a trailing switch (V0-07). By default the whole row is the switch; with `onPress` the row opens something and only the switch toggles. */
+export function SwitchRow({ label, value, onValueChange, leading, onPress, disabled = false, last = true }: { label: string; value: boolean; onValueChange: (value: boolean) => void; leading?: ReactNode; onPress?: () => void; disabled?: boolean; last?: boolean }) {
+  const color = useAppColor();
+  const { type } = useType();
+  return (
+    <View style={{ minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[2], borderBottomWidth: last ? 0 : 1, borderColor: color.divider }}>
+      <Pressable accessibilityRole={onPress ? 'button' : 'switch'} accessibilityLabel={label} accessibilityState={onPress ? undefined : { checked: value, disabled }} disabled={!onPress && disabled} onPress={onPress ?? (() => onValueChange(!value))}
+        style={({ pressed }) => ({ flex: 1, minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[2], paddingVertical: tokens.spacing[2], opacity: pressed ? 0.7 : 1 })}>
+        {leading}
+        <Text {...WORD_BREAK} style={[type('body'), { color: color.text, flex: 1 }]}>{label}</Text>
+      </Pressable>
+      <Switch accessibilityLabel={label} accessibilityElementsHidden={!onPress} importantForAccessibility={onPress ? 'auto' : 'no-hide-descendants'} value={value} disabled={disabled} onValueChange={onValueChange}
+        trackColor={{ false: disabled ? color.surface2 : '#E9E9EA', true: color.primary }} ios_backgroundColor={disabled ? color.surface2 : '#E9E9EA'} style={{ opacity: disabled ? 0.5 : 1 }} />
+    </View>
   );
 }
 /** Bottom space a tab root keeps clear of the system tab bar (components.md §1.1: iOS 49pt, Android about 80pt, plus the home indicator). */

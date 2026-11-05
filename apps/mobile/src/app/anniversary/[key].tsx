@@ -4,14 +4,16 @@ import { randomUUID } from 'expo-crypto';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { AnniversaryDetail } from '../../features/anniversaries/AnniversaryDetail';
+import { notifyDefaultLabel } from '../../features/notifications/labels';
 import { getAnniversaryNotify } from '../../features/notifications/preferences';
+import { useNotifyPrefs } from '../../features/notifications/useNotifyPrefs';
 import { useSpace } from '../../features/space/SpaceContext';
 import { useApp } from '../../lib/AppContext';
 import { computeAnniversaries } from '../../lib/anniversaries';
 import { useNow } from '../../lib/useNow';
 import { ApiError } from '../../lib/errors';
 export default function AnniversaryDetailRoute() {
-  const { key } = useLocalSearchParams<{ key: string }>(); const { t } = useTranslation(); const { state, refresh } = useSpace(); const { client } = useApp(); const now = useNow();
+  const { key } = useLocalSearchParams<{ key: string }>(); const { t, i18n } = useTranslation(); const { state, refresh } = useSpace(); const { client, userId } = useApp(); const now = useNow(); const prefs = useNotifyPrefs(userId);
   const [notify, setNotify] = useState<'default' | 'off'>('default'); const closing = useRef(false); const snapshot = state.snapshot;
   let decoded = key ?? ''; try { decoded = decodeURIComponent(decoded); } catch { /* invalid keys resolve to the list */ }
   const partner = snapshot?.members.find((m) => m.userId !== snapshot.me.userId);
@@ -32,5 +34,5 @@ export default function AnniversaryDetailRoute() {
       Alert.alert(t('edit.save.err'));
     });
   } } ]);
-  return <AnniversaryDetail item={item} custom={custom} today={view.today} startDate={snapshot.space.anniversaryDate} partner={name} userId={snapshot.me.userId} notify={notify} offline={state.offline} onBack={() => router.back()} onEdit={() => router.push({ pathname: '/anniversary-edit', params: { id: custom?.id } })} onDelete={remove} onSettings={() => router.push('/(tabs)/settings')} onMe={() => router.push('/settings/me')} />;
+  return <AnniversaryDetail item={item} custom={custom} today={view.today} startDate={snapshot.space.anniversaryDate} partner={name} userId={snapshot.me.userId} notify={notify} notifyDefault={notifyDefaultLabel(prefs, i18n.language, t)} offline={state.offline} onBack={() => router.back()} onEdit={() => router.push({ pathname: '/anniversary-edit', params: { id: custom?.id } })} onDelete={remove} onSettings={() => router.push('/settings/notifications')} onMe={() => router.push('/settings/me')} />;
 }

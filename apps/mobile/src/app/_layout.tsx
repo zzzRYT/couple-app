@@ -71,6 +71,7 @@ function AppNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
       <Stack.Screen name="settings/end-space" />
       <Stack.Screen name="settings/me" />
       <Stack.Screen name="settings/start-date" />
+      <Stack.Screen name="settings/notifications" />
       <Stack.Screen name="settings/language" />
       <Stack.Screen name="settings/appearance" />
       <Stack.Screen name="settings/disconnect" />

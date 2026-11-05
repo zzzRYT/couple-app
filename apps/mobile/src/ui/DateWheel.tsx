@@ -23,19 +23,22 @@ export function fieldText(field: Field, value: number, language: string, unit: s
   return field === 'month' ? new Intl.DateTimeFormat(language, { month: 'short', timeZone: 'UTC' }).format(new Date(Date.UTC(2000, value - 1, 1))) : String(value);
 }
 function Column({ field, values, selected, unit, onChange }: { field: Field; values: number[]; selected: number; unit: string; onChange: (value: number) => void }) {
-  const color = useAppColor();
   const { i18n } = useTranslation();
-  const label = (value: number) => fieldText(field, value, i18n.language, unit);
+  return <WheelColumn id={field} values={values} selected={selected} unit={unit} label={(value) => fieldText(field, value, i18n.language, unit)} onChange={onChange} />;
+}
+/** One scrolling column of a wheel; `spoken` replaces the selected label for screen readers when the column alone says too little. */
+export function WheelColumn({ id, values, selected, unit, label, spoken, onChange }: { id: string; values: number[]; selected: number; unit: string; label: (value: number) => string; spoken?: string; onChange: (value: number) => void }) {
+  const color = useAppColor();
   const { type, emphasis } = useType();
   const index = values.indexOf(selected);
   const step = (delta: number) => { const next = values[index + delta]; if (next !== undefined) onChange(next); };
   return (
-    <View accessible accessibilityRole="adjustable" accessibilityLabel={unit} accessibilityValue={{ text: label(selected) }}
+    <View accessible accessibilityRole="adjustable" accessibilityLabel={unit} accessibilityValue={{ text: spoken ?? label(selected) }}
       accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]} onAccessibilityAction={(event) => step(event.nativeEvent.actionName === 'increment' ? 1 : -1)}
       style={{ flex: 1, height: ROW * 5 }}>
       <ScrollView snapToInterval={ROW} showsVerticalScrollIndicator={false} contentOffset={{ x: 0, y: Math.max(0, index - 2) * ROW }}>
         {values.map((value) => (
-          <Pressable key={value} testID={`wheel-${field}-${value}`} onPress={() => onChange(value)} style={{ height: ROW, justifyContent: 'center', alignItems: 'center', marginHorizontal: 4, borderRadius: tokens.radius.input, backgroundColor: value === selected ? color.surface2 : 'transparent' }}>
+          <Pressable key={value} testID={`wheel-${id}-${value}`} onPress={() => onChange(value)} style={{ height: ROW, justifyContent: 'center', alignItems: 'center', marginHorizontal: 4, borderRadius: tokens.radius.input, backgroundColor: value === selected ? color.surface2 : 'transparent' }}>
             <Text style={value === selected ? [emphasis(17), { color: color.text }] : [type('body'), { color: color.text2 }]}>{label(value)}</Text>
           </Pressable>
         ))}

@@ -3,7 +3,7 @@ import { fireEvent, waitFor } from '@testing-library/react-native';
 import { renderWithI18n } from '../../../test/render';
 import { ApiError } from '../../../lib/errors';
 import { AnniversaryEdit } from '../AnniversaryEdit';
-const base = { today: '2026-11-02', partner: 'Haru', offline: false, initialNotify: 'default' as const, remove: jest.fn(), reload: jest.fn(), onClose: jest.fn(), onSaved: jest.fn() };
+const base = { today: '2026-11-02', partner: 'Haru', offline: false, initialNotify: 'default' as const, notifyDefault: '기본 설정 (오후 8:30 · 3일 전)', remove: jest.fn(), reload: jest.fn(), onClose: jest.fn(), onSaved: jest.fn() };
 it('V0-F07 prevents overflow and keeps the same key after a network error', async () => {
   const save = jest.fn().mockRejectedValueOnce(new TypeError('offline')).mockResolvedValueOnce(undefined);
   const screen = await renderWithI18n(<AnniversaryEdit {...base} save={save} />);
@@ -47,4 +47,9 @@ it('V0-F07 shows an empty title error after leaving the field', async () => {
   const screen = await renderWithI18n(<AnniversaryEdit {...base} save={jest.fn()} />);
   await fireEvent(screen.getByLabelText(screen.t('edit.field.title')), 'blur');
   expect(screen.getByText(screen.t('edit.err.title.empty'))).toBeTruthy();
+});
+
+it('V0-F10-AC-04 shows this device\'s default in the notification choice', async () => {
+  const screen = await renderWithI18n(<AnniversaryEdit {...base} save={jest.fn()} />);
+  expect(screen.getByText('기본 설정 (오후 8:30 · 3일 전)')).toBeTruthy();
 });
