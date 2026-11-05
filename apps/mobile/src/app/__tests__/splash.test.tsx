@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { safeMetrics } from '../../test/render';
 jest.mock('expo-font', () => ({ useFonts: jest.fn() }));
 jest.mock('expo-splash-screen', () => ({ preventAutoHideAsync: jest.fn().mockResolvedValue(true), hideAsync: jest.fn().mockResolvedValue(true) }));
+jest.mock('expo-notifications', () => ({ setNotificationHandler: jest.fn() }));
 jest.mock('expo-router', () => { const Stack = () => null; Stack.Screen = () => null; return { Stack }; });
 jest.mock('../../lib/AppContext', () => ({ AppProvider: ({ children }: { children: unknown }) => children, useApp: () => ({ session: null, sessionLoaded: false, sessionExpired: false }) }));
 jest.mock('../../features/space/SpaceContext', () => ({ SpaceProvider: ({ children }: { children: unknown }) => children, useSpace: () => ({ entry: 'loading', spaceId: null, ended: null, state: { status: 'loading', snapshot: null, offline: false }, reload: jest.fn() }) }));

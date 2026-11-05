@@ -27,7 +27,7 @@ export type AnniversaryInput = {
   startDate: string;
   timeZone: string;
   me: { birthday: { month: number; day: number } | null };
-  partner: { birthday: { month: number; day: number } | null } | null;
+  partner: { birthday: { month: number; day: number } | null; displayName?: string | null } | null;
   customs: { id: string; title: string; date: string; repeat: 'yearly' | 'once' }[];
 };
 

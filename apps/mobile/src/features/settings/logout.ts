@@ -1,6 +1,7 @@
 import type { AuthPort, Provider } from '../auth/authPort';
 import type { Snapshot } from '../../lib/client';
 import { clearMilestoneStorage } from '../milestone/useMilestone';
+import { cancelV0Notifications } from '../notifications/scheduler';
 import { clearV0LocalData } from '../space/v0LocalData';
 
 type Deps = {
@@ -25,6 +26,7 @@ export async function logout({ auth, releaseSession, clearPendingInvite, resetSp
   await auth.signOut();
   if (snapshot && userId) await clearMilestoneStorage(snapshot.space.spaceId, userId).catch(() => undefined);
   if (userId) await clearV0LocalData(userId, snapshot?.space.spaceId).catch(() => undefined);
+  await cancelV0Notifications().catch(() => undefined);
   await clearPendingInvite().catch(() => undefined);
   resetSpace();
 }

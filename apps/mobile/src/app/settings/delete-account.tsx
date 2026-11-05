@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { router } from 'expo-router';
-import * as Notifications from 'expo-notifications';
 import { DeleteAccountScreen } from '../../features/account/DeleteAccountScreen';
 import { clearDeviceAfterDeletion, submitDeletion } from '../../features/account/deleteAccount';
+import { cancelAllNotifications } from '../../features/notifications/scheduler';
 import { lastUsedProvider } from '../../features/settings/logout';
 import { useSpace } from '../../features/space/SpaceContext';
 import { useApp } from '../../lib/AppContext';
@@ -19,7 +19,7 @@ export default function DeleteAccountRoute() {
     onSubmit={(input) => submitDeletion(() => client.deleteAccount(input))}
     onFinished={async (outcome) => {
       if (userId) await clearV0LocalData(userId, state.snapshot?.space.spaceId).catch(() => undefined);
-      await clearDeviceAfterDeletion(outcome, { signOut: auth.signOut, cancelNotifications: Notifications.cancelAllScheduledNotificationsAsync, clearPendingInvite, resetSpace: reset });
+      await clearDeviceAfterDeletion(outcome, { signOut: auth.signOut, cancelNotifications: cancelAllNotifications, clearPendingInvite, resetSpace: reset });
       clearSessionExpired();
     }}
     onCancel={() => router.back()} />;

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { router, Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import * as Notifications from 'expo-notifications';
 import { I18nextProvider } from 'react-i18next';
 import type { i18n } from 'i18next';
 import { fontAssets } from '../theme/fonts';
@@ -15,8 +16,10 @@ import { peekPendingInvite } from '../lib/inviteLink';
 import { PreferencesProvider } from '../features/settings/preferences';
 import { V0_FEATURES } from '../config/features';
 import { V0Error, V0Loading } from '../features/home/states';
+import { useNotificationSync } from '../features/notifications/useNotificationSync';
 
 void SplashScreen.preventAutoHideAsync();
+Notifications.setNotificationHandler({ handleNotification: async () => ({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false }) });
 export default function RootLayout() {
   const [loaded, error] = useFonts(fontAssets);
   const [translator, setTranslator] = useState<i18n | null>(null);
@@ -42,6 +45,7 @@ function AppNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
   const { session, sessionLoaded, sessionExpired } = useApp();
   const { entry, spaceId, ended, state, reload, refresh, inviteAfterActivation, clearInviteAfterActivation } = useSpace();
   const [pending, setPending] = useState<string | null | undefined>(undefined);
+  useNotificationSync();
   useEffect(() => { void peekPendingInvite().then(setPending); }, []);
   const gate = appGate({ fontsLoaded, sessionLoaded, hasSession: !!session, sessionExpired, entry, spaceId, ended, pendingInviteLoaded: pending !== undefined, pendingInvite: pending, snapshotProfile: state.snapshot ? state.snapshot.me.displayName : undefined });
   useEffect(() => {
@@ -63,10 +67,12 @@ function AppNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
       <Stack.Screen name="anniversary-edit" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
       <Stack.Screen name="invite" />
       <Stack.Screen name="connected" />
+      <Stack.Screen name="notify-intro" options={{ gestureEnabled: false }} />
       <Stack.Screen name="join-has-space" />
       <Stack.Screen name="settings/end-space" />
       <Stack.Screen name="settings/me" />
       <Stack.Screen name="settings/start-date" />
+      <Stack.Screen name="settings/notifications" />
       <Stack.Screen name="settings/language" />
       <Stack.Screen name="settings/appearance" />
       <Stack.Screen name="settings/disconnect" />

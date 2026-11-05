@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Image } from 'react-native';
-import * as Notifications from 'expo-notifications';
 import { useTranslation } from 'react-i18next';
 import { useSpace } from '../features/space/SpaceContext';
 import { useApp } from '../lib/AppContext';
+import { cancelV0Notifications } from '../features/notifications/scheduler';
 import { clearV0LocalData } from '../features/space/v0LocalData';
 import { readV0Cache } from '../features/space/v0Cache';
 import { AppText, Button, Screen } from '../ui/components';
@@ -20,7 +20,7 @@ export default function EndedRoute() {
       const members = snapshot?.members ?? cached?.snapshotV0Part.members ?? [];
       if (active && ended.kind !== 'account_deleted') setName(members.find((member) => member.userId !== userId)?.displayName ?? null);
       await clearV0LocalData(userId, snapshot?.space.spaceId ?? cached?.spaceId).catch(() => undefined);
-      await Notifications.cancelAllScheduledNotificationsAsync().catch(() => undefined);
+      await cancelV0Notifications().catch(() => undefined);
     })();
     return () => { active = false; };
   }, [ended, userId, snapshot]);

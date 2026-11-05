@@ -1,6 +1,6 @@
-import type { TFunction } from 'i18next';
 import type { Occurrence } from '../../lib/anniversaries';
 import { parseCalendarDate } from '../../lib/dday';
+type TFunction = (key: string, vars?: Record<string, unknown>) => string;
 export function occurrenceTitle(item: Occurrence, partner: string, t: TFunction): string {
   switch (item.kind) {
     case 'days': return t('anniv.days', { n: item.n });

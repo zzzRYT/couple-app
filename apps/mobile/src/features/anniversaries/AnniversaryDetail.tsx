@@ -5,12 +5,12 @@ import type { Occurrence } from '../../lib/anniversaries';
 import type { CustomAnniversary } from '../../lib/client';
 import { KindTile } from './KindTile';
 import { formattedDate, formattedMonthDay, occurrenceTitle, relativeDate } from './format';
-export function AnniversaryDetail({ item, custom, today, startDate, partner, userId, notify, offline, onBack, onEdit, onDelete, onSettings, onMe }: { item: Occurrence; custom?: CustomAnniversary; today: string; startDate: string; partner: string; userId: string; notify: 'default' | 'off'; offline: boolean; onBack: () => void; onEdit: () => void; onDelete: () => void; onSettings: () => void; onMe: () => void }) {
+export function AnniversaryDetail({ item, custom, today, startDate, partner, userId, notify, notifyDefault, offline, onBack, onEdit, onDelete, onSettings, onMe }: { item: Occurrence; custom?: CustomAnniversary; today: string; startDate: string; partner: string; userId: string; notify: 'default' | 'off'; notifyDefault: string; offline: boolean; onBack: () => void; onEdit: () => void; onDelete: () => void; onSettings: () => void; onMe: () => void }) {
   const { t, i18n } = useTranslation();
   const title = occurrenceTitle(item, partner, t), date = formattedDate(item.date, i18n.language, true);
   const md = formattedMonthDay(item.date, i18n.language);
   const rule = item.kind === 'days' ? `${t('anniv.rule.days', { start: formattedDate(startDate, i18n.language, true), n: item.n })}\n${t('anniv.detail.auto')}` : item.kind === 'years' ? `${t('anniv.rule.years', { md })}\n${t('anniv.detail.auto')}` : item.kind === 'birthday' ? t('anniv.rule.birthday', { md }) : t('anniv.rule.fixed', { md });
-  const notification = notify === 'off' ? t('anniv.notify.off') : t('anniv.notify.default', { time: t('set.notify.time.value'), early: t('set.notify.early.1d') });
+  const notification = notify === 'off' ? t('anniv.notify.off') : notifyDefault;
   const info = (label: string, value: string) => <View style={{ gap: 2, paddingVertical: 8 }}><AppText tone="text2" style={{ fontWeight: '700', fontSize: 13 }}>{label}</AppText><AppText>{value}</AppText></View>;
   return <Screen onBack={onBack} footer={custom ? <Button variant="ghost" label={t('edit.delete')} disabled={offline} onPress={onDelete} /> : undefined}>
     <View style={{ alignItems: 'center', gap: 6 }}><KindTile item={item} large /><AppText variant="heading">{title}</AppText><AppText tone="text2">{date}</AppText><AppText tone="primary" variant="display">{relativeDate(item.date, today, t)}</AppText></View>
