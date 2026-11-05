@@ -33,4 +33,4 @@ jobs:
       - run: deno run -A tools/ai/eval-fixtures.mjs > /dev/null
       - run: node tools/ci/check-schemas.mjs
       - run: node tools/ci/check-migrations.mjs
-      - run: node --test assets/catalog/__tests__/manifest.test.mjs tools/tests/font-glyphs.test.mjs tools/tests/account-deletion.test.mjs tools/tests/release-config.test.mjs tools/tests/widget-strings.test.mjs
+      - run: node --test assets/catalog/__tests__/manifest.test.mjs tools/tests/font-glyphs.test.mjs tools/tests/account-deletion.test.mjs tools/tests/release-config.test.mjs tools/tests/widget-strings.test.mjs tools/tests/traceability.test.mjs
