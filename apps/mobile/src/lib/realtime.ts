@@ -1,7 +1,7 @@
 import type { createSupabase } from './supabase';
 import { spaceChannel } from './routes';
 /** Realtime events carry only ids, statuses and version numbers; clients refetch content through the API. */
-export type RealtimeEvent = { event: 'member' | 'room_version' | 'session' | 'message' | 'preview'; payload: Record<string, string | number | null> };
+export type RealtimeEvent = { event: 'member' | 'anniversary' | 'room_version' | 'session' | 'message' | 'preview'; payload: Record<string, string | number | null> };
 export type RealtimeStatus = 'SUBSCRIBED' | 'CHANNEL_ERROR' | 'TIMED_OUT' | 'CLOSED' | string;
 export type RealtimePort = { subscribe(spaceId: string, onEvent: (event: RealtimeEvent) => void, onStatus?: (status: RealtimeStatus) => void): () => void };
 export function supabaseRealtime(client: ReturnType<typeof createSupabase>): RealtimePort {

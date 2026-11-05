@@ -13,6 +13,9 @@ export default function HomeRoute() {
   const { t, i18n } = useTranslation(); const [partnerEdited, setPartnerEdited] = useState<string | null>(null);
   const { state, refresh, spaceId, inviteAfterActivation } = useSpace();
   const milestone = useMilestone(spaceId, userId, !state.offline && state.status !== 'error', client, 'home', state.offline, state.snapshot?.space.updatedAt ?? '');
+  const [seenKeys, setSeenKeys] = useState<string[]>([]); const [seenReady, setSeenReady] = useState(false);
+  const seenKey = spaceId && userId ? `v0.celebration.seen.${spaceId}.${userId}` : null;
+  useEffect(() => { let active = true; setSeenReady(false); setSeenKeys([]); if (!seenKey) return; void SecureStore.getItemAsync(seenKey).then((value) => { if (!active) return; try { const parsed: unknown = JSON.parse(value ?? '[]'); setSeenKeys(Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === 'string') : []); } catch { setSeenKeys([]); } }).finally(() => { if (active) setSeenReady(true); }); return () => { active = false; }; }, [seenKey]);
   const memberCount = state.snapshot?.space.memberCount;
   const snapshot = state.snapshot;
   const hidePartnerEdited = useCallback(() => setPartnerEdited(null), []);
@@ -35,5 +38,5 @@ export default function HomeRoute() {
     void SecureStore.getItemAsync(`v0.connected.seen.${spaceId}.${userId}`).then((seen) => { if (active && !seen) router.push('/connected'); });
     return () => { active = false; };
   }, [spaceId, userId, memberCount, state.offline, inviteAfterActivation]);
-  return <V0HomeScreen state={state} now={useNow()} onRefresh={() => void refresh()} onAnniversaries={() => router.navigate('/anniversaries')} onOpenInvite={() => router.push('/invite')} celebration={milestone.celebration} onSeen={() => { if (milestone.celebration) void milestone.seen(milestone.celebration); }} partnerEdited={partnerEdited} onHidePartnerEdited={hidePartnerEdited} />;
+  return <V0HomeScreen state={state} now={useNow()} onRefresh={() => void refresh()} onAnniversaries={() => router.navigate('/anniversaries')} onOpenInvite={() => router.push('/invite')} celebration={milestone.celebration} onSeen={() => { if (milestone.celebration) void milestone.seen(milestone.celebration); }} partnerEdited={partnerEdited} onHidePartnerEdited={hidePartnerEdited} seenKeys={seenKeys} seenReady={seenReady} onLocalSeen={(key) => { if (!seenKey) return; const next = [...seenKeys.filter((entry) => entry !== key), key].slice(-50); setSeenKeys(next); void SecureStore.setItemAsync(seenKey, JSON.stringify(next)); }} onOccurrence={(item) => router.push({ pathname: '/anniversary/[key]', params: { key: encodeURIComponent(item.key) } })} />;
 }

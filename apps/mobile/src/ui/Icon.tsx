@@ -3,6 +3,15 @@ import { Canvas, Group, Path } from '@shopify/react-native-skia';
 
 /** Line icons drawn on a 24-unit grid with the canvas stroke (2px, round caps). Decorative: the control that holds one carries the accessible name. */
 const paths = {
+  annivDays: 'M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z',
+  annivYears: 'M17 9 A5 5 0 1 1 7 9 A5 5 0 1 1 17 9 M9 13.2L7 21l5-2.6 5 2.6-2-7.8',
+  annivBirthday: 'M4 20.5h16M5.5 20.5v-7h13v7M5.5 15.8c2 1.2 3.4 1.2 4.6 0s3.6-1.2 4.8 0 2.6 1.2 3.6 0M12 13.5V10M12 7.5c.9-.9.9-1.9 0-3-.9 1.1-.9 2.1 0 3z',
+  annivPepero: 'M6.5 21L14 4M11 21l7.5-17',
+  annivChristmas: 'M12 3l5 6h-3l4 5h-3l4 5H5l4-5H6l4-5H7zM12 19v2.5',
+  annivCustom: 'M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z',
+  annivCalendar: 'M3.5 7.5 Q3.5 5 6 5 H18 Q20.5 5 20.5 7.5 V18 Q20.5 20.5 18 20.5 H6 Q3.5 20.5 3.5 18 Z M3.5 9.5h17M8 3v4M16 3v4 M12 18s-3-1.9-3-3.8a1.5 1.5 0 0 1 3-.6 1.5 1.5 0 0 1 3 .6c0 1.9-3 3.8-3 3.8z',
+  trash: 'M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6',
+  plus: 'M12 5v14M5 12h14',
   back: 'M15 5 L8 12 L15 19',
   forward: 'M9 5 L16 12 L9 19',
   close: 'M6 6 L18 18 M18 6 L6 18',
@@ -38,7 +47,8 @@ export function Icon({ name, size = 24, color, fill }: { name: IconName; size?: 
       <Canvas style={{ width: size, height: size }}>
         <Group transform={[{ scale }]}>
           {fill && <Path path={paths[name]} color={fill} style="fill" />}
-          <Path path={paths[name]} color={color} style="stroke" strokeWidth={2.2 / scale} strokeCap="round" strokeJoin="round" />
+          <Path path={paths[name]} color={color} style="stroke" strokeWidth={name.startsWith('anniv') ? 2 : 2.2 / scale} strokeCap="round" strokeJoin="round" />
+          {name === 'annivPepero' && <Path path="M10.6 13.2L14 5.5M15.1 13.2l3.4-7.7" color={color} style="stroke" strokeWidth={4} strokeCap="round" strokeJoin="round" />}
         </Group>
       </Canvas>
     </View>

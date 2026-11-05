@@ -1,3 +1,4 @@
+import { clearAnniversaryNotify } from '../notifications/preferences';
 import * as SecureStore from 'expo-secure-store';
 import { clearV0Cache, readV0Cache } from './v0Cache';
 export type StoredInvite = { code: string; expiresAt: string };
@@ -9,5 +10,5 @@ export async function readV0Invite(spaceId: string): Promise<StoredInvite | null
 export async function clearV0LocalData(userId: string, spaceId?: string | null) {
   spaceId ??= (await readV0Cache(userId))?.spaceId;
   const keys = spaceId ? [inviteKey(spaceId), `v0.connected.seen.${spaceId}.${userId}`, `v0.partnerEdited.seen.${spaceId}.${userId}`, `v0.celebration.seen.${spaceId}.${userId}`] : [];
-  await Promise.all([clearV0Cache(userId), ...keys.map((key) => SecureStore.deleteItemAsync(key))]);
+  await Promise.all([clearV0Cache(userId), clearAnniversaryNotify(userId), ...keys.map((key) => SecureStore.deleteItemAsync(key))]);
 }

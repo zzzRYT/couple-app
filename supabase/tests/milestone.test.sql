@@ -1,5 +1,5 @@
 begin;
-select plan(8);
+select plan(12);
 insert into auth.users(id,aud,role,email) values
  ('00000000-0000-0000-0000-000000000081','authenticated','authenticated','milestone-record-a@example.invalid'),
  ('00000000-0000-0000-0000-000000000082','authenticated','authenticated','milestone-record-b@example.invalid');
@@ -24,5 +24,11 @@ select is((select count(*)::int from public.milestone_celebration where space_id
 select is((select count(*)::int from public.milestone_seen s join public.milestone_celebration c on c.id=s.celebration_id where c.space_id=(select v from ctx where k='space') and c.milestone_key='d1000'),0,'future seen state is deleted with its record');
 select is((select count(*)::int from public.milestone_celebration where space_id=(select v from ctx where k='space') and milestone_key='d50'),1,'past record is preserved');
 select is((select count(*)::int from public.milestone_seen s join public.milestone_celebration c on c.id=s.celebration_id where c.space_id=(select v from ctx where k='space') and c.milestone_key='d50'),1,'past seen state is preserved');
+select ok(position('150' in pg_get_constraintdef(oid)) > 0, 'milestone key constraint accepts 150') from pg_constraint where conrelid='public.milestone_celebration'::regclass and conname='milestone_celebration_milestone_key_check';
+select ok(position('150' in pg_get_constraintdef(oid)) > 0, 'milestone day constraint accepts 150') from pg_constraint where conrelid='public.milestone_celebration'::regclass and conname='milestone_celebration_check';
+insert into public.milestone_celebration(space_id,milestone_key,kind,milestone_days,milestone_date,priority) select v,'d150','day',150,'2023-05-30',1 from ctx where k='space';
+select is((select milestone_days from public.milestone_celebration where space_id=(select v from ctx where k='space') and milestone_key='d150'),150,'d150 accepted');
+insert into public.milestone_celebration(space_id,milestone_key,kind,milestone_days,milestone_date,priority) select v,'d500','day',500,'2024-05-14',1 from ctx where k='space';
+select is((select milestone_days from public.milestone_celebration where space_id=(select v from ctx where k='space') and milestone_key='d500'),500,'historic d500 accepted');
 select * from finish();
 rollback;

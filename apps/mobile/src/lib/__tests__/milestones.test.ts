@@ -1,7 +1,7 @@
 import { chooseCurrentMilestone, computeMilestones } from '../../../../../supabase/functions/_shared/milestones';
 
 describe('computeMilestones', () => {
-  it.each([50, 100, 200, 300, 500, 1000])('finds day %i with the anniversary as day one', (days) => {
+  it.each([50, 100, 150, 200, 300])('finds day %i with the anniversary as day one', (days) => {
     const start = new Date(Date.UTC(2024, 0, 1));
     start.setUTCDate(start.getUTCDate() + days - 1);
     const result = computeMilestones('2024-01-01', 'Asia/Seoul', start.toISOString());

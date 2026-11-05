@@ -1470,5 +1470,4020 @@
         }
       ]
     }
+  ],
+  "calendarCases": [
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2025-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-02-28",
+      "dayCount": 366,
+      "todayKeys": [
+        "y1",
+        "bday:me:2025",
+        "bday:partner:2025",
+        "custom:leap:2025"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2025-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-03-01",
+      "dayCount": 367,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2025-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-03-01",
+      "dayCount": 367,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2025-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-07-27",
+      "dayCount": 515,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2025-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-11-11",
+      "dayCount": 622,
+      "todayKeys": [
+        "season:pepero:2025"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2025-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-12-26",
+      "dayCount": 667,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2025-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-02-28",
+      "dayCount": 366,
+      "todayKeys": [
+        "y1",
+        "bday:me:2025",
+        "bday:partner:2025",
+        "custom:leap:2025"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2025-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-02-28",
+      "dayCount": 366,
+      "todayKeys": [
+        "y1",
+        "bday:me:2025",
+        "bday:partner:2025",
+        "custom:leap:2025"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2025-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-02-28",
+      "dayCount": 366,
+      "todayKeys": [
+        "y1",
+        "bday:me:2025",
+        "bday:partner:2025",
+        "custom:leap:2025"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2025-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-07-26",
+      "dayCount": 514,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2025-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-11-11",
+      "dayCount": 622,
+      "todayKeys": [
+        "season:pepero:2025"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2025-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-12-25",
+      "dayCount": 666,
+      "todayKeys": [
+        "season:christmas:2025"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2025-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-03-01",
+      "dayCount": 367,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2025-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-03-01",
+      "dayCount": 367,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2025-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-03-01",
+      "dayCount": 367,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2025-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-07-27",
+      "dayCount": 515,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2025-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-11-12",
+      "dayCount": 623,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2025-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-12-26",
+      "dayCount": 667,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2025-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-02-28",
+      "dayCount": 366,
+      "todayKeys": [
+        "y1",
+        "bday:me:2025",
+        "bday:partner:2025",
+        "custom:leap:2025"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2025-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-02-28",
+      "dayCount": 366,
+      "todayKeys": [
+        "y1",
+        "bday:me:2025",
+        "bday:partner:2025",
+        "custom:leap:2025"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2025-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-03-01",
+      "dayCount": 367,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2025-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-07-27",
+      "dayCount": 515,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2025-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-11-11",
+      "dayCount": 622,
+      "todayKeys": [
+        "season:pepero:2025"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2025-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2025-12-25",
+      "dayCount": 666,
+      "todayKeys": [
+        "season:christmas:2025"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2026-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-02-28",
+      "dayCount": 731,
+      "todayKeys": [
+        "y2",
+        "custom:leap:2026"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2026-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-03-01",
+      "dayCount": 732,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2026-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-03-01",
+      "dayCount": 732,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2026-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-07-27",
+      "dayCount": 880,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2026-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-11-11",
+      "dayCount": 987,
+      "todayKeys": [
+        "custom:once",
+        "season:pepero:2026"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2026-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-12-26",
+      "dayCount": 1032,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2026-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-02-28",
+      "dayCount": 731,
+      "todayKeys": [
+        "y2",
+        "custom:leap:2026"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2026-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-02-28",
+      "dayCount": 731,
+      "todayKeys": [
+        "y2",
+        "custom:leap:2026"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2026-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-02-28",
+      "dayCount": 731,
+      "todayKeys": [
+        "y2",
+        "custom:leap:2026"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2026-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-07-26",
+      "dayCount": 879,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2026-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-11-11",
+      "dayCount": 987,
+      "todayKeys": [
+        "custom:once",
+        "season:pepero:2026"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2026-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-12-25",
+      "dayCount": 1031,
+      "todayKeys": [
+        "season:christmas:2026"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2026-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-03-01",
+      "dayCount": 732,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2026-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-03-01",
+      "dayCount": 732,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2026-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-03-01",
+      "dayCount": 732,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2026-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-07-27",
+      "dayCount": 880,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2026-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-11-12",
+      "dayCount": 988,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2026-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-12-26",
+      "dayCount": 1032,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2026-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-02-28",
+      "dayCount": 731,
+      "todayKeys": [
+        "y2",
+        "custom:leap:2026"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2026-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-02-28",
+      "dayCount": 731,
+      "todayKeys": [
+        "y2",
+        "custom:leap:2026"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2026-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-03-01",
+      "dayCount": 732,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2026-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-07-27",
+      "dayCount": 880,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2026-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-11-11",
+      "dayCount": 987,
+      "todayKeys": [
+        "custom:once",
+        "season:pepero:2026"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2026-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2026-12-25",
+      "dayCount": 1031,
+      "todayKeys": [
+        "season:christmas:2026"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2027-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-02-28",
+      "dayCount": 1096,
+      "todayKeys": [
+        "y3",
+        "bday:me:2027",
+        "bday:partner:2027",
+        "custom:leap:2027"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2027-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-03-01",
+      "dayCount": 1097,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2027-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-03-01",
+      "dayCount": 1097,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2027-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-07-27",
+      "dayCount": 1245,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2027-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-11-11",
+      "dayCount": 1352,
+      "todayKeys": [
+        "season:pepero:2027"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2027-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-12-26",
+      "dayCount": 1397,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2027-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-02-28",
+      "dayCount": 1096,
+      "todayKeys": [
+        "y3",
+        "bday:me:2027",
+        "bday:partner:2027",
+        "custom:leap:2027"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2027-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-02-28",
+      "dayCount": 1096,
+      "todayKeys": [
+        "y3",
+        "bday:me:2027",
+        "bday:partner:2027",
+        "custom:leap:2027"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2027-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-02-28",
+      "dayCount": 1096,
+      "todayKeys": [
+        "y3",
+        "bday:me:2027",
+        "bday:partner:2027",
+        "custom:leap:2027"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2027-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-07-26",
+      "dayCount": 1244,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2027-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-11-11",
+      "dayCount": 1352,
+      "todayKeys": [
+        "season:pepero:2027"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2027-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-12-25",
+      "dayCount": 1396,
+      "todayKeys": [
+        "season:christmas:2027"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2027-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-03-01",
+      "dayCount": 1097,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2027-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-03-01",
+      "dayCount": 1097,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2027-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-03-01",
+      "dayCount": 1097,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2027-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-07-27",
+      "dayCount": 1245,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2027-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-11-12",
+      "dayCount": 1353,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2027-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-12-26",
+      "dayCount": 1397,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2027-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-02-28",
+      "dayCount": 1096,
+      "todayKeys": [
+        "y3",
+        "bday:me:2027",
+        "bday:partner:2027",
+        "custom:leap:2027"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2027-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-02-28",
+      "dayCount": 1096,
+      "todayKeys": [
+        "y3",
+        "bday:me:2027",
+        "bday:partner:2027",
+        "custom:leap:2027"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2027-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-03-01",
+      "dayCount": 1097,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2027-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-07-27",
+      "dayCount": 1245,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2027-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-11-11",
+      "dayCount": 1352,
+      "todayKeys": [
+        "season:pepero:2027"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2027-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2027-12-25",
+      "dayCount": 1396,
+      "todayKeys": [
+        "season:christmas:2027"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2028-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-02-28",
+      "dayCount": 1461,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2028-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-02-29",
+      "dayCount": 1462,
+      "todayKeys": [
+        "y4",
+        "custom:leap:2028"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2028-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-03-01",
+      "dayCount": 1463,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2028-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-07-27",
+      "dayCount": 1611,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2028-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-11-11",
+      "dayCount": 1718,
+      "todayKeys": [
+        "season:pepero:2028"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2028-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-12-26",
+      "dayCount": 1763,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2028-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-02-28",
+      "dayCount": 1461,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2028-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-02-28",
+      "dayCount": 1461,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2028-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-02-29",
+      "dayCount": 1462,
+      "todayKeys": [
+        "y4",
+        "custom:leap:2028"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2028-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-07-26",
+      "dayCount": 1610,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2028-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-11-11",
+      "dayCount": 1718,
+      "todayKeys": [
+        "season:pepero:2028"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2028-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-12-25",
+      "dayCount": 1762,
+      "todayKeys": [
+        "season:christmas:2028"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2028-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-02-29",
+      "dayCount": 1462,
+      "todayKeys": [
+        "y4",
+        "custom:leap:2028"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2028-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-02-29",
+      "dayCount": 1462,
+      "todayKeys": [
+        "y4",
+        "custom:leap:2028"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2028-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-03-01",
+      "dayCount": 1463,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2028-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-07-27",
+      "dayCount": 1611,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2028-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-11-12",
+      "dayCount": 1719,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2028-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-12-26",
+      "dayCount": 1763,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2028-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-02-28",
+      "dayCount": 1461,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2028-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-02-28",
+      "dayCount": 1461,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2028-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-03-01",
+      "dayCount": 1463,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2028-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-07-27",
+      "dayCount": 1611,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2028-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-11-11",
+      "dayCount": 1718,
+      "todayKeys": [
+        "season:pepero:2028"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2028-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": null,
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2028-12-25",
+      "dayCount": 1762,
+      "todayKeys": [
+        "season:christmas:2028"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2029-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-02-28",
+      "dayCount": 1827,
+      "todayKeys": [
+        "y5",
+        "bday:me:2029",
+        "bday:partner:2029",
+        "custom:leap:2029"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2029-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-03-01",
+      "dayCount": 1828,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2029-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-03-01",
+      "dayCount": 1828,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2029-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-07-27",
+      "dayCount": 1976,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2029-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-11-11",
+      "dayCount": 2083,
+      "todayKeys": [
+        "season:pepero:2029"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Asia/Seoul",
+      "now": "2029-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-12-26",
+      "dayCount": 2128,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2029-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-02-28",
+      "dayCount": 1827,
+      "todayKeys": [
+        "y5",
+        "bday:me:2029",
+        "bday:partner:2029",
+        "custom:leap:2029"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2029-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-02-28",
+      "dayCount": 1827,
+      "todayKeys": [
+        "y5",
+        "bday:me:2029",
+        "bday:partner:2029",
+        "custom:leap:2029"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2029-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-02-28",
+      "dayCount": 1827,
+      "todayKeys": [
+        "y5",
+        "bday:me:2029",
+        "bday:partner:2029",
+        "custom:leap:2029"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2029-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-07-26",
+      "dayCount": 1975,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2029-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-11-11",
+      "dayCount": 2083,
+      "todayKeys": [
+        "season:pepero:2029"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "America/New_York",
+      "now": "2029-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-12-25",
+      "dayCount": 2127,
+      "todayKeys": [
+        "season:christmas:2029"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2029-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-03-01",
+      "dayCount": 1828,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2029-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-03-01",
+      "dayCount": 1828,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2029-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-03-01",
+      "dayCount": 1828,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2029-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-07-27",
+      "dayCount": 1976,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2029-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-11-12",
+      "dayCount": 2084,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "Pacific/Auckland",
+      "now": "2029-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-12-26",
+      "dayCount": 2128,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2029-02-28T14:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-02-28",
+      "dayCount": 1827,
+      "todayKeys": [
+        "y5",
+        "bday:me:2029",
+        "bday:partner:2029",
+        "custom:leap:2029"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2029-02-28T15:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-02-28",
+      "dayCount": 1827,
+      "todayKeys": [
+        "y5",
+        "bday:me:2029",
+        "bday:partner:2029",
+        "custom:leap:2029"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2029-03-01T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-03-01",
+      "dayCount": 1828,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2029-07-27T00:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-07-27",
+      "dayCount": 1976,
+      "todayKeys": []
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2029-11-11T12:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-11-11",
+      "dayCount": 2083,
+      "todayKeys": [
+        "season:pepero:2029"
+      ]
+    },
+    {
+      "startDate": "2024-02-29",
+      "timeZone": "UTC",
+      "now": "2029-12-25T23:59:00Z",
+      "me": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "partner": {
+        "birthday": {
+          "month": 2,
+          "day": 29
+        }
+      },
+      "customs": [
+        {
+          "id": "leap",
+          "title": "Leap",
+          "date": "2024-02-29",
+          "repeat": "yearly"
+        },
+        {
+          "id": "once",
+          "title": "Once",
+          "date": "2026-11-11",
+          "repeat": "once"
+        }
+      ],
+      "today": "2029-12-25",
+      "dayCount": 2127,
+      "todayKeys": [
+        "season:christmas:2029"
+      ]
+    }
   ]
 }
