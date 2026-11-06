@@ -8,18 +8,18 @@ import type { IdempotencyStore } from '../../_shared/idempotency.ts';
 const USER = '00000000-0000-4000-8000-0000000000c1';
 const NOW = new Date('2026-11-02T00:00:00Z');
 const enc = (o: unknown) => btoa(JSON.stringify(o)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-function token(provider: string, signedInSecondsAgo: number) {
+function token(provider: string, signedInSecondsAgo: number, method = 'oauth') {
   const t = NOW.getTime() / 1000 - signedInSecondsAgo;
-  return `${enc({ alg: 'HS256' })}.${enc({ sub: USER, iat: t, amr: [{ method: 'oauth', timestamp: t }], app_metadata: { provider } })}.sig`;
+  return `${enc({ alg: 'HS256' })}.${enc({ sub: USER, iat: t, amr: [{ method, timestamp: t }], app_metadata: { provider } })}.sig`;
 }
 function memoryStore(): IdempotencyStore {
   const map = new Map<string, unknown>();
   return { get: (k) => Promise.resolve(map.get(k)), put: (k, v) => { map.set(k, v); return Promise.resolve(); } };
 }
-function deps(overrides: { apple?: AppleClient; kakao?: AccountDeps['ports']['kakao'] } = {}) {
+function deps(overrides: { apple?: AppleClient; kakao?: AccountDeps['ports']['kakao']; stored?: string | null; unreadable?: boolean; provider?: 'apple' | 'email' } = {}) {
   const rpcs: { name: string; args: Record<string, unknown> }[] = [];
   const logged: string[] = [];
-  const db = { async rpc<T>(name: string, args: Record<string, unknown>): Promise<T> { rpcs.push({ name, args }); return (name === 'claim_account_deletion' ? null : { state: 'requested' }) as T; } };
+  const db = { async rpc<T>(name: string, args: Record<string, unknown>): Promise<T> { rpcs.push({ name, args }); if (name === 'apple_credential_of') return (overrides.stored ?? null) as T; return (name === 'claim_account_deletion' ? null : { state: 'requested' }) as T; } };
   const account: AccountDeps = {
     db, verifier: { getUser: () => Promise.resolve({ user: { id: USER }, error: null }) }, idempotency: memoryStore(), now: () => NOW,
     ports: {
@@ -27,9 +27,9 @@ function deps(overrides: { apple?: AppleClient; kakao?: AccountDeps['ports']['ka
       auth: { providerUserId: () => Promise.resolve('k1'), deleteUser: () => Promise.resolve() },
       apple: overrides.apple ?? { exchange: () => Promise.resolve({ token: 'refresh-secret', hint: 'refresh_token' }), revoke: () => Promise.resolve() },
       kakao: 'kakao' in overrides ? overrides.kakao! : null,
-      box: { seal: (x) => Promise.resolve(`sealed(${x.length})`), open: () => Promise.resolve('{}') },
+      box: { seal: (x) => Promise.resolve(`sealed(${x.length})`), open: () => overrides.unreadable ? Promise.reject(new Error('CREDENTIAL_UNREADABLE')) : Promise.resolve('{}') },
     },
-    signOutEverywhere: () => Promise.resolve(), providerOf: () => Promise.resolve('apple'), serviceKey: 'service-key',
+    signOutEverywhere: () => Promise.resolve(), providerOf: () => Promise.resolve(overrides.provider ?? 'apple'), serviceKey: 'service-key',
   };
   const original = console.log;
   const handler = accountHandler(account);
@@ -94,6 +94,60 @@ Deno.test('⑤ no key, token or code appears in logs or responses', async () => 
   const res = await send({ confirm: true, reauth: { provider: 'apple', authorizationCode: 'code-secret' } });
   const text = JSON.stringify(res) + logged.join('\n');
   for (const secret of ['code-secret', 'refresh-secret', 'service-key']) assert(!text.includes(secret), secret);
+});
+const byPassword = { confirm: true, reauth: { provider: 'password' } };
+const passwordToken = (provider: string, age = 30) => token(provider, age, 'password');
+Deno.test('V0-F18-AC-01 an Apple account confirmed by password revokes with the stored token', async () => {
+  const { send, rpcs } = deps({ stored: 'sealed-stored' });
+  assertEquals((await send(byPassword, passwordToken('apple'))).status, 202);
+  const begin = rpcs.find((r) => r.name === 'begin_account_deletion')!;
+  assertEquals(begin.args.reauth_provider, 'apple');
+  assertEquals(begin.args.credential, 'sealed-stored');
+  assertEquals(begin.args.credential_ttl_seconds, 86400);
+});
+Deno.test('V0-F18-AC-02 no stored token, or one that cannot be opened: nothing changes and the app asks for Apple', async () => {
+  for (const setup of [{ stored: null }, { stored: 'old-key', unreadable: true }]) {
+    const { send, rpcs } = deps(setup);
+    const res = await send(byPassword, passwordToken('apple'));
+    assertEquals(res.status, 409);
+    assertEquals(res.body.error.code, 'APPLE_CONFIRM_REQUIRED');
+    assert(!began(rpcs));
+  }
+  const { send } = deps();
+  assertEquals((await send({ confirm: true, reauth: { provider: 'apple', authorizationCode: 'code' } })).status, 202, 'the Apple sheet then finishes it');
+});
+Deno.test('V0-F18-AC-04 an email account confirmed by password has nothing to revoke', async () => {
+  const { send, rpcs } = deps({ provider: 'email' });
+  assertEquals((await send(byPassword, passwordToken('email'))).status, 202);
+  const begin = rpcs.find((r) => r.name === 'begin_account_deletion')!;
+  assertEquals([begin.args.reauth_provider, begin.args.credential], ['email', null]);
+});
+Deno.test('V0-F18-AC-06 a password proof is the password amr entry within five minutes, whatever the provider', async () => {
+  const { send, rpcs } = deps({ stored: 'sealed-stored' });
+  assertEquals((await send(byPassword, token('apple', 30, 'oauth'))).body.error.code, 'REAUTH_REQUIRED', 'an Apple sign-in is not a password proof');
+  assertEquals((await send(byPassword, passwordToken('apple', 301))).body.error.code, 'REAUTH_REQUIRED');
+  assertEquals((await send({ confirm: true, reauth: { provider: 'apple', authorizationCode: 'c' } }, passwordToken('apple'))).body.error.code, 'REAUTH_REQUIRED', 'a password sign-in is not an Apple proof');
+  assert(!began(rpcs));
+});
+Deno.test('V0-F18-AC-07 the sign-in code is exchanged and kept sealed, and a failure never fails the sign-in', async () => {
+  const stored = deps();
+  assertEquals((await stored.send({ authorizationCode: 'code-1' }, token('apple', 5), '/account/apple-token')).body, { stored: true });
+  const row = stored.rpcs.find((r) => r.name === 'store_apple_credential')!;
+  assert(String(row.args.sealed_token).startsWith('sealed('));
+  assert(!JSON.stringify(row.args).includes('refresh-secret'));
+  for (const failure of [new AppleExchangeError(), new ProviderNotConfiguredError('APPLE_SECRET_MISSING')]) {
+    const { send, rpcs } = deps({ apple: { exchange: () => Promise.reject(failure), revoke: () => Promise.resolve() } });
+    assertEquals(await send({ authorizationCode: 'bad' }, token('apple', 5), '/account/apple-token'), { status: 200, body: { stored: false } });
+    assert(!rpcs.some((r) => r.name === 'store_apple_credential'));
+  }
+});
+Deno.test('V0-F18-AC-08 an operator deletion revokes with the stored token when there is one', async () => {
+  const { send, rpcs } = deps({ stored: 'sealed-stored' });
+  assertEquals((await send({ userId: USER }, 'service-key', '/account/operator-deletion')).status, 202);
+  assertEquals(rpcs.find((r) => r.name === 'begin_account_deletion')!.args.credential, 'sealed-stored');
+  const none = deps();
+  await none.send({ userId: USER }, 'service-key', '/account/operator-deletion');
+  assertEquals(none.rpcs.find((r) => r.name === 'begin_account_deletion')!.args.credential, null);
 });
 Deno.test('operator route: only the service-role key starts an out-of-app deletion', async () => {
   const { send, rpcs } = deps();

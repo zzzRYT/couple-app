@@ -74,6 +74,28 @@ Body: `{ "expectedVersion": 3 }` (use `api.json(..., { method: 'DELETE', body, k
 
 - 204. Errors: `VERSION_CONFLICT`, `NOT_FOUND` (`gone: true` if already deleted).
 
+### `auth-password` function (S7, `verify_jwt = false`)
+
+No route uses the idempotency store, and none logs its body. Errors use the usual `{ error: { code, retryable } }`.
+
+| Route | Auth | Body | Success | Errors |
+|---|---|---|---|---|
+| `GET /auth-password/config` | none | — | `{ mail: boolean }`; false when the value is off or Auth auto-confirms email | — |
+| `POST /auth-password/login` | none | `{ email, password }` | `{ accessToken, refreshToken }` | `INVALID_LOGIN` 401, `LOGIN_LOCKED` 429, `RATE_LIMITED` 429 |
+| `POST /auth-password/signup` | none | `{ email, password, termsAccepted: true, redirectTo? }` | 202 `{ state: 'sent' }`, also for an existing email | `MAIL_NOT_CONNECTED` 503, `WEAK_PASSWORD` 422, `INVALID_REQUEST` 400 |
+| `GET /auth-password/state` | user | — | `{ hasPassword, email, promptSeen }` | — |
+| `POST /auth-password/verify` | user | `{ password }` | `{ accessToken, refreshToken }`; the old session is revoked, the new token's `amr` proves the password | `WRONG_PASSWORD` 403, `LOGIN_LOCKED` 429, `EMAIL_REQUIRED` 409 |
+| `POST /auth-password/set` | user | `{ newPassword, currentPassword? }` | `{ state: 'saved' }`; this session stays, others end | `WRONG_PASSWORD` 403, `LOGIN_LOCKED` 429, `WEAK_PASSWORD` 422, `EMAIL_REQUIRED` 409, `REAUTH_REQUIRED` 401 (a password exists, no current password and no fresh non-password sign-in) |
+| `POST /auth-password/prompt-seen` | user | — | `{ state: 'seen' }` | — |
+
+### `POST /account/apple-token` (S7)
+
+Body `{ authorizationCode }`. Exchanges the code and stores the sealed refresh token. Always 200 `{ stored: boolean }` for a signed-in user: a missing secret or a refused code never fails a sign-in.
+
+## Changed in S7
+
+`POST /account/deletion`: `reauth.provider` also accepts `'password'`, proved by a fresh `password` `amr` entry whatever the account's provider. An Apple account confirmed by password with no readable stored token gets 409 `APPLE_CONFIRM_REQUIRED` and nothing changes; the app then asks for Apple and sends `{ provider: 'apple', authorizationCode }` as before.
+
 ## Realtime hints
 
 Private channel `space:<spaceId>` (existing `notify_space`). New/used events: `member` with `{kind: 'profile' | 'timezone' | 'anniversary'}` (start date already sends `{kind:'anniversary'}`), `anniversary` with `{id}`. The app treats every non-`session` event as "refresh the snapshot" (`useSnapshotSync.ts:58`), so no client change is needed beyond the new fields.

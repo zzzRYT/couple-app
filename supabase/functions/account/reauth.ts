@@ -3,9 +3,12 @@
 
 export type Provider = 'kakao' | 'apple' | 'email';
 export const PROVIDERS: readonly Provider[] = ['kakao', 'apple', 'email'];
+/** How someone proved it is them: the account's own provider, or the password. An Apple account with a password stays `apple`. */
+export type ReauthMethod = Provider | 'password';
+export const REAUTH_METHODS: readonly ReauthMethod[] = [...PROVIDERS, 'password'];
 /** "Recent" is five minutes (spec FR-070, an assumption). */
 export const REAUTH_WINDOW_SECONDS = 300;
-type Claims = { iat?: unknown; amr?: unknown; app_metadata?: { provider?: unknown } };
+export type Claims = { iat?: unknown; amr?: unknown; app_metadata?: { provider?: unknown; providers?: unknown } };
 
 export function bearerToken(authorization: string | null): string | null {
   return authorization?.match(/^Bearer\s+(\S+)$/i)?.[1] ?? null;
@@ -22,19 +25,38 @@ export function jwtClaims(token: string | null): Claims | null {
     return null;
   }
 }
-/** The latest sign-in time in seconds: the newest `amr` timestamp, or `iat` when the token has no `amr`. */
-export function lastSignInAt(claims: Claims): number | null {
-  const times = Array.isArray(claims.amr)
-    ? claims.amr.map((entry) => (entry as { timestamp?: unknown })?.timestamp).filter((t): t is number => typeof t === 'number' && Number.isFinite(t))
-    : [];
-  if (times.length > 0) return Math.max(...times);
-  return typeof claims.iat === 'number' ? claims.iat : null;
+/**
+ * The latest accepted sign-in time in seconds, from `amr`. `iat` stands in only when no `amr` entry has a time; `accept`
+ * then decides on `undefined`, so a password check never passes on a token that does not name its method.
+ */
+export function lastSignInAt(claims: Claims, accept: (method: unknown) => boolean = () => true): number | null {
+  const entries = (Array.isArray(claims.amr) ? claims.amr : []) as { method?: unknown; timestamp?: unknown }[];
+  const timed = entries.filter((entry) => typeof entry?.timestamp === 'number' && Number.isFinite(entry.timestamp));
+  if (timed.length > 0) {
+    const times = timed.filter((entry) => accept(entry.method)).map((entry) => entry.timestamp as number);
+    return times.length > 0 ? Math.max(...times) : null;
+  }
+  return accept(undefined) && typeof claims.iat === 'number' ? claims.iat : null;
 }
-/** True when the caller signed in with `provider` within the window. The account's own provider comes from `app_metadata`. */
-export function reauthIsFresh(claims: Claims | null, provider: Provider, nowMs: number, windowSeconds = REAUTH_WINDOW_SECONDS): boolean {
-  if (!claims || claims.app_metadata?.provider !== provider) return false;
-  const signedIn = lastSignInAt(claims);
+const isPassword = (method: unknown) => method === 'password';
+const notPassword = (method: unknown) => method !== 'password';
+function fresh(signedIn: number | null, nowMs: number, windowSeconds: number): boolean {
   if (signedIn === null) return false;
   const age = nowMs / 1000 - signedIn;
   return age >= -60 && age <= windowSeconds;
+}
+/**
+ * True when the caller proved `method` within the window. A password proof needs a `password` entry and works on any account;
+ * Apple and Kakao need that provider on the account and a sign-in other than a password. `email` keeps the development OTP path.
+ */
+export function reauthIsFresh(claims: Claims | null, method: ReauthMethod, nowMs: number, windowSeconds = REAUTH_WINDOW_SECONDS): boolean {
+  if (!claims) return false;
+  if (method === 'password') return fresh(lastSignInAt(claims, isPassword), nowMs, windowSeconds);
+  const providers = Array.isArray(claims.app_metadata?.providers) ? claims.app_metadata.providers : [];
+  if (claims.app_metadata?.provider !== method && !providers.includes(method)) return false;
+  return fresh(lastSignInAt(claims, method === 'email' ? undefined : notPassword), nowMs, windowSeconds);
+}
+/** A recent sign-in that was not the password: Apple again, or a mail link. It may replace a forgotten password. */
+export function provedWithoutPassword(claims: Claims | null, nowMs: number, windowSeconds = REAUTH_WINDOW_SECONDS): boolean {
+  return !!claims && fresh(lastSignInAt(claims, notPassword), nowMs, windowSeconds);
 }

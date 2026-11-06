@@ -1,6 +1,6 @@
 # V0 Codex handoffs (couple D+Day)
 
-Six self-contained handoffs, one per slice of `../tasks.md`. Each handoff plus the files in `./design/` it names is everything a Codex worker needs: Codex cannot open the Claude Design artifact, so all design facts were extracted from the canonical boards (artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X, version `1793598115-fafc`) and verified claim by claim (each extract starts with its verification line). Where a board does not show a value, the extract says `verify against board <id>` and the handoff gives a default to use and report.
+Seven handoffs, one per slice of `../tasks.md`. Each handoff plus the files in `./design/` it names is everything a Codex worker needs: Codex cannot open the Claude Design artifact, so all design facts were extracted from the canonical boards (artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X, version `1793598115-fafc`) and verified claim by claim (each extract starts with its verification line). Where a board does not show a value, the extract says `verify against board <id>` and the handoff gives a default to use and report.
 
 ## Order, dependencies, dispatch
 
@@ -12,6 +12,7 @@ Six self-contained handoffs, one per slice of `../tasks.md`. Each handoff plus t
 | 4 | [H04-ios-widgets.md](./H04-ios-widgets.md) | S4 widgets (App Group PoC first) | T401–T405 | V0-F11-AC-01…09, V0-NF-04 | H01, H03 | Codex · gpt-6.1-terra · xhigh (native extension, signing) |
 | 5 | [H05-local-notifications.md](./H05-local-notifications.md) | S5 local notifications | T501–T506 | V0-F10-AC-01…08 | H03 (H04 recommended) | Codex · gpt-6.1-terra · high |
 | 6 | [H06-polish-release.md](./H06-polish-release.md) | S6 i18n, a11y, deletion, store metadata, regression | T601–T606 | V0-NF-01/02/04, V0-F12-AC-07…10, V0-F14-AC-06, SC-004/006/007 | H02–H05 | Codex · gpt-6-luna · high for the sweep; escalate to gpt-6.1-terra if the traceability gaps need new tests |
+| 7 | [H07-password-auth.md](./H07-password-auth.md) | S7 email and password sign-in, password identity check | T701–T709 | V0-F15-AC-*, V0-F16-AC-*, V0-F17-AC-*, V0-F18-AC-* | H06 | delivered directly, not dispatched |
 
 ```text
 H01 ─┐

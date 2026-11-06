@@ -40,7 +40,9 @@ export async function defaultDeletionPorts(env: (name: string) => string | undef
     async signOutEverywhere(jwt: string) { await client.auth.admin.signOut(jwt, 'global'); },
     async providerOf(userId: string): Promise<Provider | null> {
       const { data } = await client.auth.admin.getUserById(userId);
-      const value = data.user?.app_metadata?.provider;
+      // An Apple identity must be revoked whichever provider came first.
+      const providers = data.user?.app_metadata?.providers;
+      const value = Array.isArray(providers) && providers.includes('apple') ? 'apple' : data.user?.app_metadata?.provider;
       return typeof value === 'string' && (PROVIDERS as readonly string[]).includes(value) ? value as Provider : null;
     },
   };

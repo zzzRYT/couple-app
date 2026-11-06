@@ -81,6 +81,15 @@ S2 단계에서는 `members[].birthday`를 항상 `null`로, `hasBirthday`를 `f
 - 정리: 공간 종료 후 purge(`lifecycle-sweep`)는 `couple_space` 삭제로 cascade. 소프트 삭제 행은 30일 뒤 지워도 되지만 V0에서는 공간 수명과 같이 둔다(rollback 헤더에 적음).
 - 생일 공개 규칙(같은 마이그레이션에서 `space_snapshot` 재정의): 상대의 `birthday`는 `me`와 상대 모두 `birth_month is not null`일 때만 `{month, day}`, 아니면 `null`. 연도는 상대에게 절대 보내지 않는다.
 
+### 1.7 비밀번호·봉인 토큰 — `20261106000100_v0_password_auth.sql` (S7)
+
+- 비밀번호는 Supabase Auth의 `auth.users.encrypted_password`(bcrypt)에만 있다. 우리 테이블에는 어떤 형태로도 없다. `account_has_password(actor)`는 값이 있는지만 답한다.
+- `password_attempt(key_hash text pk, failures int, locked_until timestamptz, updated_at timestamptz)`: `key_hash`는 정규화한 이메일의 HMAC-SHA256(서버 키)이라 표만으로 이메일을 알 수 없다. RLS 켜고 anon·authenticated 권한 없음. 없는 이메일도 같은 행을 만든다. `password_attempt_take`가 검사 전에 횟수를 먼저 올려서 동시 요청도 5회를 넘지 못하고, 성공하면 `password_attempt_clear`, 제공자 장애면 `password_attempt_refund`로 되돌린다. 하루 지난 행은 `take`가 지운다.
+- `apple_credential(user_id uuid pk → auth.users cascade, sealed text, stored_at timestamptz)`: `credentialBox`로 봉인한 Apple refresh token. `begin_account_deletion`이 삭제를 받아들일 때 지운다(재시도용 사본은 기존대로 `account_deletion`에 최대 24시간).
+- `user_profile.password_prompt_seen_at timestamptz`: 비밀번호 안내를 본 시각(기기를 바꿔도 다시 묻지 않게).
+- `app_settings`: `auth_email_enabled`(false, 메일 연결 값 하나), `review_login_email`(App Review 데모 주소), `password_attempt_limit`(5), `password_lock_seconds`(600).
+- 트리거 `guard_email_signup`(`auth.users` before insert): `raw_app_meta_data.provider = 'email'`이고 `auth_email_enabled`가 꺼져 있으면 `review_login_email`과 같은 주소만 통과시킨다. Apple 등 다른 제공자는 막지 않는다.
+
 ### 1.6 상태 전이
 
 - 직접 추가 기념일: `active(version n)` →(수정)→ `active(n+1)` →(삭제)→ `deleted(n+2)`. `deleted`에서 되살리기 없음.
