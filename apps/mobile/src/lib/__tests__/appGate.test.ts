@@ -44,3 +44,11 @@ it('V0-F02-AC-08 waits for a snapshot and requires a missing member profile', ()
   expect(appGate({ ...input, snapshotProfile: null })).toEqual({ kind: 'needsProfile' });
   expect(appGate({ ...input, snapshotProfile: '하루' })).toEqual({ kind: 'active', spaceId: 'space' });
 });
+
+it('V0-F01-AC-03 sends a signed-in person without an active space to the create-or-join choice', () => {
+  expect(appGate({ ...ready, entry: 'none' })).toMatchObject({ kind: 'needsOnboardingChoice' });
+});
+
+it('V0-F02-AC-10 resumes at the profile step when a joined member has not saved a name yet', () => {
+  expect(appGate({ ...ready, entry: 'active', spaceId: 'space-1', snapshotProfile: null })).toEqual({ kind: 'needsProfile' });
+});

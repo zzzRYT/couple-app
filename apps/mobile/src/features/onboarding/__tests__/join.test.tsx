@@ -16,7 +16,7 @@ it('masks input as 4-4 and ignores case, spaces and hyphens', () => {
   expect(maskInviteInput('k7')).toBe('K7');
 });
 
-it('confirms the space and accepts the invitation', async () => {
+it('V0-F02-AC-06 and V0-F02-AC-07 confirm the space, then accept the invitation', async () => {
   const preview = jest.fn().mockResolvedValue({ anniversaryDate: '2025-06-29', memberCount: 1, displayName: '하루', timeZone: 'Asia/Seoul' });
   const { screen, input, check, onJoined, acceptInvitation } = await setup(preview);
   await fireEvent.changeText(input(), 'k7m4q9xp');
@@ -33,7 +33,7 @@ it('confirms the space and accepts the invitation', async () => {
 it.each([
   ['INVITE_EXPIRED', 410, 'join.expired.title'], ['INVITE_USED', 409, 'join.used.title'], ['INVITE_INVALID', 404, 'join.invalid.title'],
   ['SPACE_FULL', 409, 'join.full.title'], ['ALREADY_IN_SPACE', 409, 'join.hasSpace.title'],
-])('maps %s to its message', async (code, status, key) => {
+])('V0-F02-AC-06 maps %s to its message', async (code, status, key) => {
   const { screen, input, check } = await setup(jest.fn().mockRejectedValue(new ApiError(status, code)));
   await fireEvent.changeText(input(), 'AAAABBBB');
   await check();
@@ -105,4 +105,14 @@ it('does not offer back while accepting or after the server has joined the space
   await act(async () => { finish({ spaceId: 's1' }); });
   expect(onJoined).toHaveBeenCalledWith('s1');
   expect(screen.queryByTestId('screen-back')).toBeNull();
+});
+
+it('V0-F02-AC-07 "do not join" returns to code entry', async () => {
+  const preview = jest.fn().mockResolvedValue({ anniversaryDate: '2025-06-29', memberCount: 1, displayName: '하루', timeZone: 'Asia/Seoul' });
+  const { screen, input, check, acceptInvitation } = await setup(preview);
+  await fireEvent.changeText(input(), 'k7m4q9xp');
+  await check();
+  await fireEvent.press(await screen.findByRole('button', { name: screen.t('join.decline') }));
+  expect(screen.getByRole('button', { name: screen.t('join.check') })).toBeTruthy();
+  expect(acceptInvitation).not.toHaveBeenCalled();
 });

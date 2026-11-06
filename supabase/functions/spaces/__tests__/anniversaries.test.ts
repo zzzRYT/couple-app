@@ -2,7 +2,7 @@ import { assertEquals } from 'jsr:@std/assert@1';
 import { call, localDeps, makeUser } from '../../_shared/__tests__/local.ts';
 import { spacesHandler } from '../index.ts';
 
-Deno.test('V0-F07 custom anniversaries validate, replay, detect conflict and deletion', async () => {
+Deno.test('V0-F07-AC-02 V0-F07-AC-03 V0-F07-AC-08 V0-F07-AC-09 V0-F07-AC-10 V0-F07-AC-12 custom anniversaries validate, replay, detect conflict and deletion', async () => {
   const h = spacesHandler(await localDeps());
   const owner = await makeUser('anniversary-owner');
   const outsider = await makeUser('anniversary-outsider');

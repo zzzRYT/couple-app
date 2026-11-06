@@ -14,7 +14,7 @@ describe('V0-DR-01…03, V0-DR-05 milestone dates', () => {
 });
 
 import fixtures from '../__fixtures__/anniversaries.json';
-it('V0-DR-01…03, V0-DR-05 matches calendar fixtures across time zones', () => {
+it('V0-NF-05 V0-DR-01…03, V0-DR-05 matches the shared calendar fixtures across time zones', () => {
   for (const item of fixtures.cases) {
     const actual = computeMilestoneView(item.start, item.zone, item.now);
     expect(actual).toEqual({ dayCount: item.dayCount, today: item.today, next: item.next, upcoming: item.upcoming });
@@ -28,7 +28,7 @@ describe('V0-DR-01…06 complete anniversary calendar', () => {
     partner: { birthday: { month: 2, day: 29 } },
     customs: [{ id: 'one', title: 'A', date: '2024-02-29', repeat: 'yearly' as const }],
   };
-  it('uses February 28 for leap-day anniversaries, and orders collisions by priority', () => {
+  it('V0-EC-01 uses February 28 for leap-day anniversaries, and orders collisions by priority', () => {
     const result = computeAnniversaries(input, '2025-02-28T03:00:00Z');
     expect(result.todayItems.map((item) => item.key)).toEqual(['y1', 'bday:me:2025', 'bday:partner:2025', 'custom:one:2025']);
     expect(result.celebrationCandidates.map((item) => item.key)).toEqual(result.todayItems.map((item) => item.key));
@@ -63,4 +63,71 @@ it('V0-DR-06 excludes season days before the relationship and handles DST rollov
   expect(after.dayCount! - before.dayCount!).toBe(1);
   expect(after.past.some((item) => item.key === 'season:pepero:2025')).toBe(false);
   expect(after.past.some((item) => item.key === 'season:christmas:2025')).toBe(true);
+});
+
+it('V0-DR-01-AC-01 counts Seoul midnight as day two for a 2025-06-29 start', () => {
+  expect(computeMilestoneView('2025-06-29', 'Asia/Seoul', '2025-06-29T14:59:00Z').dayCount).toBe(1);
+  expect(computeMilestoneView('2025-06-29', 'Asia/Seoul', '2025-06-29T15:00:00Z').dayCount).toBe(2);
+});
+it('V0-DR-01-AC-02 never skips or repeats a day across the New York DST start', () => {
+  const counts = [];
+  for (let hour = 0; hour <= 72; hour++) {
+    const now = new Date(Date.UTC(2024, 2, 8, 12) + hour * 3_600_000).toISOString();
+    counts.push(computeMilestoneView('2024-01-01', 'America/New_York', now).dayCount);
+  }
+  const distinct = [...new Set(counts)];
+  expect(distinct.map((n, i) => (i === 0 ? 1 : n - distinct[i - 1]!)).every((step) => step === 1)).toBe(true);
+  expect(distinct).toEqual([68, 69, 70, 71]);
+});
+it('V0-DR-02 V0-DR-02-AC-01 places 50/100/150/200/300 days at start + (N - 1) once each', () => {
+  const result = computeAnniversaries({ startDate: '2025-06-29', timeZone: 'Asia/Seoul', me: { birthday: null }, partner: null, customs: [] }, '2025-12-01T03:00:00Z');
+  const days = Object.fromEntries([...result.past, ...result.todayItems, ...result.upcoming].filter((item) => item.kind === 'days').map((item) => [item.key, item.date]));
+  expect(days).toEqual({ d50: '2025-08-17', d100: '2025-10-06', d150: '2025-11-25', d200: '2026-01-14', d300: '2026-04-24' });
+  expect(computeMilestoneView('2025-06-29', 'Asia/Seoul', '2025-07-01T03:00:00Z').next).toEqual(expect.objectContaining({ key: 'd50', date: '2025-08-17' }));
+});
+it('V0-DR-03 V0-DR-03-AC-01 uses calendar anniversaries, February 28 in common years, and year before day on the same date', () => {
+  const input = { startDate: '2024-02-29', timeZone: 'Asia/Seoul', me: { birthday: null }, partner: null, customs: [] };
+  const first = computeAnniversaries(input, '2025-02-28T03:00:00Z');
+  expect(first.todayItems.map((item) => item.key)).toEqual(['y1']);
+  expect(first.todayItems[0]!.date).toBe('2025-02-28');
+  expect(first.dayCount).toBe(366);
+  const fourth = computeAnniversaries(input, '2028-02-29T03:00:00Z');
+  expect(fourth.todayItems.map((item) => item.key)).toEqual(['y4']);
+  expect(computeAnniversaries({ ...input, startDate: '2023-06-29' }, '2024-06-29T03:00:00Z').dayCount).toBe(367);
+  expect(computeAnniversaries({ ...input, startDate: '2025-06-29' }, '2026-06-29T03:00:00Z').dayCount).toBe(366);
+});
+it('V0-DR-04 keeps birthdays and yearly customs on the same month and day, February 28 in common years, fixed seasons and one-time dates', () => {
+  const input = {
+    startDate: '2020-01-01', timeZone: 'Asia/Seoul',
+    me: { birthday: { month: 2, day: 29 } }, partner: { birthday: { month: 3, day: 1 } },
+    customs: [{ id: 'y', title: 'Y', date: '2024-02-29', repeat: 'yearly' as const }, { id: 'o', title: 'O', date: '2025-05-05', repeat: 'once' as const }],
+  };
+  const common = computeAnniversaries(input, '2025-02-28T03:00:00Z');
+  expect(common.todayItems.map((item) => item.key)).toEqual(['bday:me:2025', 'custom:y:2025']);
+  const leap = computeAnniversaries(input, '2028-02-29T03:00:00Z');
+  expect(leap.todayItems.map((item) => item.key)).toEqual(['bday:me:2028', 'custom:y:2028']);
+  const dates = Object.fromEntries([...common.past, ...common.upcoming].map((item) => [item.key, item.date]));
+  expect(dates).toEqual(expect.objectContaining({ 'season:pepero:2025': '2025-11-11', 'season:christmas:2025': '2025-12-25', 'custom:o': '2025-05-05' }));
+});
+it('V0-DR-05-AC-01 follows the space time zone, not the device, when Seoul midnight passes', () => {
+  const input = { startDate: '2025-06-29', timeZone: 'Asia/Seoul', me: { birthday: null }, partner: null, customs: [] };
+  // 2025-06-29T15:00Z is still 06-29 08:00 in Los Angeles but already 06-30 00:00 in Seoul.
+  const before = computeAnniversaries(input, '2025-06-29T14:59:00Z');
+  const after = computeAnniversaries(input, '2025-06-29T15:00:00Z');
+  expect([before.today, after.today]).toEqual(['2025-06-29', '2025-06-30']);
+  expect(after.dayCount! - before.dayCount!).toBe(1);
+});
+it('V0-DR-06-AC-01 leaves a Pepero Day before the start date out of the past list', () => {
+  const input = { startDate: '2026-12-01', timeZone: 'Asia/Seoul', me: { birthday: null }, partner: null, customs: [] };
+  const result = computeAnniversaries(input, '2026-12-05T03:00:00Z');
+  expect([...result.past, ...result.todayItems, ...result.upcoming].some((item) => item.date === '2026-11-11')).toBe(false);
+});
+it('V0-EC-12 shows both birthdays only after the second person adds theirs', () => {
+  const base = { startDate: '2025-06-29', timeZone: 'Asia/Seoul', me: { birthday: { month: 3, day: 1 } }, customs: [] };
+  const keys = (partner: { birthday: { month: number; day: number } | null }) => {
+    const result = computeAnniversaries({ ...base, partner }, '2026-02-01T03:00:00Z');
+    return [...result.todayItems, ...result.upcoming].filter((item) => item.kind === 'birthday').map((item) => item.key);
+  };
+  expect(keys({ birthday: null })).toEqual([]);
+  expect(keys({ birthday: { month: 4, day: 2 } }).sort()).toEqual(['bday:me:2026', 'bday:partner:2026']);
 });

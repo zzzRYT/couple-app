@@ -21,7 +21,7 @@ function Probe() {
   </>;
 }
 
-it('keeps language override and this-device display mode local, and clears language to follow the device', async () => {
+it('V0-F12-AC-06 keeps language override and this-device display mode local, and clears language to follow the device', async () => {
   const values = new Map<string, string>();
   const store = {
     getItemAsync: jest.fn(async (key: string) => values.get(key) ?? null),

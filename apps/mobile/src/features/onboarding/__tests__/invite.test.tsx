@@ -9,7 +9,7 @@ afterEach(() => jest.useRealTimers());
 const codeLabel = (t: (key: string, options?: Record<string, unknown>) => string, code: string) => t('a11y.code', { code: code.split('').join(' ') });
 const invitation = (code: string, hours = 24) => ({ invitationId: code, code, expiresAt: new Date(clock + hours * 3_600_000).toISOString() });
 
-it('keeps the freshly created code when the parent refreshes its snapshot', async () => {
+it('V0-F02-AC-05 keeps the freshly created code when the parent refreshes its snapshot', async () => {
   const created = invitation('AAAABBBB');
   const createInvitation = jest.fn().mockResolvedValue(created);
   const refresh = jest.fn();
@@ -124,4 +124,12 @@ it('copies the displayed invitation code', async () => {
   await fireEvent.press(await screen.findByRole('button', { name: screen.t('a11y.copy') }));
   expect(copyCode).toHaveBeenCalledWith('AAAA-BBBB');
   expect(await screen.findByText(screen.t('invite.copied'))).toBeTruthy();
+});
+
+it('V0-F02-AC-05 leaves for the home waiting state through "wait at home" and keeps the code on screen until then', async () => {
+  const onLater = jest.fn();
+  const screen = await renderWithI18n(<InviteScreen createInvitation={jest.fn().mockResolvedValue(invitation('AAAABBBB'))} clock={() => clock} reducedMotion onLater={onLater} />);
+  expect(await screen.findByLabelText(codeLabel(screen.t, 'AAAA-BBBB'))).toBeTruthy();
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('start.invite.home') }));
+  expect(onLater).toHaveBeenCalledTimes(1);
 });

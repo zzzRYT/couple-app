@@ -37,7 +37,7 @@ Deno.test('snapshot is members-only and ended spaces are 404', async () => {
   await (await service()).from('couple_space').update({ status: 'ended' }).eq('id', body.spaceId);
   assertEquals((await call(h, a, 'GET', `/spaces/spaces/${body.spaceId}/snapshot`)).status, 404);
 });
-Deno.test('anniversary update checks the expected timestamp', async () => {
+Deno.test('V0-EC-04 anniversary update checks the expected timestamp', async () => {
   const h = spacesHandler(await localDeps());
   const a = await makeUser('sp-u');
   const { body } = await call(h, a, 'POST', '/spaces/spaces', { anniversaryDate: '2025-01-01', timeZone: 'Asia/Seoul' });

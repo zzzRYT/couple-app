@@ -10,8 +10,10 @@ function port(overrides: Partial<AuthPort> = {}): AuthPort {
 const product: AuthOptions = { apple: 'native', kakao: false, devEmail: false };
 const devBuild: AuthOptions = { ...product, devEmail: true };
 
-it('offers only Sign in with Apple in product builds: no email, Kakao hidden behind its flag', async () => {
+it('V0-F01-AC-01 offers only Sign in with Apple in product builds, with the intro and terms note: no email, Kakao hidden behind its flag', async () => {
   const screen = await renderWithI18n(<LoginScreen auth={port()} lastUsed="apple" options={product} onDone={jest.fn()} onEmail={jest.fn()} />);
+  expect(screen.getByText(screen.t('start.intro.title'))).toBeTruthy();
+  expect(screen.getByText(screen.t('start.intro.terms'))).toBeTruthy();
   expect(screen.getByRole('button', { name: screen.t('login.apple') })).toBeTruthy();
   expect(screen.getByText(screen.t('onb.lastUsed'))).toBeTruthy();
   expect(screen.queryByRole('button', { name: screen.t('login.kakao') })).toBeNull();
@@ -19,7 +21,7 @@ it('offers only Sign in with Apple in product builds: no email, Kakao hidden beh
   expect(screen.queryByText(screen.t('login.brandNote'))).toBeNull();
 });
 
-it('uses the native Apple flow and shows processing, cancelled with retry, then error', async () => {
+it('V0-F01-AC-02 uses the native Apple flow and shows processing, cancelled with retry, then error', async () => {
   let resolve: (value: 'cancelled') => void = () => {};
   const auth = port({ apple: jest.fn().mockImplementationOnce(() => new Promise((r) => { resolve = r; })).mockResolvedValueOnce('error') });
   const screen = await renderWithI18n(<LoginScreen auth={auth} options={product} onDone={jest.fn()} onEmail={jest.fn()} />);

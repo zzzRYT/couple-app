@@ -3,7 +3,7 @@ import ko from '../locales/v0/ko-KR.json';
 import en from '../locales/v0/en-US.json';
 import ja from '../locales/v0/ja-JP.json';
 
-it('V0-NF-02 shares keys and nests decided brand names', async () => {
+it('V0-NF-02 V0-EC-10 shares keys, keeps brand names in brand keys only, and joins the particle after the name', async () => {
   expect(Object.keys(ko)).toHaveLength(279);
   expect(Object.keys(en).sort()).toEqual(Object.keys(ko).sort());
   expect(Object.keys(ja).sort()).toEqual(Object.keys(ko).sort());
