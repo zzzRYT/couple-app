@@ -1,6 +1,32 @@
 {
-  "status": "draft: G4 native review pending",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "초안(원어민 검수 전)",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "join.haveCode": "approved",
+    "join.createSpace": "approved",
+    "sys.server.title": "approved",
+    "sys.server.body": "approved",
+    "sys.ai.title": "approved",
+    "sys.ai.body": "approved",
+    "sys.login.title": "approved",
+    "sys.login.body": "approved",
+    "sys.login.action": "approved",
+    "sys.denied.title": "approved",
+    "sys.denied.body": "approved",
+    "sys.old.title": "approved",
+    "sys.old.body": "approved",
+    "sys.old.action": "approved",
+    "sys.pending.title": "approved",
+    "sys.pending.body": "approved",
+    "sys.quota.title": "approved",
+    "sys.empty.title": "approved",
+    "sys.empty.body": "approved",
+    "sys.retry": "approved",
+    "sys.loadFail.title": "new",
+    "sys.loadFail.network": "new",
+    "sys.loadFail.server": "new",
+    "sys.loadFail.code": "new"
+  },
   "strings": {
     "join.haveCode": "I have an invite code",
     "join.createSpace": "Create a new space",
@@ -16,13 +42,15 @@
     "sys.old.title": "This room was decorated in a newer app version",
     "sys.old.body": "Update the app to see it all. For now you're seeing the parts this version can read.",
     "sys.old.action": "Update the app",
-    "sys.asset.title": "Some items couldn't be loaded",
-    "sys.asset.body": "The spots are left empty. They reload automatically when your connection improves.",
     "sys.pending.title": "Waiting to sync",
     "sys.pending.body": "It updates to the latest once you're connected.",
     "sys.quota.title": "You've used all of today's tries",
     "sys.empty.title": "Nothing to show yet",
     "sys.empty.body": "Content will show up here once there is some.",
-    "sys.retry": "Try again"
+    "sys.retry": "Try again",
+    "sys.loadFail.title": "Couldn't load the room",
+    "sys.loadFail.network": "Your connection is unstable. Check it and try again. Your saved room is untouched.",
+    "sys.loadFail.server": "A temporary error stopped the room from loading. Please try again shortly. Your saved room is untouched.",
+    "sys.loadFail.code": "Error code {code}"
   }
 }

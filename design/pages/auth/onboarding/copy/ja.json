@@ -1,6 +1,21 @@
 {
-  "status": "draft: G4 native review pending",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "초안(원어민 검수 전)",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "onb.p1.title": "approved",
+    "onb.p1.body": "approved",
+    "onb.p2.title": "approved",
+    "onb.p2.body": "approved",
+    "onb.p3.title": "approved",
+    "onb.p3.body": "approved",
+    "onb.start": "approved",
+    "onb.hasAccount": "approved",
+    "onb.back.title": "approved",
+    "onb.back.body": "approved",
+    "onb.lastUsed": "approved",
+    "onb.skip": "approved",
+    "onb.pageOf": "approved"
+  },
   "strings": {
     "onb.p1.title": "ふたりで過ごした日を数えます",
     "onb.p1.body": "一緒に過ごし始めた日を決めると、メイン画面で今日が何日目か分かります。",

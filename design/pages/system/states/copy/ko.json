@@ -1,6 +1,32 @@
 {
-  "status": "source",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "원본",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "join.haveCode": "approved",
+    "join.createSpace": "approved",
+    "sys.server.title": "approved",
+    "sys.server.body": "approved",
+    "sys.ai.title": "approved",
+    "sys.ai.body": "approved",
+    "sys.login.title": "approved",
+    "sys.login.body": "approved",
+    "sys.login.action": "approved",
+    "sys.denied.title": "approved",
+    "sys.denied.body": "approved",
+    "sys.old.title": "approved",
+    "sys.old.body": "approved",
+    "sys.old.action": "approved",
+    "sys.pending.title": "approved",
+    "sys.pending.body": "approved",
+    "sys.quota.title": "approved",
+    "sys.empty.title": "approved",
+    "sys.empty.body": "approved",
+    "sys.retry": "approved",
+    "sys.loadFail.title": "new",
+    "sys.loadFail.network": "new",
+    "sys.loadFail.server": "new",
+    "sys.loadFail.code": "new"
+  },
   "strings": {
     "join.haveCode": "초대 코드가 있어요",
     "join.createSpace": "새 공간 만들기",
@@ -16,13 +42,15 @@
     "sys.old.title": "이 방은 더 새로운 앱에서 꾸몄어요",
     "sys.old.body": "앱을 업데이트하면 전부 볼 수 있어요. 지금은 읽을 수 있는 부분만 보여 드려요.",
     "sys.old.action": "앱 업데이트",
-    "sys.asset.title": "일부 소품을 불러오지 못했어요",
-    "sys.asset.body": "빈 자리는 비워 두었어요. 연결이 좋아지면 자동으로 다시 불러와요.",
     "sys.pending.title": "동기화를 기다리고 있어요",
     "sys.pending.body": "인터넷에 연결되면 최신 내용으로 바뀌어요.",
     "sys.quota.title": "오늘 꾸미기를 모두 썼어요",
     "sys.empty.title": "아직 보여 드릴 게 없어요",
     "sys.empty.body": "내용이 생기면 여기에 나타나요.",
-    "sys.retry": "다시 시도"
+    "sys.retry": "다시 시도",
+    "sys.loadFail.title": "방을 불러오지 못했어요",
+    "sys.loadFail.network": "인터넷 연결이 불안정해요. 연결을 확인하고 다시 시도해 주세요. 저장된 방은 그대로 있어요.",
+    "sys.loadFail.server": "일시적인 오류로 방을 불러오지 못했어요. 잠시 뒤 다시 시도해 주세요. 저장된 방은 그대로 있어요.",
+    "sys.loadFail.code": "오류 코드 {code}"
   }
 }

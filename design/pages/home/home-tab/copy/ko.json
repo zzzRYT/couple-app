@@ -1,6 +1,10 @@
 {
-  "status": "source",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "원본",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "a11y.coach": "approved",
+    "coach.home": "approved"
+  },
   "strings": {
     "a11y.coach": "안내: {text}",
     "coach.home": "방 탭에서 우리 방을 꾸며 보세요"

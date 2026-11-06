@@ -1,6 +1,10 @@
 {
-  "status": "draft: G4 native review pending",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "초안(원어민 검수 전)",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "a11y.coach": "approved",
+    "coach.home": "approved"
+  },
   "strings": {
     "a11y.coach": "Tip: {text}",
     "coach.home": "Open the Room tab to decorate your room"

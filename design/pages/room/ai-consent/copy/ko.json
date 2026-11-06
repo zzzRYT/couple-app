@@ -1,6 +1,24 @@
 {
-  "status": "source",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "원본",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "consent.title": "approved",
+    "consent.lead": "approved",
+    "consent.sent.label": "approved",
+    "consent.purpose.label": "approved",
+    "consent.purpose.body": "approved",
+    "consent.processor.label": "approved",
+    "consent.processor.body": "approved",
+    "consent.keep.label": "approved",
+    "consent.provider.keep": "approved",
+    "consent.couple.label": "approved",
+    "consent.agree": "approved",
+    "consent.later": "approved",
+    "consent.withdraw.title": "approved",
+    "consent.withdraw.body": "approved",
+    "consent.withdraw.done": "approved",
+    "consent.later.note": "approved"
+  },
   "strings": {
     "consent.title": "해외 AI로 방 꾸미기를 처리해요",
     "consent.lead": "꾸미기를 요청하면 아래 정보가 해외 AI 사업자의 서버로 전송돼요. 동의하지 않아도 D-day와 방 보기는 그대로 쓸 수 있어요.",

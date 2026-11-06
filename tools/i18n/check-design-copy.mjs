@@ -2,8 +2,8 @@ import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import ts from 'typescript';
 import { execFileSync } from 'node:child_process';
-import { loadCopies } from './copy-library.mjs';
-const { merged } = await loadCopies();
+import { loadRuntimeCopies } from './copy-library.mjs';
+const { merged } = await loadRuntimeCopies();
 // H02's generated V0 overlay is a second canonical copy source layered over the
 // mirrored base copy. Validate its generation before accepting its keys.
 execFileSync(process.execPath, ['tools/i18n/build-v0-overlay.mjs', '--check'], { stdio: 'inherit' });

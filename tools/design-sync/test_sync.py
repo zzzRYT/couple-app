@@ -31,6 +31,25 @@ class SyncTests(unittest.TestCase):
         _, rows = sync.parse_board(fixture, 'fixture')
         self.assertEqual(rows[0]['en'], "DEV · You'll enter")
         self.assertEqual(rows[1]['status'], 'approved')
+    def test_korean_status_notes_and_replacement_rows(self):
+        row = lambda key, ko: f'<tr><td>{key}</td><td lang="ko">{ko}</td><td lang="en">e</td><td lang="ja">j</td></tr>'
+        table = '<p>KO: 원본 · EN: 초안 · JA: 초안</p><table><tr><th>키</th><th>한국어</th><th>English</th><th>日本語</th></tr>' + row('a.old', '옛') + row('a.old<br>(바뀐 문구 · 같은 키를 대신해요)', '새') + row('a.new<br>(새 키 · 제안 · 오너 승인 필요)', '안') + row('a.fresh<br>(새 키)', '신') + '</table>'
+        _, rows = sync.parse_board(table, 'notes')
+        self.assertEqual([(r['key'], r['status'], r['ko']) for r in rows], [('a.old', 'changed', '새'), ('a.new', 'proposal', '안'), ('a.fresh', 'new', '신')])
+    def test_v0_boards_render_the_overlay_extract(self):
+        with tempfile.TemporaryDirectory() as temp:
+            project=Path(temp)
+            head='<p>KO: 원본 · EN: 초안 · JA: 초안</p><table><tr><th>키</th><th>한국어</th><th>English</th><th>日本語</th><th>상태</th></tr>'
+            (project/'copy-v0-a.dc.html').write_text(head+'<tr><td>x.one</td><td>하나<br>둘</td><td>a|b</td><td>j</td><td>신규 · EN·JA 초안</td></tr></table>')
+            (project/'copy-v0-b.dc.html').write_text(head+'<tr><td>x.one</td><td>하나<br>둘</td><td>a|b</td><td>j</td><td>재사용 · 기존 키 x.one</td></tr><tr><td>x.two</td><td>{y}</td><td>{M}</td><td>{y}</td><td>신규</td></tr></table>')
+            (project/'canvas.json').write_text(json.dumps({'pages':[], 'boards':{'copy-v0-b.dc.html':{'title':'문구 · V0-02 B'}, 'copy-v0-a.dc.html':{'title':'문구 · V0-01 A'}}}))
+            sections=sync.v0_sections(project)
+            self.assertEqual([(t, [r['key'] for r in rows]) for t, _, rows in sections], [('V0-01 A', ['x.one']), ('V0-02 B', ['x.two'])])
+            text=sync.render_v0_copy(sections, 'intro (version `old`)\n\n## old\n', 'new')
+            self.assertIn('intro (version `new`)', text)
+            self.assertIn('| `x.one` | 하나⏎둘 | a\\|b | j | 신규 · EN·JA 초안 |', text)
+            (project/'copy-v0-b.dc.html').write_text(head+'<tr><td>x.one</td><td>다름</td><td>a|b</td><td>j</td><td>신규</td></tr></table>')
+            with self.assertRaisesRegex(ValueError, 'conflicting V0 copy'): sync.v0_sections(project)
     def test_rejects_missing_and_placeholder_mismatch(self):
         for broken in (FIXTURE.replace('DEV · テストアカウントでログイン', ''), FIXTURE.replace('{email}に送った', '{wrong}に送った')):
             with self.assertRaises(ValueError): sync.parse_board(broken, 'broken')

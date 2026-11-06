@@ -1,6 +1,21 @@
 {
-  "status": "draft: G4 native review pending",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "초안(원어민 검수 전)",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "common.save": "approved",
+    "main.invitePending.title": "approved",
+    "main.invitePending.body": "approved",
+    "main.invitePending.action": "approved",
+    "main.noDate.title": "approved",
+    "main.noDate.body": "approved",
+    "main.noDate.action": "approved",
+    "main.editSheet.title": "approved",
+    "main.editSheet.body": "approved",
+    "main.sync.title": "approved",
+    "main.sync.body": "approved",
+    "a11y.cover.change": "approved",
+    "a11y.cover.photo": "approved"
+  },
   "strings": {
     "common.save": "保存",
     "main.invitePending.title": "パートナーを待っています",

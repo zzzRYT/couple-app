@@ -1,6 +1,17 @@
 {
-  "status": "draft: G4 native review pending",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "초안(원어민 검수 전)",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "set.offline.title": "approved",
+    "set.offline.body": "approved",
+    "lic.title": "approved",
+    "lic.ofl": "approved",
+    "lic.inter": "approved",
+    "lic.notokr": "approved",
+    "lic.notojp": "approved",
+    "lic.view": "approved",
+    "lic.note": "approved"
+  },
   "strings": {
     "set.offline.title": "オフラインです",
     "set.offline.body": "部屋の昼夜とタイムゾーンは、接続が戻ってから変更できます。この端末の表示設定は今でも変更できます。",

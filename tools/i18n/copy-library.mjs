@@ -7,6 +7,16 @@ async function walk(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
   return (await Promise.all(entries.filter((e) => e.isDirectory()).map(async (e) => e.name === 'copy' ? [join(dir, e.name)] : walk(join(dir, e.name))))).flat().sort();
 }
+// Keys the artifact has dropped but hidden V1 room code still reads. Delete an entry when that code moves to the current boards.
+export async function loadRetiredCopy() {
+  const retired = JSON.parse(await readFile(new URL('./retired-copy.json', import.meta.url), 'utf8'));
+  return Object.fromEntries(languages.map((lang) => [lang, Object.fromEntries(Object.entries(retired).map(([key, text]) => [key, text[lang]]))]));
+}
+export async function loadRuntimeCopies() {
+  const { merged, proposals } = await loadCopies();
+  const retired = await loadRetiredCopy();
+  return { merged: Object.fromEntries(languages.map((lang) => [lang, { ...retired[lang], ...merged[lang] }])), proposals };
+}
 export async function loadCopies(copyRoot = root) {
   const merged = Object.fromEntries(languages.map((l) => [l, {}]));
   const owners = new Map();

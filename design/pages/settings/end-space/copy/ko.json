@@ -1,6 +1,14 @@
 {
-  "status": "source",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "원본",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "end.progress": "approved",
+    "end.byPartner": "approved",
+    "end.byPartnerDisconnect": "approved",
+    "end.byPartnerDeleted": "approved",
+    "end.err.title": "approved",
+    "end.err.body": "approved"
+  },
   "strings": {
     "end.progress": "종료하는 중이에요",
     "end.byPartner": "{name}님이 공간을 종료했어요",

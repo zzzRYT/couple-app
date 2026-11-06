@@ -1,6 +1,21 @@
 {
-  "status": "source",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "원본",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "onb.p1.title": "approved",
+    "onb.p1.body": "approved",
+    "onb.p2.title": "approved",
+    "onb.p2.body": "approved",
+    "onb.p3.title": "approved",
+    "onb.p3.body": "approved",
+    "onb.start": "approved",
+    "onb.hasAccount": "approved",
+    "onb.back.title": "approved",
+    "onb.back.body": "approved",
+    "onb.lastUsed": "approved",
+    "onb.skip": "approved",
+    "onb.pageOf": "approved"
+  },
   "strings": {
     "onb.p1.title": "둘이 함께한 날을 세어요",
     "onb.p1.body": "함께한 날짜를 정하면 메인 화면에서 오늘이 며칠째인지 볼 수 있어요.",

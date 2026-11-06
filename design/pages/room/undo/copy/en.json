@@ -1,20 +1,28 @@
 {
-  "status": "draft: G4 native review pending",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "초안(원어민 검수 전)",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "undo.progress": "approved",
+    "undo.done.title": "approved",
+    "undo.err.title": "approved",
+    "chat.undo": "proposal",
+    "chat.undo.a11y": "proposal",
+    "prompt.msg.status.undone": "proposal",
+    "undo.done.body": "changed",
+    "undo.conflict.title": "changed",
+    "undo.conflict.body": "changed",
+    "undo.err.body": "changed"
+  },
   "strings": {
-    "undo.title": "Go back to the previous preview?",
-    "undo.body": "This drops the change you just made in this conversation and goes back to the preview before it. The room hasn't changed. A room you already applied can't be undone.",
-    "undo.confirm": "Undo",
     "undo.progress": "Undoing",
     "undo.done.title": "Undone",
-    "undo.done.body": "This is the preview before it.",
-    "undo.none.title": "Nothing to undo",
-    "undo.none.body": "There are no changes from this conversation yet. A room you already applied can't be undone.",
-    "undo.busy.title": "{name} is decorating",
-    "undo.busy.body": "Only {name} can undo this preview.",
-    "undo.conflict.title": "It was already undone, or the preview changed",
-    "undo.conflict.body": "We loaded the latest preview. Undo again if you still need to.",
     "undo.err.title": "Couldn't undo",
-    "undo.err.body": "The preview is unchanged. Please try again."
+    "chat.undo": "Undo",
+    "chat.undo.a11y": "Undo and go back to the room before applying",
+    "prompt.msg.status.undone": "{name} undid it",
+    "undo.done.body": "The room is back to how it was before.",
+    "undo.conflict.title": "The room changed in the meantime, so it couldn't be undone",
+    "undo.conflict.body": "We loaded the current room.",
+    "undo.err.body": "The room is still as applied. Please try again."
   }
 }
