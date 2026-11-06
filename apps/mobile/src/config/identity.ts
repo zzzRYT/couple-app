@@ -1,4 +1,4 @@
-// TODO(G2 이름 확인 전: 스토어에 등록 금지) — the production ids are placeholders; only the development ids may be registered now.
+// TODO(G2 이름·상표 확인은 아직 열려 있음) — the production ids are registered in the personal Apple team on the owner's instruction (2026-11-06); that registration does not close G2.
 export const APP_IDENTITY = {
   name: 'Aroom',
   slug: 'aroom',
@@ -11,7 +11,7 @@ export const APP_IDENTITY = {
   widgetBundleIdSuffix: '.widgets',
   supportDomain: 'aroom.jinjinstar.com',
   supportEmail: 'jinjinstar3@gmail.com' as string | null,
-  PLACEHOLDER: true,
+  PLACEHOLDER: false,
 } as const;
 /** Off until H04 §9 steps 1-3 are done: a store build with the extension has no signing for it, so Release iOS fails. Simulator builds need no signing and turn it on with `IOS_WIDGETS=true`. */
 export const IOS_WIDGETS_SIGNED = true;
