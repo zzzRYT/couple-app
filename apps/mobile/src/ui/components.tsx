@@ -221,6 +221,18 @@ export function ListRow({ label, onPress, icon, value, danger = false, disabled 
     </Pressable>
   );
 }
+/** A row that only shows something (V0-07: 상대, 버전, Apple로 로그인함): no chevron and nothing to press. */
+export function InfoRow({ label, value, last = true }: { label: string; value?: string; last?: boolean }) {
+  const color = useAppColor();
+  const { type } = useType();
+  const stacked = useLargeText() && !!value;
+  return (
+    <View accessible accessibilityLabel={value ? `${label}, ${value}` : label} style={{ minHeight: 56, flexDirection: stacked ? 'column' : 'row', alignItems: stacked ? 'flex-start' : 'center', gap: stacked ? 0 : tokens.spacing[2], paddingVertical: tokens.spacing[2], borderBottomWidth: last ? 0 : 1, borderColor: color.divider }}>
+      <Text {...WORD_BREAK} style={[type('body'), { color: color.text, flex: stacked ? undefined : 1 }]}>{label}</Text>
+      {value ? <Text {...WORD_BREAK} style={[type('bodySm'), { color: color.text2, flexShrink: 1, textAlign: stacked ? 'left' : 'right' }]}>{value}</Text> : null}
+    </View>
+  );
+}
 /** The switch as drawn on V0-07 (51×31); the system one changes shape and sits off-centre on iOS 26. Hidden from screen readers: the control holding it carries the name and state. */
 function SwitchTrack({ value, disabled }: { value: boolean; disabled: boolean }) {
   const color = useAppColor();

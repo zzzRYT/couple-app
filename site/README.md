@@ -1,6 +1,6 @@
 # Aroom public site
 
-Static HTML, CSS and a small shared contact script; no build step. The privacy and deletion copy is a draft based on the current specifications, not a finalized policy. Legal review, the public support email (G10), and the external deletion request verification and response process (G18) must be resolved before relying on these pages for launch. Account deletion and other described app features are planned and must be implemented and verified before release.
+Static HTML, CSS and a small shared contact script; no build step. The pages describe V0 (D+Day, anniversaries, reminders, widgets). The privacy and deletion copy is a draft: the owner confirms the wording, the operator line and the public support email (G10) before App Review, then removes the draft banners. `tools/tests/store-readiness.test.mjs` keeps the pages free of room and AI wording.
 
 ## Cloudflare Pages setup
 

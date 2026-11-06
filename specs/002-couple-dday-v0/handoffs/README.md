@@ -59,7 +59,7 @@ Full table: `../spec.md` → "Decisions and Assumed Defaults". The ones that cha
 | A-18 | Notification cap | 50 nearest per device | H05 |
 | A-19 | Per-anniversary notification off | this device only | H03, H05 |
 | A-21 | Widget technology | `expo-widgets` PoC first, Swift via `@bacons/apple-targets` as fallback | H04 |
-| A-23 | Support email / terms page | none yet → contact row hidden, terms row disabled | H06 |
+| A-23 | Support email / terms page | no email yet → contact row hidden; no own terms → terms row opens the Apple standard EULA | H06 |
 | — | Missing font weights (Noto Sans KR 500, Zen Maru Gothic 400/500) | not bundled; nearest weight; listed per PR | H02–H06 |
 
 ## Files in `./design/`

@@ -219,7 +219,7 @@ iOS 홈 화면 small·medium·large와 잠금 화면 circular·rectangular·inli
 6. **V0-F12-AC-06** — **Given** `V0-set-lang`, `V0-set-mode`, **When** 바꾸면, **Then** 이 기기에만 적용된다("이 기기에만 적용돼요.").
 7. **V0-F12-AC-07** — **Given** `V0-set-disconnect`, **When** "내용을 확인했어요"를 체크하고 연결 끊기를 확인하면, **Then** 공간이 끝나고(기존 `block` 끝점, reason `disconnect`) 상대는 `V0-state-ended`를 보며 이 기기의 위젯·알림이 지워진다.
 8. **V0-F12-AC-08** — **Given** `V0-set-delete`, **When** Apple로 다시 로그인해 확인하면, **Then** 기존 계정 삭제 흐름(S13 진행·실패·완료)이 실행되고 공간이 끝나며 Apple 연결이 해제되고 위젯·알림이 지워진다.
-9. **V0-F12-AC-09** — **Given** 도움 행, **When** 문의하기·개인정보 처리방침·이용약관을 누르면, **Then** 각각 메일 작성 또는 웹 문서(앱 언어별 `/privacy/`)를 연다. 주소나 문서가 아직 없으면 문의하기는 숨기고 이용약관은 비활성으로 둔다(A-23). 버전 행은 마케팅 버전과 빌드 번호를 보여 준다.
+9. **V0-F12-AC-09** — **Given** 도움 행, **When** 문의하기·개인정보 처리방침·이용약관을 누르면, **Then** 각각 메일 작성 또는 웹 문서(앱 언어별 `/privacy/`)를 연다. 주소가 아직 없으면 문의하기는 숨긴다. 자체 약관이 없는 동안 이용약관은 Apple 표준 EULA를 연다(A-23). 버전 행은 마케팅 버전과 빌드 번호를 보여 준다.
 10. **V0-F12-AC-10** — **Given** 로그아웃, **When** 확인하면, **Then** 세션을 지우고 `V0-start-intro`로 가며 위젯은 "공간 없음" 상태, 예약 알림은 취소된다.
 
 ### 날짜·계산 규칙 (V0-DR)
@@ -344,7 +344,7 @@ iOS 홈 화면 small·medium·large와 잠금 화면 circular·rectangular·inli
 | A-20 | 축하 카드 닫기 기록 | 일수·주년은 기존 서버 기록(구성원별 `milestone_seen`), 생일·직접·시즌은 이 기기 기록. 보드는 "이 기기에서만"이라고 적었고, 한 사람이 기기 하나를 쓰는 V0에서는 같은 결과다 | 서버 테이블 확장 |
 | A-21 | 위젯 구현 | Expo SDK 58 `expo-widgets` PoC 먼저, 실패하면 `@bacons/apple-targets` + Swift | S4 범위 |
 | A-22 | 오프라인 콜드 스타트 | 마지막으로 받은 V0 데이터를 기기에 저장해 다시 보여 줌(위젯 스냅샷과 같은 내용, 비밀 없음) | 없으면 첫 화면은 offline-empty |
-| A-23 | 문의하기 대상·이용약관 | `identity.ts`의 `supportEmail`(지금 null → 설정 전에는 행을 숨김). 이용약관 페이지는 `site/`에 없음 → 행 비활성 | 오너가 주소·문서 제공 |
+| A-23 | 문의하기 대상·이용약관 | `identity.ts`의 `supportEmail`(지금 null → 설정 전에는 행을 숨김). 자체 이용약관은 없음 → 행은 Apple 표준 EULA를 연다(2026-11-06, App Store 심사 준비. ASC에 맞춤 EULA가 없으면 표준 EULA가 적용된다) | 오너가 주소·문서 제공 |
 | A-24 | 내 생일 알림 | 보내지 않음(보드 문구는 상대 이름만 그림, `notify.body.birthday`) | 문구 하나 추가 |
 | A-25 | 빠진 글꼴 굵기(Noto Sans KR 500, Zen Maru Gothic 400·500) | 번들하지 않고 가까운 굵기 사용, PR마다 대체 목록 | 약 10MB 추가 |
 
