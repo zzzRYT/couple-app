@@ -102,6 +102,7 @@ export function DeleteAccountScreen({ reauth, onSubmit, onFinished, onCancel, on
         </View>
         <AppText style={{ flexShrink: 1 }}>{t(v0 ? 'set.confirm.check' : 'end.check')}</AppText>
       </Pressable>
+      {byApple && <AppText variant="bodySm" tone="text2">{t('set.delete.apple.note')}</AppText>}
       {banner === 'offline' && <Banner kind="offline" text={t('acct.delete.offline')} />}
       {banner === 'fail' && <Banner kind="danger" text={t('acct.delete.fail.title')} body={t('acct.delete.fail.body')} />}
       <BottomSheet visible={phase === 'password'} title={t('acct.delete.reauth.title')} onClose={() => setPhase('explain')}>

@@ -12,7 +12,8 @@
    - Sign In / Providers → **Email** 켬. 꺼져 있으면 비밀번호 로그인 전체가 막힌다(`email_provider_disabled`). "Allow new users to sign up"은 켠 채로 둔다. 끄면 새 Apple 계정도 막힌다.
    - **Confirm email** 켬. 메일 연결 전에도 켜 둔다. 꺼져 있으면 앱은 메일이 연결되지 않은 것으로 다룬다.
    - Password: 최소 8자, Letters and digits. 이메일과 다른지는 함수가 검사한다.
-4. 앱 빌드를 올린다. 새 화면은 JS뿐이라 OTA로 갈 수 있지만, Apple 토큰 봉인과 삭제 흐름은 위 1·2가 끝난 뒤에만 동작한다.
+4. `site/`를 배포해 `.well-known/apple-app-site-association`의 `webcredentials`를 올린다.
+5. Release iOS로 새 빌드를 만든다. `webcredentials` 도메인이 네이티브 설정이라 OTA로는 갈 수 없다(EAS가 Associated Domains를 맞추는지 첫 빌드 로그에서 확인한다).
 
 `ACCOUNT_CREDENTIAL_KEY`를 넣지 않았으면 봉인 키와 시도 카운터 키가 service-role 키에서 나온다. 그 키를 바꾸면 봉인한 Apple 토큰은 읽을 수 없게 되고 해당 계정은 `V0-del-apple-more`로 간다. 시도 횟수는 초기화된다.
 

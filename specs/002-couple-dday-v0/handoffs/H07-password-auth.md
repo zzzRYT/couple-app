@@ -19,6 +19,9 @@ The board is canonical. Copy keys are in the generated `./design/copy-v0.md`.
 6. **`current_password` is not enforced by Auth** (v2.197.0 accepted a wrong one), so `set` checks it itself. Changing a password through the user's own token ends the other sessions and keeps this one (checked on the local stack), which is default 6.
 7. **Apple tokens are sealed with the existing `credentialBox`.** No new key. A token that cannot be opened after a key rotation is treated as missing, which leads to `V0-del-apple-more`.
 
+8. **AutoFill needs a native change.** `webcredentials:aroom.jinjinstar.com` in `app.config.ts` and the matching block in `site/.well-known/apple-app-site-association`. It changes the runtime fingerprint, so this slice reaches phones through a Release iOS build, not OTA.
+9. **Local confirmation is on**, so `supabase/seed.sql` now creates the two quick-login accounts, which used to sign themselves up on first use.
+
 ## Mail
 
 One value: `update public.app_settings set value = 'true' where key = 'auth_email_enabled'`. Until then `V0-auth-signup-nomail`, `V0-auth-reset-nomail` and `V0-del-email-nomail` are the real screens. The mail-connected screens are built and tested behind the same value.
