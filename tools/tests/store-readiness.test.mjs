@@ -44,7 +44,7 @@ test('every metadata language has the same fields', async () => {
 test('review notes fit and name the invite placeholders', async () => {
   const notes = await read('docs/app-store/review-notes.txt');
   assert.ok(bytes(notes) <= 4000);
-  for (const placeholder of ['{{INVITE_CODE}}', '{{INVITE_EXPIRES}}', '{{REVIEW_CONTACT}}']) assert.ok(notes.includes(placeholder), placeholder);
+  for (const placeholder of ['{{INVITE_CODE}}', '{{INVITE_EXPIRES}}']) assert.ok(notes.includes(placeholder), placeholder);
 });
 
 test('the site and the app carry the same support email', async () => {
@@ -52,5 +52,14 @@ test('the site and the app carry the same support email', async () => {
   const app = (await read('apps/mobile/src/config/identity.ts')).match(/supportEmail: (?:'([^']*)'|null)/);
   assert.notEqual(site, undefined);
   assert.ok(app);
-  assert.equal(site, app[1] ?? '');
+  assert.ok(site);
+  assert.equal(site, app[1]);
+  assert.ok((await read('docs/app-store/review-notes.txt')).includes(site));
+  for (const language of LANGUAGES) {
+    for (const page of PAGES.slice(1)) {
+      const html = await read(sitePath(language, page));
+      assert.ok(html.includes(`<a href="mailto:${site}">${site}</a>`), `${language} /${page}`);
+      assert.doesNotMatch(html, /주소 준비 중|address coming soon|アドレス準備中/);
+    }
+  }
 });

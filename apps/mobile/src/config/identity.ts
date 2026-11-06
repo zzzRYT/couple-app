@@ -10,7 +10,7 @@ export const APP_IDENTITY = {
   devAppGroupId: 'group.com.jinjinstar.aroom.dev',
   widgetBundleIdSuffix: '.widgets',
   supportDomain: 'aroom.jinjinstar.com',
-  supportEmail: null as string | null,
+  supportEmail: 'jinjinstar3@gmail.com' as string | null,
   PLACEHOLDER: true,
 } as const;
 /** Off until H04 §9 steps 1-3 are done: a store build with the extension has no signing for it, so Release iOS fails. Simulator builds need no signing and turn it on with `IOS_WIDGETS=true`. */

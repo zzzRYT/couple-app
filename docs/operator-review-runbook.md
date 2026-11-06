@@ -1,6 +1,6 @@
 # Operator runbook
 
-Manual procedures for the person operating Aroom. Every step here is an assumption until the legal and operational review (G1, G18) and the public support email (G10) are settled.
+Manual procedures for the person operating Aroom. Every step here is an assumption until the legal and operational review (G1, G18) is settled.
 
 ## Account deletion requests from outside the app
 

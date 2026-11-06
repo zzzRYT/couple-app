@@ -23,7 +23,7 @@ WHAT TO LOOK AT
 
 IF THE CODE FAILS
 1. Choose "Start fresh", enter a date and a name to create your own space. You can see the home screen and the invite flow there.
-2. Contact {{REVIEW_CONTACT}} and we will issue a new code.
+2. Contact jinjinstar3@gmail.com and we will issue a new code.
 If the app says you are already in a space, go to Settings > Account > Disconnect first.
 
 WHY SIGN-IN IS REQUIRED

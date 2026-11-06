@@ -344,7 +344,7 @@ iOS 홈 화면 small·medium·large와 잠금 화면 circular·rectangular·inli
 | A-20 | 축하 카드 닫기 기록 | 일수·주년은 기존 서버 기록(구성원별 `milestone_seen`), 생일·직접·시즌은 이 기기 기록. 보드는 "이 기기에서만"이라고 적었고, 한 사람이 기기 하나를 쓰는 V0에서는 같은 결과다 | 서버 테이블 확장 |
 | A-21 | 위젯 구현 | Expo SDK 58 `expo-widgets` PoC 먼저, 실패하면 `@bacons/apple-targets` + Swift | S4 범위 |
 | A-22 | 오프라인 콜드 스타트 | 마지막으로 받은 V0 데이터를 기기에 저장해 다시 보여 줌(위젯 스냅샷과 같은 내용, 비밀 없음) | 없으면 첫 화면은 offline-empty |
-| A-23 | 문의하기 대상·이용약관 | `identity.ts`의 `supportEmail`(지금 null → 설정 전에는 행을 숨김). 자체 이용약관은 없음 → 행은 Apple 표준 EULA를 연다(2026-11-06, App Store 심사 준비. ASC에 맞춤 EULA가 없으면 표준 EULA가 적용된다) | 오너가 주소·문서 제공 |
+| A-23 | 문의하기 대상·이용약관 | `identity.ts`의 `supportEmail`(2026-11-06 오너 결정 `jinjinstar3@gmail.com`. null이면 행을 숨김). 자체 이용약관은 없음 → 행은 Apple 표준 EULA를 연다(2026-11-06, App Store 심사 준비. ASC에 맞춤 EULA가 없으면 표준 EULA가 적용된다) | 오너가 주소·문서 제공 |
 | A-24 | 내 생일 알림 | 보내지 않음(보드 문구는 상대 이름만 그림, `notify.body.birthday`) | 문구 하나 추가 |
 | A-25 | 빠진 글꼴 굵기(Noto Sans KR 500, Zen Maru Gothic 400·500) | 번들하지 않고 가까운 굵기 사용, PR마다 대체 목록 | 약 10MB 추가 |
 

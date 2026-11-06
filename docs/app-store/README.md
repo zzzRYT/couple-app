@@ -17,6 +17,7 @@ App Store Connect(ASC)에 넣을 초안이다. 이 저장소는 아무것도 제
 | Privacy Policy URL | `privacy_url.txt` | |
 
 - 이름 `Aroom`은 다른 앱이 쓰고 있으면 등록되지 않는다. 그때는 `아룸 - 커플 디데이`, `Aroom - Couple D+Day`처럼 설명을 붙인다(소유자 결정, G2).
+- 공개 지원 이메일: `jinjinstar3@gmail.com`. 앱 문의하기 행, 사이트, 심사 메모가 같은 주소를 쓴다.
 - 첫 버전이라 What's New는 쓰지 않는다.
 - Copyright: `2026 <소유자 이름>`. 이름은 소유자가 정한다.
 - Primary Category: Lifestyle. Secondary: 없음.
@@ -93,7 +94,7 @@ Sign in with Apple만 있어서 데모 계정이 없고, 연결 기능은 두 �
    returning id, expires_at;
    ```
 
-6. `review-notes.txt`의 `{{INVITE_CODE}}`, `{{INVITE_EXPIRES}}`, `{{REVIEW_CONTACT}}`를 채워 ASC App Review Information → Notes에 넣는다. 4,000바이트 안이다. Sign-in information에는 계정을 넣지 않는다.
+6. `review-notes.txt`의 `{{INVITE_CODE}}`, `{{INVITE_EXPIRES}}`를 채워 ASC App Review Information → Notes에 넣는다. 4,000바이트 안이다. Sign-in information에는 계정을 넣지 않는다.
 
 재심사: 코드는 1회용이다. 심사자가 쓴 뒤 다시 심사받으려면 데모 계정에서 연결을 끊고 1~6을 다시 한다. 심사자가 계정을 삭제했다면 공간이 사라지므로 역시 처음부터 한다.
 

@@ -1,6 +1,6 @@
 # Account deletion web page (T157, FR-074)
 
-The page Google Play asks for next to the in-app path, and the one to enter in the Data safety form. It lives in this repository at `site/delete-account/` (Korean), `site/en/delete-account/` and `site/ja/delete-account/`, and is served at `https://aroom.jinjinstar.com/delete-account` once the owner connects the domain (see `site/README.md`). The domain, the public support email (G10) and the legal wording (G1, G18) are still open; the page marks them as placeholders.
+The page Google Play asks for next to the in-app path, and the one to enter in the Data safety form. It lives in this repository at `site/delete-account/` (Korean), `site/en/delete-account/` and `site/ja/delete-account/`, and is served at `https://aroom.jinjinstar.com/delete-account` once the owner connects the domain (see `site/README.md`). The legal wording (G1, G18) is still open, so the page keeps its draft banner.
 
 Policy behind the text: `specs/001-couple-prompt-todo/spec.md` Decided 41-51 (owner accepted the recommendations on 2026-10-29). Account deletion hard-deletes the person's spaces at once (no 30-day wait on this path only), keeps no profile shell, offers no export, and keeps only content-free report fingerprints. Ending a space or disconnecting still keeps data internally for 30 days.
 

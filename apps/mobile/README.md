@@ -57,7 +57,7 @@ Korean: `아룸(Aroom)은 두 사람이 함께한 날(D+Day)과 기념일을 같
 
 English: `Aroom shows a couple the days they have been together (D+Day) and their anniversaries on both phones. Connect with an invite link, then use reminders and widgets. This is a private test build shared with family and friends.`
 
-Feedback email: use `APP_IDENTITY.supportEmail` once it is set (`apps/mobile/src/config/identity.ts`, A-23). It is `null` today, so leave the ASC feedback email on the owner's personal address until then. Internal testers need neither Beta App Review nor a public description; external testing is out of scope for V0 (H01 §10).
+Feedback email: `jinjinstar3@gmail.com` (`APP_IDENTITY.supportEmail`). Internal testers need neither Beta App Review nor a public description; external testing is out of scope for V0 (H01 §10).
 
 ### App Store submission
 
