@@ -25,7 +25,8 @@
 2. Email Templates의 Confirm signup·Reset password에 기본값처럼 `{{ .ConfirmationURL }}`이 있는지 확인한다.
 3. URL Configuration → Redirect URLs에 `aroom://auth-callback`을 더한다(개발 빌드는 `aroom-dev://auth-callback`).
 4. 가림 주소로 재설정 메일을 보내려면 보내는 도메인을 Apple Developer의 Sign in with Apple for Email Communication에 등록한다. 등록 전에는 `@privaterelay.appleid.com`으로 메일이 전달되지 않는다. 구현 시점에 Apple 문서로 다시 확인한다.
-5. Confirm email이 켜져 있는지 다시 본 뒤 값 하나를 켠다.
+5. 메일 제공자를 처리방침의 처리를 맡기는 곳에 세 언어 모두 더하고, 심사 메모의 "Email sign-up and password reset are not open yet" 단락을 지운다.
+6. Confirm email이 켜져 있는지 다시 본 뒤 값 하나를 켠다.
 
 ```sql
 update public.app_settings set value = 'true' where key = 'auth_email_enabled';
@@ -35,7 +36,7 @@ update public.app_settings set value = 'true' where key = 'auth_email_enabled';
 
 ## App Review 데모 계정
 
-심사자는 Apple 계정 없이 `V0-auth-login`으로 들어온다. 메일이 없으므로 운영자가 만든다. 비밀번호는 저장소·채팅·이 문서에 적지 않는다. 심사 메모에만 적는다.
+심사자는 Apple 계정 없이 `V0-auth-login`으로 들어온다. 메일이 없으므로 운영자가 만든다. 비밀번호는 저장소·채팅·이 문서에 적지 않는다. ASC의 Sign-in information과 Notes에만 넣는다.
 
 상대가 연결되어 있어야 홈까지 볼 수 있어서 계정이 두 개 필요하다. 아래 `review@…`와 `review-partner@…` 자리에 실제 주소를 넣는다. 받을 수 있는 주소가 아니어도 된다.
 
@@ -52,7 +53,7 @@ update public.app_settings set value = to_jsonb('review-partner@example.com'::te
 3. 앱(TestFlight)에서 `review@…`로 로그인 → 새로 시작하기 → 사귄 날·이름 → 초대 코드를 복사한다.
 4. 다른 기기나 시뮬레이터에서 `review-partner@…`로 로그인 → 초대 코드가 있어요 → 코드 입력 → 참여 → 이름.
 5. `review@…`로 다시 열어 홈에 D+N과 상대 이름이 보이는지 확인한다.
-6. 심사 메모에 `review@…`와 비밀번호를 적는다.
+6. `docs/app-store/README.md`의 심사 경로대로 ASC에 `review@…`와 비밀번호를 넣는다.
 
 ### 심사자가 삭제한 뒤 다시 만들기
 
@@ -75,13 +76,3 @@ select id, email, created_at from auth.users where email in ('review@example.com
 공개 키로 Auth의 `POST /auth/v1/token?grant_type=password`를 직접 부르면 함수를 지나지 않는다. Auth에는 계정별 잠금이 없다. 이 경로를 닫는 제공자 기능은 Password Verification Hook인데 Team 이상 요금제에서만 쓸 수 있고, 이 프로젝트는 무료 요금제다. 그래서 이 경로는 Auth의 IP별 제한(기본 5분 30회)으로만 제한된다. 요금제를 올리면 이 훅을 붙이는 작업을 따로 잡는다.
 
 함수에서 Auth로 가는 요청도 같은 IP 제한을 받는다. 동시 로그인이 많아지면 `RATE_LIMITED`로 답하고 시도 횟수는 세지 않는다.
-
-## 처리방침에 필요한 문구
-
-`docs/app-store`와 `site/privacy`는 PR #43이 다시 쓰고 있어서 여기서 고치지 않았다. 그 뒤에 더한다.
-
-- 비밀번호: "비밀번호는 인증 제공자(Supabase) 서버에 해시로만 저장합니다. 우리는 원문을 저장하지 않습니다."
-- Apple 토큰: "Apple로 로그인하면 계정 삭제 때 Apple 연결을 해제하기 위해 Apple이 발급한 토큰을 암호화해 보관하고, 계정을 삭제하면 파기합니다."
-- 이메일: 이메일 계정의 주소를 로그인 식별자로 수집한다.
-- App Store Connect 앱 개인정보: 이메일 주소가 로그인 용도로 수집 항목에 들어가는지 확인한다.
-- 심사 메모: 데모 로그인 주소·비밀번호, 이메일 로그인 위치("이메일로 로그인"), 상대가 연결된 계정이라는 설명.

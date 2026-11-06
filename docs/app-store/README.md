@@ -52,13 +52,15 @@ ASC 설문에 소유자가 답한다. 아래는 V0 동작 기준의 권장 답�
 | ASC 분류 → 유형 | 앱에서의 내용 | 사용자 연결 |
 |---|---|---|
 | Contact Info → Name | 직접 입력한 이름(상대에게 보임). Apple에서 받지 않음 | Yes |
-| Contact Info → Email Address | Apple 로그인이 준 주소를 Supabase Auth가 보관. 가리기 주소일 수 있음 | Yes |
+| Contact Info → Email Address | Apple 로그인이 준 주소 또는 이메일 로그인 주소를 Supabase Auth가 보관. 가리기 주소일 수 있음 | Yes |
 | User Content → Other User Content | 사귄 날, 시간대, 직접 추가한 기념일(제목, 메모, 날짜, 반복), 생일 월·일, 선택 입력한 태어난 해 | Yes |
 | Identifiers → User ID | 계정 id(무작위 UUID) | Yes |
 | Diagnostics → Crash Data | `expo-updates`를 쓰는 앱에 Expo 공식 안내가 요구하는 답 | No |
 
 - Expo 공식 안내(<https://docs.expo.dev/distribution/app-stores/>)는 `expo-updates`를 쓰면 "Yes, we collect data"와 Crash Data를 고르라고 한다.
 - EAS Update 요청에는 OS, 프로젝트 ID, 설치별 임의 토큰이 들어간다(<https://expo.dev/privacy-explained>). 이 토큰이 Identifiers → Device ID에 해당하는지는 Apple, Expo 어디에도 명시가 없다. 재설치하면 바뀌고 계정과 연결되지 않는다. Apple 정의가 "other device-level ID"까지 넓으므로 Device ID(사용자 연결 No)로 신고하는 쪽을 권장한다. 최종 판단은 소유자 몫이다.
+- 비밀번호는 Supabase Auth에 해시로만 남는다. Apple의 "collect" 정의는 읽을 수 있는 형태로 보관하는 경우이고 비밀번호 유형도 없어서 따로 신고하지 않는다.
+- 봉인한 Apple 토큰은 서버가 열 수 있으므로 읽을 수 있는 형태로 볼 여지가 있고, 맞는 유형은 Other Data Types("Any other data types not mentioned")뿐이다. Apple 문서에 명시가 없으니 Other Data Types(App Functionality, 사용자 연결 Yes)로 신고하는 쪽을 권장하고, 최종 판단은 소유자 몫이다.
 - 나머지는 모두 No: 위치, 연락처, 건강, 금융, 민감 정보, 사진·영상, 오디오, 검색·방문 기록, 구매, 사용 데이터.
 - 알림은 기기에서 예약하고 위젯 데이터는 기기에 있으므로 Apple 기준의 "수집"이 아니다.
 - 신고·방·프롬프트·커버 사진이 돌아오면 이 표를 다시 쓴다.
@@ -76,27 +78,17 @@ PNG는 알파 채널이 없어야 한다. iPhone Duo 크기는 iOS 27.1 SDK 이�
 
 ## 심사 경로
 
-Sign in with Apple만 있어서 데모 계정이 없고, 연결 기능은 두 번째 사람이 필요하다. 앱에 데모 모드나 심사용 로그인을 넣지 않는다. 대신 심사자가 자기 Apple 계정으로 로그인해 미리 준비한 데모 공간에 초대 코드로 들어온다.
+심사자는 Apple 계정 없이 첫 화면의 "이메일로 로그인"으로 데모 계정에 들어온다. 상대가 연결된 계정이라 두 번째 사람 없이 홈을 본다. 초대 흐름은 심사자가 자기 Apple 계정으로 새로 시작해서 본다.
 
-앱 코드가 그대로라 일반 사용자에게 켜질 수 있는 경로가 없고, `app.config.ts`의 개발 로그인 차단도 그대로다. 코드 유효 기간을 늘리는 일은 운영 DB의 SQL 편집기에서만 된다. `supabase/tests/app_review_invite.test.sql`이 다음을 확인한다: 앱 경로는 24시간 그대로, 로그인 사용자는 연장 불가, 연장한 코드도 1회용.
+앱에 데모 모드나 심사용 로그인을 넣지 않는다. 메일을 연결하기 전까지 이메일 계정은 `review_login_email` 주소만 만들 수 있고, 만드는 쪽은 운영자뿐이다. `app.config.ts`의 개발 로그인 차단도 그대로다.
 
 준비 (소유자, production 빌드 설치 뒤, 제출 직전):
 
-1. 데모 공간을 쓸 Apple 계정으로 production 앱에 로그인한다. 아직 실제 데이터가 없으니 소유자 계정을 심사 기간 동안 쓰거나 별도 계정을 쓴다. 한 사람은 공간 하나에만 들어갈 수 있다.
-2. "새로 시작하기"로 사귄 날을 넣고 이름을 `Demo`로, 생일도 넣는다.
-3. 8자리 초대 코드를 적어 두고 "홈에서 기다릴게요"를 누른다. 이후 재발급을 누르지 않는다. 재발급하면 이 코드가 취소된다.
-4. Supabase 대시보드 Authentication → Users에서 그 계정의 User UID를 복사한다.
-5. 운영 프로젝트 SQL 편집기에서 실행하고 **정확히 1행**이 바뀌었는지 본다.
+1. `docs/password-auth-operations.md`의 "App Review 데모 계정" 순서대로 두 계정을 만들고 연결한다. 비밀번호는 저장소, 채팅, 문서에 적지 않는다.
+2. ASC App Review Information → Sign-in information에 `review@…` 주소와 비밀번호를 넣는다. Apple은 데모 계정을 이 칸에 넣고, 만료되지 않게 두라고 한다.
+3. `review-notes.txt`를 복사해 `{{DEMO_EMAIL}}`, `{{DEMO_PASSWORD}}`를 채운 뒤 Notes에 넣는다. 4,000바이트 안이다. 저장소의 파일에는 실제 값을 넣지 않는다.
+4. 메일을 연결했다면 메모에서 "Email sign-up and password reset are not open yet" 단락을 지운다.
 
-   ```sql
-   update public.invitation
-      set expires_at = now() + interval '30 days'
-    where created_by_user_id = '<User UID>' and status = 'active'
-   returning id, expires_at;
-   ```
+재심사: 심사자가 계정을 삭제했으면 같은 문서의 "심사자가 삭제한 뒤 다시 만들기"를 한다. 연결만 끊었으면 계정은 남으므로 "처음 만들기"의 3~5단계만 다시 한다. 심사자가 비밀번호를 바꿨으면 Dashboard에서 다시 정한다.
 
-6. `review-notes.txt`의 `{{INVITE_CODE}}`, `{{INVITE_EXPIRES}}`를 채워 ASC App Review Information → Notes에 넣는다. 4,000바이트 안이다. Sign-in information에는 계정을 넣지 않는다.
-
-재심사: 코드는 1회용이다. 심사자가 쓴 뒤 다시 심사받으려면 데모 계정에서 연결을 끊고 1~6을 다시 한다. 심사자가 계정을 삭제했다면 공간이 사라지므로 역시 처음부터 한다.
-
-제출 전에 App Review 연락처(이름, 이메일, 국가 번호가 붙은 전화번호)가 필요하다. Apple이 데모 계정을 요구하며 반려하면 가이드라인 2.1대로 "built-in demo mode"는 사전 승인이 필요하므로, 답변으로 위 경로를 다시 설명하고 그래도 안 되면 소유자가 결정한다.
+제출 전에 App Review 연락처(이름, 이메일, 국가 번호가 붙은 전화번호)가 필요하다.

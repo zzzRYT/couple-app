@@ -1,30 +1,31 @@
 Aroom is a D+Day app shared by two people who connect with an invite code.
 
 SIGN-IN
-Sign in with Apple is the only sign-in method. There is no username or password, so no demo credential exists. Please sign in with any Apple Account on the review device.
+Please use this demo account. It is already connected to a demo partner, so you can see the connected app without a second person.
+Email: {{DEMO_EMAIL}}
+Password: {{DEMO_PASSWORD}}
+1. Open the app and tap "Sign in with email", below "Continue with Apple".
+2. Enter the email and password and tap "Sign in".
 
-SEE THE CONNECTED APP WITHOUT A SECOND PERSON
-A demo partner is waiting in a demo space.
-1. Open the app and tap "Continue with Apple".
-2. Tap "I have an invite code".
-3. Enter {{INVITE_CODE}} and tap "Check code". The code works once and expires on {{INVITE_EXPIRES}}.
-4. Tap "Join", enter any name, and tap through "You're connected!".
-5. On the reminder prompt, tap "Turn on" or "Not now". The app works either way.
+Five wrong passwords lock sign-in for 10 minutes.
 
-If the code was already used, use steps 1 to 2 of "IF THE CODE FAILS" below.
+Email sign-up and password reset are not open yet, so "New here? Create an account with a password" and "Forgot your password?" lead to a screen saying we can't send email yet. This is expected.
 
 WHAT TO LOOK AT
 - Home: days together, next anniversary, upcoming list.
 - Anniversaries tab: automatic days, birthdays, seasonal days. Tap + to add your own, then edit or delete it.
 - Settings > Notifications: local reminders. No push server is used.
 - Widgets: touch and hold the Home Screen or Lock Screen, tap the add button, and pick Aroom.
+- Settings > Account > Sign-in & security: the sign-in method and password change.
 - Settings > Account > Disconnect: ends the shared space for both people.
-- Settings > Account > Delete account: turn on "I understand", then "Sign in again with Apple to confirm". This deletes the account and revokes the Sign in with Apple token.
+- Settings > Account > Delete account: turn on "I understand", tap "Delete account", enter the password, then tap "Confirm and delete". This deletes the account and ends the shared space. Accounts created with Apple confirm with "Sign in again with Apple to confirm" instead, which also revokes the Sign in with Apple token.
 
-IF THE CODE FAILS
-1. Choose "Start fresh", enter a date and a name to create your own space. You can see the home screen and the invite flow there.
-2. Contact jinjinstar3@gmail.com and we will issue a new code.
-If the app says you are already in a space, go to Settings > Account > Disconnect first.
+SEE THE INVITE FLOW
+1. Sign out, tap "Continue with Apple" and sign in with any Apple Account.
+2. Choose "Start fresh" and enter a date and a name to create your own space and see the invite code.
+
+IF THE DEMO ACCOUNT STOPS WORKING
+Disconnect and Delete account can't be undone. Contact jinjinstar3@gmail.com and we will set the demo account up again.
 
 WHY SIGN-IN IS REQUIRED
 The dates and anniversaries are shared between two phones, so each person needs an account.
