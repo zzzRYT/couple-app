@@ -1,6 +1,6 @@
 # Aroom public site
 
-Static HTML, CSS and a small shared contact script; no build step. The privacy and deletion copy is a draft based on the current specifications, not a finalized policy. Legal review, the public support email (G10), and the external deletion request verification and response process (G18) must be resolved before relying on these pages for launch. Account deletion and other described app features are planned and must be implemented and verified before release.
+Static HTML, CSS and a small shared contact script; no build step. The pages describe V0 (D+Day, anniversaries, reminders, widgets). The privacy and deletion copy is a draft: the owner confirms the wording and the operator line before App Review, then removes the draft banners. `tools/tests/store-readiness.test.mjs` keeps the pages free of room and AI wording.
 
 ## Cloudflare Pages setup
 
@@ -10,7 +10,7 @@ Static HTML, CSS and a small shared contact script; no build step. The privacy a
 
 ## Contact and copy
 
-Set `supportEmail` in `contact.js` to the approved public address. It fills every contact line; the HTML retains a visible placeholder when JavaScript is unavailable. Update those fallback placeholders too when the address is approved so the contact is accessible without JavaScript. Review the external request instructions in all three languages when the process is approved. Update all localized pages together after policy review.
+The public support email is `jinjinstar3@gmail.com`. `contact.js`, `APP_IDENTITY.supportEmail` and the links in the HTML hold the same address, so the contact works without JavaScript; change them together. Review the external request instructions in all three languages when the process is approved. Update all localized pages together after policy review.
 
 Pages: `/`, `/support/`, `/privacy/`, `/delete-account/`; English under `/en/` and Japanese under `/ja/` with the same paths. Preview with `python3 -m http.server --directory site 8000`.
 

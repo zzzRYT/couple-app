@@ -36,6 +36,7 @@ export default {
     name: dev ? `${APP_IDENTITY.name} (${variant})` : APP_IDENTITY.name,
     slug: APP_IDENTITY.slug,
     icon: './assets/icon/icon.png',
+    orientation: 'portrait',
     userInterfaceStyle: 'automatic',
     owner: EAS_PROJECT.owner,
     scheme: dev ? ['aroom-dev', 'aroom'] : 'aroom',

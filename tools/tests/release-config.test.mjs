@@ -60,6 +60,51 @@ test('store builds leave the widget extension out until its signing exists', asy
   assert.equal(eas.build.testflight.env.IOS_WIDGETS, undefined);
 });
 
+test('V0-F14-AC-06 no build profile above development can carry a test login', async () => {
+  const eas = JSON.parse(await read('apps/mobile/eas.json'));
+  for (const name of ['preview', 'testflight', 'production']) {
+    assert.deepEqual(Object.keys(eas.build[name].env).filter((key) => /LOGIN|DEMO|REVIEW/.test(key)), []);
+  }
+  const load = async (variant, flag, tag) => {
+    const prior = { variant: process.env.APP_VARIANT, flag: process.env[flag] };
+    process.env.APP_VARIANT = variant;
+    process.env[flag] = 'true';
+    try {
+      return await import(`../../apps/mobile/app.config.ts?v=${tag}`);
+    } finally {
+      for (const [name, value] of [['APP_VARIANT', prior.variant], [flag, prior.flag]]) {
+        if (value === undefined) delete process.env[name];
+        else process.env[name] = value;
+      }
+    }
+  };
+  await assert.rejects(load('production', 'EXPO_PUBLIC_DEV_EMAIL_LOGIN', 'prod-email'), /must not be set for production/);
+  await assert.rejects(load('production', 'EXPO_PUBLIC_DEV_QUICK_LOGIN', 'prod-quick'), /must not be set for preview or production/);
+  await assert.rejects(load('preview', 'EXPO_PUBLIC_DEV_QUICK_LOGIN', 'preview-quick'), /must not be set for preview or production/);
+});
+
+test('production builds the store identity, iPhone only and portrait', async () => {
+  const prior = process.env.APP_VARIANT;
+  process.env.APP_VARIANT = 'production';
+  try {
+    const { default: config } = await import('../../apps/mobile/app.config.ts?v=production');
+    assert.equal(config.expo.ios.bundleIdentifier, 'com.jinjinstar.aroom');
+    assert.equal(config.expo.name, 'Aroom');
+    assert.equal(config.expo.scheme, 'aroom');
+    assert.equal(config.expo.orientation, 'portrait');
+    assert.equal(config.expo.ios.supportsTablet, undefined);
+    assert.equal(config.expo.ios.infoPlist.ITSAppUsesNonExemptEncryption, false);
+  } finally {
+    if (prior === undefined) delete process.env.APP_VARIANT;
+    else process.env.APP_VARIANT = prior;
+  }
+  const eas = JSON.parse(await read('apps/mobile/eas.json'));
+  assert.equal(eas.build.production.env.APP_VARIANT, 'production');
+  assert.equal(eas.build.production.env.EXPO_PUBLIC_APP_VARIANT, 'production');
+  assert.equal(eas.build.production.environment, 'production');
+  assert.equal(eas.build.production.distribution, undefined);
+});
+
 test('V0-F11-AC-01 the extension and the app share the App Group of their variant', async () => {
   const prior = { widgets: process.env.IOS_WIDGETS, variant: process.env.APP_VARIANT };
   process.env.IOS_WIDGETS = 'true';

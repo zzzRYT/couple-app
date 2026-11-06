@@ -1,0 +1,36 @@
+Aroom is a D+Day app shared by two people who connect with an invite code.
+
+SIGN-IN
+Sign in with Apple is the only sign-in method. There is no username or password, so no demo credential exists. Please sign in with any Apple Account on the review device.
+
+SEE THE CONNECTED APP WITHOUT A SECOND PERSON
+A demo partner is waiting in a demo space.
+1. Open the app and tap "Continue with Apple".
+2. Tap "I have an invite code".
+3. Enter {{INVITE_CODE}} and tap "Check code". The code works once and expires on {{INVITE_EXPIRES}}.
+4. Tap "Join", enter any name, and tap through "You're connected!".
+5. On the reminder prompt, tap "Turn on" or "Not now". The app works either way.
+
+If the code was already used, use steps 1 to 2 of "IF THE CODE FAILS" below.
+
+WHAT TO LOOK AT
+- Home: days together, next anniversary, upcoming list.
+- Anniversaries tab: automatic days, birthdays, seasonal days. Tap + to add your own, then edit or delete it.
+- Settings > Notifications: local reminders. No push server is used.
+- Widgets: touch and hold the Home Screen or Lock Screen, tap the add button, and pick Aroom.
+- Settings > Account > Disconnect: ends the shared space for both people.
+- Settings > Account > Delete account: turn on "I understand", then "Sign in again with Apple to confirm". This deletes the account and revokes the Sign in with Apple token.
+
+IF THE CODE FAILS
+1. Choose "Start fresh", enter a date and a name to create your own space. You can see the home screen and the invite flow there.
+2. Contact jinjinstar3@gmail.com and we will issue a new code.
+If the app says you are already in a space, go to Settings > Account > Disconnect first.
+
+WHY SIGN-IN IS REQUIRED
+The dates and anniversaries are shared between two phones, so each person needs an account.
+
+CONTENT
+Names and anniversaries are visible only to the two connected people. There is no public feed, no chat, no discovery and no way to find or match with new people. A space is joined only with a code one person gives the other.
+
+OTHER
+The app is iPhone only and portrait only. There are no ads, no analytics, no in-app purchases, and no AI features.
