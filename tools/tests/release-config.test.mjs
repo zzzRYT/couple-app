@@ -22,9 +22,21 @@ test('V0-F14-AC-01 testflight profile is store signed and submits after a succes
   assert.match(workflow, /workflow_dispatch/);
   const buildStep = workflow.split('      - name: Build (and submit on success)')[1];
   assert.ok(buildStep);
-  assert.match(buildStep, /--auto-submit-with-profile testflight/);
+  assert.match(buildStep, /--auto-submit-with-profile \{0\}', inputs\.profile/);
   assert.match(buildStep, /--wait/);
-  assert.equal(workflow.match(/--auto-submit-with-profile testflight/g)?.length, 1);
+  assert.equal(workflow.match(/--auto-submit-with-profile/g)?.length, 1);
+});
+
+test('V0-F14-AC-06 production submits to its own record and only from a manual run', async () => {
+  const accessor = EasJsonAccessor.fromProjectPath(new URL('apps/mobile/', root).pathname);
+  const eas = await accessor.readAsync();
+  await EasJsonUtils.getSubmitProfileAsync(accessor, 'ios', 'production');
+  assert.equal(eas.submit.production.ios.ascAppId, '6831581664');
+  assert.equal(eas.submit.production.ios.appleTeamId, '43ZASDF2J7');
+  assert.notEqual(eas.submit.production.ios.ascAppId, eas.submit.testflight.ios.ascAppId);
+  const workflow = await read('.github/workflows/release-ios.yml');
+  assert.match(workflow, /options: \[testflight, production\]/);
+  assert.match(workflow, /default: testflight/);
 });
 
 test('V0-F14-AC-03 preview runtime uses fingerprint and preview OTA environment', async () => {
