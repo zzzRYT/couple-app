@@ -63,3 +63,12 @@ test('the site and the app carry the same support email', async () => {
     }
   }
 });
+
+test('the privacy pages name the operator and the copyright is set', async () => {
+  const operators = { ko: '운영자: 이재진', en: 'Operator: Jaejin Lee', ja: '運営者：Jaejin Lee' };
+  for (const language of LANGUAGES) {
+    assert.ok((await read(sitePath(language, 'privacy/'))).includes(`<p>${operators[language]}</p>`), language);
+    for (const page of PAGES) assert.doesNotMatch(await read(sitePath(language, page)), />[^<]*\[[^\]<]*\][^<]*</, `${language} /${page}`);
+  }
+  assert.equal(await read('docs/app-store/metadata/copyright.txt'), '© 2026 jinjinstar\n');
+});
