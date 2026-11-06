@@ -1,20 +1,28 @@
 {
-  "status": "source",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "원본",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "undo.progress": "approved",
+    "undo.done.title": "approved",
+    "undo.err.title": "approved",
+    "chat.undo": "proposal",
+    "chat.undo.a11y": "proposal",
+    "prompt.msg.status.undone": "proposal",
+    "undo.done.body": "changed",
+    "undo.conflict.title": "changed",
+    "undo.conflict.body": "changed",
+    "undo.err.body": "changed"
+  },
   "strings": {
-    "undo.title": "이전 미리 보기로 되돌릴까요?",
-    "undo.body": "이 대화에서 방금 만든 변경을 취소하고 바로 앞 미리 보기로 돌아가요. 방은 아직 바뀌지 않았어요. 적용한 방은 되돌릴 수 없어요.",
-    "undo.confirm": "되돌리기",
     "undo.progress": "되돌리는 중이에요",
     "undo.done.title": "되돌렸어요",
-    "undo.done.body": "바로 앞 미리 보기예요.",
-    "undo.none.title": "되돌릴 변경이 없어요",
-    "undo.none.body": "이 대화에서 만든 변경이 아직 없어요. 이미 적용한 방은 되돌릴 수 없어요.",
-    "undo.busy.title": "{name}님이 꾸미는 중이에요",
-    "undo.busy.body": "{name}님만 이 미리 보기를 되돌릴 수 있어요.",
-    "undo.conflict.title": "이미 되돌려졌거나 미리 보기가 바뀌었어요",
-    "undo.conflict.body": "최신 미리 보기를 불러왔어요. 필요하면 다시 되돌려 주세요.",
     "undo.err.title": "되돌리지 못했어요",
-    "undo.err.body": "미리 보기는 그대로예요. 다시 시도해 주세요."
+    "chat.undo": "되돌리기",
+    "chat.undo.a11y": "적용하기 전 방으로 되돌리기",
+    "prompt.msg.status.undone": "{name}님이 되돌렸어요",
+    "undo.done.body": "적용하기 전 방으로 돌아왔어요.",
+    "undo.conflict.title": "방이 그새 바뀌어서 되돌리지 못했어요",
+    "undo.conflict.body": "지금 방을 불러왔어요.",
+    "undo.err.body": "방은 적용한 그대로예요. 다시 시도해 주세요."
   }
 }

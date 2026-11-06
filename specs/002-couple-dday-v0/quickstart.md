@@ -41,3 +41,8 @@ node tools/ci/check-migrations.mjs && node tools/ci/check-functions-boot.mjs
 
 ### 접근성 (S6)
 - [ ] 글자 크기 200%에서 모든 V0 화면 잘림 없음, VoiceOver로 탭·D+N·기념일 행·위젯 읽기, 동작 줄이기에서 아루미 정지(V0-NF-01).
+
+### 이메일·비밀번호 (S7)
+- [ ] 데모 계정으로 로그인 → 홈까지 들어간다(V0-F15-AC-04). 절차: `docs/password-auth-operations.md`.
+- [ ] 실제 Apple 계정으로 앱 비밀번호를 만들고 다른 기기에서 이메일 + 비밀번호로 로그인한다(V0-F16-AC-04).
+- [ ] 실제 Apple 계정을 비밀번호로 확인해 삭제 → iPhone 설정의 "Sign in with Apple" 목록에서 앱이 사라진다(V0-F18-AC-01).

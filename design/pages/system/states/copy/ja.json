@@ -1,6 +1,32 @@
 {
-  "status": "draft: G4 native review pending",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "초안(원어민 검수 전)",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "join.haveCode": "approved",
+    "join.createSpace": "approved",
+    "sys.server.title": "approved",
+    "sys.server.body": "approved",
+    "sys.ai.title": "approved",
+    "sys.ai.body": "approved",
+    "sys.login.title": "approved",
+    "sys.login.body": "approved",
+    "sys.login.action": "approved",
+    "sys.denied.title": "approved",
+    "sys.denied.body": "approved",
+    "sys.old.title": "approved",
+    "sys.old.body": "approved",
+    "sys.old.action": "approved",
+    "sys.pending.title": "approved",
+    "sys.pending.body": "approved",
+    "sys.quota.title": "approved",
+    "sys.empty.title": "approved",
+    "sys.empty.body": "approved",
+    "sys.retry": "approved",
+    "sys.loadFail.title": "new",
+    "sys.loadFail.network": "new",
+    "sys.loadFail.server": "new",
+    "sys.loadFail.code": "new"
+  },
   "strings": {
     "join.haveCode": "招待コードがあります",
     "join.createSpace": "新しいスペースを作る",
@@ -16,13 +42,15 @@
     "sys.old.title": "この部屋はより新しいバージョンのアプリで飾られています",
     "sys.old.body": "アプリを更新するとすべて表示できます。今は読み取れる部分だけを表示しています。",
     "sys.old.action": "アプリを更新",
-    "sys.asset.title": "一部の小物を読み込めませんでした",
-    "sys.asset.body": "その場所は空けてあります。接続が良くなると自動で読み込み直します。",
     "sys.pending.title": "同期を待っています",
     "sys.pending.body": "インターネットに接続されると、最新の内容に更新されます。",
     "sys.quota.title": "今日の回数を使い切りました",
     "sys.empty.title": "まだ表示できるものがありません",
     "sys.empty.body": "表示できる内容ができると、ここに表示されます。",
-    "sys.retry": "もう一度試す"
+    "sys.retry": "もう一度試す",
+    "sys.loadFail.title": "部屋を読み込めませんでした",
+    "sys.loadFail.network": "インターネット接続が不安定です。接続を確認してもう一度お試しください。保存された部屋はそのままです。",
+    "sys.loadFail.server": "一時的なエラーで部屋を読み込めませんでした。しばらくしてからもう一度お試しください。保存された部屋はそのままです。",
+    "sys.loadFail.code": "エラーコード {code}"
   }
 }

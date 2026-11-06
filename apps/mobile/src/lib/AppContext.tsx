@@ -6,7 +6,8 @@ import { createSupabase, functionsCaller } from './supabase';
 import { supabaseAuth } from './auth';
 import { supabaseRealtime, type RealtimePort } from './realtime';
 import type { AuthPort } from '../features/auth/authPort';
-type AppValue = { client: Client; auth: AuthPort; realtime: RealtimePort; supabase: ReturnType<typeof createSupabase>; session: Session | null; sessionLoaded: boolean; sessionExpired: boolean; clearSessionExpired: () => void; userId: string | null };
+import { passwordPort, type PasswordPort } from '../features/auth/passwordPort';
+type AppValue = { client: Client; auth: AuthPort; password: PasswordPort; realtime: RealtimePort; supabase: ReturnType<typeof createSupabase>; session: Session | null; sessionLoaded: boolean; sessionExpired: boolean; clearSessionExpired: () => void; userId: string | null };
 const AppContext = createContext<AppValue | null>(null);
 /** Public values only: the Supabase URL and publishable key come from EXPO_PUBLIC_* build variables, never from source. */
 export function AppProvider({ children }: { children: ReactNode }) {
@@ -18,7 +19,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const value = useMemo(() => {
     const supabase = createSupabase(url, key);
     const caller = functionsCaller(supabase, url, key, () => setSessionExpired(true));
-    return { supabase, client: createClient(createApi(caller)), auth: supabaseAuth(supabase), realtime: supabaseRealtime(supabase) };
+    const client = createClient(createApi(caller));
+    const auth = supabaseAuth(supabase, (code) => void client.storeAppleToken(code).catch(() => undefined));
+    return { supabase, client, auth, password: passwordPort(supabase, client), realtime: supabaseRealtime(supabase) };
   }, [url, key]);
   useEffect(() => {
     void value.supabase.auth.getSession().then(({ data }) => setSession(data.session)).finally(() => setSessionLoaded(true));

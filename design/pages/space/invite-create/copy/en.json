@@ -1,6 +1,24 @@
 {
-  "status": "draft: G4 native review pending",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "초안(원어민 검수 전)",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "invite.expiring": "approved",
+    "invite.expired.title": "approved",
+    "invite.expired.body": "approved",
+    "invite.copied": "approved",
+    "invite.shareMsg": "approved",
+    "invite.shareSheet.title": "approved",
+    "invite.shareCancelled": "approved",
+    "invite.reissue.title": "approved",
+    "invite.reissue.body": "approved",
+    "invite.waiting.title": "approved",
+    "invite.waiting.body": "approved",
+    "invite.generating": "approved",
+    "invite.err.title": "approved",
+    "invite.err.body": "approved",
+    "invite.later": "approved",
+    "invite.once": "approved"
+  },
   "strings": {
     "invite.expiring": "Expiring soon · {m} min left",
     "invite.expired.title": "This code has expired",

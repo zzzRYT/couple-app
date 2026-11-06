@@ -1,6 +1,24 @@
 {
-  "status": "source",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "원본",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "invite.expiring": "approved",
+    "invite.expired.title": "approved",
+    "invite.expired.body": "approved",
+    "invite.copied": "approved",
+    "invite.shareMsg": "approved",
+    "invite.shareSheet.title": "approved",
+    "invite.shareCancelled": "approved",
+    "invite.reissue.title": "approved",
+    "invite.reissue.body": "approved",
+    "invite.waiting.title": "approved",
+    "invite.waiting.body": "approved",
+    "invite.generating": "approved",
+    "invite.err.title": "approved",
+    "invite.err.body": "approved",
+    "invite.later": "approved",
+    "invite.once": "approved"
+  },
   "strings": {
     "invite.expiring": "곧 만료돼요 · {m}분 남았어요",
     "invite.expired.title": "코드가 만료됐어요",

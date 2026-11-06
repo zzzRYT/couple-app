@@ -144,6 +144,9 @@ supabase/
 | `20261103000300_v0_snapshot.sql` | S2 | `space_snapshot` 재정의: `members[]`에 `displayName`, `me`에 `displayName`·`birthday`(연도 포함), `space`에 `anniversaryChangedBy`·`anniversaryChangedAt`. 기존 필드는 그대로 둔다(하위 호환). |
 | `20261103000400_v0_milestones.sql` | S3 | `milestone_celebration`의 두 check 제약(`milestone_celebration_milestone_key_check`, `milestone_celebration_check`)을 `d(50\|100\|150\|200\|300\|500\|1000)`로 넓힘(옛 기록 보존). 시간대 단일화는 S2(`…200`)에서 이미 함. |
 | `20261103000500_v0_custom_anniversary.sql` | S3 | 테이블 `space_anniversary`, RLS(구성원 읽기만), RPC `create_custom_anniversary`, `update_custom_anniversary`, `delete_custom_anniversary`(소프트 삭제), `space_snapshot` 확장(`anniversaries[]`, 상대 생일 공개 규칙). 변경마다 `notify_space(..., 'anniversary', {"id":…})`. |
+| `20261106000100_v0_password_auth.sql` | S7 | 테이블 `password_attempt`, `apple_credential`, `user_profile.password_prompt_seen_at`, 값 `auth_email_enabled`·`review_login_email`·`password_attempt_limit`·`password_lock_seconds`, 이메일 가입 막는 `auth.users` 트리거, `begin_account_deletion` 재정의 |
+
+S7은 [H07](./handoffs/H07-password-auth.md)을 본다. 새 함수 `auth-password`(`verify_jwt = false`, 로그인 전 경로가 있어서 사용자 경로의 인증은 함수 안에서 한다)와 `POST /account/apple-token`을 더한다.
 
 Edge Function 경로(기존 파일에 추가, 모두 인증 필수, 변경은 멱등 키):
 
@@ -260,6 +263,14 @@ CI(`.github/workflows/ci.yml`)는 이미 lint·typecheck·mobile test·pgTAP·de
 | V0-NF-02 | Jest | `src/i18n/__tests__/v0Overlay.test.ts`(세 언어 키 일치, 브랜드 리터럴 금지) |
 | V0-NF-04 | Jest | `snapshot.test.ts`(연도·id 없음), `plan.test.ts`(직접 추가 제목 숨김) |
 | V0-NF-06 | Jest | `src/config/__tests__/features.test.ts`, `routes.test.tsx`(숨긴 라우트로 갈 수 없음) |
+| V0-F15-AC-02, -03, -04, -05, -06, -10, -11 | Deno + pgTAP | `supabase/functions/auth-password/__tests__/password.test.ts`, `supabase/tests/v0_password_auth.test.sql` |
+| V0-F15-AC-01~03, -05~09 | RNTL | `features/auth/__tests__/email.test.tsx` |
+| V0-F16-AC-01~03, -05 | RNTL | `features/auth/__tests__/setPassword.test.tsx`, `lib/__tests__/appGate.test.ts` |
+| V0-F16-AC-04, -05 | Deno | `auth-password/__tests__/password.test.ts` |
+| V0-F17-AC-01~05 | RNTL | `features/settings/__tests__/security.test.tsx` |
+| V0-F17-AC-02~04 | Deno | `auth-password/__tests__/password.test.ts` |
+| V0-F18-AC-01~03, -05 | RNTL | `features/account/__tests__/deletePassword.test.tsx` |
+| V0-F18-AC-01~04, -06~08 | Deno + pgTAP | `account/__tests__/passwordDelete.test.ts`, `account/__tests__/providers.test.ts`, `supabase/tests/v0_password_auth.test.sql` |
 
 ### 11. 슬라이스 사이 검증 게이트
 

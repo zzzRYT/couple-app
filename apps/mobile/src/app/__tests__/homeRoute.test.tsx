@@ -14,6 +14,7 @@ jest.mock('expo-secure-store', () => ({
 jest.mock('expo-router', () => ({ router: { push: jest.fn(), navigate: jest.fn() } }));
 const mockApp = { client: {}, userId: '00000000-0000-0000-0000-00000000000a' };
 jest.mock('../../lib/AppContext', () => ({ useApp: () => mockApp }));
+jest.mock('../../features/auth/PasswordContext', () => ({ usePassword: () => ({ shouldPrompt: false, markPromptSeen: jest.fn() }) }));
 const mockSpace = { state: { status: 'ready', snapshot: null as ReturnType<typeof snapshotFixture> | null, offline: false, lastSyncedAt: null }, refresh: jest.fn(), spaceId: 'space-1', inviteAfterActivation: false };
 jest.mock('../../features/space/SpaceContext', () => ({ useSpace: () => mockSpace }));
 jest.mock('../../features/milestone/useMilestone', () => ({ useMilestone: () => ({ celebration: null, seen: jest.fn() }) }));

@@ -6,6 +6,7 @@ export const ERROR_CODES = [
   'UNSUPPORTED_REQUEST', 'INVALID_CANDIDATE', 'INVITE_EXPIRED', 'INVITE_USED', 'INVITE_INVALID', 'SPACE_FULL',
   'CONSENT_REQUIRED', 'SESSION_EXPIRED', 'IN_PROGRESS', 'INVALID_REQUEST', 'NOT_FOUND', 'UNAUTHORIZED',
   'REAUTH_REQUIRED', 'ACCOUNT_DELETING', 'PROVIDER_NOT_CONFIGURED',
+  'INVALID_LOGIN', 'WRONG_PASSWORD', 'LOGIN_LOCKED', 'WEAK_PASSWORD', 'EMAIL_REQUIRED', 'MAIL_NOT_CONNECTED', 'APPLE_CONFIRM_REQUIRED',
 ] as const;
 export type ErrorCode = typeof ERROR_CODES[number];
 export function errorResponse(code: ErrorCode, status: number, retryable: boolean, extra: Record<string, unknown> = {}): Response {
@@ -20,6 +21,9 @@ const STATUS: Partial<Record<ErrorCode, [number, boolean]>> = {
   COVER_INVALID_IMAGE: [422, false],
   NOT_FOUND: [404, false], UNAUTHORIZED: [401, false], REAUTH_REQUIRED: [401, false], ACCOUNT_DELETING: [409, false],
   PROVIDER_NOT_CONFIGURED: [503, false],
+  // WRONG_PASSWORD is 403: the session is fine, and the app treats a 401 on a session as expired.
+  INVALID_LOGIN: [401, false], WRONG_PASSWORD: [403, false], LOGIN_LOCKED: [429, false], WEAK_PASSWORD: [422, false], EMAIL_REQUIRED: [409, false],
+  MAIL_NOT_CONNECTED: [503, false], APPLE_CONFIRM_REQUIRED: [409, false],
 };
 export class AppError extends Error {
   constructor(readonly code: ErrorCode, readonly extra: Record<string, unknown> = {}) { super(code); }

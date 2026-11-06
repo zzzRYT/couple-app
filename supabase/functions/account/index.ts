@@ -2,11 +2,11 @@ import { AppError } from '../_shared/errors.ts';
 import { createHandler, defaultDeps, json, route, str, uuidParam, type Context, type Deps } from '../_shared/http.ts';
 import { safeLogFields } from '../_shared/logging.ts';
 import { AppleExchangeError, ProviderNotConfiguredError } from '../_shared/providers/apple.ts';
-import { bearerToken, jwtClaims, PROVIDERS, reauthIsFresh, type Provider } from './reauth.ts';
+import { bearerToken, jwtClaims, REAUTH_METHODS, reauthIsFresh, type Provider, type ReauthMethod } from './reauth.ts';
 import { runAccountDeletion, type DeletionPorts } from './runner.ts';
 import { defaultDeletionPorts } from './ports.ts';
 
-/** Apple tokens are kept sealed only long enough to retry a revoke (spec: at most 24 hours). */
+/** A deletion keeps its sealed Apple token only long enough to retry a revoke (spec: at most 24 hours). */
 const CREDENTIAL_TTL_SECONDS = 24 * 60 * 60;
 export type AccountDeps = Deps & {
   ports: DeletionPorts;
@@ -17,15 +17,29 @@ export type AccountDeps = Deps & {
   serviceKey: string;
 };
 
-function provider(value: unknown): Provider {
-  if (typeof value !== 'string' || !(PROVIDERS as readonly string[]).includes(value)) throw new AppError('INVALID_REQUEST');
-  return value as Provider;
+function reauthMethod(value: unknown): ReauthMethod {
+  if (typeof value !== 'string' || !(REAUTH_METHODS as readonly string[]).includes(value)) throw new AppError('INVALID_REQUEST');
+  return value as ReauthMethod;
+}
+/** The stored Apple token, sealed, when it can still be opened. A rotated key makes it unreadable, which counts as having none. */
+async function readableAppleToken(userId: string, account: AccountDeps): Promise<string | null> {
+  const sealed = await account.ports.db.rpc<string | null>('apple_credential_of', { actor: userId });
+  if (!sealed) return null;
+  return await account.ports.box.open(sealed).then(() => sealed, () => null);
+}
+/** Exchanges the code Apple gave at sign-in and keeps the token sealed. Never fails a sign-in: without a token, deletion asks for Apple again. */
+async function storeAppleToken({ userId, body }: Context, account: AccountDeps): Promise<Response> {
+  const code = str(body.authorizationCode, 4096);
+  const stored = await account.ports.apple.exchange(code)
+    .then(async (tokens) => { await account.ports.db.rpc('store_apple_credential', { actor: userId, sealed_token: await account.ports.box.seal(JSON.stringify(tokens)) }); return true; })
+    .catch(() => false);
+  return json({ stored });
 }
 /** Everything that can fail without changing anything happens first; only then the accepting transaction runs. */
 async function requestDeletion({ userId, body, request, deps }: Context, account: AccountDeps): Promise<Response> {
   if (body.confirm !== true || !body.reauth || typeof body.reauth !== 'object') throw new AppError('INVALID_REQUEST');
   const reauth = body.reauth as Record<string, unknown>;
-  const chosen = provider(reauth.provider);
+  const chosen = reauthMethod(reauth.provider);
   const code = chosen === 'apple' ? str(reauth.authorizationCode, 4096) : null;
   const jwt = bearerToken(request.headers.get('Authorization'));
   if (!reauthIsFresh(jwtClaims(jwt), chosen, (deps.now?.() ?? new Date()).getTime())) throw new AppError('REAUTH_REQUIRED');
@@ -38,8 +52,14 @@ async function requestDeletion({ userId, body, request, deps }: Context, account
     });
     credential = await account.ports.box.seal(JSON.stringify(tokens));
   }
-  if (chosen === 'kakao' && !account.ports.kakao) throw new AppError('PROVIDER_NOT_CONFIGURED');
-  await deps.db.rpc('begin_account_deletion', { actor: userId, reauth_provider: chosen, request_origin: 'app', credential, credential_ttl_seconds: credential ? CREDENTIAL_TTL_SECONDS : null });
+  // A password proves the person, not the Apple connection: the revoke still needs Apple's token.
+  const accountProvider: Provider = chosen === 'password' ? await account.providerOf(userId) ?? 'email' : chosen;
+  if (chosen === 'password' && accountProvider === 'apple') {
+    credential = await readableAppleToken(userId, account);
+    if (!credential) throw new AppError('APPLE_CONFIRM_REQUIRED');
+  }
+  if (accountProvider === 'kakao' && !account.ports.kakao) throw new AppError('PROVIDER_NOT_CONFIGURED');
+  await deps.db.rpc('begin_account_deletion', { actor: userId, reauth_provider: accountProvider, request_origin: 'app', credential, credential_ttl_seconds: credential ? CREDENTIAL_TTL_SECONDS : null });
   // Accepted: the rest is best effort here and resumed by the sweep; the response never reveals the inner step.
   if (jwt) await account.signOutEverywhere(jwt).catch(() => undefined);
   await runAccountDeletion(userId, account.ports).catch(() => undefined);
@@ -54,7 +74,8 @@ async function operatorDeletion(request: Request, account: AccountDeps): Promise
   const chosen = await account.providerOf(userId);
   if (!chosen) throw new AppError('NOT_FOUND');
   if (chosen === 'kakao' && !account.ports.kakao) throw new AppError('PROVIDER_NOT_CONFIGURED');
-  await account.db.rpc('begin_account_deletion', { actor: userId, reauth_provider: chosen, request_origin: 'operator', credential: null, credential_ttl_seconds: null });
+  const credential = chosen === 'apple' ? await readableAppleToken(userId, account) : null;
+  await account.db.rpc('begin_account_deletion', { actor: userId, reauth_provider: chosen, request_origin: 'operator', credential, credential_ttl_seconds: credential ? CREDENTIAL_TTL_SECONDS : null });
   await runAccountDeletion(userId, account.ports).catch(() => undefined);
   return json({ state: 'requested' }, 202);
 }
@@ -64,6 +85,7 @@ export function accountHandler(account: AccountDeps) {
     route('DELETE', '/account', (ctx) => requestDeletion(ctx, account)),
     // Same contract for clients or proxies that drop DELETE bodies; the app uses this one.
     route('POST', '/account/deletion', (ctx) => requestDeletion(ctx, account)),
+    route('POST', '/account/apple-token', (ctx) => storeAppleToken(ctx, account), { idempotent: false }),
   ], account);
   return async (request: Request): Promise<Response> => {
     if (request.method !== 'POST' || !new URL(request.url).pathname.endsWith('/account/operator-deletion')) return user(request);

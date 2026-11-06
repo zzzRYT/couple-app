@@ -32,5 +32,13 @@ export const routes = {
   homeCoverUploadUrl: (spaceId: string) => `home-cover/spaces/${spaceId}/home-cover/upload-url`,
   /** `POST /account/deletion`, the body-safe alias of `DELETE /account`. */
   deleteAccount: () => 'account/account/deletion',
+  appleToken: () => 'account/account/apple-token',
+  passwordConfig: () => 'auth-password/auth-password/config',
+  passwordLogin: () => 'auth-password/auth-password/login',
+  passwordSignup: () => 'auth-password/auth-password/signup',
+  passwordState: () => 'auth-password/auth-password/state',
+  passwordVerify: () => 'auth-password/auth-password/verify',
+  passwordSet: () => 'auth-password/auth-password/set',
+  passwordPromptSeen: () => 'auth-password/auth-password/prompt-seen',
 } as const;
 export const spaceChannel = (spaceId: string) => `space:${spaceId}`;

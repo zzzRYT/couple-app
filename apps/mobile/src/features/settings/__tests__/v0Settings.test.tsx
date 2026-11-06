@@ -57,12 +57,11 @@ describe('V0-F12-AC-09 help rows', () => {
     expect(open).toHaveBeenCalledWith(TERMS_URL);
     expect(screen.queryByRole('button', { name: new RegExp(screen.t('set.help.version')) })).toBeNull();
   });
-  it('shows partner, version and Apple sign-in as plain rows, not dimmed buttons', async () => {
+  it('shows the partner as a plain row and the sign-in method as the value of the V0-08 security row', async () => {
     const screen = await render('ko-KR');
-    for (const key of ['set.us.partner', 'set.account.apple']) {
-      expect(screen.getByText(screen.t(key))).toBeTruthy();
-      expect(screen.queryByRole('button', { name: new RegExp(screen.t(key)) })).toBeNull();
-    }
+    expect(screen.getByText(screen.t('set.us.partner'))).toBeTruthy();
+    expect(screen.queryByRole('button', { name: new RegExp(screen.t('set.us.partner')) })).toBeNull();
+    expect(screen.getByRole('button', { name: new RegExp(`${screen.t('set.security.title')}.*${screen.t('set.account.apple')}`) })).toBeTruthy();
   });
   it('does not crash when the link cannot be opened', async () => {
     open.mockRejectedValue(new Error('no handler'));

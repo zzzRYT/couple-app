@@ -4,7 +4,7 @@ import en from '../locales/v0/en-US.json';
 import ja from '../locales/v0/ja-JP.json';
 
 it('V0-NF-02 V0-EC-10 shares keys, keeps brand names in brand keys only, and joins the particle after the name', async () => {
-  expect(Object.keys(ko)).toHaveLength(279);
+  expect(Object.keys(ko)).toHaveLength(383);
   expect(Object.keys(en).sort()).toEqual(Object.keys(ko).sort());
   expect(Object.keys(ja).sort()).toEqual(Object.keys(ko).sort());
   const placeholders = (value: string) => [...new Set(value.match(/\{[^{}]+\}/g) ?? [])].sort();

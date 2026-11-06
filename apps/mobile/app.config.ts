@@ -43,7 +43,7 @@ export default {
     version: '1.0.0',
     runtimeVersion: { policy: 'fingerprint' },
     updates: { url: `https://u.expo.dev/${EAS_PROJECT.projectId}` },
-    ios: { bundleIdentifier: iosBundleId, icon: { light: './assets/icon/icon.png', dark: './assets/icon/icon-dark.png', tinted: './assets/icon/icon-tinted.png' }, usesAppleSignIn: true, associatedDomains: ['applinks:aroom.jinjinstar.com'], infoPlist: { ITSAppUsesNonExemptEncryption: false } },
+    ios: { bundleIdentifier: iosBundleId, icon: { light: './assets/icon/icon.png', dark: './assets/icon/icon-dark.png', tinted: './assets/icon/icon-tinted.png' }, usesAppleSignIn: true, associatedDomains: ['applinks:aroom.jinjinstar.com', 'webcredentials:aroom.jinjinstar.com'], infoPlist: { ITSAppUsesNonExemptEncryption: false } },
     android: { package: dev ? APP_IDENTITY.devAndroidApplicationId : APP_IDENTITY.androidApplicationId, adaptiveIcon: { foregroundImage: './assets/icon/adaptive-icon-foreground.png', backgroundColor: '#FBF1E3', monochromeImage: './assets/icon/adaptive-icon-monochrome.png' }, intentFilters: [{ action: 'VIEW', autoVerify: true, data: [{ scheme: 'https', host: 'aroom.jinjinstar.com', pathPrefix: '/i/' }], category: ['BROWSABLE', 'DEFAULT'] }] },
     plugins: ['expo-router', 'expo-apple-authentication', ...(widgets ? widgetPlugins : [])],
     extra: { eas: { projectId: EAS_PROJECT.projectId }, appVariant: variant },

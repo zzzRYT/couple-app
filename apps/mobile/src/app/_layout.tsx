@@ -12,6 +12,7 @@ import { SpaceProvider } from '../features/space/SpaceContext';
 import { appGate } from '../lib/appGate';
 import { useApp } from '../lib/AppContext';
 import { useSpace } from '../features/space/SpaceContext';
+import { PasswordProvider, usePassword } from '../features/auth/PasswordContext';
 import { peekPendingInvite } from '../lib/inviteLink';
 import { PreferencesProvider } from '../features/settings/preferences';
 import { V0_FEATURES } from '../config/features';
@@ -34,7 +35,9 @@ export default function RootLayout() {
       <PreferencesProvider translator={translator}>
         <AppProvider>
           <SpaceProvider>
-            <AppNavigator fontsLoaded={!!loaded || !!error} />
+            <PasswordProvider>
+              <AppNavigator fontsLoaded={!!loaded || !!error} />
+            </PasswordProvider>
           </SpaceProvider>
         </AppProvider>
       </PreferencesProvider>
@@ -45,10 +48,11 @@ export default function RootLayout() {
 function AppNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
   const { session, sessionLoaded, sessionExpired } = useApp();
   const { entry, spaceId, ended, state, reload, refresh, inviteAfterActivation, clearInviteAfterActivation } = useSpace();
+  const { shouldPrompt, recovery } = usePassword();
   const [pending, setPending] = useState<string | null | undefined>(undefined);
   useNotificationSync();
   useEffect(() => { void peekPendingInvite().then(setPending); }, []);
-  const gate = appGate({ fontsLoaded, sessionLoaded, hasSession: !!session, sessionExpired, entry, spaceId, ended, pendingInviteLoaded: pending !== undefined, pendingInvite: pending, snapshotProfile: state.snapshot ? state.snapshot.me.displayName : undefined });
+  const gate = appGate({ fontsLoaded, sessionLoaded, hasSession: !!session, sessionExpired, entry, spaceId, ended, pendingInviteLoaded: pending !== undefined, pendingInvite: pending, snapshotProfile: state.snapshot ? state.snapshot.me.displayName : undefined, passwordRecovery: recovery, passwordPrompt: shouldPrompt });
   useEffect(() => {
     if (gate.kind === 'active' && inviteAfterActivation) { clearInviteAfterActivation(); router.push('/invite'); }
   }, [gate.kind, inviteAfterActivation, clearInviteAfterActivation]);
@@ -59,6 +63,9 @@ function AppNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
   return <Stack screenOptions={{ headerShown: false }}>
     <Stack.Screen name="i/[code]" />
     <Stack.Screen name="invite/[code]" />
+    <Stack.Screen name="auth-callback" options={{ gestureEnabled: false }} />
+    <Stack.Protected guard={gate.kind === 'passwordRecovery'}><Stack.Screen name="new-password" options={{ gestureEnabled: false }} /></Stack.Protected>
+    <Stack.Protected guard={gate.kind === 'needsPasswordPrompt'}><Stack.Screen name="set-password-prompt" options={{ gestureEnabled: false }} /></Stack.Protected>
     <Stack.Protected guard={gate.kind === 'signedOut' || gate.kind === 'sessionExpired'}><Stack.Screen name="(auth)" options={{ gestureEnabled: false }} /></Stack.Protected>
     <Stack.Protected guard={gate.kind === 'needsOnboardingChoice' || gate.kind === 'needsProfile'}><Stack.Screen name="(onboarding)" options={{ gestureEnabled: false }} /></Stack.Protected>
     <Stack.Protected guard={gate.kind === 'ended'}><Stack.Screen name="ended" /></Stack.Protected>
@@ -77,10 +84,13 @@ function AppNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
       <Stack.Screen name="settings/language" />
       <Stack.Screen name="settings/appearance" />
       <Stack.Screen name="settings/disconnect" />
+      <Stack.Screen name="settings/security" />
+      <Stack.Screen name="settings/change-password" />
+      <Stack.Screen name="settings/set-password" />
     </Stack.Protected>
     <Stack.Protected guard={gate.kind === 'active' && V0_FEATURES.prompt}><Stack.Screen name="prompt/index" options={{ presentation: 'modal' }} /><Stack.Screen name="prompt/consent" options={{ presentation: 'modal' }} /></Stack.Protected>
     <Stack.Protected guard={gate.kind === 'active' && V0_FEATURES.reportBlock}><Stack.Screen name="settings/report" /></Stack.Protected>
     {/* Any signed-in state: the space may end (realtime) while the deletion is in flight, and the screen must stay mounted. */}
-    <Stack.Protected guard={gate.kind === 'active' || gate.kind === 'needsOnboardingChoice' || gate.kind === 'ended'}><Stack.Screen name="settings/delete-account" /></Stack.Protected>
+    <Stack.Protected guard={gate.kind === 'active' || gate.kind === 'needsOnboardingChoice' || gate.kind === 'ended'}><Stack.Screen name="settings/delete-account" /><Stack.Screen name="settings/reset-password" /></Stack.Protected>
   </Stack>;
 }

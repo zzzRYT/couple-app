@@ -1,4 +1,4 @@
-// AES-GCM sealing for the Apple token kept (at most 24 hours) to retry a revoke. The key is derived from a server secret
+// AES-GCM sealing for the Apple refresh token, kept from sign-in until account deletion revokes it. The key is derived from a server secret
 // with HKDF, so the database alone cannot reveal the token. Runs in Deno and in Node tests.
 
 export interface CredentialBox {

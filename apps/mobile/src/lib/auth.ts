@@ -8,7 +8,7 @@ function rateMinutes(error: { status?: number } | null): { rateLimitedMinutes: n
   return error?.status === 429 ? { rateLimitedMinutes: 5 } : null;
 }
 /** Supabase Auth adapter: native Apple id tokens on iOS, browser redirect for Kakao (disabled) until its SDK lands (G5). */
-export function supabaseAuth(client: Supabase): AuthPort {
+export function supabaseAuth(client: Supabase, onAppleCode?: (authorizationCode: string) => void): AuthPort {
   return {
     async apple() {
       // Apple receives the SHA-256 of the nonce and Supabase the raw value, so a replayed token fails the check.
@@ -19,7 +19,10 @@ export function supabaseAuth(client: Supabase): AuthPort {
         const credential = await AppleAuthentication.signInAsync({ requestedScopes: [AppleAuthentication.AppleAuthenticationScope.EMAIL], nonce: hashedNonce });
         if (!credential.identityToken) return 'error';
         const { error } = await client.auth.signInWithIdToken({ provider: 'apple', token: credential.identityToken, nonce: rawNonce });
-        return error ? 'error' : 'ok';
+        if (error) return 'error';
+        // The server keeps Apple's token sealed so a later password-confirmed deletion can still revoke it.
+        if (credential.authorizationCode) onAppleCode?.(credential.authorizationCode);
+        return 'ok';
       } catch (error) {
         return (error as { code?: string }).code === 'ERR_REQUEST_CANCELED' ? 'cancelled' : 'error';
       }

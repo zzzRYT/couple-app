@@ -13,6 +13,13 @@ import tempfile
 ARTIFACT = 'https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X'
 LANGS = ('ko', 'en', 'ja')
 ROOT = Path(__file__).resolve().parents[2]
+V0_COPY = Path('specs/002-couple-dday-v0/handoffs/design/copy-v0.md')
+# The boards note status in Korean: in a key cell such as "(제안 · 오너 승인 필요)", or in a 상태 column such as "재사용 · 기존 키 auth.apple".
+STATUS_WORDS = (('제안', 'proposal'), ('변경', 'changed'), ('바뀐', 'changed'), ('신규', 'new'), ('새 키', 'new'), ('재사용', 'approved'))
+
+def board_status(text):
+    plain = text.strip().lower()
+    return next((status for word, status in STATUS_WORDS if word in plain), plain)
 
 class Tables(HTMLParser):
     def __init__(self):
@@ -51,7 +58,7 @@ class Tables(HTMLParser):
         if self.cell is not None: self.cell['text'] += data
 
 
-def parse_board(source, name):
+def parse_board(source, name, same_placeholders=True):
     parser = Tables(); parser.feed(source); parser.close()
     # Preserve each language's review status from the board, rather than inferring approval.
     lines = next((p for p in parser.paragraphs if re.search(r'\bKO\s*:', p, re.I) and re.search(r'\bEN\s*:', p, re.I) and re.search(r'\bJA\s*:', p, re.I)), '')
@@ -76,12 +83,16 @@ def parse_board(source, name):
             columns = [aliases.get(h, '') for h in header]
             if not all(k in columns for k in ('key', *LANGS)): raise ValueError(f'{name}: unsupported table columns {header}')
             item = {k: cells[columns.index(k)]['text'] for k in ('key', *LANGS)}
-            item['status'] = (cells[columns.index('status')]['text'] if 'status' in columns else row['status'] or cells[0]['status'] or 'approved').strip().lower()
+            item['key'], _, note = item['key'].partition('\n')
+            item['note'] = (cells[columns.index('status')]['text'] if 'status' in columns else row['status'] or cells[0]['status'] or note).strip()
+            item['status'] = board_status(item['note'] or 'approved')
             if not re.fullmatch(r'[A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)+', item['key']): raise ValueError(f'{name}: invalid key {item["key"]!r}')
             if item['status'] not in ('approved', 'new', 'changed', 'proposal'): raise ValueError(f'{name}: unknown key status {item["status"]!r}')
             if any(not item[l] for l in LANGS): raise ValueError(f'{name}: missing translation for {item["key"]}')
             variables = lambda value: sorted(re.findall(r'\{(\w+)\}', value))
-            if any(variables(item[l]) != variables(item['ko']) for l in LANGS): raise ValueError(f'{name}: placeholder mismatch for {item["key"]}')
+            if same_placeholders and any(variables(item[l]) != variables(item['ko']) for l in LANGS): raise ValueError(f'{name}: placeholder mismatch for {item["key"]}')
+            # A "(바뀐 문구 · 같은 키를 대신해요)" row replaces the earlier row of the same key on this board.
+            if '대신' in item['note']: entries = [e for e in entries if e['key'] != item['key']]
             entries.append(item)
     if not parser.tables: raise ValueError(f'{name}: no copy table')
     return statuses, entries
@@ -96,7 +107,7 @@ def load_export(project, target):
         if not (project/name).is_file(): raise ValueError(f'Export missing board: {name}')
     extra = {p.name for p in project.glob('*.dc.html')} - set(boards)
     if extra: raise ValueError(f'Boards missing from canvas index: {sorted(extra)}')
-    copy = [n for n in boards if n.startswith('copy-')]
+    copy = [n for n in boards if n.startswith('copy-') and not n.startswith('copy-v0-')]
     if not copy: raise ValueError('Export contains no copy boards')
     allkeys = {}; locations = {}; locale_status = {}
     known = {p.name for p in (target/'design/pages').iterdir() if p.is_dir()} | {p.get('id', '') for p in pages}
@@ -118,6 +129,33 @@ def load_export(project, target):
             allkeys[key] = item; locations[key] = name
         locale_status.setdefault(dest, statuses)
         yield name, dest, statuses, entries
+
+
+def v0_sections(project):
+    """The copy-v0-* boards feed the V0 overlay, not design/pages. A key may repeat across them only with identical text."""
+    canvas = json.loads((project/'canvas.json').read_text())
+    sections = []; seen = {}
+    for name, meta in sorted(canvas['boards'].items(), key=lambda item: item[1].get('title', item[0])):
+        if not name.startswith('copy-v0-'): continue
+        # Date formats differ per language on purpose (`{M}` is a month name in English), so these boards skip the placeholder check.
+        _, entries = parse_board((project/name).read_text(), name, same_placeholders=False)
+        rows = []
+        for item in entries:
+            text = tuple(item[l] for l in LANGS)
+            if seen.setdefault(item['key'], text) != text: raise ValueError(f'{name}: conflicting V0 copy for {item["key"]}')
+            if not any(r['key'] == item['key'] for _, _, other in sections for r in other) and not any(r['key'] == item['key'] for r in rows): rows.append(item)
+        sections.append((meta.get('title', name).removeprefix('문구 · '), name, rows))
+    return sections
+
+
+def render_v0_copy(sections, previous, version):
+    cell = lambda value: value.replace('|', '\\|').replace('\n', '⏎')
+    header = re.sub(r'\(version `[^`]+`\)', f'(version `{version}`)', previous[:previous.index('## ')])
+    parts = [header.rstrip()+'\n']
+    for title, name, rows in sections:
+        parts.append(f'\n## {title} (`{name}`)\nsections: 이 화면의 문구\n\n| key | ko | en | ja | status |\n|---|---|---|---|---|\n')
+        parts.extend(f'| `{r["key"]}` | {cell(r["ko"])} | {cell(r["en"])} | {cell(r["ja"])} | {cell(r["note"])} |\n' for r in rows)
+    return ''.join(parts)
 
 
 def snapshot(root):
@@ -177,9 +215,14 @@ def sync(project, version):
         shutil.copytree(ROOT/'apps/mobile/src', candidate/'apps/mobile/src')
         (candidate/'tools/i18n').mkdir(parents=True)
         shutil.copyfile(ROOT/'tools/i18n/build-v0-overlay.mjs', candidate/'tools/i18n/build-v0-overlay.mjs')
-        v0_design = Path('specs/002-couple-dday-v0/handoffs/design/copy-v0.md')
-        (candidate/v0_design).parent.mkdir(parents=True)
-        shutil.copyfile(ROOT/v0_design, candidate/v0_design)
+        (candidate/V0_COPY).parent.mkdir(parents=True)
+        shutil.copyfile(ROOT/V0_COPY, candidate/V0_COPY)
+        sections = v0_sections(project)
+        if sections:
+            rendered = render_v0_copy(sections, (ROOT/V0_COPY).read_text(), version)
+            (candidate/V0_COPY).write_text(rendered)
+            (candidate/'apps/mobile/src/i18n/locales/v0/copy-v0.md').write_text(rendered)
+            subprocess.run(['node', 'tools/i18n/build-v0-overlay.mjs'], cwd=candidate, check=True)
         pages = candidate/'design/pages'
         for path in pages.rglob('copy'):
             if path.is_dir():
@@ -226,7 +269,7 @@ def sync(project, version):
         for script in ('import-design-copy.mjs', 'check-design-copy.mjs', 'generate-design-review.mjs'):
             subprocess.run(['node', str(ROOT/'tools/i18n'/script)], cwd=candidate, check=True)
         # Publish only after the complete candidate passes the consistency check.
-        for rel in ('design/pages', 'design/canvas/project', 'design/ARTIFACT.md', 'apps/mobile/src/i18n/locales', 'apps/mobile/src/i18n/keys.d.ts'):
+        for rel in ('design/pages', 'design/canvas/project', 'design/ARTIFACT.md', 'apps/mobile/src/i18n/locales', 'apps/mobile/src/i18n/keys.d.ts', 'apps/mobile/src/i18n/v0Keys.d.ts', V0_COPY):
             source = candidate/rel; dest = ROOT/rel
             if dest.is_dir(): shutil.rmtree(dest)
             elif dest.exists(): dest.unlink()

@@ -6,7 +6,7 @@
 
 **Status**: Draft (디자인 V0 승인됨, 구현 전)
 
-**Input**: 오너 피벗(2026-11-02): "커플 D+Day를 세는 단순한 앱"으로 범위를 좁힌다. 정본 디자인은 Claude Design 캔버스 <https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X> 의 V0 페이지(version id `1793598115-fafc`, 보드 `V0-00`~`V0-07`, 문구 보드 `copy-v0-*`)다. 범위·기능 ID·날짜 규칙·열린 질문의 원본은 firstmate 작업 기록 `cpl-v0-design/v0-scope.md`, `new-copy.md`, 기술 조사는 `cpl-v1-feasibility/report.md`다(저장소 밖 문서라 필요한 내용은 이 spec과 `handoffs/`에 옮겨 적었다).
+**Input**: 오너 피벗(2026-11-02): "커플 D+Day를 세는 단순한 앱"으로 범위를 좁힌다. 정본 디자인은 Claude Design 캔버스 <https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X> 의 V0 페이지(version id `1793952106-add4`, 보드 `V0-00`~`V0-09`, 문구 보드 `copy-v0-*`)다. 범위·기능 ID·날짜 규칙·열린 질문의 원본은 firstmate 작업 기록 `cpl-v0-design/v0-scope.md`, `new-copy.md`, 기술 조사는 `cpl-v1-feasibility/report.md`다(저장소 밖 문서라 필요한 내용은 이 spec과 `handoffs/`에 옮겨 적었다).
 
 **관계**: `specs/001-couple-prompt-todo/`(프롬프트 방 중심의 넓은 범위)를 V0 범위에서 대체한다. 001의 날짜 계산 규칙(FR-040 등)과 인증·초대·공간 수명 주기 규칙은 이 문서가 바꾸지 않는 한 그대로 유효하다.
 
@@ -57,9 +57,9 @@
 
 ---
 
-### User Story 2 - Apple로 로그인하고 둘이 연결된다 (Priority: P1) — V0-F01, V0-F02
+### User Story 2 - 로그인하고 둘이 연결된다 (Priority: P1) — V0-F01, V0-F02
 
-처음 연 사람은 짧은 소개를 보고 Apple로 로그인한 뒤 새로 시작하거나 초대 코드로 참여한다. 만든 사람은 사귄 날과 자기 이름·생일을 넣고 초대 코드를 보낸다. 참여한 사람은 코드를 넣고 확인한 뒤 이름·생일을 넣는다.
+처음 연 사람은 짧은 소개를 보고 Apple로 로그인한 뒤(이메일 로그인은 User Story 9) 새로 시작하거나 초대 코드로 참여한다. 만든 사람은 사귄 날과 자기 이름·생일을 넣고 초대 코드를 보낸다. 참여한 사람은 코드를 넣고 확인한 뒤 이름·생일을 넣는다.
 
 **Why this priority**: 두 사람이 연결되어야 나머지 모든 기능에 데이터가 생긴다.
 
@@ -67,9 +67,9 @@
 
 **Acceptance Scenarios**:
 
-1. **V0-F01-AC-01** — **Given** 로그인하지 않은 첫 실행, **When** 앱을 열면, **Then** `V0-start-intro`(소개 한 장 + "Apple로 계속하기" + 약관 동의 문구)가 보이고 이메일·카카오 버튼은 없다(개발 빌드의 테스트용 빠른 로그인은 예외, production·preview에서는 숨김).
+1. **V0-F01-AC-01** — **Given** 로그인하지 않은 첫 실행, **When** 앱을 열면, **Then** `V0-start-intro`(소개 한 장 + "Apple로 계속하기"(첫 번째) + "이메일로 로그인" + 약관 동의 문구)가 보이고 카카오 버튼은 없다(개발 빌드의 테스트용 빠른 로그인은 예외, production·preview에서는 숨김).
 2. **V0-F01-AC-02** — **Given** `V0-start-intro`, **When** Apple 시트를 취소하거나 오류가 나면, **Then** S02 취소·오류 상태를 그대로 보여 주고 다시 시도할 수 있다.
-3. **V0-F01-AC-03** — **Given** Apple 로그인 성공, 활성 공간 없음, **When** 로그인이 끝나면, **Then** `V0-start-choose`(새로 시작하기 / 초대 코드가 있어요)로 간다.
+3. **V0-F01-AC-03** — **Given** Apple 로그인 성공, 활성 공간 없음, **When** 로그인이 끝나면, **Then** 앱 비밀번호가 없고 안내를 본 적 없으면 `V0-auth-setpw-prompt`(V0-F16)를 거쳐, 그 밖에는 바로 `V0-start-choose`(새로 시작하기 / 초대 코드가 있어요)로 간다.
 4. **V0-F02-AC-01** — **Given** `V0-start-choose`, **When** "새로 시작하기"를 누르면, **Then** `V0-start-date`가 열리고 날짜를 고르면 "오늘은 {n}일째 · D+{n}" 미리 보기가 바뀐다(`V0-DR-01`).
 5. **V0-F02-AC-02** — **Given** `V0-start-date-picker`, **When** 오늘(기기 시간대) 이후 날짜를 고르면, **Then** `V0-start-date-future` 오류가 보이고 다음으로 갈 수 없다.
 6. **V0-F02-AC-03** — **Given** 사귄 날을 고른 상태, **When** 다음을 누르면, **Then** `V0-start-profile`(이름 필수 1~10자, 생일 선택: 월·일, "태어난 해도 넣기" 기본 꺼짐)이 열린다. 이름이 비면 `V0-start-profile-err`가 보이고 저장하지 않는다.
@@ -211,16 +211,93 @@ iOS 홈 화면 small·medium·large와 잠금 화면 circular·rectangular·inli
 
 **Acceptance Scenarios**:
 
-1. **V0-F12-AC-01** — **Given** 설정 탭, **When** 열면, **Then** `V0-set-main`/`-main-2`처럼 내 정보(이름·생일), 우리(사귄 날, 상대 "{name} · 연결됨", 기준 시간대), 알림, 화면(언어·화면 모드), 도움(문의하기·개인정보 처리방침·이용약관·버전), 계정(Apple로 로그인함, 로그아웃, 연결 끊기, 계정 삭제)이 있다. 방 낮·밤, AI 동의, 커버, 신고·차단 행은 없다.
+1. **V0-F12-AC-01** — **Given** 설정 탭, **When** 열면, **Then** `V0-set-main`/`-main-2`처럼 내 정보(이름·생일), 우리(사귄 날, 상대 "{name} · 연결됨", 기준 시간대), 알림, 화면(언어·화면 모드), 도움(문의하기·개인정보 처리방침·이용약관·버전), 계정(로그인·보안 — 오른쪽 값 "Apple로 로그인함" 또는 "이메일로 로그인함", 로그아웃, 연결 끊기, 계정 삭제)이 있다. 방 낮·밤, AI 동의, 커버, 신고·차단 행은 없다.
 2. **V0-F12-AC-02** — **Given** `V0-set-me`, **When** 이름(1~10자)과 생일(월·일, 연도 선택)을 고쳐 저장하면, **Then** 상대 화면·목록·위젯에 반영된다. 생일을 지우면 상대의 내 생일 행도 사라진다.
 3. **V0-F12-AC-03** — **Given** `V0-set-start`, **When** 새 사귄 날을 고르면, **Then** "바꾸면 오늘이 {n}일째가 돼요" 미리 보기가 보이고 저장 시 `V0-set-start-confirm`("{old} → {new}. {name}님 화면과 위젯, 날짜 기념일도 함께 바뀌어요.")을 거쳐 두 사람에게 적용된다. 미래 날짜는 고를 수 없다.
 4. **V0-F12-AC-04** — **Given** 동시에 상대가 사귄 날을 바꿈, **When** 내가 저장하면, **Then** 버전 충돌로 최신 값을 다시 보여 주고 다시 확인하게 한다.
 5. **V0-F12-AC-05** — **Given** 기준 시간대 행, **When** S13 시간대 시트에서 바꾸면, **Then** 두 사람의 하루 경계·알림 시각·위젯 자정이 새 시간대를 따른다(`set.us.tz.note`). 방 점유(prompt session)와 무관하게 바꿀 수 있다.
 6. **V0-F12-AC-06** — **Given** `V0-set-lang`, `V0-set-mode`, **When** 바꾸면, **Then** 이 기기에만 적용된다("이 기기에만 적용돼요.").
 7. **V0-F12-AC-07** — **Given** `V0-set-disconnect`, **When** "내용을 확인했어요"를 체크하고 연결 끊기를 확인하면, **Then** 공간이 끝나고(기존 `block` 끝점, reason `disconnect`) 상대는 `V0-state-ended`를 보며 이 기기의 위젯·알림이 지워진다.
-8. **V0-F12-AC-08** — **Given** `V0-set-delete`, **When** Apple로 다시 로그인해 확인하면, **Then** 기존 계정 삭제 흐름(S13 진행·실패·완료)이 실행되고 공간이 끝나며 Apple 연결이 해제되고 위젯·알림이 지워진다.
+8. **V0-F12-AC-08** — **Given** 앱 비밀번호가 없는 Apple 계정의 `V0-set-delete`, **When** Apple로 다시 로그인해 확인하면, **Then** 기존 계정 삭제 흐름(S13 진행·실패·완료)이 실행되고 공간이 끝나며 Apple 연결이 해제되고 위젯·알림이 지워진다.
 9. **V0-F12-AC-09** — **Given** 도움 행, **When** 문의하기·개인정보 처리방침·이용약관을 누르면, **Then** 각각 메일 작성 또는 웹 문서(앱 언어별 `/privacy/`)를 연다. 주소가 아직 없으면 문의하기는 숨긴다. 자체 약관이 없는 동안 이용약관은 Apple 표준 EULA를 연다(A-23). 버전 행은 마케팅 버전과 빌드 번호를 보여 준다.
 10. **V0-F12-AC-10** — **Given** 로그아웃, **When** 확인하면, **Then** 세션을 지우고 `V0-start-intro`로 가며 위젯은 "공간 없음" 상태, 예약 알림은 취소된다.
+
+### User Story 9 - 이메일과 비밀번호로 로그인한다 (Priority: P1) — V0-F15
+
+앱 심사 데모 계정과 다른 기기의 Apple 계정이 이메일과 비밀번호로 들어온다. 메일 발송 수단이 연결되기 전에는 가입과 재설정 메일이 닫혀 있고, 그 사실을 그대로 보여 준다.
+
+**Why this priority**: App Review는 Apple 계정 없이 앱을 볼 데모 로그인이 필요하고, 오너가 비밀번호 로그인을 요청했다(2026-11-06).
+
+**Independent Test**: 로컬 스택에서 운영자가 만든 이메일 계정으로 로그인하고, 틀린 비밀번호 5회 뒤 잠금과 없는 이메일의 같은 응답을 Deno로 확인한다. 화면은 RNTL로 `V0-auth-*` 상태를 확인한다.
+
+**Acceptance Scenarios**:
+
+1. **V0-F15-AC-01** — **Given** `V0-start-intro`, **When** "이메일로 로그인"을 누르면, **Then** `V0-auth-login`이 이메일과 비밀번호를 한 화면에서 받고, 비밀번호는 기본 숨김이며 보기·숨기기(`V0-auth-login-show`)로 바꿀 수 있다.
+2. **V0-F15-AC-02** — **Given** 틀린 비밀번호 또는 없는 이메일, **When** 로그인하면, **Then** 서버 응답이 같고(`INVALID_LOGIN`, 응답 시간 하한 포함) `V0-auth-login-wrong`의 같은 문구가 보인다.
+3. **V0-F15-AC-03** — **Given** 같은 이메일로 연속 5회 실패, **When** 다시 시도하면, **Then** 맞는 비밀번호라도 서버가 10분 동안 `LOGIN_LOCKED`로 막고 없는 이메일도 똑같이 잠기며, `V0-auth-login-rate`에서 Apple 로그인은 열려 있다. 동시 요청도 5회를 넘겨 검사되지 않는다.
+4. **V0-F15-AC-04** — **Given** 맞는 이메일·비밀번호, **When** 로그인하면, **Then** 실패 횟수가 지워지고 세션이 앱에 들어와 공간이 있으면 홈, 없으면 `V0-start-choose`로 간다.
+5. **V0-F15-AC-05** — **Given** 메일 값이 꺼진 상태(`auth_email_enabled=false`), **When** "처음이세요?"를 누르거나 가입 API·Auth 가입 끝점을 직접 부르면, **Then** 앱은 `V0-auth-signup-nomail`을 보이고 서버는 `MAIL_NOT_CONNECTED`로 거절하며 DB 트리거가 이메일 계정 생성을 막는다. `review_login_email`에 적힌 주소 하나만 운영자가 만들 수 있고, Apple 계정 생성은 막지 않는다.
+6. **V0-F15-AC-06** — **Given** 메일 값이 켜진 상태, **When** 계정을 만들면, **Then** `V0-auth-signup`에서 규칙 3개가 입력하며 충족 표시로 바뀌고 약관 동의 없이는 제출할 수 없으며(`V0-auth-signup-err`), 서버도 같은 규칙을 검사(`WEAK_PASSWORD`)한다. 이미 있는 이메일도 같은 응답으로 `V0-auth-signup-sent`에 간다.
+7. **V0-F15-AC-07** — **Given** 메일 값이 꺼진 상태, **When** "비밀번호를 잊으셨나요?"를 누르면, **Then** 메일 요청 없이 `V0-auth-reset-nomail`로 가고 보내지 못한 메일을 보냈다고 말하지 않는다.
+8. **V0-F15-AC-08** — **Given** 메일 값이 켜진 상태, **When** `V0-auth-reset`에서 메일을 요청하고 링크로 돌아와 `V0-auth-newpw`에서 저장하면, **Then** 가입 여부와 관계없이 같은 `V0-auth-reset-sent`가 보이고, 새 비밀번호가 저장되어 바로 로그인된다.
+9. **V0-F15-AC-09** — **Given** 만료됐거나 이미 쓴 메일 링크, **When** 앱으로 돌아오면, **Then** `V0-auth-link-exp`가 보이고 재설정 메일을 다시 요청할 수 있다.
+10. **V0-F15-AC-10** — **Given** 메일 값은 켰지만 Auth의 이메일 확인이 꺼져 있음, **When** 앱이 설정을 읽으면, **Then** 메일이 연결되지 않은 것으로 다뤄 가입이 열리지 않는다. 앱이 설정을 못 읽어도 닫힌 상태로 다룬다.
+11. **V0-F15-AC-11** — **Given** 비밀번호를 쓰는 모든 경로, **When** 요청이 처리되면, **Then** 비밀번호는 인증 제공자에 해시로만 저장되고 우리 DB·로그·멱등 저장소·기기 저장소·오류 응답에 남지 않는다.
+
+---
+
+### User Story 10 - Apple 계정에 비밀번호를 더한다 (Priority: P2) — V0-F16
+
+Apple로 들어온 사람에게 비밀번호를 만들 수 있다고 안내하지만 강제하지 않는다.
+
+**Why this priority**: 오너 결정 B(2026-11-06): Apple 로그인을 남기고, 로그인 뒤에도 비밀번호를 설정할 수 있게 안내한다.
+
+**Independent Test**: RNTL로 안내·건너뛰기·완료 화면을, Deno로 비밀번호를 만든 Apple 계정의 이메일 로그인을 확인한다.
+
+**Acceptance Scenarios**:
+
+1. **V0-F16-AC-01** — **Given** Apple 첫 로그인, 공간 없음, 비밀번호 없음, **When** 로그인이 끝나면, **Then** `V0-auth-setpw-prompt`가 보이고 "나중에 할게요"를 누르면 `V0-start-choose`로 가며 다시 묻지 않는다(서버에 본 시각 기록).
+2. **V0-F16-AC-02** — **Given** `V0-auth-setpw`, **When** 규칙을 어기거나 확인이 다르면 `V0-auth-setpw-err`가 보이고, 맞게 만들면 `V0-auth-setpw-done`이 이메일 로그인 주소와 복사 버튼을 보인다. 가림 주소 안내는 `@privaterelay.appleid.com`일 때만 보인다. 비밀번호 칸은 iOS 자동 완성(`password`, `newPassword`)이 켜져 있다.
+3. **V0-F16-AC-03** — **Given** 공간이 있고 비밀번호가 없는 기존 TestFlight 계정, **When** 업데이트 뒤 처음 홈을 열면, **Then** `V0-auth-setpw-sheet`가 한 번만 보이고, 건너뛰면 다시 나오지 않으며 설정의 `V0-sec-apple-nopw`에서 만들 수 있다.
+4. **V0-F16-AC-04** — **Given** 앱 비밀번호를 만든 Apple 계정, **When** 계정 이메일 + 앱 비밀번호로 로그인하면, **Then** 같은 계정으로 들어오고 `app_metadata.provider`는 `apple`로 남는다.
+5. **V0-F16-AC-05** — **Given** 이메일이 비어 있는 Apple 계정, **When** 안내 대상을 정하면, **Then** 안내·시트·만들기 버튼을 보이지 않고 서버도 `EMAIL_REQUIRED`로 거절한다. 어떤 화면도 막지 않는다.
+
+---
+
+### User Story 11 - 로그인·보안에서 비밀번호를 관리한다 (Priority: P2) — V0-F17
+
+**Why this priority**: 비밀번호가 있으면 바꾸고 잊었을 때 되찾는 길이 있어야 한다.
+
+**Independent Test**: RNTL로 세 가지 모습을, Deno로 현재 비밀번호 확인·잠금·다른 기기 로그아웃을 확인한다.
+
+**Acceptance Scenarios**:
+
+1. **V0-F17-AC-01** — **Given** 설정 › 로그인·보안, **When** 열면, **Then** 계정에 따라 `V0-sec-apple-nopw`, `V0-sec-apple-pw`(로그인 주소·복사, 가림 주소 안내), `V0-sec-email`이 보인다.
+2. **V0-F17-AC-02** — **Given** `V0-sec-change`, **When** 맞는 지금 비밀번호와 규칙에 맞는 새 비밀번호를 저장하면, **Then** `V0-sec-saved` 토스트가 보이고, 이 기기는 로그인된 채 다른 기기의 세션은 끝난다.
+3. **V0-F17-AC-03** — **Given** 틀린 지금 비밀번호, **When** 저장하면, **Then** `V0-sec-change-wrong`(`WRONG_PASSWORD`)이 보이고, 5회면 `V0-sec-change-rate`(`LOGIN_LOCKED`, 로그인과 같은 횟수·10분)다.
+4. **V0-F17-AC-04** — **Given** 앱 비밀번호를 잊은 Apple 계정, **When** `V0-sec-forgot`에서 Apple로 다시 로그인하면, **Then** 메일 없이 `V0-auth-setpw`로 가서 지금 비밀번호 없이 새로 만든다. 서버는 최근(5분) 비밀번호가 아닌 로그인이 있을 때만 허용한다.
+5. **V0-F17-AC-05** — **Given** 비밀번호를 잊은 이메일 계정, **When** "비밀번호를 잊었어요"를 누르면, **Then** 메일이 켜져 있으면 `V0-auth-reset`, 꺼져 있으면 `V0-auth-reset-nomail`로 간다.
+
+---
+
+### User Story 12 - 비밀번호로 본인을 확인하고 계정을 삭제한다 (Priority: P2) — V0-F18
+
+**Why this priority**: App Review 데모 계정(이메일)이 앱 안에서 삭제할 수 있어야 하고, Apple 계정은 어떻게 확인해도 Apple 토큰을 해지해야 한다(App Store 규칙).
+
+**Independent Test**: Deno로 본인 확인 판정·토큰 해지 경로를, RNTL로 시트 상태를 확인한다.
+
+**Acceptance Scenarios**:
+
+1. **V0-F18-AC-01** — **Given** 앱 비밀번호가 있는 Apple 계정, 서버에 봉인한 Apple 토큰이 있음, **When** `V0-del-pw`에서 맞는 비밀번호로 확인하면, **Then** 삭제가 받아들여지고 토큰이 해지되며 봉인한 토큰은 지워진다.
+2. **V0-F18-AC-02** — **Given** 봉인한 토큰이 없거나 읽을 수 없음, **When** 비밀번호로 확인하면, **Then** 아무것도 바뀌지 않고 `APPLE_CONFIRM_REQUIRED`로 `V0-del-apple-more`가 보이며, Apple 확인을 마치면 삭제가 이어진다.
+3. **V0-F18-AC-03** — **Given** 삭제 본인 확인, **When** 비밀번호가 틀리면 `V0-del-pw-fail`, `V0-del-email-fail`이, 5회면 Apple 계정은 `V0-del-pw-rate`(Apple로 대신 확인), 이메일 계정은 `V0-del-email-rate`가 보인다. 잠금은 로그인과 같은 카운터다.
+4. **V0-F18-AC-04** — **Given** 이메일 계정, **When** `V0-del-email`에서 맞는 비밀번호로 확인하면, **Then** S13 삭제 흐름이 끝까지 실행된다.
+5. **V0-F18-AC-05** — **Given** 비밀번호를 잊음, **When** "비밀번호를 잊으셨나요?"를 누르면, **Then** Apple 계정은 `V0-del-forgot`(Apple 재로그인), 이메일 계정은 메일이 켜져 있으면 `V0-del-email-forgot`, 꺼져 있으면 `V0-del-email-nomail`(문의)이다.
+6. **V0-F18-AC-06** — **Given** `reauthIsFresh`, **When** 판정하면, **Then** 비밀번호 확인은 `amr`의 `password` 항목이 5분 안일 때만 통과하고 계정의 `app_metadata.provider`와 무관하며, Apple·카카오 확인은 비밀번호 로그인으로 대신할 수 없다.
+7. **V0-F18-AC-07** — **Given** Apple 로그인 성공, **When** 앱이 authorizationCode를 보내면, **Then** 서버가 토큰으로 바꿔 봉인 저장하고 다음 로그인에 갱신한다. Apple 비밀값이 없거나 교환이 실패해도 로그인은 그대로 끝나고 저장만 건너뛴다.
+8. **V0-F18-AC-08** — **Given** 운영자 삭제, **When** 봉인한 토큰이 있으면, **Then** 그 토큰으로 해지하고, 없으면 기존처럼 `APPLE_TOKEN_UNAVAILABLE`로 기록한다.
+
+---
 
 ### 날짜·계산 규칙 (V0-DR)
 
@@ -258,7 +335,7 @@ iOS 홈 화면 small·medium·large와 잠금 화면 circular·rectangular·inli
 
 ### Functional Requirements
 
-- **V0-F01 Apple 로그인**: 앱은 Sign in with Apple 하나로 로그인해야 한다. 소개 한 장 + Apple 버튼 + 약관 동의 문구(`V0-start-intro`). 시트·취소·오류는 S02 그대로. 이메일·앱 비밀번호·카카오는 V0에서 보이지 않는다(서버 코드는 지우지 않는다). 개발 빌드의 빠른 로그인(PR 23)은 development 변형에서만 유지한다.
+- **V0-F01 Apple 로그인**: Sign in with Apple이 첫 번째 로그인이다. 소개 한 장 + Apple 버튼 + "이메일로 로그인" + 약관 동의 문구(`V0-start-intro`). 시트·취소·오류는 S02 그대로. 카카오는 V0에서 보이지 않는다(서버 코드는 지우지 않는다). 개발 빌드의 빠른 로그인(PR 23)은 development 변형에서만 유지한다.
 - **V0-F02 커플 연결**: 만드는 사람: 시작 방법 → 사귄 날 → 이름·생일 → 초대 코드(S04) → 홈 대기(코드 계속 보임). 초대받은 사람: 코드 입력(S05 오류) → 참여 확인 → 이름·생일 → 연결 완료. 이름은 필수 1~10자, 생일은 선택(월·일, 연도 선택, 양력).
 - **V0-F03 홈 D+Day**: 앱 이름, 아루미(마스코트), 두 사람 이름, "함께한 지", D+N(가장 큼), 사귄 날, 다음 기념일 카드(제목·날짜·D-n), 다가오는 기념일 3개 + 전체 보기. 커버·방 카드·방 탭 없음. 상대 대기(`V0-home-pending`)와 상대 변경 안내(`V0-home-partner-edited`).
 - **V0-F04 자동 기념일**: 50·100·150·200·300일(한 번씩)과 매년 주년. 고치거나 지울 수 없다. 서버의 기념일 목록에 150일을 더하고 500·1000일은 V0 응답에서 뺀다.
@@ -269,16 +346,20 @@ iOS 홈 화면 small·medium·large와 잠금 화면 circular·rectangular·inli
 - **V0-F09 당일 축하**: 다음 기념일 카드 자리의 축하 카드(S28 단순화, 기념 꾸미기 제안 없음). 일수·주년만 7일 늦은 축하. 같은 날 하나만, 주년 > 일수 > 생일 > 직접 > 시즌.
 - **V0-F10 기념일 알림**: 로컬 예약 알림만(서버 푸시 없음). 연결 직후 사전 안내 한 번. 설정: 켜기/끄기, 시간(기본 09:00 공간 시간대), 미리 알림 하나(없음/하루 전 기본/3일 전/일주일 전), 종류별 끄기, 기념일별 끄기, 거부 상태 안내. 모든 알림 설정은 이 기기에만 저장한다.
 - **V0-F11 iOS 위젯**: 홈 small·medium·large, 잠금 circular·rectangular·inline. 외관 full color·dark·tinted(iOS 18)·clear(iOS 26)·vibrant. 상태: 보통·오늘·상대 연결 전·공간 없음·공간 끝남·자리표시. 공간 시간대 자정 timeline + 데이터 변경 시 reload. 공유 데이터는 `schemaVersion`이 있는 최소 JSON(이름·생일 연도·토큰 없음).
-- **V0-F12 최소 설정**: 내 정보, 우리(사귄 날 확인 후 두 사람 적용, 상대, 시간대), 알림, 화면(언어·모드, 이 기기만), 도움(문의·개인정보 처리방침·약관·버전), 계정(로그아웃·연결 끊기·계정 삭제 — Apple 재로그인 확인).
+- **V0-F12 최소 설정**: 내 정보, 우리(사귄 날 확인 후 두 사람 적용, 상대, 시간대), 알림, 화면(언어·모드, 이 기기만), 도움(문의·개인정보 처리방침·약관·버전), 계정(로그인·보안, 로그아웃, 연결 끊기, 계정 삭제 — V0-F18의 본인 확인).
 - **V0-F13 시스템 상태**: 로딩 스켈레톤, 불러오기 실패(전부 아니면 없음), 오프라인 읽기만(마지막 데이터 + 띠), 오프라인·데이터 없음, 상대가 연결 끊음·계정 삭제. S16 공통 상태(로그인 만료·업데이트 필요·권한 없음) 재사용.
 - **V0-F14 출시 자동화·OTA**: `workflow_dispatch` → EAS Build → EAS Submit → TestFlight, EAS Update preview → production. 첫 빌드는 `.dev` bundle id. 위젯 extension·권한·네이티브 변경은 새 빌드. 비밀은 저장소 밖.
+- **V0-F15 이메일·비밀번호 로그인(`V0-08`)**: 인증 제공자의 이메일·비밀번호를 쓰고, 앱은 `auth-password` 함수를 거쳐 로그인한다. 규칙은 8자 이상, 영문과 숫자를 함께, 이메일 주소와 다르게이며 서버에서도 검사한다. 연속 5회 실패하면 그 이메일은 10분 잠긴다(서버가 세고, 없는 이메일도 같게 응답). 메일 발송은 `app_settings.auth_email_enabled` 값 하나로 켠다. 꺼져 있는 동안 `V0-auth-signup-nomail`, `V0-auth-reset-nomail`, `V0-del-email-nomail`이 실제 화면이다.
+- **V0-F16 Apple 계정 비밀번호 안내(`V0-08`)**: 비밀번호는 선택이다. 없는 Apple 계정도 정상이고 어떤 화면도 막지 않는다. 새 계정은 `V0-auth-setpw-prompt`, 기존 계정은 홈 위 `V0-auth-setpw-sheet`를 한 번만 본다. Apple 계정 암호는 앱에 들어오지 않는다.
+- **V0-F17 로그인·보안(`V0-09`)**: 자격 증명에 따른 세 모습, 지금 비밀번호 확인 뒤 변경, 변경하면 다른 기기는 로그아웃.
+- **V0-F18 계정 삭제 본인 확인(`V0-09`)**: 비밀번호 있는 계정은 비밀번호로 확인한다. 비밀번호 없는 Apple 계정은 Apple 재로그인 그대로다. Apple 계정은 어떻게 확인해도 Apple 토큰을 해지한다. Apple 로그인 때 받은 토큰을 봉인 보관하고 삭제 때 파기하며, 없으면 `V0-del-apple-more`로 Apple 확인을 한 번 더 받는다.
 
 ### Non-Functional Requirements
 
 - **V0-NF-01 접근성(S20)**: 터치 대상 최소 48pt(보드 기준; 시스템 최소 44pt보다 큼), 안전 영역 위 47·아래 34pt 기준 프레임, 글자 200%까지 잘림 없이 줄 바꿈, 동작 줄이기 = 마스코트 정지 포즈, 모든 아이콘 버튼에 VoiceOver 라벨, 본문 대비 4.5:1.
 - **V0-NF-02 i18n**: 한국어 원본 + 영어·일본어 초안(원어민 검수 전). 모든 화면 문구는 i18n 키로만 쓰고(기존 ESLint `i18next/no-literal-string`), 앱·마스코트 이름은 브랜드 키(`app.name`, `mascot.name`)만 참조한다.
 - **V0-NF-03 테마**: 밝게·어둡게(시스템 따르기 기본), 기존 `apps/mobile/src/theme/tokens.ts` 토큰만 쓴다.
-- **V0-NF-04 개인정보**: 위젯·알림·로그에 생일 연도·토큰·이메일을 넣지 않는다. 잠금 화면에는 사람 이름을 넣지 않는다.
+- **V0-NF-04 개인정보**: 위젯·알림·로그에 생일 연도·토큰·이메일·비밀번호를 넣지 않는다. 잠금 화면에는 사람 이름을 넣지 않는다.
 - **V0-NF-05 계산 일치**: 날짜 계산은 공유 fixture(JSON)로 앱·서버·(Swift 위젯) 테스트를 함께 돌린다.
 - **V0-NF-06 숨김은 삭제가 아님**: 방·프롬프트·커버·신고의 서버 데이터와 코드는 지우지 않고 V0 앱에서 진입만 막는다(기능 플래그).
 
@@ -288,6 +369,8 @@ iOS 홈 화면 small·medium·large와 잠금 화면 circular·rectangular·inli
 - **구성원 프로필**: 사용자별 표시 이름(1~10자), 생일 월·일(선택), 생일 연도(선택, 본인에게만). 신규(기존 `user_profile` 확장).
 - **직접 추가 기념일**: 공간, 제목, 날짜, 반복(매년/한 번만), 메모, 만든 사람, 마지막 수정한 사람·시각, 버전, 삭제 시각(소프트 삭제). 신규.
 - **축하 기록**: 일수·주년 축하와 구성원별 확인(기존 `milestone_celebration`, `milestone_seen`). 150일 키 허용으로 변경.
+- **비밀번호 시도(`password_attempt`)**: 이메일의 HMAC, 시도 횟수, 잠금 시각. 이메일 원문·비밀번호 없음. 신규.
+- **봉인한 Apple 토큰(`apple_credential`)**: 사용자, 봉인한 refresh token, 저장 시각. 계정 삭제가 받아들여질 때 지운다. 신규.
 - **기기 알림 설정**: 켜기, 시각, 미리 알림, 종류별·기념일별 끄기, 사전 안내를 보았는지. 기기 로컬.
 - **위젯 스냅샷**: App Group 공유 JSON(`schemaVersion` 1). 기기 로컬.
 
@@ -315,9 +398,10 @@ iOS 홈 화면 small·medium·large와 잠금 화면 circular·rectangular·inli
 | D-04 | 500·1000일 V0에 없음 | Q5 |
 | D-05 | 신고·차단 V0에 없음, 문의하기로 대체 | Q8 |
 | D-06 | 알림 권한은 연결 완료 직후 사전 안내 한 번 | Q11 그려진 대로 |
-| D-07 | 아티팩트(version `1793598115-fafc`)가 디자인 정본 | 오너 |
+| D-07 | 아티팩트가 디자인 정본(지금 version `1793952106-add4`) | 오너 |
 | D-08 | 정식 이름: 앱 **아룸 / Aroom / アルーム**, 마스코트 **아루미 / Aroomi / アルーミ**. 보드의 모피루·모피는 쓰지 않는다. 일본어 표기는 저장소 i18n(`main.appName`, `mascot.name`)의 기존 값. 이름은 i18n 브랜드 키 `app.name`·`mascot.name`에만 두고 다른 문구는 nesting으로 참조한다. iOS 표시 이름은 `identity.ts`의 `APP_IDENTITY.name`(`Aroom`) | 오너 2026-11-02 ("Aroom/Aroomi 이게 정식 이름") |
 | D-09 | 이번 D+Day 출시의 이름은 **V0**. V1은 AI 방 꾸미기(방·프롬프트)가 들어가는 다음 버전 | 오너 2026-11-02 |
+| D-10 | Apple 로그인을 남기고 이메일·비밀번호 로그인을 더한다. Apple 로그인 뒤 비밀번호는 강제가 아니라 안내다. 디자인은 V0-08·V0-09 | 오너 2026-11-06 (B) |
 
 ### 가정한 기본값 (오너가 바꿀 수 있음)
 
@@ -347,13 +431,18 @@ iOS 홈 화면 small·medium·large와 잠금 화면 circular·rectangular·inli
 | A-23 | 문의하기 대상·이용약관 | `identity.ts`의 `supportEmail`(2026-11-06 오너 결정 `jinjinstar3@gmail.com`. null이면 행을 숨김). 자체 이용약관은 없음 → 행은 Apple 표준 EULA를 연다(2026-11-06, App Store 심사 준비. ASC에 맞춤 EULA가 없으면 표준 EULA가 적용된다) | 오너가 주소·문서 제공 |
 | A-24 | 내 생일 알림 | 보내지 않음(보드 문구는 상대 이름만 그림, `notify.body.birthday`) | 문구 하나 추가 |
 | A-25 | 빠진 글꼴 굵기(Noto Sans KR 500, Zen Maru Gothic 400·500) | 번들하지 않고 가까운 굵기 사용, PR마다 대체 목록 | 약 10MB 추가 |
+| A-26 | 가림 주소 Apple 계정의 이메일 로그인 | 주소 표시·복사만. "내 이메일을 로그인 주소로 더하기"는 나중 | 메일 인증 흐름 추가 |
+| A-27 | 메일 연결 전 가입 | 닫는다. 확인을 끈 채 열지 않는다. 값 하나(`auth_email_enabled`)와 메일 설정으로만 연다 | — |
+| A-28 | 같은 이메일의 Apple·이메일 계정 | 확인된 이메일끼리만 연결(제공자 자동 연결 그대로). Auth 이메일 확인이 켜져 있어야 안전하다 | — |
+| A-29 | 비밀번호를 바꾸면 | 다른 기기 로그아웃(제공자 기본 동작) | — |
+| A-30 | 저장 문구 | 보드 문구(`auth.pw.stored`). 해시를 "암호화"라고 쓰지 않는다 | 오너 검토 |
 
 ## Out of Scope (명시적 비목표)
 
 - 방, 방 탭, 프롬프트 꾸미기 대화, 미리 보기·적용, 되돌리기, 해외 AI 처리 동의, 기념 방 꾸미기 제안, 기록(L-S11 등). 이것들은 다음 버전(V1, AI 방 꾸미기) 이후의 일이다. 보드는 `Later · 방 · 꾸미기`, `Later · V1 이후 (기록)` 페이지에 남는다(페이지 이름은 결정 전 그대로).
 - 홈 배경 사진 커버(S06 커버·업로드·자르기), 방 낮·밤 설정.
 - 신고·차단(S15).
-- 이메일 로그인·가입·재설정, 앱 비밀번호, 카카오 로그인(개발 빌드 테스트용 경로 제외).
+- 카카오 로그인, 인증 코드 로그인(개발 빌드 테스트용 경로 제외).
 - Android 앱과 Android 위젯, 서버 푸시, 음력 생일, 500·1000일, 기념일 사진, 위젯 꾸미기 옵션.
 - 오프라인 편집 대기열.
 - production bundle id·이름으로 스토어 등록, 공개 App Store 출시.

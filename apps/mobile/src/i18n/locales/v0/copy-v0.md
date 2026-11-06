@@ -1,6 +1,6 @@
 # V0 copy (ko / en / ja) — all V0 copy keys
 
-Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1793598115-fafc`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
+Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1793952106-add4`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
 
 **Brand names**: the boards draw the app as 모피루 / Mopiru / モピル and the mascot as 모피 / Mopi / モピ. The owner has since decided (spec D-08, 2026-11-02): app **아룸 / Aroom / アルーム**, mascot **아루미 / Aroomi / アルーミ**. The table below keeps the board text verbatim; in the app only `app.name` and `mascot.name` hold the names, every other value references them with i18next nesting, and the Korean particle after 아룸 becomes 을/이/은/과/으로 (e.g. `widget.none.title` → `$t(app.name)을 시작해요`). See `../H02-v0-shell-home.md` §6.
 
@@ -63,6 +63,7 @@ sections: 이 화면의 문구
 | `start.intro.f2` | 50일·100일·주년·생일을 미리 알려 줘요 | Reminds you of 50 days, 100 days, anniversaries and birthdays | 50日・100日・記念日・誕生日をお知らせします | 신규 · EN·JA 초안 |
 | `start.intro.f3` | 홈 화면과 잠금 화면 위젯으로 바로 봐요 | See it on your Home Screen and Lock Screen | ホーム画面とロック画面のウィジェットですぐ見られます | 신규 · EN·JA 초안 |
 | `auth.apple` | Apple로 계속하기 | Continue with Apple | Appleで続ける | 재사용 · 기존 키 login.apple |
+| `auth.email.entry` | 이메일로 로그인 | Sign in with email | メールでログイン | 신규 · EN·JA 초안 |
 | `start.intro.terms` | 계속하면 이용약관과 개인정보 처리방침에 동의하게 돼요. | By continuing, you agree to the Terms of Use and Privacy Policy. | 続けると、利用規約とプライバシーポリシーに同意したことになります。 | 신규 · EN·JA 초안 |
 | `start.choose.title` | 어떻게 시작할까요? | How would you like to start? | どうやって始めますか？ | 신규 · EN·JA 초안 |
 | `start.choose.new.title` | 새로 시작하기 | Start fresh | 新しく始める | 신규 · EN·JA 초안 |
@@ -312,6 +313,8 @@ sections: 이 화면의 문구
 | `set.help.version` | 버전 | Version | バージョン | 신규 · EN·JA 초안 |
 | `set.section.account` | 계정 | Account | アカウント | 재사용 · 기존 키 set.sec.account |
 | `set.account.apple` | Apple로 로그인함 | Signed in with Apple | Appleでサインイン中 | 신규 · EN·JA 초안 |
+| `set.security.title` | 로그인·보안 | Sign-in & security | ログイン・セキュリティ | 재사용 · 기존 키 set.security.title |
+| `set.account.email` | 이메일로 로그인함 | Signed in with email | メールでサインイン中 | 신규 · EN·JA 초안 |
 | `set.account.logout` | 로그아웃 | Sign out | ログアウト | 재사용 · 기존 키 set.logout |
 | `set.account.disconnect` | 연결 끊기 | Disconnect | つながりを解除 | 신규 · EN·JA 초안 |
 | `set.account.delete` | 계정 삭제 | Delete account | アカウントを削除 | 재사용 · 기존 키 set.account.delete |
@@ -330,3 +333,115 @@ sections: 이 화면의 문구
 | `set.delete.reauth` | {provider}로 다시 로그인해 확인 | Sign in again with {provider} to confirm | {provider}で再ログインして確認 | 재사용 · 기존 키 acct.delete.reauth.forgot.oauth |
 | `set.delete.apple.note` | Apple로 가입한 계정은 삭제할 때 Apple 연결도 함께 해제돼요. | For accounts created with Apple, the Apple connection is also removed when you delete. | Appleで作成したアカウントは、削除するとAppleとの連携も解除されます。 | 재사용 · 기존 키 acct.delete.reauth.apple |
 
+## V0-08 로그인 · 비밀번호 (`copy-v0-auth.dc.html`)
+sections: 이 화면의 문구
+
+| key | ko | en | ja | status |
+|---|---|---|---|---|
+| `login.email.label` | 이메일 | Email | メールアドレス | 신규 · EN·JA 초안 |
+| `login.email.placeholder` | name@example.com | name@example.com | name@example.com | 신규 · EN·JA 초안 |
+| `login.pw.label` | 비밀번호 | Password | パスワード | 재사용 · 기존 키 login.pw.label |
+| `login.pw.show` | 비밀번호 보기 | Show password | パスワードを表示 | 재사용 · 기존 키 login.pw.show |
+| `login.pw.forgot` | 비밀번호를 잊으셨나요? | Forgot your password? | パスワードをお忘れですか？ | 재사용 · 기존 키 login.pw.forgot |
+| `login.pw.submit` | 로그인 | Sign in | ログイン | 재사용 · 기존 키 login.pw.submit |
+| `login.signup.link` | 처음이세요? 비밀번호로 계정 만들기 | New here? Create an account with a password | はじめてですか？パスワードでアカウントを作成 | 재사용 · 기존 키 login.signup.link |
+| `login.pw.hide` | 비밀번호 숨기기 | Hide password | パスワードを隠す | 재사용 · 기존 키 login.pw.hide |
+| `auth.login.wrong` | 이메일이나 비밀번호가 맞지 않아요. 다시 확인해 주세요. | That email or password isn't right. Please check and try again. | メールアドレスまたはパスワードが正しくありません。もう一度確認してください。 | 변경 · 기존 키 login.pw.wrong (인증 코드 안내를 빼고, 가입 여부가 드러나지 않게 이메일·비밀번호를 함께 말함) |
+| `auth.login.rate` | 비밀번호를 여러 번 틀렸어요. 10분 뒤에 다시 해 주세요. | Too many wrong attempts. Please try again in 10 minutes. | パスワードを何度も間違えました。10分後にもう一度お試しください。 | 변경 · 기존 키 login.pw.rate (인증 코드 안내를 뺌) |
+| `auth.login.rate.apple` | Apple로 가입했다면 지금 Apple로 로그인할 수 있어요. | If you signed up with Apple, you can sign in with Apple now. | Appleで登録した場合は、今すぐAppleでログインできます。 | 신규 · EN·JA 초안 |
+| `login.signup.title` | 계정을 만들어 주세요 | Create your account | アカウントを作成してください | 재사용 · 기존 키 login.signup.title |
+| `login.pw.rule.len` | 8자 이상 | At least 8 characters | 8文字以上 | 재사용 · 기존 키 login.pw.rule.len |
+| `login.pw.rule.mix` | 영문과 숫자를 함께 | Letters and numbers | 英字と数字を両方 | 재사용 · 기존 키 login.pw.rule.mix |
+| `login.pw.rule.email` | 이메일 주소와 다르게 | Different from your email | メールアドレスと違うもの | 재사용 · 기존 키 login.pw.rule.email |
+| `login.pw.rules.a11y` | 비밀번호 규칙 | Password rules | パスワードのルール | 신규 · EN·JA 초안 |
+| `login.pw.confirm` | 비밀번호 확인 | Confirm password | パスワード（確認） | 재사용 · 기존 키 login.pw.confirm |
+| `login.pw.confirm.placeholder` | 한 번 더 입력 | Enter it again | もう一度入力 | 신규 · EN·JA 초안 |
+| `login.signup.terms` | 이용약관과 개인정보 처리방침에 동의해요 (만 14세 이상) | I agree to the Terms and Privacy Policy (14 or older) | 利用規約とプライバシーポリシーに同意します（14歳以上） | 재사용 · 기존 키 login.signup.terms |
+| `auth.pw.stored` | 비밀번호는 입력한 그대로 저장하지 않아요. 아무도 읽을 수 없는 형태로만 보관해요. | We never store your password as typed. It's kept only in a form no one can read. | パスワードは入力したまま保存しません。誰にも読めない形でのみ保管します。 | 신규 · EN·JA 초안 · 검토 필요 |
+| `login.signup.submit` | 가입하기 | Sign up | 登録する | 재사용 · 기존 키 login.signup.submit |
+| `login.pw.mismatch` | 두 비밀번호가 달라요 | The passwords don't match | パスワードが一致しません | 재사용 · 기존 키 login.pw.mismatch |
+| `login.signup.sent.title` | 확인 메일을 보냈어요 | We sent a confirmation email | 確認メールを送りました | 재사용 · 기존 키 login.signup.sent.title |
+| `login.signup.sent.body` | {email}로 보낸 메일의 링크를 누르면 가입이 끝나요. | Tap the link in the email we sent to {email} to finish signing up. | {email}に送ったメールのリンクをタップすると登録が完了します。 | 재사용 · 기존 키 login.signup.sent.body |
+| `login.mail.spam` | 메일이 오지 않으면 스팸함을 확인하거나 1분 뒤에 다시 보내 주세요. | If it doesn't arrive, check your spam folder or resend in a minute. | 届かない場合は迷惑メールフォルダを確認するか、1分後に再送してください。 | 재사용 · 기존 키 login.mail.spam |
+| `login.mail.resend` | 메일 다시 보내기 | Resend email | メールを再送する | 재사용 · 기존 키 login.mail.resend |
+| `auth.signup.nomail.title` | 지금은 이메일로 가입할 수 없어요 | You can't sign up with email just yet | 今はメールで登録できません | 신규 · EN·JA 초안 |
+| `auth.signup.nomail.body` | 가입 확인 메일을 보낼 준비가 아직 안 됐어요. Apple로 계속하면 바로 시작할 수 있어요. | We can't send confirmation emails yet. Continue with Apple to start right away. | 確認メールを送る準備がまだできていません。Appleで続けるとすぐに始められます。 | 신규 · EN·JA 초안 |
+| `login.reset.title` | 비밀번호를 재설정할게요 | Let's reset your password | パスワードを再設定します | 재사용 · 기존 키 login.reset.title |
+| `login.reset.body` | 가입한 이메일로 재설정 링크를 보내 드려요. | We'll send a reset link to your sign-up email. | 登録したメールアドレスに再設定リンクを送ります。 | 변경 · 기존 키 login.reset.body (재설정 코드를 빼고 링크만) |
+| `auth.reset.apple` | Apple로 가입했다면 메일 없이 Apple로 로그인한 뒤 설정 › 로그인·보안에서 새로 만들 수 있어요. | Signed up with Apple? Sign in with Apple, then make a new one in Settings › Sign-in & security. No email needed. | Appleで登録した場合は、Appleでログインしたあと、設定 › ログイン・セキュリティで作り直せます。メールは不要です。 | 신규 · EN·JA 초안 |
+| `login.reset.send` | 재설정 메일 보내기 | Send reset email | 再設定メールを送る | 재사용 · 기존 키 login.reset.send |
+| `login.reset.sent.title` | 재설정 메일을 보냈어요 | Reset email sent | 再設定メールを送りました | 재사용 · 기존 키 login.reset.sent.title |
+| `login.reset.sent.body` | 가입한 이메일이라면 {email}로 링크를 보냈어요. 링크를 누르면 새 비밀번호를 만들 수 있어요. | If that email has an account, we sent a link to {email}. Tap it to create a new password. | 登録済みのメールアドレスなら、{email}にリンクを送りました。タップすると新しいパスワードを作成できます。 | 변경 · 기존 키 login.reset.sent.body (코드를 빼고, 가입 여부가 드러나지 않게 함) |
+| `auth.reset.nomail.title` | 아직 재설정 메일을 보낼 수 없어요 | We can't send reset emails yet | 再設定メールはまだ送れません | 신규 · EN·JA 초안 |
+| `auth.reset.nomail.body` | 메일 보내는 기능을 준비하고 있어요. 지금 비밀번호는 바뀌지 않았어요. | We're still setting up email. Your current password hasn't changed. | メール送信の機能を準備しています。今のパスワードは変わっていません。 | 신규 · EN·JA 초안 |
+| `auth.reset.nomail.apple.title` | Apple로 가입했나요? | Signed up with Apple? | Appleで登録しましたか？ | 신규 · EN·JA 초안 |
+| `auth.reset.nomail.apple.body` | Apple로 로그인하면 설정에서 새 비밀번호를 만들 수 있어요. | Sign in with Apple, then make a new password in Settings. | Appleでログインすると、設定で新しいパスワードを作成できます。 | 신규 · EN·JA 초안 |
+| `auth.reset.nomail.email.title` | 이메일로 가입했나요? | Signed up with email? | メールで登録しましたか？ | 신규 · EN·JA 초안 |
+| `auth.reset.nomail.email.body` | 아래 주소로 문의해 주시면 본인 확인 뒤에 도와드려요. | Contact us at the address below and we'll help once we've confirmed it's you. | 下のアドレスにお問い合わせください。本人確認のあとでお手伝いします。 | 신규 · EN·JA 초안 |
+| `auth.support.mail` | jinjinstar3@gmail.com | jinjinstar3@gmail.com | jinjinstar3@gmail.com | 신규 · EN·JA 초안 |
+| `login.pw.new.title` | 새 비밀번호를 만들어 주세요 | Create a new password | 新しいパスワードを作成してください | 재사용 · 기존 키 login.pw.new.title |
+| `login.pw.new.body` | 다음부터는 이 비밀번호로 바로 로그인할 수 있어요. | Next time, you can sign in right away with this password. | 次回からこのパスワードですぐにログインできます。 | 신규 · EN·JA 초안 |
+| `set.pw.new` | 새 비밀번호 | New password | 新しいパスワード | 재사용 · 기존 키 set.pw.new |
+| `login.pw.new.save` | 저장하고 로그인 | Save and sign in | 保存してログイン | 재사용 · 기존 키 login.pw.new.save |
+| `auth.link.exp.title` | 이 링크는 쓸 수 없어요 | This link can't be used | このリンクは使えません | 신규 · EN·JA 초안 |
+| `auth.link.exp.body` | 링크가 만료됐거나 이미 쓰였어요. 재설정 메일을 다시 받아 주세요. | It expired or was already used. Please request a new reset email. | 有効期限が切れたか、すでに使われています。再設定メールをもう一度受け取ってください。 | 신규 · EN·JA 초안 |
+| `auth.setpw.prompt.title` | 비밀번호도 만들어 둘까요? | Want to add a password too? | パスワードも作っておきますか？ | 신규 · EN·JA 초안 |
+| `auth.setpw.prompt.body` | 없어도 Apple로 계속 쓸 수 있어요. 만들어 두면 이런 점이 좋아요. | You can keep using Apple without one. Here's what it adds. | なくてもAppleでそのまま使えます。作っておくと、こんなことができます。 | 신규 · EN·JA 초안 |
+| `auth.setpw.prompt.b1` | 이메일과 비밀번호로도 로그인할 수 있어요 | You can also sign in with email and password | メールとパスワードでもログインできます | 신규 · EN·JA 초안 |
+| `auth.setpw.prompt.b2` | 계정 삭제 같은 중요한 일을 비밀번호로 확인할 수 있어요 | You can confirm important actions, like deleting your account, with it | アカウント削除などの大切な操作をパスワードで確認できます | 신규 · EN·JA 초안 |
+| `auth.setpw.prompt.note` | Apple 계정 암호와는 다른, 모피루에서만 쓰는 새 비밀번호예요. Apple 암호는 앱에 들어오지 않아요. | This is a new password just for Mopiru, separate from your Apple Account password, which never reaches the app. | Appleアカウントのパスワードとは別の、モピル専用の新しいパスワードです。Appleのパスワードはアプリに入りません。 | 신규 · EN·JA 초안 |
+| `auth.setpw.cta` | 앱 비밀번호 만들기 | Create app password | アプリのパスワードを作成 | 신규 · EN·JA 초안 |
+| `auth.setpw.later` | 나중에 할게요 | Maybe later | あとで | 신규 · EN·JA 초안 |
+| `auth.setpw.later.note` | 나중에 설정 › 로그인·보안에서 만들 수 있어요. | You can make one later in Settings › Sign-in & security. | あとで設定 › ログイン・セキュリティから作成できます。 | 신규 · EN·JA 초안 |
+| `onb.pw.title` | 앱 비밀번호를 만들어 주세요 | Create an app password | アプリのパスワードを作成してください | 재사용 · 기존 키 onb.pw.title |
+| `onb.pw.apple` | Apple로 로그인했어요 | You're signed in with Apple | Appleでログインしました | 신규 · EN·JA 초안 |
+| `onb.pw.body` | 이메일 로그인과 계정 삭제 확인에 이 비밀번호를 써요. Apple 계정 암호와는 따로예요. | You'll use this to sign in with email and to confirm account deletion. It's separate from your Apple Account password. | メールでのログインとアカウント削除の確認に使います。Appleアカウントのパスワードとは別です。 | 변경 · 기존 키 onb.pw.body (카카오를 빼고 쓰임을 이메일 로그인까지 넓힘) |
+| `onb.pw.submit` | 비밀번호 만들기 | Create password | パスワードを作成 | 재사용 · 기존 키 onb.pw.submit |
+| `auth.setpw.done.title` | 앱 비밀번호를 만들었어요 | App password created | アプリのパスワードを作成しました | 신규 · EN·JA 초안 |
+| `auth.setpw.done.body` | 이제 Apple로도, 이메일과 비밀번호로도 로그인할 수 있어요. | You can now sign in with Apple, or with email and password. | これからはAppleでも、メールとパスワードでもログインできます。 | 신규 · EN·JA 초안 |
+| `set.security.relay` | Apple이 만들어 준 가림 주소예요. 이메일로 로그인할 때 이 주소를 그대로 넣어 주세요. | This is the private address Apple made for you. Enter it exactly to sign in with email. | Appleが作った非公開アドレスです。メールでログインするときは、このアドレスをそのまま入力してください。 | 신규 · EN·JA 초안 · 검토 필요 |
+| `set.security.loginEmail` | 이메일 로그인 주소 | Email for sign-in | ログイン用メールアドレス | 신규 · EN·JA 초안 |
+| `common.copy.a11y` | 이메일 로그인 주소 복사 | Copy email for sign-in | ログイン用メールアドレスをコピー | 신규 · EN·JA 초안 |
+| `common.copy` | 복사 | Copy | コピー | 신규 · EN·JA 초안 |
+| `auth.setpw.done.again` | 설정 › 로그인·보안에서 언제든 다시 볼 수 있어요. | You can find it again anytime in Settings › Sign-in & security. | 設定 › ログイン・セキュリティでいつでも確認できます。 | 신규 · EN·JA 초안 |
+| `auth.setpw.sheet.body` | 없어도 지금처럼 Apple로 쓸 수 있어요. 만들어 두면 이메일로도 로그인하고, 계정 삭제도 비밀번호로 확인할 수 있어요. | You can keep using Apple as you do now. With a password, you can also sign in with email and confirm account deletion with it. | 今までどおりAppleで使えます。作っておくと、メールでもログインでき、アカウント削除もパスワードで確認できます。 | 신규 · EN·JA 초안 |
+
+## V0-09 로그인·보안 (`copy-v0-security.dc.html`)
+sections: 이 화면의 문구
+
+| key | ko | en | ja | status |
+|---|---|---|---|---|
+| `set.security.method` | 로그인 방법 | Sign-in method | ログイン方法 | 재사용 · 기존 키 set.security.method |
+| `set.security.method.apple` | Apple | Apple | Apple | 신규 · EN·JA 초안 |
+| `set.security.on` | 사용 중 | On | 使用中 | 신규 · EN·JA 초안 |
+| `set.security.method.email` | 이메일 + 앱 비밀번호 | Email + app password | メール + アプリのパスワード | 신규 · EN·JA 초안 |
+| `set.security.pwSection` | 비밀번호 | Password | パスワード | 신규 · EN·JA 초안 |
+| `set.security.pwChange` | 앱 비밀번호 바꾸기 | Change app password | アプリのパスワードを変更 | 재사용 · 기존 키 set.security.pwChange |
+| `set.security.pwForgot` | 앱 비밀번호를 잊었어요 | I forgot my app password | アプリのパスワードを忘れました | 재사용 · 기존 키 set.security.pwForgot |
+| `set.security.pwNote` | 앱 비밀번호는 이메일로 로그인할 때와 계정 삭제처럼 중요한 일을 할 때 써요. | You use your app password to sign in with email and before important actions like deleting your account. | アプリのパスワードは、メールでのログインと、アカウント削除など大切な操作の前に使います。 | 변경 · 기존 키 set.security.pwNote (이메일 로그인 쓰임을 더함) |
+| `acct.delete.reauth.forgot.title` | 비밀번호가 기억나지 않으세요? | Can't remember your password? | パスワードを思い出せませんか？ | 재사용 · 기존 키 acct.delete.reauth.forgot.title |
+| `set.pw.forgot.body` | Apple로 다시 로그인하면 지금 비밀번호 없이 새로 만들 수 있어요. 메일은 필요 없어요. | Sign in with Apple again to make a new one without your current password. No email needed. | Appleで再ログインすると、今のパスワードなしで作り直せます。メールは不要です。 | 신규 · EN·JA 초안 |
+| `acct.delete.reauth.forgot.oauth` | Apple로 다시 로그인해 확인 | Confirm by signing in with Apple | Appleで再ログインして確認 | 재사용 · 기존 키 acct.delete.reauth.forgot.oauth |
+| `set.security.pwLabel` | 앱 비밀번호 | App password | アプリのパスワード | 신규 · EN·JA 초안 |
+| `set.security.pwNone.value` | 아직 없어요 | Not set | 未設定 | 신규 · EN·JA 초안 |
+| `set.security.noneNote` | Apple로 로그인할 때는 필요 없어요. 만들어 두면 이메일로도 로그인할 수 있고, 계정 삭제도 비밀번호로 확인할 수 있어요. | You don't need it to sign in with Apple. With one, you can also sign in with email and confirm account deletion with it. | Appleでログインするときは必要ありません。作っておくと、メールでもログインでき、アカウント削除もパスワードで確認できます。 | 신규 · EN·JA 초안 |
+| `set.security.method.emailOnly` | 이메일 + 비밀번호 | Email + password | メール + パスワード | 신규 · EN·JA 초안 |
+| `set.security.pwChange.email` | 비밀번호 바꾸기 | Change password | パスワードを変更 | 신규 · EN·JA 초안 |
+| `set.security.pwForgot.email` | 비밀번호를 잊었어요 | I forgot my password | パスワードを忘れました | 신규 · EN·JA 초안 |
+| `set.pw.saved` | 비밀번호를 바꿨어요 | Password changed | パスワードを変更しました | 재사용 · 기존 키 set.pw.saved |
+| `set.pw.current` | 지금 비밀번호 | Current password | 現在のパスワード | 재사용 · 기존 키 set.pw.current |
+| `set.pw.wrong` | 지금 비밀번호가 맞지 않아요. 다시 입력해 주세요. | Your current password isn't right. Please try again. | 現在のパスワードが正しくありません。もう一度入力してください。 | 신규 · EN·JA 초안 |
+| `acct.delete.reauth.account` | {provider} 계정 · {email} | {provider} account · {email} | {provider}アカウント・{email} | 재사용 · 기존 키 acct.delete.reauth.account |
+| `acct.delete.reauth.title` | 본인 확인이 필요해요 | Please confirm it's you | 本人確認が必要です | 재사용 · 기존 키 acct.delete.reauth.title |
+| `acct.delete.reauth.body` | 계정을 지키기 위해 앱 비밀번호를 입력해 주세요. | To protect your account, enter your app password. | アカウントを守るため、アプリのパスワードを入力してください。 | 재사용 · 기존 키 acct.delete.reauth.body |
+| `acct.delete.reauth.apple` | Apple로 가입한 계정은 삭제할 때 Apple 연결도 함께 해제돼요. | For accounts created with Apple, the Apple connection is also removed when you delete. | Appleで作成したアカウントは、削除するとAppleとの連携も解除されます。 | 재사용 · 기존 키 acct.delete.reauth.apple |
+| `acct.delete.reauth.submit` | 확인하고 삭제하기 | Confirm and delete | 確認して削除する | 재사용 · 기존 키 acct.delete.reauth.submit |
+| `acct.delete.reauth.wrong` | 비밀번호가 맞지 않아요. 다시 입력해 주세요. | That password isn't right. Please try again. | パスワードが正しくありません。もう一度入力してください。 | 재사용 · 기존 키 acct.delete.reauth.wrong |
+| `acct.delete.reauth.rate` | 비밀번호를 여러 번 틀렸어요. 10분 뒤에 다시 하거나, Apple로 다시 로그인해 확인해 주세요. | Too many wrong attempts. Try again in 10 minutes, or confirm by signing in with Apple. | パスワードを何度も間違えました。10分後にもう一度試すか、Appleで再ログインして確認してください。 | 변경 · 기존 키 acct.delete.reauth.rate ("처음 로그인한 방법"을 Apple로) |
+| `acct.delete.reauth.forgot.body` | Apple로 다시 로그인해서 확인할 수 있어요. 메일은 필요 없어요. | You can confirm by signing in with Apple again. No email needed. | Appleで再ログインして確認できます。メールは不要です。 | 변경 · 기존 키 acct.delete.reauth.forgot.body (재설정 메일을 빼고 Apple만) |
+| `acct.delete.apple.more.title` | Apple 확인이 한 번 더 필요해요 | One more Apple check | Appleの確認がもう一度必要です | 신규 · EN·JA 초안 |
+| `acct.delete.apple.more.body` | 비밀번호는 맞았어요. Apple 연결까지 해제하려면 Apple 화면에서 한 번만 더 확인해 주세요. | Your password was right. To remove the Apple connection too, please confirm once more on the Apple screen. | パスワードは正しいです。Appleとの連携も解除するため、Appleの画面でもう一度確認してください。 | 신규 · EN·JA 초안 |
+| `acct.provider.email` | 이메일 | Email | メール | 신규 · EN·JA 초안 |
+| `acct.delete.reauth.body.email` | 계정을 지키기 위해 비밀번호를 입력해 주세요. | To protect your account, enter your password. | アカウントを守るため、パスワードを入力してください。 | 신규 · EN·JA 초안 |
+| `acct.delete.reauth.forgot.mail` | 재설정 메일을 받아 새 비밀번호를 만든 뒤 다시 삭제해 주세요. | Get a reset email, make a new password, then try deleting again. | 再設定メールを受け取り、新しいパスワードを作成してから、もう一度削除してください。 | 신규 · EN·JA 초안 |
+| `acct.delete.reauth.forgot.nomail` | 아직 재설정 메일을 보낼 수 없어요. 문의해 주시면 본인 확인 뒤에 계정을 삭제해 드려요. | We can't send reset emails yet. Contact us and we'll delete your account once we've confirmed it's you. | 再設定メールはまだ送れません。お問い合わせいただければ、本人確認のあとでアカウントを削除します。 | 신규 · EN·JA 초안 |

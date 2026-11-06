@@ -1,9 +1,14 @@
 {
-  "status": "source",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "원본",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "room.partnerLive": "approved",
+    "room.watch": "approved",
+    "coach.room": "changed"
+  },
   "strings": {
     "room.partnerLive": "{name}님이 꾸미는 중 · 실시간으로 보고 있어요",
     "room.watch": "지켜보기",
-    "coach.room": "꾸미기를 눌러 첫 방을 꾸며 보세요"
+    "coach.room": "아래 입력창에 원하는 방을 적어 보세요"
   }
 }

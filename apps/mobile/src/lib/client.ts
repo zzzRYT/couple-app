@@ -72,6 +72,15 @@ export function createClient(api: Api) {
     removeHomeCover: (spaceId: string) => api.json<void>(routes.homeCover(spaceId), { method: 'DELETE', body: {}, keyInBody: true }),
     /** No automatic retry: a resent request after acceptance only meets a revoked session. */
     deleteAccount: (reauth: Reauth) => api.json<{ state: 'requested' }>(routes.deleteAccount(), { method: 'POST', body: { confirm: true, reauth }, retries: 0 }),
+    storeAppleToken: (authorizationCode: string) => api.json<{ stored: boolean }>(routes.appleToken(), { method: 'POST', body: { authorizationCode }, retries: 0 }),
+    passwordConfig: () => api.json<{ mail: boolean }>(routes.passwordConfig(), { timeoutMs: 8000 }),
+    // Each password call runs once: a retry would spend another of the five attempts.
+    passwordLogin: (email: string, password: string) => api.json<{ accessToken: string; refreshToken: string }>(routes.passwordLogin(), { method: 'POST', body: { email, password }, retries: 0 }),
+    passwordSignup: (email: string, password: string, redirectTo: string) => api.json<{ state: 'sent' }>(routes.passwordSignup(), { method: 'POST', body: { email, password, termsAccepted: true, redirectTo }, retries: 0 }),
+    passwordState: () => api.json<{ hasPassword: boolean; promptSeen: boolean; email: string | null }>(routes.passwordState()),
+    passwordVerify: (password: string) => api.json<{ accessToken: string; refreshToken: string }>(routes.passwordVerify(), { method: 'POST', body: { password }, retries: 0 }),
+    setPassword: (newPassword: string, currentPassword?: string) => api.json<{ state: 'saved' }>(routes.passwordSet(), { method: 'POST', body: { newPassword, ...(currentPassword === undefined ? {} : { currentPassword }) }, retries: 0 }),
+    passwordPromptSeen: () => api.json<{ state: 'seen' }>(routes.passwordPromptSeen(), { method: 'POST', retries: 0 }),
   };
 }
 export type Client = ReturnType<typeof createClient>;

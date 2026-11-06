@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises';
-import { loadCopies } from './copy-library.mjs';
-const { merged, proposals } = await loadCopies();
+import { loadRuntimeCopies } from './copy-library.mjs';
+const { merged, proposals } = await loadRuntimeCopies();
 if (proposals.length) console.log(`Skipping proposal keys (do not import until approved): ${proposals.sort().join(', ')}`);
 const keys = Object.keys(merged.ko).sort();
 for (const [lang, locale] of [['ko', 'ko-KR'], ['en', 'en-US'], ['ja', 'ja-JP']]) {

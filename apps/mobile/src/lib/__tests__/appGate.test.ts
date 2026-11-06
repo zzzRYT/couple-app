@@ -1,7 +1,7 @@
 import { appGate, type AppGateInput } from '../appGate';
 
 const notice = { kind: 'ended' as const, by: 'partner' as const, at: '2026-10-29T00:00:00Z' };
-const ready: AppGateInput = { fontsLoaded: true, sessionLoaded: true, hasSession: true, entry: 'none', pendingInviteLoaded: true, snapshotProfile: '하루' };
+const ready: AppGateInput = { fontsLoaded: true, sessionLoaded: true, hasSession: true, entry: 'none', pendingInviteLoaded: true, snapshotProfile: '하루', passwordPrompt: false };
 
 it.each([
   ['fonts loading', { ...ready, fontsLoaded: false }, 'booting'],
@@ -51,4 +51,24 @@ it('V0-F01-AC-03 sends a signed-in person without an active space to the create-
 
 it('V0-F02-AC-10 resumes at the profile step when a joined member has not saved a name yet', () => {
   expect(appGate({ ...ready, entry: 'active', spaceId: 'space-1', snapshotProfile: null })).toEqual({ kind: 'needsProfile' });
+});
+
+it('V0-F16-AC-01 a new Apple account answers the password prompt before choosing how to start', () => {
+  expect(appGate({ ...ready, passwordPrompt: true }).kind).toBe('needsPasswordPrompt');
+  expect(appGate({ ...ready, passwordPrompt: undefined }).kind).toBe('booting');
+  expect(appGate({ ...ready, passwordPrompt: false }).kind).toBe('needsOnboardingChoice');
+});
+
+it('V0-F16-AC-03 an account with a space goes home; the sheet there handles the prompt', () => {
+  expect(appGate({ ...ready, entry: 'active', spaceId: 'space-1', passwordPrompt: true }).kind).toBe('active');
+  expect(appGate({ ...ready, entry: 'active', spaceId: 'space-1', passwordPrompt: undefined }).kind).toBe('active');
+});
+
+it('V0-F16-AC-05 a prompt that could not be read never blocks the app', () => {
+  expect(appGate({ ...ready, passwordPrompt: false }).kind).toBe('needsOnboardingChoice');
+});
+
+it('V0-F15-AC-08 a mail link session sets its new password first', () => {
+  expect(appGate({ ...ready, entry: 'active', spaceId: 'space-1', passwordRecovery: true }).kind).toBe('passwordRecovery');
+  expect(appGate({ ...ready, hasSession: false, passwordRecovery: true }).kind).toBe('signedOut');
 });

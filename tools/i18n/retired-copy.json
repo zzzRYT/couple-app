@@ -1,0 +1,87 @@
+{
+  "gen.refuse.action": {
+    "ko": "다시 말해 보기",
+    "en": "Try again",
+    "ja": "言い直す"
+  },
+  "preview.confirm.body": {
+    "ko": "두 사람의 방이 바뀌어요. 적용한 뒤에는 되돌릴 수 없어요. 적용하기 전에 미리 보기를 한 번 더 확인해 주세요.",
+    "en": "Your shared room will change for both of you. It can't be undone once applied, so take one more look at the preview first.",
+    "ja": "ふたりの部屋が変わります。反映した後は元に戻せません。反映する前に、もう一度プレビューを確認してください。"
+  },
+  "preview.confirm.title": {
+    "ko": "적용할까요?",
+    "en": "Apply it?",
+    "ja": "反映しますか？"
+  },
+  "preview.shared": {
+    "ko": "두 사람 모두에게 보이지만 방은 바뀌지 않았어요.",
+    "en": "You both can see it, but the room hasn't changed.",
+    "ja": "ふたりに表示されていますが、部屋はまだ変わっていません。"
+  },
+  "prompt.expiring": {
+    "ko": "{s}초 뒤에 풀려요",
+    "en": "Releases in {s}s",
+    "ja": "あと{s}秒で解除されます"
+  },
+  "prompt.idle.me.action": {
+    "ko": "다시 꾸미기",
+    "en": "Decorate again",
+    "ja": "もう一度飾る"
+  },
+  "prompt.start": {
+    "ko": "내가 꾸밀게요",
+    "en": "I'll decorate",
+    "ja": "私が飾る"
+  },
+  "prompt.start.help": {
+    "ko": "시작하면 이 방을 내가 맡아요. 상대는 대화와 미리 보기를 볼 수만 있어요.",
+    "en": "Once you start, you're in charge of the room. Your partner can only watch the conversation and preview.",
+    "ja": "始めると、あなたが部屋を担当します。パートナーは会話とプレビューを見るだけになります。"
+  },
+  "sys.asset.body": {
+    "ko": "빈 자리는 비워 두었어요. 연결이 좋아지면 자동으로 다시 불러와요.",
+    "en": "The spots are left empty. They reload automatically when your connection improves.",
+    "ja": "その場所は空けてあります。接続が良くなると自動で読み込み直します。"
+  },
+  "sys.asset.title": {
+    "ko": "일부 소품을 불러오지 못했어요",
+    "en": "Some items couldn't be loaded",
+    "ja": "一部の小物を読み込めませんでした"
+  },
+  "undo.body": {
+    "ko": "이 대화에서 방금 만든 변경을 취소하고 바로 앞 미리 보기로 돌아가요. 방은 아직 바뀌지 않았어요. 적용한 방은 되돌릴 수 없어요.",
+    "en": "This drops the change you just made in this conversation and goes back to the preview before it. The room hasn't changed. A room you already applied can't be undone.",
+    "ja": "この会話で作ったばかりの変更を取り消し、ひとつ前のプレビューに戻ります。部屋はまだ変わっていません。反映した部屋は元に戻せません。"
+  },
+  "undo.busy.body": {
+    "ko": "{name}님만 이 미리 보기를 되돌릴 수 있어요.",
+    "en": "Only {name} can undo this preview.",
+    "ja": "このプレビューを元に戻せるのは{name}さんだけです。"
+  },
+  "undo.busy.title": {
+    "ko": "{name}님이 꾸미는 중이에요",
+    "en": "{name} is decorating",
+    "ja": "{name}さんが飾っています"
+  },
+  "undo.confirm": {
+    "ko": "되돌리기",
+    "en": "Undo",
+    "ja": "元に戻す"
+  },
+  "undo.none.body": {
+    "ko": "이 대화에서 만든 변경이 아직 없어요. 이미 적용한 방은 되돌릴 수 없어요.",
+    "en": "There are no changes from this conversation yet. A room you already applied can't be undone.",
+    "ja": "この会話で作った変更はまだありません。すでに反映した部屋は元に戻せません。"
+  },
+  "undo.none.title": {
+    "ko": "되돌릴 변경이 없어요",
+    "en": "Nothing to undo",
+    "ja": "元に戻せる変更がありません"
+  },
+  "undo.title": {
+    "ko": "이전 미리 보기로 되돌릴까요?",
+    "en": "Go back to the previous preview?",
+    "ja": "前のプレビューに戻しますか？"
+  }
+}

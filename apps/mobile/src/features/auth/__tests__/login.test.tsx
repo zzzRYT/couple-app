@@ -10,14 +10,15 @@ function port(overrides: Partial<AuthPort> = {}): AuthPort {
 const product: AuthOptions = { apple: 'native', kakao: false, devEmail: false };
 const devBuild: AuthOptions = { ...product, devEmail: true };
 
-it('V0-F01-AC-01 offers only Sign in with Apple in product builds, with the intro and terms note: no email, Kakao hidden behind its flag', async () => {
-  const screen = await renderWithI18n(<LoginScreen auth={port()} lastUsed="apple" options={product} onDone={jest.fn()} onEmail={jest.fn()} />);
+it('V0-F01-AC-01 offers Sign in with Apple first and email second in product builds, with the intro and terms note: no code login, Kakao hidden behind its flag', async () => {
+  const screen = await renderWithI18n(<LoginScreen auth={port()} lastUsed="apple" options={product} onDone={jest.fn()} onEmail={jest.fn()} onEmailLogin={jest.fn()} />);
   expect(screen.getByText(screen.t('start.intro.title'))).toBeTruthy();
   expect(screen.getByText(screen.t('start.intro.terms'))).toBeTruthy();
   expect(screen.getByRole('button', { name: screen.t('login.apple') })).toBeTruthy();
   expect(screen.getByText(screen.t('onb.lastUsed'))).toBeTruthy();
   expect(screen.queryByRole('button', { name: screen.t('login.kakao') })).toBeNull();
-  expect(screen.queryByRole('button', { name: screen.t('login.email') })).toBeNull();
+  const buttons = screen.getAllByRole('button').map((button) => button.props.accessibilityLabel);
+  expect(buttons.indexOf(screen.t('login.apple'))).toBeLessThan(buttons.indexOf(screen.t('auth.email.entry')));
   expect(screen.queryByText(screen.t('login.brandNote'))).toBeNull();
 });
 

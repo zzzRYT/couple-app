@@ -1,6 +1,24 @@
 {
-  "status": "draft: G4 native review pending",
-  "generated": "pre-sync baseline; artifact version unknown; do not edit",
+  "status": "초안(원어민 검수 전)",
+  "generated": "Artifact 1793952106-add4; do not edit",
+  "keyStatus": {
+    "consent.title": "approved",
+    "consent.lead": "approved",
+    "consent.sent.label": "approved",
+    "consent.purpose.label": "approved",
+    "consent.purpose.body": "approved",
+    "consent.processor.label": "approved",
+    "consent.processor.body": "approved",
+    "consent.keep.label": "approved",
+    "consent.provider.keep": "approved",
+    "consent.couple.label": "approved",
+    "consent.agree": "approved",
+    "consent.later": "approved",
+    "consent.withdraw.title": "approved",
+    "consent.withdraw.body": "approved",
+    "consent.withdraw.done": "approved",
+    "consent.later.note": "approved"
+  },
   "strings": {
     "consent.title": "Room decorating is processed by AI overseas",
     "consent.lead": "When you ask to decorate, the information below is sent to an AI provider's servers overseas. Without consent, the day count and viewing the room still work.",
