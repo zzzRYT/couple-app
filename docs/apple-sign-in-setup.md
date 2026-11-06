@@ -1,6 +1,6 @@
 # Sign in with Apple 설정과 개발 빌드 테스트
 
-2026-10-27 소유자 결정으로 제품 로그인은 **OAuth만**, 그중 우선 **Sign in with Apple만** 연다. 카카오는 코드에 남아 있지만 `apps/mobile/src/config/auth.ts`의 `KAKAO_ENABLED = false`로 숨겨져 있고, 이메일 로그인은 제품에서 빠졌다. 이메일 코드 로그인은 **개발 빌드와 로컬 스택에서만** 테스트용으로 남겨 두었다(Apple ID 두 개 없이 두 기기를 시험하기 위한 가정이며, 원하지 않으면 지울 수 있다).
+2026-11-06 소유자 결정으로 **Sign in with Apple이 첫 번째 로그인**이고 이메일·비밀번호 로그인이 함께 있다(`docs/password-auth-operations.md`). 카카오는 코드에 남아 있지만 `apps/mobile/src/config/auth.ts`의 `KAKAO_ENABLED = false`로 숨겨져 있다. 이메일 코드 로그인은 **개발 빌드와 로컬 스택에서만** 테스트용으로 남겨 두었다(Apple ID 두 개 없이 두 기기를 시험하기 위한 가정이며, 원하지 않으면 지울 수 있다).
 
 ## 앱이 하는 일 (구현됨)
 
@@ -33,7 +33,7 @@
 1. Authentication → Sign In / Providers → **Apple** → Enable.
 2. **Client IDs**에 `com.jinjinstar.aroom.dev`를 넣는다. 이름 확인(G2) 뒤 운영 빌드를 만들 때 `com.jinjinstar.aroom`를 쉼표로 덧붙인다. (Expo Go로 시험하고 싶을 때만 `host.exp.Exponent`도 덧붙인다. 아래 참고.)
 3. Secret Key(OAuth) 칸은 비워 둔다(네이티브 전용).
-4. **Email 공급자**: 제품에서는 쓰지 않는다. 다만 개발 빌드의 이메일 테스트 로그인으로 원격 프로젝트를 시험하려면 Email 공급자를 켜 둬야 한다. 개발용 원격 프로젝트에서만 켜 두고, 운영 프로젝트를 따로 만들면 그쪽은 끈다. 로컬 스택(`supabase start`)은 Apple과 Email이 둘 다 켜져 있다(`supabase/config.toml`).
+4. **Email 공급자**: 비밀번호 로그인에 쓰므로 운영 프로젝트에서도 켠다(`docs/password-auth-operations.md`). 로컬 스택(`supabase start`)은 Apple과 Email이 둘 다 켜져 있다(`supabase/config.toml`).
 
 ## 3. 개발 빌드로 테스트하기
 

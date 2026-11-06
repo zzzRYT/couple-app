@@ -39,9 +39,10 @@ jest.mock('expo-notifications', () => ({
   cancelAllScheduledNotificationsAsync: jest.fn(async () => { mockScheduled.clear(); }),
 }));
 jest.mock('expo-router', () => ({ router: { back: jest.fn(), push: jest.fn() } }));
-const mockApp = { userId: ME as string | null, sessionLoaded: true, auth: { signOut: jest.fn(async () => undefined) }, client: { ackEnded: jest.fn(async () => undefined) }, supabase: {}, session: null, clearSessionExpired: jest.fn() };
+const mockApp = { userId: ME as string | null, sessionLoaded: true, password: { mailConnected: async () => false }, auth: { signOut: jest.fn(async () => undefined) }, client: { ackEnded: jest.fn(async () => undefined) }, supabase: {}, session: null, clearSessionExpired: jest.fn() };
 const mockSpace: { entry: string; spaceId: string | null; ended: unknown; reload: jest.Mock; reset: jest.Mock; state: { snapshot: ReturnType<typeof snapshotFixture> | null } } = { entry: 'active', spaceId: 'space-1', ended: null, reload: jest.fn(async () => undefined), reset: jest.fn(), state: { snapshot: snapshotFixture() } };
 jest.mock('../../../lib/AppContext', () => ({ useApp: () => mockApp }));
+jest.mock('../../auth/PasswordContext', () => ({ usePassword: () => ({ state: null, apple: true }) }));
 jest.mock('../SpaceContext', () => ({ useSpace: () => mockSpace }));
 jest.mock('../../../lib/reauth', () => ({ supabaseReauth: () => ({}) }));
 let mockDeleteScreenProps: { onFinished: (outcome: 'accepted' | 'signedOut') => Promise<void> } | null = null;

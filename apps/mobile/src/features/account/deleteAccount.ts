@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react';
 import type { Provider } from '../auth/authPort';
 import { ApiError } from '../../lib/errors';
 
-export type Reauth = { provider: Provider; authorizationCode?: string };
+export type Reauth = { provider: Provider | 'password'; authorizationCode?: string };
 export type ReauthResult = { kind: 'ok'; reauth: Reauth } | { kind: 'cancelled' } | { kind: 'error' };
 /** Re-authentication with the account's provider (lib/reauth.ts); the email path exists only in development builds. */
 export type ReauthPort = {
@@ -13,9 +13,10 @@ export type ReauthPort = {
 };
 /**
  * accepted: the server took the request (202, or 409 ACCOUNT_DELETING). signedOut: the session no longer works (401), so
- * sign out without claiming success. offline: the request never reached the server; nothing is queued for later.
+ * sign out without claiming success. appleRequired: the password was right but the server holds no Apple token to revoke.
+ * offline: the request never reached the server; nothing is queued for later.
  */
-export type SubmitResult = 'accepted' | 'signedOut' | 'reauthFailed' | 'offline' | 'failed';
+export type SubmitResult = 'accepted' | 'signedOut' | 'reauthFailed' | 'appleRequired' | 'offline' | 'failed';
 export async function submitDeletion(send: () => Promise<unknown>): Promise<SubmitResult> {
   try {
     await send();
@@ -24,6 +25,7 @@ export async function submitDeletion(send: () => Promise<unknown>): Promise<Subm
     if (!(error instanceof ApiError)) return 'offline';
     if (error.code === 'REAUTH_REQUIRED') return 'reauthFailed';
     if (error.code === 'ACCOUNT_DELETING') return 'accepted';
+    if (error.code === 'APPLE_CONFIRM_REQUIRED') return 'appleRequired';
     if (error.status === 401) return 'signedOut';
     return 'failed';
   }

@@ -4,7 +4,7 @@
 
 ## A. MVP 데모를 실제 환경에서 돌리기 위해 (지금 병렬로)
 
-로그인은 2026-10-27 결정대로 **Sign in with Apple만** 연다(카카오 보류, 이메일은 개발 빌드 전용 테스트 로그인).
+로그인은 2026-11-06 결정대로 **Sign in with Apple이 먼저이고 이메일·비밀번호가 함께** 있다(카카오 보류). 운영 단계는 `docs/password-auth-operations.md`.
 
 1. ~~Expo 계정과 EAS 프로젝트~~ — 완료: `@zzzryt/aroom` 생성·연결(projectId `99310e9a-4aee-4116-b9da-b6a26460f7e3`, `apps/mobile/src/config/identity.ts`).
 2. **Apple Developer Program 가입 → App ID `com.jinjinstar.aroom.dev` 등록(Sign In with Apple capability) → `eas device:create`로 iPhone 등록** — `docs/apple-sign-in-setup.md` 1장. 운영 ID `com.jinjinstar.aroom`은 이름 확인(G2) 전 등록 금지.

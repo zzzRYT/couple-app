@@ -25,8 +25,8 @@ function Legal() {
     </View>
   );
 }
-/** S02: product sign-in is Sign in with Apple; the email OTP flow exists only in development builds. */
-export function LoginScreen({ auth, lastUsed, onDone, onEmail, onBack, notice, quickLoginClient, options = defaultOptions }: { auth: AuthPort; lastUsed?: Provider; onDone: () => void; onEmail: (email: string) => void; onBack?: () => void; notice?: string; quickLoginClient?: ReturnType<typeof createSupabase>; options?: AuthOptions }) {
+/** V0-start-intro: Sign in with Apple first, then email and password (V0-08); the email OTP flow exists only in development builds. */
+export function LoginScreen({ auth, lastUsed, onDone, onEmail, onEmailLogin, onBack, notice, quickLoginClient, options = defaultOptions }: { auth: AuthPort; lastUsed?: Provider; onDone: () => void; onEmail: (email: string) => void; onEmailLogin?: () => void; onBack?: () => void; notice?: string; quickLoginClient?: ReturnType<typeof createSupabase>; options?: AuthOptions }) {
   const color = useAppColor();
   const { t } = useTranslation();
   const { emphasis } = useType();
@@ -75,6 +75,7 @@ export function LoginScreen({ auth, lastUsed, onDone, onEmail, onBack, notice, q
         </View>}
         {options.apple === 'web' && <ProviderButton provider="apple" highlighted={lastUsed === 'apple'} onPress={() => void signIn('apple')} />}
         {options.kakao && <ProviderButton provider="kakao" highlighted={lastUsed === 'kakao'} onPress={() => void signIn('kakao')} />}
+        {onEmailLogin && <Button label={t('auth.email.entry')} variant="secondary" onPress={onEmailLogin} />}
         {/* Development builds only (EXPO_PUBLIC_DEV_EMAIL_LOGIN); never part of the product sign-in. */}
         {options.devEmail && <Button label={t('login.email')} variant="secondary" icon="mail" onPress={() => setState({ kind: 'email', invalid: false, sending: false, failed: false })} />}
       </View>

@@ -8,8 +8,11 @@ import { useNow } from '../../lib/useNow';
 import { useMilestone } from '../../features/milestone/useMilestone';
 import { useTranslation } from 'react-i18next';
 import { formatAnniversary } from '../../lib/dday';
+import { usePassword } from '../../features/auth/PasswordContext';
+import { SetPasswordSheet } from '../../features/auth/SetPasswordFlow';
 export default function HomeRoute() {
   const { client, userId } = useApp();
+  const { shouldPrompt, markPromptSeen } = usePassword();
   const { t, i18n } = useTranslation(); const [partnerEdited, setPartnerEdited] = useState<string | null>(null);
   const { state, refresh, spaceId, inviteAfterActivation } = useSpace();
   const milestone = useMilestone(spaceId, userId, !state.offline && state.status !== 'error', client, 'home', state.offline, state.snapshot?.space.updatedAt ?? '');
@@ -38,5 +41,8 @@ export default function HomeRoute() {
     void SecureStore.getItemAsync(`v0.connected.seen.${spaceId}.${userId}`).then((seen) => { if (active && !seen) router.push('/connected'); });
     return () => { active = false; };
   }, [spaceId, userId, memberCount, state.offline, inviteAfterActivation]);
-  return <V0HomeScreen state={state} now={useNow()} onRefresh={() => void refresh()} onAnniversaries={() => router.navigate('/anniversaries')} onOpenInvite={() => router.push('/invite')} celebration={milestone.celebration} onSeen={() => { if (milestone.celebration) void milestone.seen(milestone.celebration); }} partnerEdited={partnerEdited} onHidePartnerEdited={hidePartnerEdited} seenKeys={seenKeys} seenReady={seenReady} onLocalSeen={(key) => { if (!seenKey) return; const next = [...seenKeys.filter((entry) => entry !== key), key].slice(-50); setSeenKeys(next); void SecureStore.setItemAsync(seenKey, JSON.stringify(next)); }} onOccurrence={(item) => router.push({ pathname: '/anniversary/[key]', params: { key: encodeURIComponent(item.key) } })} />;
+  return <>
+    <V0HomeScreen state={state} now={useNow()} onRefresh={() => void refresh()} onAnniversaries={() => router.navigate('/anniversaries')} onOpenInvite={() => router.push('/invite')} celebration={milestone.celebration} onSeen={() => { if (milestone.celebration) void milestone.seen(milestone.celebration); }} partnerEdited={partnerEdited} onHidePartnerEdited={hidePartnerEdited} seenKeys={seenKeys} seenReady={seenReady} onLocalSeen={(key) => { if (!seenKey) return; const next = [...seenKeys.filter((entry) => entry !== key), key].slice(-50); setSeenKeys(next); void SecureStore.setItemAsync(seenKey, JSON.stringify(next)); }} onOccurrence={(item) => router.push({ pathname: '/anniversary/[key]', params: { key: encodeURIComponent(item.key) } })} />
+    <SetPasswordSheet visible={!!shouldPrompt} onLater={() => void markPromptSeen()} onCreate={() => { void markPromptSeen(); router.push('/settings/set-password'); }} />
+  </>;
 }

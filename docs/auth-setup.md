@@ -1,6 +1,6 @@
 # Auth setup
 
-**Owner decision (2026-10-27): product sign-in is OAuth only, Sign in with Apple first.** Kakao stays in the code behind `KAKAO_ENABLED = false` (`apps/mobile/src/config/auth.ts`); email OTP was removed from the product login.
+**Owner decision (2026-11-06): Sign in with Apple stays first, and email + password is added** (boards V0-08, V0-09). Passwords are Supabase Auth hashes only and go through the `auth-password` function; operations, mail and the App Review account are in `docs/password-auth-operations.md`. Kakao stays in the code behind `KAKAO_ENABLED = false` (`apps/mobile/src/config/auth.ts`); email OTP is not a product login.
 
 - **Apple (product)**: native sheet on iOS (`expo-apple-authentication`) exchanged with Supabase `signInWithIdToken` using a hashed nonce. Supabase needs only the bundle ids in the Apple provider's Client IDs; no Services ID or `.p8` key for the native flow. Step-by-step owner guide (Korean): `docs/apple-sign-in-setup.md`.
 - **Android**: no Apple button for now. Web OAuth for Apple needs a Services ID and signing secret and is behind `APPLE_WEB_OAUTH_ENABLED = false`.
