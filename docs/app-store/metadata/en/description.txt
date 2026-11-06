@@ -1,0 +1,22 @@
+Aroom is a D+Day app for two people counting their days together.
+Enter the day you got together, invite your partner, and both phones show the same D+Day and anniversaries.
+
+D+Day
+Counts from your start date as Day 1, so you always know what day you are on.
+
+Anniversaries
+Works out 50, 100, 150, 200 and 300 days and every yearly anniversary for you. Your birthdays and seasonal days such as Christmas sit in the same list.
+
+Your own days
+Add a day that is just yours with a title, date and memo. Repeat it every year if you like. Your partner sees it too.
+
+Reminders
+Get a reminder on the day and an early reminder one day, three days or a week before. You choose the time.
+
+Widgets
+See your D+Day and what is coming up on your Home Screen and Lock Screen without opening the app.
+
+Getting started
+Aroom is made for two. Sign in with Apple, then one of you creates an 8-character invite code and the other enters it to connect.
+
+Available in Korean, English and Japanese, with dark mode.

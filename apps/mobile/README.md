@@ -15,20 +15,7 @@ Drafts for the owner to paste or confirm in App Store Connect (ASC) for the `.de
 
 ### App Privacy answers (V0)
 
-Collected, **linked to the user**, **not used for tracking**, purpose **App Functionality** for every row:
-
-| ASC category → type | What it is in the app | Notes |
-|---|---|---|
-| Contact Info → Name | the display name the person types (1–20 characters), shown to the partner | not read from the Apple or Kakao profile |
-| Contact Info → Email Address | the address the sign-in provider returns, kept as the login identifier in Supabase Auth | **not in the H06 default list; added here** because Supabase Auth stores it. With Apple it can be a private relay address, and it may be empty. Owner: keep this row unless the Auth data is changed to not keep it |
-| User Content → Other User Content | start date, time zone, custom anniversaries (title, memo, date, repeat), birthday month and day | the optional birth year is stored too but only its owner can read it |
-| Identifiers → User ID | the account id (a random UUID) | |
-
-Not collected, answer **No** for each: Location, Contacts, Health & Fitness, Financial Info, Sensitive Info, Photos or Videos, Audio, Browsing or Search History, Purchases, Usage Data (product interaction, advertising), Diagnostics (crash and performance), Other Data. Tracking: **No**; no third-party advertising or analytics SDK is in the app (checked against `apps/mobile/package.json`: no analytics, crash reporter, ads or attribution package; there is no push token because reminders are scheduled locally on the device).
-
-Third parties to mention when ASC or the policy asks: Supabase (database, auth and realtime hosting) and Apple (sign-in). OTA updates use Expo (EAS Update). Whether EAS Update's request metadata counts as a data type is the owner's call.
-
-Privacy Policy URL to enter: `https://aroom.jinjinstar.com/privacy/` (ko), `/en/privacy/`, `/ja/privacy/`. The pages are still drafts, see the checklist below.
+See [docs/app-store/README.md](../../docs/app-store/README.md#app-privacy). The same answers apply to the `.dev` record and to the production record.
 
 ### Export compliance
 
@@ -70,19 +57,8 @@ Korean: `아룸(Aroom)은 두 사람이 함께한 날(D+Day)과 기념일을 같
 
 English: `Aroom shows a couple the days they have been together (D+Day) and their anniversaries on both phones. Connect with an invite link, then use reminders and widgets. This is a private test build shared with family and friends.`
 
-Feedback email: use `APP_IDENTITY.supportEmail` once it is set (`apps/mobile/src/config/identity.ts`, A-23). It is `null` today, so leave the ASC feedback email on the owner's personal address until then. Internal testers need neither Beta App Review nor a public description; external testing is out of scope for V0 (H01 §10).
+Feedback email: `jinjinstar3@gmail.com` (`APP_IDENTITY.supportEmail`). Internal testers need neither Beta App Review nor a public description; external testing is out of scope for V0 (H01 §10).
 
-### Owner checklist: `site/` pages that still describe the old product
+### App Store submission
 
-The pages are drafts marked "pending legal review". Nothing below was edited. Each item says what to change in all of `site/privacy/`, `site/en/privacy/`, `site/ja/privacy/` (and the delete-account pages where noted).
-
-- [ ] **Information processed**: the sentence lists shared room content, home cover photos, generated decorations, prompts, reports and generation attempts. V0 handles: login identifier, display name, birthday month and day (optional year, readable only by its owner), start date, time zone, language and appearance settings, custom anniversaries, invite codes.
-- [ ] **AI processing section**: V0 sends nothing to an AI provider. Remove it, or keep it only if the room/prompt features return.
-- [ ] **Retention and deletion**: the page says home cover photos, decorations, prompts and generation attempts are deleted. For V0, list what is deleted with the space (the start date, custom anniversaries and member links). The server's 30-day wait after ending or disconnecting (`purge_after_days = 30`) and the immediate purge on account deletion are unchanged; make the page match the in-app wording. Drop the "24 hours for replaced cover photos" sentence.
-- [ ] **On-device data**: add that reminders are scheduled on the device, and that widget data and a cached copy of the space are stored on the device and removed on logout, disconnect, partner-ended and account deletion.
-- [ ] **Delete account page** (`site/delete-account/`, `/en/`, `/ja/`): replace "방, 홈 커버 사진, 생성 장식, 프롬프트 기록" and the AI-consent-record wording with the V0 data above. Check the path described (Settings → "계정 삭제") still matches the settings screen.
-- [ ] **Third parties and transfers**: name Supabase and Apple (and Kakao only if sign-in is turned on), and any overseas transfer legal requires.
-- [ ] **Support email**: the pages say "[address coming soon]". Set `supportEmail` in `site/contact.js` and `APP_IDENTITY.supportEmail` in one change (A-23); the app's "Contact us" row appears when the latter is set.
-- [ ] **Terms of Use**: there is no page, so the settings "Terms of Use" row stays disabled. Decide whether to publish terms; the row needs a URL from the owner (H06 §9).
-- [ ] **Licences**: the fonts bundled in the app are OFL-licensed and the V0 settings screen has no licences row. Ask legal whether the app must show them.
-- [ ] Remove the "draft — pending legal review" banners and the `[pending legal review]` placeholders only after legal signs off.
+Metadata, age rating, privacy answers, review notes and the review path are in [docs/app-store/README.md](../../docs/app-store/README.md). The `site/` pages describe V0 as of that document; they stay drafts until the owner confirms the wording.
