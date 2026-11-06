@@ -41,10 +41,12 @@ test('every metadata language has the same fields', async () => {
   for (const files of rest) assert.deepEqual(files, first);
 });
 
-test('review notes fit and name the invite placeholders', async () => {
+test('review notes fit, name the demo placeholders and quote the app sign-in button', async () => {
   const notes = await read('docs/app-store/review-notes.txt');
   assert.ok(bytes(notes) <= 4000);
-  for (const placeholder of ['{{INVITE_CODE}}', '{{INVITE_EXPIRES}}']) assert.ok(notes.includes(placeholder), placeholder);
+  for (const placeholder of ['{{DEMO_EMAIL}}', '{{DEMO_PASSWORD}}']) assert.ok(notes.includes(placeholder), placeholder);
+  const copy = JSON.parse(await read('apps/mobile/src/i18n/locales/v0/en-US.json'));
+  assert.ok(notes.includes(`"${copy['auth.email.entry']}"`));
 });
 
 test('the site and the app carry the same support email', async () => {
