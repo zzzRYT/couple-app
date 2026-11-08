@@ -15,7 +15,7 @@
 | 빌드 | `APP_VARIANT` | iOS 번들 ID | 상태 |
 |---|---|---|---|
 | `development`, `development-simulator`, `preview` | development / preview | `com.jinjinstar.aroom.dev` | **지금 Apple에 등록해도 되는 ID** |
-| `production` | production | `com.jinjinstar.aroom` | 자리표시. 이름 확인(G2) 전에는 등록하지 않는다 |
+| `production` | production | `com.jinjinstar.aroom` | 2026-11-06 소유자 지시로 개인 팀 `43ZASDF2J7`에 등록함. 이름·상표 확인(G2)은 아직 열려 있다 |
 
 값은 `apps/mobile/src/config/identity.ts` 한 곳에만 있고 `app.config.ts`가 `APP_VARIANT`로 고른다(`eas.json`의 빌드 프로필이 넣어 준다). EAS 프로젝트는 `@zzzryt/aroom`(projectId `99310e9a-4aee-4116-b9da-b6a26460f7e3`)으로 만들어 연결해 두었다.
 

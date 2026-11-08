@@ -7,7 +7,7 @@
 로그인은 2026-11-06 결정대로 **Sign in with Apple이 먼저이고 이메일·비밀번호가 함께** 있다(카카오 보류). 운영 단계는 `docs/password-auth-operations.md`.
 
 1. ~~Expo 계정과 EAS 프로젝트~~ — 완료: `@zzzryt/aroom` 생성·연결(projectId `99310e9a-4aee-4116-b9da-b6a26460f7e3`, `apps/mobile/src/config/identity.ts`).
-2. **Apple Developer Program 가입 → App ID `com.jinjinstar.aroom.dev` 등록(Sign In with Apple capability) → `eas device:create`로 iPhone 등록** — `docs/apple-sign-in-setup.md` 1장. 운영 ID `com.jinjinstar.aroom`은 이름 확인(G2) 전 등록 금지.
+2. **Apple Developer Program 가입 → App ID `com.jinjinstar.aroom.dev` 등록(Sign In with Apple capability) → `eas device:create`로 iPhone 등록** — `docs/apple-sign-in-setup.md` 1장. 운영 ID `com.jinjinstar.aroom`, `.widgets`, `group.com.jinjinstar.aroom`은 2026-11-06 소유자 지시로 개인 팀 `43ZASDF2J7`에 등록했다. 이름·상표 확인(G2)은 아직 열려 있다.
 3. **Supabase 원격 프로젝트 만들기**(개인 계정, Seoul, 무료) → `supabase link` → `db push` → 카탈로그 시드 1회 → `functions deploy` → `lifecycle-sweep` 하루 1회 예약(공간 종료 30일 뒤 완전 삭제도 이 함수가 하므로 **아래 C 확인 뒤에** 걸 것) — `docs/remote-supabase-setup.md`.
 4. **Supabase Apple 공급자 켜기**, Client IDs = `com.jinjinstar.aroom.dev` — `docs/apple-sign-in-setup.md` 2장. 개발 빌드의 이메일 테스트 로그인을 원격에서 쓰려면 개발용 프로젝트에서만 Email 공급자를 켜 둔다.
 5. **서버 비밀**: `supabase secrets set INVITE_CODE_PEPPER=…`, `supabase secrets set ANTHROPIC_API_KEY=…`(Claude Max 포함 크레딧에 연결된 Console API 키, 전용 workspace에 지출 한도).
@@ -20,7 +20,7 @@
 `specs/001-couple-prompt-todo/tasks.md` Phase 14(T167~T184)의 사람 확인 항목이다.
 
 - **G1 법률 검토**(T167): 만 14세 문구, 해외 AI 처리 동의와 보관 기간(`[법무 확인 후 입력]` 자리), 사진·알림·UGC·AI 오류 가능 고지.
-- **G2 이름 확인**(T168): 상표 Aroom/아룸 (이전 이름 Mopiru/모피루), 스토어 이름, 도메인 `aroom.jinjinstar.com`, bundle ID. 확인 전에는 스토어에 등록하지 않는다.
+- **G2 이름 확인**(T168): 상표 Aroom/아룸 (이전 이름 Mopiru/모피루), 스토어 이름, 도메인 `aroom.jinjinstar.com`, bundle ID. 아직 열려 있다. App ID와 App Store Connect 레코드는 소유자 지시로 먼저 등록했고(위 A의 2번), 등록이 이 확인을 대신하지 않는다.
 - **G3 스토어 규칙**(T169): 글자 수·연령 등급 설문·"연결 끊기 + 신고"·알림 심사 메모.
 - **G4 원어민 검수**(T170): 영어·일본어 문구 전체.
 - **G5 카카오 공식 SDK/에셋**(T171): 카카오를 다시 켤 때 자리표시 버튼 교체(Apple은 이미 공식 버튼).

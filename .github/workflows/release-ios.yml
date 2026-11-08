@@ -5,10 +5,10 @@ on:
       profile:
         description: EAS build profile
         type: choice
-        options: [testflight]
+        options: [testflight, production]
         default: testflight
       submit:
-        description: Submit to TestFlight after a successful build
+        description: Upload to App Store Connect (the profile's record) after a successful build
         type: boolean
         default: true
 concurrency:
@@ -36,6 +36,8 @@ jobs:
           token: '${{ secrets.EXPO_TOKEN }}'
       - name: Check submit configuration
         if: inputs.submit
-        run: node -e "const j=require('./eas.json');if(j.submit.testflight.ios.ascAppId==='ASC_APP_ID_REQUIRED'){console.error('Set submit.testflight.ios.ascAppId in apps/mobile/eas.json (owner step)');process.exit(1)}"
+        env:
+          PROFILE: ${{ inputs.profile }}
+        run: node -e "const p=process.env.PROFILE;const id=require('./eas.json').submit[p]?.ios?.ascAppId;if(!id||id==='ASC_APP_ID_REQUIRED'){console.error('Set submit.'+p+'.ios.ascAppId in apps/mobile/eas.json (owner step)');process.exit(1)}"
       - name: Build (and submit on success)
-        run: eas build --platform ios --profile ${{ inputs.profile }} --non-interactive --wait ${{ inputs.submit && '--auto-submit-with-profile testflight' || '' }}
+        run: eas build --platform ios --profile ${{ inputs.profile }} --non-interactive --wait ${{ inputs.submit && format('--auto-submit-with-profile {0}', inputs.profile) || '' }}

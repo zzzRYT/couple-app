@@ -7,7 +7,7 @@ const easConfig = eas as unknown as {
   submit?: Record<string, unknown>;
 };
 
-it('keeps the placeholder bundle identifier in identity.ts only', () => {
+it('keeps the bundle identifier in identity.ts only', () => {
   const root = join(__dirname, '../../..');
   const identifier = ['com', 'jinjinstar', 'aroom'].join('.');
   const matches: string[] = [];
@@ -23,10 +23,9 @@ it('keeps the placeholder bundle identifier in identity.ts only', () => {
   expect(matches).toEqual(['src/config/identity.ts']);
 });
 
-it('V0-F14-AC-06 never stores a production variant in a store-signed profile', () => {
-  const storeProfiles = Object.entries(easConfig.build).filter(([, profile]) => profile.distribution === 'store');
-  for (const [name, profile] of storeProfiles) {
-    expect(profile.env?.APP_VARIANT).not.toBe('production');
-    expect(easConfig.submit?.[name]).toBeDefined();
-  }
+it('V0-F14-AC-06 keeps the production variant on the production profile only', () => {
+  const profiles = Object.entries(easConfig.build);
+  expect(profiles.filter(([, profile]) => profile.env?.APP_VARIANT === 'production').map(([name]) => name)).toEqual(['production']);
+  for (const [name] of profiles.filter(([, profile]) => profile.distribution === 'store')) expect(easConfig.submit?.[name]).toBeDefined();
+  expect(Object.keys(easConfig.submit ?? {}).sort()).toEqual(['production', 'testflight']);
 });

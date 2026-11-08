@@ -53,7 +53,7 @@
 3. **V0-F14-AC-03** — **Given** preview 채널 빌드가 설치된 폰, **When** 오너가 `ota` 워크플로로 같은 runtime의 JS 변경을 preview 채널에 게시하고 앱을 두 번 다시 열면, **Then** 바뀐 문구가 보인다. native 변경(위젯 extension·권한·플러그인)은 runtime이 달라 OTA로 적용되지 않는다.
 4. **V0-F14-AC-04** — **Given** preview에서 확인한 업데이트, **When** 오너가 같은 업데이트 그룹을 production 채널로 승격하면, **Then** production 채널 빌드가 그 업데이트를 받는다. 롤백은 이전 그룹 재게시로 한다.
 5. **V0-F14-AC-05** — **Given** 저장소, **When** 비밀 정보를 찾아보면, **Then** Apple·EAS 토큰과 키는 저장소·로그에 없고 GitHub Actions secret과 EAS credentials에만 있다.
-6. **V0-F14-AC-06** — **Given** production 이름·bundle id가 정해지지 않은 상태, **When** 어떤 워크플로를 돌려도, **Then** production App ID로 등록·제출하지 않는다(기존 `identity.ts`의 G2 규칙).
+6. **V0-F14-AC-06** — **Given** production App ID `com.jinjinstar.aroom`이 소유자 지시로 개인 팀에 등록되어 있고(2026-11-06) 이름·상표 확인(G2)은 아직 열려 있는 상태, **When** push·PR·예약으로 워크플로가 돌아도, **Then** production으로 빌드·제출하지 않는다. production 경로는 오너가 `release-ios`를 `profile=production`으로 직접 실행할 때만 쓴다(`identity.ts`의 G2 메모).
 
 ---
 
