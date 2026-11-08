@@ -1,6 +1,6 @@
 # Aroom public site
 
-Static HTML, CSS and a small shared contact script; no build step. The pages describe V0 (D+Day, anniversaries, reminders, widgets). The privacy and deletion copy is a draft: the owner confirms the wording and the operator line before App Review, then removes the draft banners. `tools/tests/store-readiness.test.mjs` keeps the pages free of room and AI wording.
+Static HTML, CSS and a small shared contact script; no build step. The pages describe V0 (D+Day, anniversaries, reminders, widgets). The privacy and deletion copy carries no draft banner; the owner still confirms the wording and the operator line before App Review. `tools/tests/store-readiness.test.mjs` keeps the pages free of room and AI wording.
 
 ## Cloudflare Pages setup
 
