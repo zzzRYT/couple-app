@@ -265,6 +265,7 @@ export type V0Key =
   | "set.security.title"
   | "set.account.email"
   | "set.account.logout"
+  | "set.account.logout.body"
   | "set.account.disconnect"
   | "set.account.delete"
   | "set.disconnect.title"

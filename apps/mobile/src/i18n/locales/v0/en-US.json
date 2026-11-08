@@ -264,6 +264,7 @@
   "set.security.title": "Sign-in & security",
   "set.account.email": "Signed in with email",
   "set.account.logout": "Sign out",
+  "set.account.logout.body": "Signing out doesn't change your space.",
   "set.account.disconnect": "Disconnect",
   "set.account.delete": "Delete account",
   "set.disconnect.title": "Disconnect?",

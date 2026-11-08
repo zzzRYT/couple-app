@@ -264,6 +264,7 @@
   "set.security.title": "ログイン・セキュリティ",
   "set.account.email": "メールでサインイン中",
   "set.account.logout": "ログアウト",
+  "set.account.logout.body": "ログアウトしても、スペースはそのままです。",
   "set.account.disconnect": "つながりを解除",
   "set.account.delete": "アカウントを削除",
   "set.disconnect.title": "つながりを解除しますか？",
