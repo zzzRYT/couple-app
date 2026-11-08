@@ -316,6 +316,7 @@ sections: 이 화면의 문구
 | `set.security.title` | 로그인·보안 | Sign-in & security | ログイン・セキュリティ | 재사용 · 기존 키 set.security.title |
 | `set.account.email` | 이메일로 로그인함 | Signed in with email | メールでサインイン中 | 신규 · EN·JA 초안 |
 | `set.account.logout` | 로그아웃 | Sign out | ログアウト | 재사용 · 기존 키 set.logout |
+| `set.account.logout.body` | 로그아웃해도 공간은 그대로예요. | Signing out doesn't change your space. | ログアウトしても、スペースはそのままです。 | 신규 · EN·JA 초안 · V0 전용(set.logout.body는 방을 언급) |
 | `set.account.disconnect` | 연결 끊기 | Disconnect | つながりを解除 | 신규 · EN·JA 초안 |
 | `set.account.delete` | 계정 삭제 | Delete account | アカウントを削除 | 재사용 · 기존 키 set.account.delete |
 | `set.disconnect.title` | 연결을 끊을까요? | Disconnect? | つながりを解除しますか？ | 신규 · EN·JA 초안 |

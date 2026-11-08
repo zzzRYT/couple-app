@@ -31,6 +31,6 @@ export function V0SettingsScreen({ snapshot, offline, version, apple = true, sup
     <SectionLabel text={t('set.section.account')} /><Card><ListRow label={t('set.security.title')} value={t(apple ? 'set.account.apple' : 'set.account.email')} disabled={offline} onPress={() => navigate('security')} /><ListRow label={t('set.account.logout')} onPress={() => setConfirm(true)} /><ListRow label={t('set.account.disconnect')} danger disabled={offline} onPress={() => navigate('disconnect')} /><ListRow label={t('set.account.delete')} danger disabled={offline} onPress={() => navigate('delete-account')} /></Card>
     {error && <Banner kind="danger" text={t('state.error.title')} />}
     <TimeZoneSheet visible={zone} timeZone={snapshot.space.timeZone} disabled={busy || offline} onClose={() => setZone(false)} onSelect={(value) => void run(() => onZone(value))} />
-    <Dialog visible={confirm} title={t('set.logout.title')} body={t('set.logout.body')} onClose={() => setConfirm(false)}><Button label={t('set.account.logout')} variant="danger" loading={busy} onPress={() => void run(onLogout)} /><Button label={t('common.cancel')} variant="ghost" onPress={() => setConfirm(false)} /></Dialog>
+    <Dialog visible={confirm} title={t('set.logout.title')} body={t('set.account.logout.body')} onClose={() => setConfirm(false)}><Button label={t('set.account.logout')} variant="danger" loading={busy} onPress={() => void run(onLogout)} /><Button label={t('common.cancel')} variant="ghost" onPress={() => setConfirm(false)} /></Dialog>
   </ScrollView>;
 }
