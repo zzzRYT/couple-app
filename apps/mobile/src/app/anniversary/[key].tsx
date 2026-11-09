@@ -34,5 +34,5 @@ export default function AnniversaryDetailRoute() {
       Alert.alert(t('edit.save.err'));
     });
   } } ]);
-  return <AnniversaryDetail item={item} custom={custom} today={view.today} startDate={snapshot.space.anniversaryDate} partner={name} userId={snapshot.me.userId} notify={notify} notifyDefault={notifyDefaultLabel(prefs, i18n.language, t)} offline={state.offline} onBack={() => router.back()} onEdit={() => router.push({ pathname: '/anniversary-edit', params: { id: custom?.id } })} onDelete={remove} onSettings={() => router.push('/settings/notifications')} onMe={() => router.push('/settings/me')} />;
+  return <AnniversaryDetail item={item} custom={custom} today={view.today} startDate={snapshot.space.anniversaryDate} timeZone={snapshot.space.timeZone} partner={name} userId={snapshot.me.userId} notify={notify} notifyDefault={notifyDefaultLabel(prefs, i18n.language, t)} offline={state.offline} syncedAt={state.lastSyncedAt} onBack={() => router.back()} onEdit={() => router.push({ pathname: '/anniversary-edit', params: { id: custom?.id } })} onDelete={remove} onSettings={() => router.push('/settings/notifications')} onMe={() => router.push('/settings/me')} />;
 }
