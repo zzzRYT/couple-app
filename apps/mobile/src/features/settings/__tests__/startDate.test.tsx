@@ -42,6 +42,16 @@ it('V0-F12-AC-03 previews the day count, asks for confirmation and applies the d
   expect(refresh).toHaveBeenCalled();
 });
 
+it('V0-F12-AC-03 picks a new start date in the wheel sheet and applies it on 완료', async () => {
+  open();
+  const screen = await renderWithI18n(<StartDateRoute />);
+  await fireEvent.press(screen.getByRole('button', { name: `${screen.t('start.date.label')}, 29${screen.t('space.day')}` }));
+  await fireEvent.press(screen.getByTestId('wheel-day-30'));
+  expect(screen.getByText(screen.t('set.start.preview', { n: 3 }))).toBeTruthy();
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('common.done') }));
+  expect(screen.getByText(screen.t('set.start.preview', { n: 2 }))).toBeTruthy();
+});
+
 it('V0-F12-AC-03 refuses a start date after today', async () => {
   open();
   mockNow.mockReturnValue('2025-01-01T03:00:00Z');

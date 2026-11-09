@@ -83,7 +83,7 @@ export function DateField({ value, onChange, maxYear, error, renderPreview }: { 
     <>
       <View style={{ flexDirection: 'row', gap: tokens.spacing[1] }}>
         {fieldOrder(i18n.language).map((field) => (
-          <DateSegment key={field} field={field} value={value[field]} error={error} testID={`date-${field}`} label={`${t('a11y.dateField')}, ${fieldText(field, value[field], i18n.language, t(unitKey[field]))}`} onPress={() => { setDraft(value); setOpen(true); }} />
+          <DateSegment key={field} field={field} value={value[field]} error={error} testID={`date-${field}`} label={`${t('start.date.label')}, ${fieldText(field, value[field], i18n.language, t(unitKey[field]))}`} onPress={() => { setDraft(value); setOpen(true); }} />
         ))}
       </View>
       <BottomSheet visible={open} title={t('space.date.pick')} onClose={() => setOpen(false)}>
