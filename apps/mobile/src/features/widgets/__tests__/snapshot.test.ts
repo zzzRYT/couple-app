@@ -102,11 +102,11 @@ describe('buildWidgetSnapshot', () => {
     expect(Object.keys(snapshot).sort()).toEqual(['entries', 'locale', 'schemaVersion', 'state', 'strings', 'writtenAt']);
     expect(snapshot.entries).toEqual([{ date: '2026-11-02', showAt: NOW }]);
   });
-  it('pending has a D+N and no partner, so no birthdays', async () => {
+  it('pending has a D+N and no partner, so no partner birthday', async () => {
     const snapshot = await build(space({ partner: null }, 'pending'));
     expect(snapshot.names).toEqual({ me: '도담', partner: null });
     expect(snapshot.entries[0]!.dayCount).toBe(492);
-    expect(snapshot.entries.flatMap((entry) => entry.next!).some((item) => item.kind === 'birthday')).toBe(false);
+    expect(snapshot.entries.flatMap((entry) => entry.next!).some((item) => item.key.startsWith('bday:partner'))).toBe(false);
   });
   it('leaves a name that is not set yet out of the names', async () => {
     const snapshot = await build({ ...space(), names: { me: null, partner: '하루' } } as WidgetData);

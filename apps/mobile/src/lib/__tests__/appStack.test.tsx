@@ -65,3 +65,10 @@ it('keeps invite links reachable before sign-in', async () => {
   await renderRouter(routes('signedOut'), { initialUrl: '/i/ABCD2345' });
   expect(shown('i/[code]')).toBeTruthy();
 });
+
+it('V0-NF-06 keeps the V1 end-space screen behind its flag, like report', async () => {
+  await renderRouter(routes('active'), { initialUrl: '/settings/end-space' });
+  expect(screen.queryByText('route:settings/end-space')).toBeNull();
+  await renderRouter(routes('active'), { initialUrl: '/settings/disconnect' });
+  expect(shown('settings/disconnect')).toBeTruthy();
+});

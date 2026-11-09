@@ -1,6 +1,6 @@
 # V0 copy (ko / en / ja) — all V0 copy keys
 
-Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1794222837-1921`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
+Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1794227595-8638`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
 
 **Brand names**: the boards draw the app as 모피루 / Mopiru / モピル and the mascot as 모피 / Mopi / モピ. The owner has since decided (spec D-08, 2026-11-02): app **아룸 / Aroom / アルーム**, mascot **아루미 / Aroomi / アルーミ**. The table below keeps the board text verbatim; in the app only `app.name` and `mascot.name` hold the names, every other value references them with i18next nesting, and the Korean particle after 아룸 becomes 을/이/은/과/으로 (e.g. `widget.none.title` → `$t(app.name)을 시작해요`). See `../H02-v0-shell-home.md` §6.
 
@@ -65,6 +65,7 @@ sections: 이 화면의 문구
 | `auth.apple` | Apple로 계속하기 | Continue with Apple | Appleで続ける | 재사용 · 기존 키 login.apple |
 | `auth.email.entry` | 이메일로 로그인 | Sign in with email | メールでログイン | 신규 · EN·JA 초안 |
 | `start.intro.terms` | 계속하면 이용약관과 개인정보 처리방침에 동의하게 돼요. | By continuing, you agree to the Terms of Use and Privacy Policy. | 続けると、利用規約とプライバシーポリシーに同意したことになります。 | 신규 · EN·JA 초안 |
+| `onb.age` | 만 14세 이상만 사용할 수 있어요. | You must be 14 or older to use Mopiru. | ご利用は14歳以上の方に限ります。 | 재사용 · 기존 키 onb.age |
 | `start.choose.title` | 어떻게 시작할까요? | How would you like to start? | どうやって始めますか？ | 신규 · EN·JA 초안 |
 | `start.choose.new.title` | 새로 시작하기 | Start fresh | 新しく始める | 신규 · EN·JA 초안 |
 | `start.choose.new.body` | 사귄 날을 넣고 상대를 초대해요 | Enter your start date and invite your partner | 付き合った日を入れて相手を招待します | 신규 · EN·JA 초안 |
@@ -137,6 +138,9 @@ sections: 이 화면의 문구
 | `home.pending.chip` | 상대를 기다리는 중 | Waiting for your partner | 相手を待っています | 변경 · 기존 키 main.chip.waiting |
 | `home.pending.title` | 상대가 코드를 넣으면 연결돼요 | You'll connect when your partner enters the code | 相手がコードを入力するとつながります | 신규 · EN·JA 초안 |
 | `home.pending.hint` | 연결되면 상대의 생일과 직접 추가한 기념일도 함께 보여요. | Once connected, your partner's birthday and your custom days show up too. | つながると、相手の誕生日や追加した記念日も表示されます。 | 신규 · EN·JA 초안 |
+| `invite.expired.title` | 코드가 만료됐어요 | This code has expired | コードの期限が切れました | 재사용 · 기존 키 invite.expired.title |
+| `invite.expired.body` | 새 코드를 만들어 상대에게 다시 보내 주세요. | Create a new code and send it to your partner. | 新しいコードを作って、パートナーにもう一度送ってください。 | 재사용 · 기존 키 invite.expired.body |
+| `invite.reissue` | 새 코드 만들기 | Create a new code | 新しいコードを作る | 재사용 · 기존 키 invite.reissue |
 | `home.partnerEdited` | {name}님이 사귄 날을 {date}로 바꿨어요 | {name} changed your start date to {date} | {name}さんが付き合った日を{date}に変更しました | 신규 · EN·JA 초안 |
 
 ## V0-03 시스템 상태 (`copy-v0-states.dc.html`)
@@ -197,6 +201,7 @@ sections: 이 화면의 문구
 | `anniv.detail.system.note` | 자동으로 들어가는 기념일은 고치거나 지울 수 없어요. 종류별 알림은 설정에서 바꿔요. | Automatic days can't be edited or deleted. Change reminders by type in Settings. | 自動で入る記念日は編集・削除できません。種類ごとの通知は設定で変更します。 | 신규 · EN·JA 초안 |
 | `anniv.detail.openSettings` | 알림 설정 열기 | Open reminder settings | 通知設定を開く | 신규 · EN·JA 초안 |
 | `anniv.detail.birthday.note` | 생일은 본인만 고칠 수 있어요. | Only the birthday person can change it. | 誕生日は本人だけが変更できます。 | 신규 · EN·JA 초안 |
+| `set.me.edit.title` | 내 정보 고치기 | Edit my info | 自分の情報を編集 | 재사용 · 기존 키 set.me.edit.title |
 
 ## V0-05 기념일 편집 (`copy-v0-edit.dc.html`)
 sections: 이 화면의 문구
@@ -263,7 +268,6 @@ sections: 이 화면의 문구
 | `set.me.name` | 이름 | Name | 名前 | 변경 · 기존 키 set.name (별명 → 이름) |
 | `set.me.birthday` | 생일 | Birthday | 誕生日 | 신규 · EN·JA 초안 |
 | `set.me.birthday.none` | 넣지 않음 | Not set | 未設定 | 신규 · EN·JA 초안 |
-| `set.me.edit.title` | 내 정보 고치기 | Edit my info | 自分の情報を編集 | 신규 · EN·JA 초안 |
 | `set.me.birthday.partnerWait` | {name}님은 아직 생일을 넣지 않았어요. 둘 다 넣으면 서로 보여요. | {name} hasn't added a birthday yet. Once you both do, you'll see each other's. | {name}さんはまだ誕生日を入れていません。ふたりとも入れるとお互いに表示されます。 | 신규 · EN·JA 초안 |
 | `set.section.us` | 우리 | Us | ふたり | 신규 · EN·JA 초안 |
 | `set.us.start` | 사귄 날 | Start date | 付き合った日 | 신규 · EN·JA 초안 |
@@ -316,6 +320,7 @@ sections: 이 화면의 문구
 | `set.security.title` | 로그인·보안 | Sign-in & security | ログイン・セキュリティ | 재사용 · 기존 키 set.security.title |
 | `set.account.email` | 이메일로 로그인함 | Signed in with email | メールでサインイン中 | 신규 · EN·JA 초안 |
 | `set.account.logout` | 로그아웃 | Sign out | ログアウト | 재사용 · 기존 키 set.logout |
+| `set.logout.title` | 로그아웃할까요? | Sign out? | ログアウトしますか？ | 재사용 · 기존 키 set.logout.title |
 | `set.account.disconnect` | 연결 끊기 | Disconnect | つながりを解除 | 신규 · EN·JA 초안 |
 | `set.account.delete` | 계정 삭제 | Delete account | アカウントを削除 | 재사용 · 기존 키 set.account.delete |
 | `set.disconnect.title` | 연결을 끊을까요? | Disconnect? | つながりを解除しますか？ | 신규 · EN·JA 초안 |

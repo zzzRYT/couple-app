@@ -133,3 +133,29 @@ it('V0-F02-AC-05 leaves for the home waiting state through "wait at home" and ke
   await fireEvent.press(screen.getByRole('button', { name: screen.t('start.invite.home') }));
   expect(onLater).toHaveBeenCalledTimes(1);
 });
+
+it('V0-start-invite says the code also stays on Home', async () => {
+  const screen = await renderWithI18n(<InviteScreen createInvitation={jest.fn().mockResolvedValue(invitation('AAAABBBB'))} clock={() => clock} reducedMotion />);
+  expect(await screen.findByLabelText(codeLabel(screen.t, 'AAAA-BBBB'))).toBeTruthy();
+  expect(screen.getByText(screen.t('start.invite.hint'))).toBeTruthy();
+});
+
+it('V0-10 shows the live code this device made again when the invite is reopened', async () => {
+  const createInvitation = jest.fn();
+  const live = invitation('AAAABBBB', 2);
+  const screen = await renderWithI18n(<InviteScreen createInvitation={createInvitation} clock={() => clock} reducedMotion copyCode={jest.fn()} existingInvitation={live} existingInvitationExpiresAt={live.expiresAt} />);
+  expect(screen.getByLabelText(codeLabel(screen.t, 'AAAA-BBBB'))).toBeTruthy();
+  expect(screen.getByText(screen.t('invite.expires', { h: 2, m: 0 }))).toBeTruthy();
+  expect(screen.getByRole('button', { name: screen.t('a11y.share') })).toBeTruthy();
+  expect(screen.getByRole('button', { name: screen.t('a11y.copy') })).toBeTruthy();
+  expect(screen.queryByText(screen.t('invite.waiting.title'))).toBeNull();
+  expect(createInvitation).not.toHaveBeenCalled();
+});
+
+it('makes a new code straight away when opened to reissue an expired one', async () => {
+  const createInvitation = jest.fn().mockResolvedValue(invitation('CCCCDDDD'));
+  const old = invitation('AAAABBBB', -1);
+  const screen = await renderWithI18n(<InviteScreen createInvitation={createInvitation} clock={() => clock} reducedMotion reissue existingInvitation={old} existingInvitationExpiresAt={old.expiresAt} />);
+  expect(await screen.findByLabelText(codeLabel(screen.t, 'CCCC-DDDD'))).toBeTruthy();
+  expect(createInvitation).toHaveBeenCalledTimes(1);
+});

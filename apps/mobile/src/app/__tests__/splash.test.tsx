@@ -13,7 +13,7 @@ jest.mock('../../features/space/SpaceContext', () => ({ SpaceProvider: ({ childr
 afterEach(() => { jest.useRealTimers(); jest.clearAllMocks(); });
 const app = <SafeAreaProvider initialMetrics={safeMetrics}><RootLayout /></SafeAreaProvider>;
 
-it('V0-F13-AC-06 takes over from the launch screen with the Aroomi splash and keeps it while the app boots', async () => {
+it('V0-F13-AC-01 V0-F13-AC-06 takes over from the launch screen with the Aroomi splash and keeps it, not a skeleton, while the app loads', async () => {
   const fonts = useFonts as jest.Mock;
   fonts.mockReturnValue([false, null]);
   const screen = await render(app);

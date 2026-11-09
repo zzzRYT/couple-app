@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { AppText, Banner, BottomSheet, Button, Screen } from '../../ui/components';
+import { AppText, Banner, BottomSheet, Button, Card, Chip, Screen } from '../../ui/components';
 import { Icon } from '../../ui/Icon';
-import { tokens } from '../../theme/tokens';
 import { useAppColor } from '../../theme/useAppColor';
 import type { PasswordPort } from './passwordPort';
 import { passwordRules, rulesMet } from './passwordRules';
@@ -39,12 +38,14 @@ export function SetPasswordFlow({ password, email, copy, start = 'prompt', onDon
       </>}>
         <AppText variant="title" accessibilityRole="header">{t('auth.setpw.prompt.title')}</AppText>
         <AppText tone="text2">{t('auth.setpw.prompt.body')}</AppText>
-        {(['auth.setpw.prompt.b1', 'auth.setpw.prompt.b2'] as const).map((key) => (
-          <View key={key} style={{ flexDirection: 'row', gap: tokens.spacing[2] }}>
-            <View style={{ paddingTop: 2 }}><Icon name="check" size={20} color={color.primary} /></View>
-            <AppText style={{ flex: 1 }}>{t(key)}</AppText>
-          </View>
-        ))}
+        <Card>
+          {(['auth.setpw.prompt.b1', 'auth.setpw.prompt.b2'] as const).map((key) => (
+            <View key={key} style={{ flexDirection: 'row', gap: 10 }}>
+              <View style={{ paddingTop: 2 }}><Icon name="check" size={20} color={color.success} /></View>
+              <AppText style={{ flex: 1 }}>{t(key)}</AppText>
+            </View>
+          ))}
+        </Card>
         <AppText variant="bodySm" tone="text2">{t('auth.setpw.prompt.note')}</AppText>
       </Screen>
     );
@@ -65,10 +66,10 @@ export function SetPasswordFlow({ password, email, copy, start = 'prompt', onDon
       <Button label={t('auth.setpw.later')} variant="ghost" disabled={busy} onPress={onLater} />
     </>}>
       <AppText variant="title" accessibilityRole="header">{t('onb.pw.title')}</AppText>
-      <AppText tone="text2">{t('onb.pw.apple')}</AppText>
+      <Chip kind="success" icon="apple" label={t('onb.pw.apple')} />
       <AppText tone="text2">{t('onb.pw.body')}</AppText>
-      <PasswordField kind="new" label={t('login.pw.label')} value={secret} onChangeText={setSecret} />
-      <RuleList rules={rules} />
+      <PasswordField kind="new" label={t('login.pw.label')} value={secret} onChangeText={setSecret} invalid={secret.length > 0 && !rulesMet(rules)} />
+      <RuleList rules={rules} typed={secret.length > 0} />
       <PasswordField kind="new" label={t('login.pw.confirm')} placeholder={t('login.pw.confirm.placeholder')} value={again} onChangeText={setAgain} error={mismatch ? t('login.pw.mismatch') : null} />
       <AppText variant="bodySm" tone="text2">{t('auth.pw.stored')}</AppText>
       {failed && <Banner kind="danger" text={t('login.error.title')} body={t('login.error.body')} />}

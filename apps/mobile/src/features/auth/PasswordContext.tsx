@@ -10,6 +10,9 @@ type Value = {
   /** A mail link opened a session that must set a new password first (V0-auth-newpw). */
   recovery: boolean;
   setRecovery: (value: boolean) => void;
+  /** The address to open V0-auth-reset with once the stale link session is signed out (V0-auth-link-exp from V0-auth-newpw). */
+  pendingReset: string | null;
+  setPendingReset: (email: string | null) => void;
   apple: boolean;
   reload: () => Promise<void>;
   markPromptSeen: () => Promise<void>;
@@ -23,6 +26,7 @@ export function PasswordProvider({ children }: { children: ReactNode }) {
   const { password, userId, session } = useApp();
   const [state, setState] = useState<PasswordState | null | undefined>(undefined);
   const [recovery, setRecovery] = useState(false);
+  const [pendingReset, setPendingReset] = useState<string | null>(null);
   const reload = useCallback(async () => {
     setState(await password.state().catch(() => null));
   }, [password]);
@@ -32,13 +36,13 @@ export function PasswordProvider({ children }: { children: ReactNode }) {
   }, [userId, reload]);
   const apple = isAppleAccount(session?.user.app_metadata);
   const value = useMemo<Value>(() => ({
-    state, recovery, setRecovery, apple, reload,
+    state, recovery, setRecovery, pendingReset, setPendingReset, apple, reload,
     shouldPrompt: state === undefined ? undefined : !!state && apple && !state.hasPassword && !state.promptSeen && !!state.email,
     async markPromptSeen() {
       setState((current) => current && { ...current, promptSeen: true });
       await password.promptSeen().catch(() => undefined);
     },
-  }), [state, recovery, apple, reload, password]);
+  }), [state, recovery, pendingReset, apple, reload, password]);
   return <PasswordContext.Provider value={value}>{children}</PasswordContext.Provider>;
 }
 export function usePassword(): Value {

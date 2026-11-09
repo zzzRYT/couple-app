@@ -14,6 +14,8 @@ it('V0-F01-AC-01 offers Sign in with Apple first and email second in product bui
   const screen = await renderWithI18n(<LoginScreen auth={port()} lastUsed="apple" options={product} onDone={jest.fn()} onEmail={jest.fn()} onEmailLogin={jest.fn()} />);
   expect(screen.getByText(screen.t('start.intro.title'))).toBeTruthy();
   expect(screen.getByText(screen.t('start.intro.terms'))).toBeTruthy();
+  expect(screen.getByText(screen.t('onb.age'))).toBeTruthy();
+  expect(screen.queryByTestId('screen-back')).toBeNull();
   expect(screen.getByRole('button', { name: screen.t('login.apple') })).toBeTruthy();
   expect(screen.getByText(screen.t('onb.lastUsed'))).toBeTruthy();
   expect(screen.queryByRole('button', { name: screen.t('login.kakao') })).toBeNull();

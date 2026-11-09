@@ -137,14 +137,20 @@ exports[`renders each shared primitive and names its actions 1`] = `
     style={
       {
         "alignItems": "center",
-        "alignSelf": "center",
+        "alignSelf": "stretch",
         "backgroundColor": "#3F2D22",
-        "borderRadius": 999,
+        "borderRadius": 18,
         "flexDirection": "row",
-        "gap": 8,
-        "maxWidth": "100%",
-        "paddingHorizontal": 20,
+        "gap": 10,
+        "paddingHorizontal": 16,
         "paddingVertical": 12,
+        "shadowColor": "#000000",
+        "shadowOffset": {
+          "height": 6,
+          "width": 0,
+        },
+        "shadowOpacity": 0.18,
+        "shadowRadius": 18,
       }
     }
   >
@@ -154,16 +160,16 @@ exports[`renders each shared primitive and names its actions 1`] = `
       pointerEvents="none"
       style={
         {
-          "height": 18,
-          "width": 18,
+          "height": 20,
+          "width": 20,
         }
       }
     >
       <View
         style={
           {
-            "height": 18,
-            "width": 18,
+            "height": 20,
+            "width": 20,
           }
         }
         testID="skia-canvas"
@@ -173,7 +179,7 @@ exports[`renders each shared primitive and names its actions 1`] = `
           transform={
             [
               {
-                "scale": 0.75,
+                "scale": 0.8333333333333334,
               },
             ]
           }
@@ -183,7 +189,7 @@ exports[`renders each shared primitive and names its actions 1`] = `
             path="M5 12.5 L10 17.5 L19 6.5"
             strokeCap="round"
             strokeJoin="round"
-            strokeWidth={2.9333333333333336}
+            strokeWidth={2.64}
             style="stroke"
             testID="skia-path"
           />
@@ -234,7 +240,8 @@ exports[`renders each shared primitive and names its actions 1`] = `
           "backgroundColor": "rgba(43,35,32,0.5)",
           "flex": 1,
           "justifyContent": "center",
-          "padding": 20,
+          "paddingHorizontal": 16,
+          "paddingVertical": 20,
         }
       }
     >
@@ -246,7 +253,7 @@ exports[`renders each shared primitive and names its actions 1`] = `
             "borderColor": "#4A3426",
             "borderRadius": 28,
             "borderWidth": 2,
-            "gap": 16,
+            "gap": 12,
             "padding": 24,
           }
         }
@@ -263,9 +270,9 @@ exports[`renders each shared primitive and names its actions 1`] = `
             style={
               [
                 {
-                  "fontFamily": "GaeguBold",
-                  "fontSize": 20,
-                  "lineHeight": 25,
+                  "fontFamily": "NotoSansKRBold",
+                  "fontSize": 19,
+                  "lineHeight": 29,
                 },
                 {
                   "color": "#3F2D22",
@@ -278,7 +285,7 @@ exports[`renders each shared primitive and names its actions 1`] = `
           <View
             style={
               {
-                "gap": 8,
+                "gap": 4,
               }
             }
           >

@@ -6,8 +6,8 @@ import { computeAnniversaries } from '../../lib/anniversaries';
 import type { MilestoneCelebration } from '../../lib/client';
 import { CelebrationCard } from '../../features/home/CelebrationCard';
 import { V0HomeScreen } from '../../features/home/V0HomeScreen';
-import { V0Error, V0Loading } from '../../features/home/states';
-import { ListRow } from '../../ui/components';
+import { V0Error } from '../../features/home/states';
+import { ListRow, Toast } from '../../ui/components';
 import { AnniversaryList } from '../../features/anniversaries/AnniversaryList';
 import { AnniversaryDetail } from '../../features/anniversaries/AnniversaryDetail';
 import { AnniversaryEdit } from '../../features/anniversaries/AnniversaryEdit';
@@ -19,11 +19,9 @@ import { CreateSpaceScreen } from '../../features/onboarding/CreateSpaceScreen';
 import { JoinScreen } from '../../features/onboarding/JoinScreen';
 import { InviteScreen } from '../../features/onboarding/InviteScreen';
 import { EndSpaceScreen } from '../../features/lifecycle/EndSpaceScreen';
-import { EndedScreen } from '../../features/lifecycle/EndedScreen';
 import { DeleteAccountScreen } from '../../features/account/DeleteAccountScreen';
 import { TimeZoneSheet } from '../../features/settings/TimeZoneSheet';
 import { NotificationTimeSheet } from '../../features/settings/NotificationTimeSheet';
-import { AnniversaryToast } from '../../features/anniversaries/AnniversaryToast';
 import type { Locale } from '../../i18n';
 
 const noop = jest.fn();
@@ -31,7 +29,7 @@ const view = computeAnniversaries({ startDate: '2025-01-01', timeZone: 'Asia/Seo
 const state = (snapshot = snapshotFixture()) => ({ status: 'ready' as const, snapshot, offline: false, lastSyncedAt: null });
 const celebration = { id: 'c', key: 'd500', kind: 'days', date: '2026-11-02', n: 500, daysAgo: 0, seenByMe: false, presetAvailable: false, presetId: 'milestone-day' } as unknown as MilestoneCelebration;
 const home = (extra: Record<string, unknown> = {}, snapshot = snapshotFixture()) => <V0HomeScreen state={state(snapshot)} now="2026-11-02T03:00:00Z" onAnniversaries={noop} onRefresh={noop} onOpenInvite={noop} celebration={null} onSeen={noop} {...extra} />;
-const editBase = { today: '2026-11-02', partner: 'Haru', offline: false, initialNotify: 'default' as const, notifyDefault: '기본 설정', remove: noop, reload: noop, onClose: noop, onSaved: noop, save: noop };
+const editBase = { today: '2026-11-02', partner: 'Haru', offline: false, initialNotify: 'default' as const, notifyDefault: '기본 설정', remove: noop, reload: noop, onClose: noop, onGone: noop, onSaved: noop, save: noop };
 const custom = { id: 'x', title: 'Trip', date: '2025-05-30', memo: 'Together', repeat: 'once' as const, createdBy: 'me', updatedBy: 'me', createdAt: '2025-01-01T00:00:00Z', updatedAt: '2025-01-01T00:00:00Z', version: 1 };
 
 /** Screens whose required text must wrap, not truncate, at 200% (V0-NF-01). */
@@ -39,12 +37,13 @@ const SCREENS: Record<string, () => ReactElement> = {
   'home hero': () => home(),
   'home celebration card': () => home({ celebration, onSeen: noop }),
   'home pending invite': () => home({}, snapshotFixture({ memberCount: 1 })),
-  'home loading': () => <V0Loading />,
   'home error': () => <V0Error retry={noop} />,
+  'home error in tab': () => <V0Error retry={noop} title="Aroom" />,
+  'home offline empty': () => <V0Error offline retry={noop} />,
   'anniversary list': () => <AnniversaryList view={view} filter="all" pastOpen offline={false} birthdayState="mine" partner="Haru" onFilter={noop} onPast={noop} onAdd={noop} onItem={noop} onBirthday={noop} />,
   'anniversary list custom empty': () => <AnniversaryList view={view} filter="custom" pastOpen={false} offline={false} birthdayState="none" partner="Haru" onFilter={noop} onPast={noop} onAdd={noop} onItem={noop} onBirthday={noop} />,
-  'anniversary detail automatic': () => <AnniversaryDetail item={{ key: 'd150', kind: 'days', date: '2025-05-30', n: 150 }} today="2025-05-01" startDate="2025-01-01" partner="Haru" userId="me" notify="default" notifyDefault="기본 설정" offline={false} onBack={noop} onEdit={noop} onDelete={noop} onSettings={noop} onMe={noop} />,
-  'anniversary detail custom': () => <AnniversaryDetail item={{ key: 'custom:x', kind: 'custom', date: '2025-05-30', title: 'Trip', customId: 'x' }} custom={custom} today="2025-05-01" startDate="2025-01-01" partner="Haru" userId="me" notify="off" notifyDefault="기본 설정" offline={false} onBack={noop} onEdit={noop} onDelete={noop} onSettings={noop} onMe={noop} />,
+  'anniversary detail automatic': () => <AnniversaryDetail item={{ key: 'd150', kind: 'days', date: '2025-05-30', n: 150 }} today="2025-05-01" startDate="2025-01-01" timeZone="Asia/Seoul" partner="Haru" userId="me" notify="default" notifyDefault="기본 설정" offline={false} onBack={noop} onEdit={noop} onDelete={noop} onSettings={noop} onMe={noop} />,
+  'anniversary detail custom': () => <AnniversaryDetail item={{ key: 'custom:x', kind: 'custom', date: '2025-05-30', title: 'Trip', customId: 'x' }} custom={custom} today="2025-05-01" startDate="2025-01-01" timeZone="Asia/Seoul" partner="Haru" userId="me" notify="off" notifyDefault="기본 설정" offline={false} onBack={noop} onEdit={noop} onDelete={noop} onSettings={noop} onMe={noop} />,
   'anniversary edit': () => <AnniversaryEdit {...editBase} />,
   'anniversary edit existing': () => <AnniversaryEdit {...editBase} initial={{ ...custom, repeat: 'yearly' }} />,
   settings: () => <V0SettingsScreen snapshot={snapshotFixture()} offline={false} version="1.0.0 (12)" onLogout={noop} onZone={noop} navigate={noop} />,
@@ -55,13 +54,10 @@ const SCREENS: Record<string, () => ReactElement> = {
   'onboarding join': () => <JoinScreen previewInvitation={noop} acceptInvitation={noop} onJoined={noop} onOpenSpace={noop} onBack={noop} />,
   'onboarding invite': () => <InviteScreen createInvitation={noop} reducedMotion onBack={noop} onLater={noop} onJoined={noop} />,
   'end space': () => <EndSpaceScreen onEnd={noop} onCancel={noop} />,
-  'ended by me': () => <EndedScreen ended={{ kind: 'ended', by: 'me', at: '2026-10-29T00:00:00Z' }} hasActiveSpace={false} partnerName="Haru" onContinue={noop} />,
-  'ended by partner disconnect': () => <EndedScreen ended={{ kind: 'disconnect', by: 'partner', at: '2026-10-29T00:00:00Z' }} hasActiveSpace={false} partnerName="Haru" onContinue={noop} />,
-  'ended by partner deleted': () => <EndedScreen ended={{ kind: 'account_deleted', by: 'partner', at: '2026-10-29T00:00:00Z' }} hasActiveSpace={false} partnerName="Haru" onContinue={noop} />,
   'delete account': () => <DeleteAccountScreen reauth={{ apple: noop, kakao: noop, sendEmailCode: noop, verifyEmailCode: noop } as never} onSubmit={noop} onFinished={noop} onCancel={noop} provider="apple" options={{ apple: 'native', kakao: false, devEmail: false }} v0 />,
   'time zone sheet': () => <TimeZoneSheet visible timeZone="Asia/Seoul" onClose={noop} onSelect={noop} />,
   'notification time sheet': () => <NotificationTimeSheet visible time="09:00" onClose={noop} onSelect={noop} />,
-  'toast': () => <AnniversaryToast text="Saved" onHide={noop} />,
+  'toast': () => <Toast text="Saved" onHide={noop} />,
   'settings offline': () => <V0SettingsScreen snapshot={snapshotFixture()} offline version="1.0.0 (12)" onLogout={noop} onZone={noop} navigate={noop} />,
 };
 
@@ -82,7 +78,7 @@ describe.each(Object.entries(SCREENS))('%s', (_name, build) => {
 it('V0-NF-01 names the date wheels once the edit date field is open', async () => {
   for (const locale of LOCALES) {
     const { screen, missing, restore, t } = await renderSweep(<AnniversaryEdit {...editBase} />, locale);
-    await fireEvent.press(screen.getByLabelText(t('a11y.dateField')));
+    await fireEvent.press(screen.getByLabelText(t('edit.field.date')));
     expect(missing).toEqual([]);
     expect(unlabeledTouchables(screen.toJSON())).toEqual([]);
     restore();

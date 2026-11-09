@@ -10,7 +10,7 @@ jest.mock('expo-router', () => ({ useFocusEffect: (effect: () => void) => mockUs
 it.each(['ko-KR', 'en-US', 'ja-JP'] as const)('uses the shared translated back control in %s', async (locale) => {
   const onBack = jest.fn();
   const screen = await renderWithI18n(<FlowBackProvider><Screen onBack={onBack}>{null}</Screen></FlowBackProvider>, locale);
-  const button = screen.getByRole('button', { name: screen.t('a11y.back') });
+  const button = screen.getByRole('button', { name: screen.t('common.back') });
   expect(button.props.style.width).toBe(48);
   expect(button.props.style.height).toBe(48);
   await fireEvent.press(button);

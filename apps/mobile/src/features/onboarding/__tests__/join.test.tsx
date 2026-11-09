@@ -25,6 +25,7 @@ it('V0-F02-AC-06 and V0-F02-AC-07 confirm the space, then accept the invitation'
   expect(await screen.findByText(screen.t('join.found.heading'))).toBeTruthy();
   expect(screen.getByText(screen.t('join.found.who', { name: '하루' }))).toBeTruthy();
   expect(screen.getByText(/사귄 날은 2025년 6월 29일/)).toBeTruthy();
+  expect(screen.getByLabelText(screen.t('mascot.alt.wave'))).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: screen.t('join.accept') }));
   expect(acceptInvitation).toHaveBeenCalledWith('K7M4Q9XP');
   expect(onJoined).toHaveBeenCalledWith('s1');

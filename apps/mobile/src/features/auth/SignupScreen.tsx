@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppText, Banner, Button, Screen, TextField } from '../../ui/components';
 import { CycleLoader } from '../../ui/CycleLoader';
+import { AppleButton } from './AppleButton';
 import { EMAIL_PATTERN } from './authPort';
 import type { PasswordPort } from './passwordPort';
 import { passwordRules, rulesMet } from './passwordRules';
@@ -29,12 +30,12 @@ export function SignupScreen({ password, onBack, onApple }: { password: Pick<Pas
     if (result === 'closed') setMail(false);
     else if (result === 'ok') { setSecret(''); setAgain(''); setSent(true); } else setFailed(true);
   }
-  if (mail === null) return <Screen center onBack={onBack}><CycleLoader label={t('login.processing')} /></Screen>;
+  if (mail === null) return <Screen center onBack={onBack}><CycleLoader label={t('state.loading')} /></Screen>;
   if (!mail) {
     return (
       <Screen onBack={onBack} footer={<>
-        <Button label={t('auth.apple')} onPress={onApple} />
-        <ContactButton withAddress={false} />
+        <AppleButton onPress={onApple} />
+        <ContactButton link />
       </>}>
         <AppText variant="title" accessibilityRole="header">{t('auth.signup.nomail.title')}</AppText>
         <AppText tone="text2">{t('auth.signup.nomail.body')}</AppText>
@@ -53,9 +54,9 @@ export function SignupScreen({ password, onBack, onApple }: { password: Pick<Pas
   return (
     <Screen onBack={onBack} footer={<Button label={t('login.signup.submit')} loading={busy} disabled={!ready} onPress={() => void submit()} />}>
       <AppText variant="title" accessibilityRole="header">{t('login.signup.title')}</AppText>
-      <TextField label={t('login.email.label')} placeholder={t('login.email.placeholder')} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} autoComplete="username" textContentType="username" />
-      <PasswordField kind="new" label={t('login.pw.label')} value={secret} onChangeText={setSecret} />
-      <RuleList rules={rules} />
+      <TextField icon="mail" label={t('login.email.label')} placeholder={t('login.email.placeholder')} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} autoComplete="username" textContentType="username" />
+      <PasswordField kind="new" label={t('login.pw.label')} value={secret} onChangeText={setSecret} invalid={secret.length > 0 && !rulesMet(rules)} />
+      <RuleList rules={rules} typed={secret.length > 0} />
       <PasswordField kind="new" label={t('login.pw.confirm')} placeholder={t('login.pw.confirm.placeholder')} value={again} onChangeText={setAgain} error={mismatch ? t('login.pw.mismatch') : null} />
       <CheckRow label={t('login.signup.terms')} checked={terms} onToggle={() => setTerms((value) => !value)} />
       <AppText variant="bodySm" tone="text2">{t('auth.pw.stored')}</AppText>

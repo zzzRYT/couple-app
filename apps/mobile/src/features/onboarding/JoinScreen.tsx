@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AppText, Banner, Button, Card, Screen } from '../../ui/components';
 import { CodeInput } from '../../ui/CodeBoxes';
-import { Spot } from '../../ui/Spot';
 import { ApiError, errorBodyKey, errorKey } from '../../lib/errors';
 import { dayCount, formatAnniversary } from '../../lib/dday';
 import { parseInvite } from '../../lib/inviteLink';
-import { tokens } from '../../theme/tokens';
+import { mascotPoses } from '../../scene/catalog';
 
 const JOIN_ERRORS = ['INVITE_EXPIRED', 'INVITE_USED', 'INVITE_INVALID', 'SPACE_FULL', 'ALREADY_IN_SPACE'];
 export function maskInviteInput(value: string): string {
@@ -15,7 +14,7 @@ export function maskInviteInput(value: string): string {
   return clean.length > 4 ? `${clean.slice(0, 4)}-${clean.slice(4)}` : clean;
 }
 type Problem = { code: string } | { rateMinutes: number } | 'network';
-type Step = 'enter' | 'checking' | { found: { anniversaryDate: string; displayName?: string | null; timeZone?: string } } | 'accepting' | { joined: string } | 'move' | 'moving';
+type Step = 'enter' | 'checking' | { found: { anniversaryDate: string; displayName?: string | null; timeZone?: string } } | 'accepting' | 'move' | 'moving';
 const OWN_CODE = 'OWN_CODE';
 /**
  * S05 join with the valid invitation's limited preview. With `moveFromSpace` (V0-10, a person holding a space alone), a valid
@@ -74,14 +73,6 @@ export function JoinScreen({ previewInvitation, acceptInvitation, onJoined, onOp
       </Screen>
     );
   }
-  if (typeof step === 'object' && 'joined' in step) {
-    return (
-      <Screen center footer={<Button label={t('join.ok.next')} onPress={() => onJoined(step.joined)} />}>
-        <Spot kind="celebrate" />
-        <AppText variant="title" accessibilityRole="header" align="center">{t('join.ok.title')}</AppText>
-      </Screen>
-    );
-  }
   if (step === 'accepting' || (typeof step === 'object' && 'found' in step)) {
     const found = typeof step === 'object' ? step.found : null;
     return (
@@ -90,10 +81,13 @@ export function JoinScreen({ previewInvitation, acceptInvitation, onJoined, onOp
         <Button label={t('join.decline')} variant="ghost" disabled={step === 'accepting'} onPress={() => setStep('enter')} />
       </>}>
         <AppText variant="title" accessibilityRole="header">{t('join.found.title')}</AppText>
-        {found && <Card style={{ flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[3] }}>
-          <Spot kind="gift" scale={0.6} />
-          <View style={{ flex: 1 }}><AppText variant="heading">{t('join.found.who', { name: found.displayName ?? t('home.pending.partner') })}</AppText><AppText tone="text2">{t('start.join.found.body', { date: formatAnniversary(found.anniversaryDate, i18n.language), n: (() => { const result = dayCount(found.anniversaryDate, new Date().toISOString(), found.timeZone ?? 'UTC'); return result.ok ? result.dayCount : 0; })() })}</AppText></View>
-        </Card>}
+        {found && <>
+          <Card tone="line" style={{ alignItems: 'center', paddingVertical: 22 }}>
+            <AppText variant="heading" align="center">{t('join.found.who', { name: found.displayName ?? t('home.pending.partner') })}</AppText>
+            <AppText tone="text2" align="center">{t('start.join.found.body', { date: formatAnniversary(found.anniversaryDate, i18n.language), n: (() => { const result = dayCount(found.anniversaryDate, new Date().toISOString(), found.timeZone ?? 'UTC'); return result.ok ? result.dayCount : 0; })() })}</AppText>
+          </Card>
+          <Image accessibilityLabel={t('mascot.alt.wave')} source={mascotPoses.wave_main} resizeMode="contain" style={{ width: 130, height: 130, alignSelf: 'center' }} />
+        </>}
       </Screen>
     );
   }
@@ -113,7 +107,7 @@ export function JoinScreen({ previewInvitation, acceptInvitation, onJoined, onOp
       {problem && typeof problem === 'object' && 'rateMinutes' in problem && <Banner kind="danger" text={t('login.code.rate', { m: problem.rateMinutes })} />}
       {codeProblem && <Banner kind="warn" text={codeProblem === OWN_CODE ? t('connect.err.own') : t(errorKey(codeProblem))} body={body ? t(body) : null} />}
       {readClipboard && <View style={{ alignItems: 'center' }}>
-        <Button label={t('join.paste')} variant="ghost" compact onPress={() => void readClipboard().then((text) => setValue(maskInviteInput(parseInvite(text) ?? parseInvite(text.replace(/\s/g, '')) ?? ''))).catch(() => setProblem('network'))} />
+        <Button label={t('join.paste')} variant="secondary" compact icon="copy" onPress={() => void readClipboard().then((text) => setValue(maskInviteInput(parseInvite(text) ?? parseInvite(text.replace(/\s/g, '')) ?? ''))).catch(() => setProblem('network'))} />
       </View>}
     </Screen>
   );

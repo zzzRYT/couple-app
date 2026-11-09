@@ -1,14 +1,19 @@
 import { Linking } from 'react-native';
-import { fireEvent } from '@testing-library/react-native';
+import { fireEvent, waitFor } from '@testing-library/react-native';
 import { renderWithI18n } from '../../../test/render';
 import { snapshotFixture } from '../../../test/fixtures';
 import { APP_IDENTITY } from '../../../config/identity';
 import { TERMS_URL } from '../helpLinks';
+import type { Locale } from '../../../i18n';
 import { V0SettingsScreen } from '../V0SettingsScreen';
+const mockPreferences: { locale: Locale | null; displayMode: 'system' } = { locale: null, displayMode: 'system' };
+jest.mock('../preferences', () => ({ ...jest.requireActual('../preferences'), usePreferences: () => mockPreferences }));
+beforeEach(() => { mockPreferences.locale = null; });
+const withBirthday = () => { const snapshot = snapshotFixture(); snapshot.me.birthday = { month: 3, day: 14, year: null }; return snapshot; };
 it('V0-F12-AC-01 exposes V0 rows and hides room, cover and consent', async () => {
   const navigate = jest.fn();
   const screen = await renderWithI18n(<V0SettingsScreen snapshot={snapshotFixture()} offline={false} version="0.1" onLogout={jest.fn()} onZone={jest.fn()} navigate={navigate} />);
-  expect(screen.getByText(screen.t('set.section.me'))).toBeTruthy();
+  expect(screen.queryByText(screen.t('set.section.me'))).toBeNull();
   expect(screen.getByText(screen.t('set.section.us'))).toBeTruthy();
   expect(screen.getByText(screen.t('set.section.display'))).toBeTruthy();
   expect(screen.queryByText(screen.t('set.cover'))).toBeNull();
@@ -24,6 +29,30 @@ it('V0-F13-AC-03 disables shared edits while offline', async () => {
 it('V0-NF-02 draws the time-zone row as the board does, not from the engine zone names', async () => {
   const screen = await renderWithI18n(<V0SettingsScreen snapshot={snapshotFixture()} offline={false} version="0.1" onLogout={jest.fn()} onZone={jest.fn()} navigate={jest.fn()} />);
   expect(screen.getByText('서울 (UTC+9)')).toBeTruthy();
+});
+it.each([['ko-KR', '생일 · 3월 14일', '2025년 6월 29일'], ['en-US', 'Birthday · Mar 14', 'Jun 29, 2025'], ['ja-JP', '誕生日 · 3月14日', '2025年6月29日']] as const)('V0-set-main opens my profile from the card and writes dates as the board does in %s', async (locale, birthday, start) => {
+  const navigate = jest.fn();
+  const screen = await renderWithI18n(<V0SettingsScreen snapshot={withBirthday()} offline={false} version="0.1" onLogout={jest.fn()} onZone={jest.fn()} navigate={navigate} />, locale);
+  expect(screen.getByText(birthday)).toBeTruthy();
+  expect(screen.getByText(start)).toBeTruthy();
+  await fireEvent.press(screen.getByRole('button', { name: `하루, ${birthday}` }));
+  expect(navigate).toHaveBeenCalledWith('me');
+});
+it('V0-set-main names a chosen language in that language, not by its code', async () => {
+  mockPreferences.locale = 'en-US';
+  const screen = await renderWithI18n(<V0SettingsScreen snapshot={snapshotFixture()} offline={false} version="0.1" onLogout={jest.fn()} onZone={jest.fn()} navigate={jest.fn()} />);
+  expect(screen.getByRole('button', { name: `${screen.t('set.lang')}, English` })).toBeTruthy();
+  expect(screen.queryByText('en-US')).toBeNull();
+});
+it('V0-F12-AC-10 confirms logout without the room line and tells a failure inside the dialog', async () => {
+  const onLogout = jest.fn().mockRejectedValueOnce(new Error('offline'));
+  const screen = await renderWithI18n(<V0SettingsScreen snapshot={snapshotFixture()} offline={false} version="0.1" onLogout={onLogout} onZone={jest.fn()} navigate={jest.fn()} />);
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('set.account.logout') }));
+  expect(screen.getByText(screen.t('set.logout.title'))).toBeTruthy();
+  expect(screen.queryByText(screen.t('set.logout.body'))).toBeNull();
+  await fireEvent.press(screen.getAllByRole('button', { name: screen.t('set.account.logout') }).at(-1)!);
+  await waitFor(() => expect(screen.getByRole('alert', { name: screen.t('state.error.body') })).toBeTruthy());
+  expect(screen.getByText(screen.t('set.logout.title'))).toBeTruthy();
 });
 describe('V0-F12-AC-09 help rows', () => {
   const open = jest.spyOn(Linking, 'openURL');

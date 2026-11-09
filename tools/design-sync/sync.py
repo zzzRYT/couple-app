@@ -140,7 +140,8 @@ def v0_sections(project):
         # Date formats differ per language on purpose (`{M}` is a month name in English), so these boards skip the placeholder check.
         _, entries = parse_board((project/name).read_text(), name, same_placeholders=False)
         rows = []
-        for item in entries:
+        # Proposals wait for the owner, so the app does not ship them (design/README.md).
+        for item in (e for e in entries if e['status'] != 'proposal'):
             text = tuple(item[l] for l in LANGS)
             if seen.setdefault(item['key'], text) != text: raise ValueError(f'{name}: conflicting V0 copy for {item["key"]}')
             if not any(r['key'] == item['key'] for _, _, other in sections for r in other) and not any(r['key'] == item['key'] for r in rows): rows.append(item)

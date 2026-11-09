@@ -24,10 +24,26 @@ it('V0-F02-AC-01 changes the day-count preview when a start date is picked', asy
   expect(onNext).toHaveBeenCalledWith('2025-06-29');
 });
 
+it('V0-start-date-picker previews the picked date in the sheet and keeps the date when closed without 완료', async () => {
+  const { screen } = await setup();
+  await fireEvent.press(screen.getByRole('button', { name: `${screen.t('start.date.label')}, 2026${screen.t('space.year')}` }));
+  await fireEvent.press(screen.getByTestId('wheel-year-2025'));
+  expect(screen.getByText(screen.t('start.date.preview', { n: 366 }))).toBeTruthy();
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('common.cancel') }));
+  await act(() => new Promise((resolve) => setTimeout(resolve, tokens.motion.transitionMs + 50)));
+  expect(screen.queryByText(screen.t('start.date.preview', { n: 366 }))).toBeNull();
+  expect(screen.getByText(screen.t('start.date.preview', { n: 1 }))).toBeTruthy();
+});
+
 it('V0-F02-AC-02 shows the future-date error and cannot go next', async () => {
   const { screen, onNext, pick } = await setup();
   await pick('month', 12); await pick('day', 1);
-  expect(screen.getByText(screen.t('start.date.err.future'))).toBeTruthy();
+  expect(screen.getByRole('alert', { name: screen.t('start.date.err.future') })).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: screen.t('common.next') }));
   expect(onNext).not.toHaveBeenCalled();
+});
+it('V0-start-date · English names the months in the wheel', async () => {
+  const screen = await renderWithI18n(<V0DateScreen initial="2026-10-27" now={now} timeZone="Asia/Seoul" onNext={jest.fn()} onBack={jest.fn()} />, 'en-US');
+  await fireEvent.press(screen.getByTestId('date-month'));
+  expect(screen.getByTestId('wheel-month-6')).toHaveTextContent('Jun');
 });

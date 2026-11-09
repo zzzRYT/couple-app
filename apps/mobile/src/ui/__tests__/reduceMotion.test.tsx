@@ -27,7 +27,7 @@ describe('V0-NF-01 Reduce Motion', () => {
   });
   it('opens the date wheel sheet without sliding', async () => {
     const screen = await renderWithI18n(<AnniversaryDateField value={{ year: 2025, month: 6, day: 29 }} onChange={() => {}} maxYear={2026} />); await flush();
-    await fireEvent.press(screen.getByLabelText(screen.t('a11y.dateField')));
+    await fireEvent.press(screen.getByLabelText(screen.t('edit.field.date')));
     expect(StyleSheet.flatten(screen.getByTestId('sheet-panel').props.style).transform).toBeUndefined();
   });
   it('holds the celebration card mascot on its still pose and stops the sparkle pulse', async () => {

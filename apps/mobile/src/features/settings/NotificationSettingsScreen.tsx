@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Linking, Pressable, View } from 'react-native';
+import { Linking, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { AppText, Button, Card, ListRow, Screen, SectionLabel, SwitchRow } from '../../ui/components';
+import { AppText, Button, Card, ListRow, RadioRow, Screen, SectionLabel, SwitchRow } from '../../ui/components';
 import { Icon, type IconName } from '../../ui/Icon';
 import { tokens } from '../../theme/tokens';
 import { useAppColor } from '../../theme/useAppColor';
@@ -34,25 +34,16 @@ function DeniedBanner() {
 /** V0-set-notify and V0-set-notify-denied. Everything here applies to this device only. */
 export function NotificationSettingsScreen({ userId, partner, onBack }: { userId: string; partner: string; onBack: () => void }) {
   const { t, i18n } = useTranslation();
-  const color = useAppColor();
   const { prefs, denied, update, setEnabled } = useNotifySettings(userId);
   const [picking, setPicking] = useState(false);
   const off = denied || !prefs.enabled;
-  return <Screen onBack={onBack}>
-    <AppText variant="title">{t('set.section.notify')}</AppText>
+  return <Screen onBack={onBack} title={t('set.section.notify')}>
     {denied && <DeniedBanner />}
     <Card>
       <SwitchRow label={t('set.notify.toggle')} value={prefs.enabled && !denied} disabled={denied} last={false} onValueChange={(value) => void setEnabled(value)} />
       <ListRow label={t('set.notify.time')} value={formatNotifyTime(prefs.time, i18n.language)} onPress={() => setPicking(true)} />
     </Card>
-    {!denied && <><SectionLabel text={t('set.notify.early')} /><Card>{EARLY.map((early, index) => {
-      const selected = prefs.early === early;
-      return <Pressable key={early} accessibilityRole="radio" accessibilityLabel={earlyLabel(early, t)} accessibilityState={{ selected, disabled: off }} disabled={off} onPress={() => update({ early })}
-        style={({ pressed }) => ({ minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[2], borderBottomWidth: index === EARLY.length - 1 ? 0 : 1, borderColor: color.divider, opacity: off ? 0.5 : pressed ? 0.7 : 1 })}>
-        <AppText style={{ flex: 1 }}>{earlyLabel(early, t)}</AppText>
-        {selected ? <Icon name="check" size={22} color={color.primary} /> : <View style={{ width: 22 }} />}
-      </Pressable>;
-    })}</Card></>}
+    {!denied && <><SectionLabel text={t('set.notify.early')} /><Card>{EARLY.map((early, index) => <RadioRow key={early} label={earlyLabel(early, t)} selected={prefs.early === early} disabled={off} last={index === EARLY.length - 1} onPress={() => update({ early })} />)}</Card></>}
     <SectionLabel text={t('set.notify.kinds')} />
     <Card>{KINDS.map(({ kind, label, icon, tile }, index) => <SwitchRow key={kind} label={t(label)} leading={<KindTile icon={icon} tile={tile} />} value={prefs.kinds[kind] && !denied} disabled={off} last={index === KINDS.length - 1} onValueChange={(value) => update({ kinds: { ...prefs.kinds, [kind]: value } })} />)}</Card>
     <AppText variant="bodySm" tone="text2">{t('set.notify.note', { name: partner })}</AppText>

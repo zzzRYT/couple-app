@@ -6,6 +6,8 @@ import type { i18n } from 'i18next';
 import type { Locale } from '../../i18n';
 
 export type DisplayMode = 'system' | 'light' | 'dark';
+/** Each language in its own name (V0-set-lang): the same in every app language, so they are not copy keys. */
+export const AUTONYMS: Record<Locale, string> = { 'ko-KR': '한국어', 'en-US': 'English', 'ja-JP': '日本語' };
 type Storage = { getItemAsync(key: string): Promise<string | null>; setItemAsync(key: string, value: string): Promise<void>; deleteItemAsync(key: string): Promise<void> };
 export type Preferences = { locale: Locale | null; displayMode: DisplayMode; highContrast: boolean; setLocale(value: Locale | null): Promise<void>; setDisplayMode(value: DisplayMode): Promise<void> };
 const PreferencesContext = createContext<Preferences | null>(null);

@@ -3,6 +3,7 @@ import { Image, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AppText, Banner, Button, Screen, TextField } from '../../ui/components';
 import { CycleLoader } from '../../ui/CycleLoader';
+import { IconTile } from '../../ui/IconTile';
 import { tokens } from '../../theme/tokens';
 import { useAppColor } from '../../theme/useAppColor';
 import { useType } from '../../theme/typography';
@@ -15,6 +16,7 @@ import { EMAIL_PATTERN, type AuthPort, type Provider } from './authPort';
 import { mascotPoses } from '../../scene/catalog';
 
 type OAuthProvider = 'kakao' | 'apple';
+const features = [['start.intro.f1', 'annivDays', 'peach'], ['start.intro.f2', 'annivBirthday', 'butter'], ['start.intro.f3', 'annivCustom', 'lav']] as const;
 type State = { kind: 'choose' } | { kind: 'finishing' } | { kind: 'redirect'; provider: OAuthProvider } | { kind: 'cancelled' | 'error'; provider: OAuthProvider } | { kind: 'email'; invalid: boolean; sending: boolean; failed: boolean };
 function Legal() {
   const { t } = useTranslation();
@@ -91,9 +93,9 @@ export function LoginScreen({ auth, lastUsed, onDone, onEmail, onEmailLogin, onB
         <AppText variant="title" align="center">{t('app.name')}</AppText>
         <AppText variant="caption" tone="text2" align="center">{t('app.slogan')}</AppText>
       </View>
-      <AppText variant="title" align="center" accessibilityRole="header">{t('start.intro.title')}</AppText>
+      <AppText variant="title" align="center" accessibilityRole="header" style={{ fontSize: 26, lineHeight: 33 }}>{t('start.intro.title')}</AppText>
       {finishing ? <CycleLoader label={t('login.processing')} />
-        : <View style={{ gap: tokens.spacing[2] }}>{(['start.intro.f1', 'start.intro.f2', 'start.intro.f3'] as const).map((key) => <AppText key={key}>{t(key)}</AppText>)}</View>}
+        : <View style={{ gap: tokens.spacing[2], paddingHorizontal: tokens.spacing[1] }}>{features.map(([key, icon, face]) => <View key={key} style={{ flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[2] }}><IconTile icon={icon} face={face} /><AppText style={{ flex: 1 }}>{t(key)}</AppText></View>)}</View>}
       {notice && state.kind === 'choose' && <Banner kind="success" text={notice} />}
       {(state.kind === 'cancelled' || state.kind === 'error') && (
         <Banner kind={state.kind === 'error' ? 'danger' : 'info'} text={t(`login.${state.kind}.title`)} body={t(`login.${state.kind}.body`)} action={{ label: t('common.retry'), onPress: () => void signIn(state.provider) }} />
