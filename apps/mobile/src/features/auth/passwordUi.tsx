@@ -67,10 +67,10 @@ export function LoginAddress({ email, copy }: { email: string; copy: (value: str
     </View>
   );
 }
-/** "문의하기 · address": the only way forward for an email account until mail is connected. */
-export function ContactButton({ withAddress = true }: { withAddress?: boolean }) {
+/** "문의하기 · address": the only way forward for an email account until mail is connected. `link` is the bare text link of V0-auth-signup-nomail. */
+export function ContactButton({ link = false }: { link?: boolean }) {
   const { t } = useTranslation();
   const address = t('auth.support.mail');
-  const label = withAddress ? `${t('set.help.contact')} · ${address}` : t('set.help.contact');
-  return <Button variant="secondary" icon="mail" label={label} onPress={() => void Linking.openURL(`mailto:${address}`).catch(() => undefined)} />;
+  const open = () => void Linking.openURL(`mailto:${address}`).catch(() => undefined);
+  return link ? <Button variant="ghost" label={t('set.help.contact')} onPress={open} /> : <Button variant="secondary" icon="mail" label={`${t('set.help.contact')} · ${address}`} onPress={open} />;
 }

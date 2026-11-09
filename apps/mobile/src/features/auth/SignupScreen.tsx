@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppText, Banner, Button, Screen, TextField } from '../../ui/components';
 import { CycleLoader } from '../../ui/CycleLoader';
+import { AppleButton } from './AppleButton';
 import { EMAIL_PATTERN } from './authPort';
 import type { PasswordPort } from './passwordPort';
 import { passwordRules, rulesMet } from './passwordRules';
@@ -33,8 +34,8 @@ export function SignupScreen({ password, onBack, onApple }: { password: Pick<Pas
   if (!mail) {
     return (
       <Screen onBack={onBack} footer={<>
-        <Button label={t('auth.apple')} onPress={onApple} />
-        <ContactButton withAddress={false} />
+        <AppleButton onPress={onApple} />
+        <ContactButton link />
       </>}>
         <AppText variant="title" accessibilityRole="header">{t('auth.signup.nomail.title')}</AppText>
         <AppText tone="text2">{t('auth.signup.nomail.body')}</AppText>

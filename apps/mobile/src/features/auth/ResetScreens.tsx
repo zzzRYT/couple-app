@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AppText, Banner, Button, Card, Screen, TextField } from '../../ui/components';
 import { CycleLoader } from '../../ui/CycleLoader';
 import { tokens } from '../../theme/tokens';
+import { AppleButton } from './AppleButton';
 import { EMAIL_PATTERN } from './authPort';
 import type { PasswordPort, SetResult } from './passwordPort';
 import { passwordRules, rulesMet } from './passwordRules';
@@ -34,7 +35,7 @@ export function ResetScreen({ password, initialEmail = '', onBack, onApple }: { 
           <View style={{ gap: tokens.spacing[2], padding: tokens.spacing[3] }}>
             <AppText variant="heading">{t('auth.reset.nomail.apple.title')}</AppText>
             <AppText tone="text2">{t('auth.reset.nomail.apple.body')}</AppText>
-            {onApple && <Button label={t('auth.apple')} onPress={onApple} />}
+            {onApple && <AppleButton onPress={onApple} />}
           </View>
         </Card>
         <Card>
