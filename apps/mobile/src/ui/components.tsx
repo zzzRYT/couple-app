@@ -9,6 +9,7 @@ import { Icon, type IconName } from './Icon';
 import { useReducedMotion } from './motion';
 import { useLargeText } from './textScale';
 import { FlowBackAction } from './FlowBack';
+import { SheetModal } from './SheetModal';
 import { useDisplayAppearance } from '../features/settings/preferences';
 
 type AppColor = ReturnType<typeof useAppColor>;
@@ -187,20 +188,16 @@ export function BottomSheet({ visible, title, children, onClose }: { visible: bo
   const { type } = useType();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const reduced = useReducedMotion();
   return (
-    <Modal visible={visible} transparent animationType={reduced ? 'none' : 'slide'} onRequestClose={onClose} statusBarTranslucent>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(43,35,32,0.5)' }}>
-        <Pressable accessibilityRole="button" accessibilityLabel={t('common.close')} style={{ flex: 1 }} onPress={onClose} />
-        <View accessibilityViewIsModal style={{ maxHeight: '90%', backgroundColor: color.surface, borderTopLeftRadius: tokens.radius.sheet, borderTopRightRadius: tokens.radius.sheet, borderWidth: tokens.border.outline.normal, borderBottomWidth: 0, borderColor: color.line }}>
-          <View style={{ alignSelf: 'center', width: 40, height: 4, borderRadius: 2, backgroundColor: color.border, marginTop: tokens.spacing[1] }} />
-          <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: GUTTER, paddingBottom: Math.max(insets.bottom, GUTTER), gap: tokens.spacing[3] }}>
-            <Text {...WORD_BREAK} accessibilityRole="header" style={[type('heading'), { color: color.text }]}>{title}</Text>
-            {children}
-          </ScrollView>
-        </View>
-      </KeyboardAvoidingView>
-    </Modal>
+    <SheetModal visible={visible} onClose={onClose} dismissLabel={t('common.close')}>
+      <View accessibilityViewIsModal style={{ flexShrink: 1, backgroundColor: color.surface, borderTopLeftRadius: tokens.radius.sheet, borderTopRightRadius: tokens.radius.sheet, borderWidth: tokens.border.outline.normal, borderBottomWidth: 0, borderColor: color.line }}>
+        <View style={{ alignSelf: 'center', width: 40, height: 4, borderRadius: 2, backgroundColor: color.border, marginTop: tokens.spacing[1] }} />
+        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: GUTTER, paddingBottom: Math.max(insets.bottom, GUTTER), gap: tokens.spacing[3] }}>
+          <Text {...WORD_BREAK} accessibilityRole="header" style={[type('heading'), { color: color.text }]}>{title}</Text>
+          {children}
+        </ScrollView>
+      </View>
+    </SheetModal>
   );
 }
 /** Settings-style row: icon + title + value + chevron, at least 56pt tall. */

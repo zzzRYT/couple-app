@@ -364,18 +364,38 @@ exports[`renders each shared primitive and names its actions 1`] = `
     </View>
   </Modal>
   <Modal
-    animationType="slide"
+    animationType="none"
     onRequestClose={[Function]}
     statusBarTranslucent={true}
     transparent={true}
     visible={true}
   >
     <View
+      pointerEvents="none"
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "backgroundColor": "rgba(43,35,32,0.5)",
+          },
+          {
+            "opacity": 0,
+          },
+        ]
+      }
+      testID="sheet-scrim"
+    />
+    <View
       onLayout={[Function]}
       style={
         [
           {
-            "backgroundColor": "rgba(43,35,32,0.5)",
             "flex": 1,
             "justifyContent": "flex-end",
           },
@@ -392,7 +412,7 @@ exports[`renders each shared primitive and names its actions 1`] = `
           {
             "busy": undefined,
             "checked": undefined,
-            "disabled": undefined,
+            "disabled": false,
             "expanded": undefined,
             "selected": undefined,
           }
@@ -424,168 +444,186 @@ exports[`renders each shared primitive and names its actions 1`] = `
         }
       />
       <View
-        accessibilityViewIsModal={true}
         style={
-          {
-            "backgroundColor": "#FFF8EC",
-            "borderBottomWidth": 0,
-            "borderColor": "#4A3426",
-            "borderTopLeftRadius": 28,
-            "borderTopRightRadius": 28,
-            "borderWidth": 2,
-            "maxHeight": "90%",
-          }
+          [
+            {
+              "maxHeight": "90%",
+            },
+            {
+              "transform": [
+                {
+                  "translateY": 1334,
+                },
+              ],
+            },
+          ]
         }
+        testID="sheet-panel"
       >
         <View
+          accessibilityViewIsModal={true}
           style={
             {
-              "alignSelf": "center",
-              "backgroundColor": "#8A6B55",
-              "borderRadius": 2,
-              "height": 4,
-              "marginTop": 8,
-              "width": 40,
+              "backgroundColor": "#FFF8EC",
+              "borderBottomWidth": 0,
+              "borderColor": "#4A3426",
+              "borderTopLeftRadius": 28,
+              "borderTopRightRadius": 28,
+              "borderWidth": 2,
+              "flexShrink": 1,
             }
           }
-        />
-        <RCTScrollView
-          contentContainerStyle={
-            {
-              "gap": 16,
-              "padding": 20,
-              "paddingBottom": 34,
-            }
-          }
-          keyboardShouldPersistTaps="handled"
         >
-          <View>
-            <Text
-              accessibilityRole="header"
-              lineBreakStrategyIOS="hangul-word"
-              style={
-                [
-                  {
-                    "fontFamily": "GaeguBold",
-                    "fontSize": 20,
-                    "lineHeight": 25,
-                  },
-                  {
-                    "color": "#3F2D22",
-                  },
-                ]
+          <View
+            style={
+              {
+                "alignSelf": "center",
+                "backgroundColor": "#8A6B55",
+                "borderRadius": 2,
+                "height": 4,
+                "marginTop": 8,
+                "width": 40,
               }
-            >
-              Details
-            </Text>
-            <View
-              accessibilityLabel="Open"
-              accessibilityRole="button"
-              accessibilityState={
-                {
-                  "busy": undefined,
-                  "checked": undefined,
-                  "disabled": false,
-                  "expanded": undefined,
-                  "selected": undefined,
-                }
+            }
+          />
+          <RCTScrollView
+            contentContainerStyle={
+              {
+                "gap": 16,
+                "padding": 20,
+                "paddingBottom": 34,
               }
-              accessibilityValue={
-                {
-                  "max": undefined,
-                  "min": undefined,
-                  "now": undefined,
-                  "text": undefined,
-                }
-              }
-              accessible={true}
-              collapsable={false}
-              focusable={true}
-              onBlur={[Function]}
-              onClick={[Function]}
-              onFocus={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
-              style={
-                {
-                  "alignItems": "center",
-                  "borderBottomWidth": 0,
-                  "borderColor": "#E3CDB0",
-                  "flexDirection": "row",
-                  "gap": 12,
-                  "minHeight": 56,
-                  "opacity": 1,
-                  "paddingVertical": 12,
-                }
-              }
-            >
+            }
+            keyboardShouldPersistTaps="handled"
+          >
+            <View>
               <Text
+                accessibilityRole="header"
                 lineBreakStrategyIOS="hangul-word"
                 style={
                   [
                     {
-                      "fontFamily": "GowunDodum",
-                      "fontSize": 16,
-                      "lineHeight": 24,
+                      "fontFamily": "GaeguBold",
+                      "fontSize": 20,
+                      "lineHeight": 25,
                     },
                     {
                       "color": "#3F2D22",
-                      "flex": 1,
                     },
                   ]
                 }
               >
-                Open
+                Details
               </Text>
               <View
-                accessibilityElementsHidden={true}
-                importantForAccessibility="no-hide-descendants"
-                pointerEvents="none"
+                accessibilityLabel="Open"
+                accessibilityRole="button"
+                accessibilityState={
+                  {
+                    "busy": undefined,
+                    "checked": undefined,
+                    "disabled": false,
+                    "expanded": undefined,
+                    "selected": undefined,
+                  }
+                }
+                accessibilityValue={
+                  {
+                    "max": undefined,
+                    "min": undefined,
+                    "now": undefined,
+                    "text": undefined,
+                  }
+                }
+                accessible={true}
+                collapsable={false}
+                focusable={true}
+                onBlur={[Function]}
+                onClick={[Function]}
+                onFocus={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
                 style={
                   {
-                    "height": 18,
-                    "width": 18,
+                    "alignItems": "center",
+                    "borderBottomWidth": 0,
+                    "borderColor": "#E3CDB0",
+                    "flexDirection": "row",
+                    "gap": 12,
+                    "minHeight": 56,
+                    "opacity": 1,
+                    "paddingVertical": 12,
                   }
                 }
               >
+                <Text
+                  lineBreakStrategyIOS="hangul-word"
+                  style={
+                    [
+                      {
+                        "fontFamily": "GowunDodum",
+                        "fontSize": 16,
+                        "lineHeight": 24,
+                      },
+                      {
+                        "color": "#3F2D22",
+                        "flex": 1,
+                      },
+                    ]
+                  }
+                >
+                  Open
+                </Text>
                 <View
+                  accessibilityElementsHidden={true}
+                  importantForAccessibility="no-hide-descendants"
+                  pointerEvents="none"
                   style={
                     {
                       "height": 18,
                       "width": 18,
                     }
                   }
-                  testID="skia-canvas"
                 >
                   <View
-                    testID="skia-group"
-                    transform={
-                      [
-                        {
-                          "scale": 0.75,
-                        },
-                      ]
+                    style={
+                      {
+                        "height": 18,
+                        "width": 18,
+                      }
                     }
+                    testID="skia-canvas"
                   >
                     <View
-                      color="#6B5444"
-                      path="M9 5 L16 12 L9 19"
-                      strokeCap="round"
-                      strokeJoin="round"
-                      strokeWidth={2.9333333333333336}
-                      style="stroke"
-                      testID="skia-path"
-                    />
+                      testID="skia-group"
+                      transform={
+                        [
+                          {
+                            "scale": 0.75,
+                          },
+                        ]
+                      }
+                    >
+                      <View
+                        color="#6B5444"
+                        path="M9 5 L16 12 L9 19"
+                        strokeCap="round"
+                        strokeJoin="round"
+                        strokeWidth={2.9333333333333336}
+                        style="stroke"
+                        testID="skia-path"
+                      />
+                    </View>
                   </View>
                 </View>
               </View>
             </View>
-          </View>
-        </RCTScrollView>
+          </RCTScrollView>
+        </View>
       </View>
     </View>
   </Modal>
