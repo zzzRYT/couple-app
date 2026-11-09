@@ -21,11 +21,13 @@ it('initializes the room time zone note from the device zone', async () => {
   expect(screen.getByText(screen.t('space.tz.note', { tz: 'Asia/Seoul' }))).toBeTruthy();
 });
 
-it('rejects nonexistent and future dates without calling the server', async () => {
+it('offers only real dates and rejects a future date without calling the server', async () => {
   const { screen, createSpace, pick, submit } = await setup();
-  await pick('year', 2026); await pick('month', 2); await pick('day', 30);
-  await submit();
-  expect(screen.getByText(screen.t('space.date.invalid'))).toBeTruthy();
+  await fireEvent.press(screen.getByTestId('date-year'));
+  await fireEvent.press(screen.getByTestId('wheel-month-2'));
+  expect(screen.getByTestId('wheel-day-28')).toBeTruthy();
+  expect(screen.queryByTestId('wheel-day-29')).toBeNull();
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('common.done') }));
   await pick('month', 12); await pick('day', 1);
   await submit();
   expect(screen.getByText(screen.t('space.date.future'))).toBeTruthy();
