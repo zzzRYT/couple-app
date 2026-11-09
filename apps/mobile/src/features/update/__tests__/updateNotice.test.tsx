@@ -2,7 +2,7 @@ import { Linking } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { act, fireEvent, waitFor } from '@testing-library/react-native';
 import { renderWithI18n } from '../../../test/render';
-import { APP_STORE } from '../../../config/identity';
+import { APP_STORE } from '../../../config/appStore';
 import { isNewer, storeVersion } from '../storeVersion';
 import { UpdateNotice } from '../UpdateNotice';
 

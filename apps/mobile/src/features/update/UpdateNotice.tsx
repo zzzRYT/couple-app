@@ -3,7 +3,8 @@ import * as Application from 'expo-application';
 import { getLocales } from 'expo-localization';
 import { useTranslation } from 'react-i18next';
 import { Button, Dialog } from '../../ui/components';
-import { APP_STORE, appVariant } from '../../config/identity';
+import { appVariant } from '../../config/identity';
+import { APP_STORE } from '../../config/appStore';
 import { storeVersion } from './storeVersion';
 import { useUpdateNotice } from './useUpdateNotice';
 
