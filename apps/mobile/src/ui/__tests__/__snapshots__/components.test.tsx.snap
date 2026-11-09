@@ -234,7 +234,8 @@ exports[`renders each shared primitive and names its actions 1`] = `
           "backgroundColor": "rgba(43,35,32,0.5)",
           "flex": 1,
           "justifyContent": "center",
-          "padding": 20,
+          "paddingHorizontal": 16,
+          "paddingVertical": 20,
         }
       }
     >
@@ -246,7 +247,7 @@ exports[`renders each shared primitive and names its actions 1`] = `
             "borderColor": "#4A3426",
             "borderRadius": 28,
             "borderWidth": 2,
-            "gap": 16,
+            "gap": 12,
             "padding": 24,
           }
         }
@@ -263,9 +264,9 @@ exports[`renders each shared primitive and names its actions 1`] = `
             style={
               [
                 {
-                  "fontFamily": "GaeguBold",
-                  "fontSize": 20,
-                  "lineHeight": 25,
+                  "fontFamily": "NotoSansKRBold",
+                  "fontSize": 19,
+                  "lineHeight": 29,
                 },
                 {
                   "color": "#3F2D22",
@@ -278,7 +279,7 @@ exports[`renders each shared primitive and names its actions 1`] = `
           <View
             style={
               {
-                "gap": 8,
+                "gap": 4,
               }
             }
           >

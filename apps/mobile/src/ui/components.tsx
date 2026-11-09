@@ -165,18 +165,19 @@ export function SectionLabel({ text }: { text: string }) {
   const { emphasis } = useType();
   return <Text {...WORD_BREAK} accessibilityRole="header" style={[emphasis(14), { color: color.text2, marginTop: tokens.spacing[2] }]}>{text}</Text>;
 }
+/** V0-11 common dialog: 16pt from the screen edges, 12pt between parts, actions 4pt apart. */
 export function Dialog({ visible, title, body, icon, children, onClose }: { visible: boolean; title: string; body?: string; icon?: IconName; children: ReactNode; onClose: () => void }) {
   const color = useAppColor();
-  const { type } = useType();
+  const { type, emphasis } = useType();
   const reduced = useReducedMotion();
   return (
     <Modal visible={visible} transparent animationType={reduced ? 'none' : 'fade'} onRequestClose={onClose} statusBarTranslucent>
-      <View style={{ flex: 1, justifyContent: 'center', padding: GUTTER, backgroundColor: 'rgba(43,35,32,0.5)' }}>
-        <ScrollView accessibilityViewIsModal style={{ flexGrow: 0 }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[3], backgroundColor: color.surface, borderRadius: tokens.radius.sheet, borderWidth: tokens.border.outline.normal, borderColor: color.line }}>
+      <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: tokens.spacing[3], paddingVertical: GUTTER, backgroundColor: 'rgba(43,35,32,0.5)' }}>
+        <ScrollView accessibilityViewIsModal style={{ flexGrow: 0 }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2], backgroundColor: color.surface, borderRadius: tokens.radius.sheet, borderWidth: tokens.border.outline.normal, borderColor: color.line }}>
           {icon && <View style={{ width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center', backgroundColor: color.surface2, borderWidth: tokens.border.outline.normal, borderColor: color.line }}><Icon name={icon} size={26} color={color.text} /></View>}
-          <Text {...WORD_BREAK} accessibilityRole="header" style={[type('heading'), { color: color.text }]}>{title}</Text>
+          <Text {...WORD_BREAK} accessibilityRole="header" style={[emphasis(19), { color: color.text }]}>{title}</Text>
           {body ? <Text {...WORD_BREAK} style={[type('body'), { color: color.text2 }]}>{body}</Text> : null}
-          <View style={{ gap: tokens.spacing[1] }}>{children}</View>
+          <View style={{ gap: tokens.spacing[0] }}>{children}</View>
         </ScrollView>
       </View>
     </Modal>
