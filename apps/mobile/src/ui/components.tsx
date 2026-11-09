@@ -57,13 +57,16 @@ export function Button({ label, onPress, disabled = false, loading = false, vari
     </Pressable>
   );
 }
-/** Round 48pt icon button (components.md §2.2); `plain` drops the surface for top-bar back/close. */
-export function IconButton({ icon, label, onPress, disabled = false, plain = false, testID }: { icon: IconName; label: string; onPress: () => void; disabled?: boolean; plain?: boolean; testID?: string }) {
+/** Round 48pt icon button (components.md §2.2); `plain` drops the surface for top-bar back/close. `compact` is the 44pt button V0 cards draw (celebration close, invite copy and share), with a `secondary` or `primary` face. */
+export function IconButton({ icon, label, onPress, disabled = false, plain = false, compact = false, tone, testID }: { icon: IconName; label: string; onPress: () => void; disabled?: boolean; plain?: boolean; compact?: boolean; tone?: 'secondary' | 'primary'; testID?: string }) {
   const color = useAppColor();
+  const size = compact ? tokens.touch.platformMinimum.ios : tokens.touch.minimum;
+  const face = plain ? 'transparent' : tone === 'primary' ? color.primary : tone === 'secondary' ? color.surface2 : color.surface;
+  const ink = tone === 'primary' ? color.onPrimary : plain && compact ? color.text2 : color.text;
   return (
     <Pressable testID={testID} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled }} disabled={disabled} onPress={onPress} hitSlop={4}
-      style={({ pressed }) => ({ width: tokens.touch.minimum, height: tokens.touch.minimum, borderRadius: tokens.radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: plain ? 'transparent' : color.surface, borderWidth: plain ? 0 : tokens.border.outline.normal, borderColor: color.line, opacity: disabled ? 0.5 : pressed ? 0.7 : 1 })}>
-      <Icon name={icon} size={plain ? 26 : 22} color={color.text} />
+      style={({ pressed }) => ({ width: size, height: size, borderRadius: tokens.radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: face, borderWidth: plain ? 0 : compact ? 1.5 : tokens.border.outline.normal, borderColor: tone === 'secondary' ? color.border : color.line, opacity: disabled ? 0.5 : pressed ? 0.7 : 1 })}>
+      <Icon name={icon} size={compact ? 20 : plain ? 26 : 22} color={ink} />
     </Pressable>
   );
 }
@@ -114,18 +117,19 @@ export function OccupancyChip({ label, state = 'free' }: { label: string; state?
 }
 type BannerKind = 'info' | 'success' | 'warn' | 'danger' | 'offline';
 const bannerIcons: Record<BannerKind, IconName> = { info: 'info', success: 'check', warn: 'warn', danger: 'warn', offline: 'offline' };
-/** `quiet` sets a one-line note in body text instead of a bold title (e.g. the S03 time-zone note). */
-export function Banner({ text, body, kind = 'info', action, icon, quiet = false }: { text: string; body?: string | null; kind?: BannerKind; action?: { label: string; onPress: () => void; disabled?: boolean }; icon?: IconName; quiet?: boolean }) {
+/** `quiet` sets a one-line note in body text instead of a bold title (e.g. the S03 time-zone note). `band` is the slimmer V0-03 status band: thinner edge, title and note in the kind's ink, announced as a status rather than an alert. */
+export function Banner({ text, body, kind = 'info', action, icon, quiet = false, band = false }: { text: string; body?: string | null; kind?: BannerKind; action?: { label: string; onPress: () => void; disabled?: boolean }; icon?: IconName; quiet?: boolean; band?: boolean }) {
   const color = useAppColor();
   const { type, emphasis } = useType();
   const faces = { info: color.infoBg, success: color.successBg, warn: color.warnBg, danger: color.dangerBg, offline: color.surface2 };
   const inks = { info: color.info, success: color.success, warn: color.warn, danger: color.danger, offline: color.text2 };
+  const role = band ? { role: 'status' as const, accessibilityLiveRegion: 'polite' as const } : { accessibilityRole: 'alert' as const };
   return (
-    <View accessible={!action} accessibilityRole="alert" style={{ flexDirection: 'row', gap: tokens.spacing[2], backgroundColor: faces[kind], borderWidth: tokens.border.outline.normal, borderColor: inks[kind], paddingVertical: tokens.spacing[2], paddingHorizontal: tokens.spacing[3], borderRadius: tokens.radius.input }}>
-      <View style={{ paddingTop: 2 }}><Icon name={icon ?? bannerIcons[kind]} size={20} color={inks[kind]} /></View>
-      <View style={{ flex: 1, gap: 2 }}>
-        <Text {...WORD_BREAK} style={[quiet ? type('bodySm') : emphasis(15), { color: color.text }]}>{text}</Text>
-        {body ? <Text {...WORD_BREAK} style={[type('bodySm'), { color: color.text2 }]}>{body}</Text> : null}
+    <View accessible={!action} {...role} style={{ flexDirection: 'row', gap: band ? 10 : tokens.spacing[2], alignItems: band ? 'center' : undefined, backgroundColor: faces[kind], borderWidth: band ? 1.5 : tokens.border.outline.normal, borderColor: inks[kind], paddingVertical: band ? 10 : tokens.spacing[2], paddingHorizontal: band ? 14 : tokens.spacing[3], borderRadius: tokens.radius.input }}>
+      <View style={{ paddingTop: band ? 0 : 2 }}><Icon name={icon ?? bannerIcons[kind]} size={20} color={inks[kind]} /></View>
+      <View style={{ flex: 1, gap: band ? 0 : 2 }}>
+        <Text {...WORD_BREAK} style={[band ? emphasis(14) : quiet ? type('bodySm') : emphasis(15), { color: band ? inks[kind] : color.text }]}>{text}</Text>
+        {body ? <Text {...WORD_BREAK} style={[type('bodySm'), band ? { fontSize: 13, color: inks[kind] } : { color: color.text2 }]}>{body}</Text> : null}
         {action && <Pressable accessibilityRole="button" accessibilityLabel={action.label} disabled={action.disabled} onPress={action.onPress} hitSlop={12} style={{ alignSelf: 'flex-start', minHeight: 32, justifyContent: 'center', opacity: action.disabled ? 0.5 : 1 }}>
           <Text {...WORD_BREAK} style={[emphasis(15), { color: color.primary, textDecorationLine: 'underline' }]}>{action.label}</Text>
         </Pressable>}
@@ -133,7 +137,7 @@ export function Banner({ text, body, kind = 'info', action, icon, quiet = false 
     </View>
   );
 }
-/** Dark brown (light app) / cream (dark app) pill that hides itself after 3s; important information also stays on screen. */
+/** V0 notice band: dark brown (light app) / cream (dark app), as wide as its container, hides itself after 3s; important information also stays on screen. */
 export function Toast({ text, onHide, icon = 'check' }: { text: string; onHide?: () => void; icon?: IconName }) {
   const dark = useDisplayAppearance().scheme === 'dark';
   const { emphasis } = useType();
@@ -145,8 +149,8 @@ export function Toast({ text, onHide, icon = 'check' }: { text: string; onHide?:
   const face = dark ? tokens.color.app.dark.normal.text : tokens.color.app.light.normal.text;
   const ink = dark ? tokens.color.app.dark.normal.bg : tokens.color.app.light.normal.surface;
   return (
-    <View accessible accessibilityRole="alert" accessibilityLiveRegion="polite" style={{ alignSelf: 'center', flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[1], maxWidth: '100%', paddingVertical: tokens.spacing[2], paddingHorizontal: tokens.spacing[4], borderRadius: tokens.radius.pill, backgroundColor: face }}>
-      <Icon name={icon} size={18} color={ink} />
+    <View accessible accessibilityRole="alert" accessibilityLiveRegion="polite" style={{ alignSelf: 'stretch', flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: tokens.spacing[2], paddingHorizontal: tokens.spacing[3], borderRadius: 18, backgroundColor: face, shadowColor: '#000000', shadowOpacity: 0.18, shadowRadius: 18, shadowOffset: { width: 0, height: 6 } }}>
+      <Icon name={icon} size={20} color={ink} />
       <Text {...WORD_BREAK} style={[emphasis(15), { color: ink, flexShrink: 1 }]}>{text}</Text>
     </View>
   );
