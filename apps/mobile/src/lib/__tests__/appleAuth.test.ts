@@ -1,6 +1,6 @@
 import * as Crypto from 'expo-crypto';
 import { signInAsync } from '../../test/appleAuthMock';
-import { supabaseAuth } from '../auth';
+import { APPLE_EXCHANGE_TIMEOUT_MS, supabaseAuth } from '../auth';
 
 jest.mock('expo-crypto', () => ({
   randomUUID: jest.fn(() => 'raw'),
@@ -30,4 +30,23 @@ it('maps cancel, missing token and Supabase errors', async () => {
   expect(await supabaseAuth(client({ message: 'bad nonce' }).client).apple()).toBe('error');
   signInAsync.mockRejectedValueOnce(new Error('not available'));
   expect(await supabaseAuth(client().client).apple()).toBe('error');
+});
+it('tells the screen when the sheet has answered, never on cancel', async () => {
+  const onAuthorized = jest.fn();
+  signInAsync.mockRejectedValueOnce(Object.assign(new Error('cancel'), { code: 'ERR_REQUEST_CANCELED' }));
+  expect(await supabaseAuth(client().client).apple(onAuthorized)).toBe('cancelled');
+  expect(onAuthorized).not.toHaveBeenCalled();
+  signInAsync.mockResolvedValueOnce({ identityToken: 'id-token' });
+  const { client: c, signInWithIdToken } = client();
+  signInWithIdToken.mockImplementation(async () => { expect(onAuthorized).toHaveBeenCalledTimes(1); return { error: null }; });
+  expect(await supabaseAuth(c).apple(onAuthorized)).toBe('ok');
+});
+it('gives up on an id token exchange that never answers, so the sign-in screen can show its error', async () => {
+  jest.useFakeTimers();
+  signInAsync.mockResolvedValueOnce({ identityToken: 'id-token' });
+  const signInWithIdToken = jest.fn(() => new Promise(() => {}));
+  const result = supabaseAuth({ auth: { signInWithIdToken } } as never).apple();
+  await jest.advanceTimersByTimeAsync(APPLE_EXCHANGE_TIMEOUT_MS);
+  expect(await result).toBe('error');
+  jest.useRealTimers();
 });

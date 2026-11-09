@@ -4,21 +4,29 @@ import * as Linking from 'expo-linking';
 import type { createSupabase } from './supabase';
 import type { AuthPort } from '../features/auth/authPort';
 type Supabase = ReturnType<typeof createSupabase>;
+/** How long the id token exchange may take after the Apple sheet answers before the sign-in screen shows its error. */
+export const APPLE_EXCHANGE_TIMEOUT_MS = 20_000;
 function rateMinutes(error: { status?: number } | null): { rateLimitedMinutes: number } | null {
   return error?.status === 429 ? { rateLimitedMinutes: 5 } : null;
+}
+function withTimeout<T>(work: Promise<T>, ms: number): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error('TIMEOUT')), ms); });
+  return Promise.race([work, timeout]).finally(() => clearTimeout(timer));
 }
 /** Supabase Auth adapter: native Apple id tokens on iOS, browser redirect for Kakao (disabled) until its SDK lands (G5). */
 export function supabaseAuth(client: Supabase, onAppleCode?: (authorizationCode: string) => void): AuthPort {
   return {
-    async apple() {
-      // Apple receives the SHA-256 of the nonce and Supabase the raw value, so a replayed token fails the check.
-      const rawNonce = `${Crypto.randomUUID()}${Crypto.randomUUID()}`;
-      const hashedNonce = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, rawNonce);
+    async apple(onAuthorized) {
       try {
+        // Apple receives the SHA-256 of the nonce and Supabase the raw value, so a replayed token fails the check.
+        const rawNonce = `${Crypto.randomUUID()}${Crypto.randomUUID()}`;
+        const hashedNonce = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, rawNonce);
         // No FULL_NAME scope: the data model keeps no display names, so Apple's first-sign-in name is never requested or stored.
         const credential = await AppleAuthentication.signInAsync({ requestedScopes: [AppleAuthentication.AppleAuthenticationScope.EMAIL], nonce: hashedNonce });
         if (!credential.identityToken) return 'error';
-        const { error } = await client.auth.signInWithIdToken({ provider: 'apple', token: credential.identityToken, nonce: rawNonce });
+        onAuthorized?.();
+        const { error } = await withTimeout(client.auth.signInWithIdToken({ provider: 'apple', token: credential.identityToken, nonce: rawNonce }), APPLE_EXCHANGE_TIMEOUT_MS);
         if (error) return 'error';
         // The server keeps Apple's token sealed so a later password-confirmed deletion can still revoke it.
         if (credential.authorizationCode) onAppleCode?.(credential.authorizationCode);

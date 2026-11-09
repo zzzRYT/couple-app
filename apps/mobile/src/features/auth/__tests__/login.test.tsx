@@ -22,17 +22,28 @@ it('V0-F01-AC-01 offers Sign in with Apple first and email second in product bui
   expect(screen.queryByText(screen.t('login.brandNote'))).toBeNull();
 });
 
-it('V0-F01-AC-02 uses the native Apple flow and shows processing, cancelled with retry, then error', async () => {
+it('V0-F01-AC-02 opens the Apple sheet over the intro with no page of its own, shows progress there once the sheet answers, then cancelled with retry and error', async () => {
   let resolve: (value: 'cancelled') => void = () => {};
-  const auth = port({ apple: jest.fn().mockImplementationOnce(() => new Promise((r) => { resolve = r; })).mockResolvedValueOnce('error') });
-  const screen = await renderWithI18n(<LoginScreen auth={auth} options={product} onDone={jest.fn()} onEmail={jest.fn()} />);
+  let sheetAnswered = () => {};
+  const apple = jest.fn().mockImplementationOnce((onAuthorized: () => void) => { sheetAnswered = onAuthorized; return new Promise((r) => { resolve = r; }); }).mockResolvedValueOnce('error');
+  const auth = port({ apple });
+  const screen = await renderWithI18n(<LoginScreen auth={auth} options={product} onDone={jest.fn()} onEmail={jest.fn()} onEmailLogin={jest.fn()} />);
   await fireEvent.press(screen.getByRole('button', { name: screen.t('login.apple') }));
-  expect(screen.getByRole('progressbar')).toBeTruthy();
+  // V0-start-intro-apple: the system sheet covers the intro, which stays as it is underneath.
+  expect(screen.getByText(screen.t('start.intro.title'))).toBeTruthy();
+  expect(screen.queryByRole('progressbar')).toBeNull();
   expect(auth.oauth).not.toHaveBeenCalled();
+  // V0-start-intro-busy: the same screen shows progress and locks its buttons while the session is made.
+  await act(async () => { sheetAnswered(); });
+  expect(screen.getByRole('progressbar')).toBeTruthy();
+  expect(screen.getByText(screen.t('start.intro.title'))).toBeTruthy();
+  expect(screen.getByRole('button', { name: screen.t('auth.email.entry') }).props.accessibilityState.disabled).toBe(true);
   await act(async () => { resolve('cancelled'); });
+  expect(screen.queryByRole('progressbar')).toBeNull();
   expect(screen.getByText(screen.t('login.cancelled.title'))).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: screen.t('common.retry') }));
   expect(await screen.findByText(screen.t('login.error.title'))).toBeTruthy();
+  expect(screen.queryByRole('progressbar')).toBeNull();
   expect(auth.apple).toHaveBeenCalledTimes(2);
 });
 
