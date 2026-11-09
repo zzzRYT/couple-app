@@ -19,6 +19,7 @@ import { V0_FEATURES } from '../config/features';
 import { V0Error, V0Loading } from '../features/home/states';
 import { useNotificationSync } from '../features/notifications/useNotificationSync';
 import { installNativeWidgets } from '../features/widgets/nativeWidgets';
+import { UpdateNotice } from '../features/update/UpdateNotice';
 
 void SplashScreen.preventAutoHideAsync();
 Notifications.setNotificationHandler({ handleNotification: async () => ({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false }) });
@@ -60,7 +61,7 @@ function AppNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
   if (entry === 'active' && state.status === 'error' && !state.offline) return <V0Error retry={() => void refresh()} />;
   if (gate.kind === 'booting' && session && (entry === 'error' || (entry === 'active' && state.status === 'error' && !state.snapshot))) return <V0Error offline={state.offline} retry={() => { void reload(); }} />;
   if (gate.kind === 'booting') return <V0Loading />;
-  return <Stack screenOptions={{ headerShown: false }}>
+  return <><Stack screenOptions={{ headerShown: false }}>
     <Stack.Screen name="i/[code]" />
     <Stack.Screen name="invite/[code]" />
     <Stack.Screen name="auth-callback" options={{ gestureEnabled: false }} />
@@ -94,5 +95,5 @@ function AppNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
     <Stack.Protected guard={gate.kind === 'active' && V0_FEATURES.reportBlock}><Stack.Screen name="settings/report" /></Stack.Protected>
     {/* Any signed-in state: the space may end (realtime) while the deletion is in flight, and the screen must stay mounted. */}
     <Stack.Protected guard={gate.kind === 'active' || gate.kind === 'needsOnboardingChoice' || gate.kind === 'ended'}><Stack.Screen name="settings/delete-account" /><Stack.Screen name="settings/reset-password" /></Stack.Protected>
-  </Stack>;
+  </Stack><UpdateNotice /></>;
 }

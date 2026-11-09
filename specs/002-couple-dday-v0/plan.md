@@ -234,6 +234,7 @@ CI(`.github/workflows/ci.yml`)는 이미 lint·typecheck·mobile test·pgTAP·de
 | V0-F14-AC-01 | CI 정적 + 기기 | `tools/tests/release-config.test.mjs`(eas.json·workflow 정적 검사), 오너 실행 로그 |
 | V0-F14-AC-02 | 기기 | quickstart §TestFlight |
 | V0-F14-AC-03, -04 | 기기 | quickstart §OTA |
+| V0-F14-AC-07, -08 | RNTL | `features/update/__tests__/updateNotice.test.tsx` |
 | V0-F14-AC-05 | CI | 기존 `secret-scan.yml` + release-config 테스트(비밀 리터럴 없음) |
 | V0-F14-AC-06 | Jest | `src/config/__tests__/identity.test.ts`(기존) |
 | V0-F01-AC-01~03 | RNTL | `features/auth/__tests__/login.test.tsx`, `src/app/__tests__/navigationFlows.test.tsx` |
