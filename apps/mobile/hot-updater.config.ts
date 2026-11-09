@@ -3,6 +3,7 @@ import { expo } from '@hot-updater/expo';
 import { defineConfig } from 'hot-updater';
 import { apiKeys, insights, remoteConfig } from 'hot-updater/plugins';
 import { existsSync } from 'node:fs';
+import { productionTarget, supabaseBuildValues } from './src/config/supabase.ts';
 
 /** The Aroom OTA server (docs/ota.md); ids are public configuration, the credentials below are not. */
 export const OTA_CLOUDFLARE = {
@@ -42,6 +43,10 @@ export function checkBundleEnv(channel: string, env: NodeJS.ProcessEnv) {
   if (!env.EXPO_PUBLIC_HOT_UPDATER_API_KEY) throw new Error('EXPO_PUBLIC_HOT_UPDATER_API_KEY must be set to build an OTA bundle (run it through `eas env:exec`)');
   if ((channel === 'production' || channel === 'preview') && env.EXPO_PUBLIC_APP_VARIANT !== channel) {
     throw new Error(`An OTA bundle for the ${channel} channel must be built with APP_VARIANT and EXPO_PUBLIC_APP_VARIANT=${channel}`);
+  }
+  // Preview talks to Aroom-dev, and promote copies the bundle to production unchanged, so it must also carry Aroom-prod's values.
+  if ((channel === 'production' || channel === 'preview') && !productionTarget(supabaseBuildValues(env))) {
+    throw new Error(`An OTA bundle for the ${channel} channel must carry Aroom-prod's public values (EXPO_PUBLIC_SUPABASE_PROD_URL and EXPO_PUBLIC_SUPABASE_PROD_PUBLISHABLE_KEY in the EAS preview environment)`);
   }
 }
 

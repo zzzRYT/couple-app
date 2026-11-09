@@ -15,13 +15,23 @@ Expo constraints: Hot Updater and `expo-updates` both own the release bundle URL
 
 ## Publish an update (1.0.1 and later)
 
-1. **Actions → OTA**, `channel=preview`, a `message`. It runs `hot-updater deploy --platform ios --channel preview` under `eas env:exec preview`, which supplies the Cloudflare credentials, the client key and the Supabase values. Copy the bundle ID it prints.
+1. **Actions → OTA**, `channel=preview`, a `message`. It runs `hot-updater deploy --platform ios --channel preview` under `eas env:exec preview`, which supplies the Cloudflare credentials, the client key and the Supabase values (see [Supabase project](#supabase-project)). Copy the bundle ID it prints.
 2. On a TestFlight build, open the app, close it, and open it again: the change shows.
 3. **Actions → OTA**, `channel=production`, `bundle=<ID from step 1>`. It runs `hot-updater bundle promote <ID> --target production --action copy`, so production gets the exact bundle checked on preview.
 
 Roll back with `hot-updater bundle disable <ID>`, which re-resolves delivery to the previous bundle. Run CLI commands from `apps/mobile` through the EAS environment, for example `eas env:exec preview 'npx hot-updater bundle list --channel production'`; no local secret file is needed. `npx hot-updater console` opens the web console the same way.
 
-`deploy` defaults to the production channel. `hot-updater.config.ts` refuses a production deploy unless `HOT_UPDATER_PRODUCTION_DEPLOY=true`, refuses any bundle without `EXPO_PUBLIC_HOT_UPDATER_API_KEY`, and refuses a preview or production bundle built for another variant: a bundle inlines `EXPO_PUBLIC_*` values, and one without the key would stop later updates on that device.
+`deploy` defaults to the production channel. `hot-updater.config.ts` refuses a production deploy unless `HOT_UPDATER_PRODUCTION_DEPLOY=true`, refuses any bundle without `EXPO_PUBLIC_HOT_UPDATER_API_KEY`, refuses a preview or production bundle built for another variant, and refuses a preview or production bundle without Aroom-prod's Supabase values: a bundle inlines `EXPO_PUBLIC_*` values, and one without the key would stop later updates on that device.
+
+## Supabase project
+
+The EAS preview environment points at Aroom-dev, and promote copies the checked preview bundle to production unchanged, so the native binary picks the Supabase project, not the bundle (`src/config/supabase.ts`, [remote Supabase setup](remote-supabase-setup.md#7-앱을-원격-프로젝트에-연결)):
+
+- A preview bundle inlines Aroom-dev's URL and key and also `EXPO_PUBLIC_SUPABASE_PROD_URL` and `EXPO_PUBLIC_SUPABASE_PROD_PUBLISHABLE_KEY` (Aroom-prod's public values, in the EAS preview environment).
+- The App Store binary (`com.jinjinstar.aroom`) always uses Aroom-prod. A bundle without Aroom-prod's values does not start there, so Hot Updater records it as crashed and goes back to the previous bundle; the deploy check above stops such a bundle first.
+- `.dev` binaries (development, preview, TestFlight) use the bundle's own project, which is Aroom-dev for preview.
+
+TestFlight (`.dev`) testers move to the empty Aroom-dev on their next preview build or preview OTA. The accounts and spaces they made on Aroom-prod do not show in that app.
 
 ## 1.0.0 installs (EAS Update)
 

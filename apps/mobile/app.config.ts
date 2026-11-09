@@ -1,4 +1,5 @@
 import { APP_IDENTITY, EAS_PROJECT, IOS_WIDGETS_SIGNED, appVariant } from './src/config/identity.ts';
+import { productionTarget, supabaseBuildValues } from './src/config/supabase.ts';
 
 // APP_VARIANT comes from the EAS build profile (eas.json). Development and preview builds use the separate .dev
 // bundle id so the owner can register it with Apple before the production name check (G2).
@@ -20,6 +21,10 @@ if (process.env.EAS_BUILD === 'true' && process.env.HOT_UPDATER_CHANNEL) {
 }
 if (process.env.EAS_BUILD === 'true' && variant !== 'development' && !process.env.EXPO_PUBLIC_HOT_UPDATER_API_KEY) {
   throw new Error('EXPO_PUBLIC_HOT_UPDATER_API_KEY must be set in the EAS environment for preview and production builds');
+}
+// The App Store binary refuses to start without Aroom-prod's values (src/config/supabase.ts), so its build stops first.
+if (process.env.EAS_BUILD === 'true' && variant === 'production' && !productionTarget(supabaseBuildValues(process.env))) {
+  throw new Error('EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY in the EAS production environment must be Aroom-prod\'s');
 }
 
 const iosBundleId = dev ? APP_IDENTITY.devIosBundleId : APP_IDENTITY.iosBundleId;

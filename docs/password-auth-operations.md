@@ -6,8 +6,10 @@
 
 순서를 지킨다. 함수가 먼저 올라가면 표가 없어서 실패한다.
 
-1. `supabase db push` — `20261106000100_v0_password_auth.sql`. 트리거 때문에 이 순간부터 이메일 계정은 `review_login_email` 주소만 만들 수 있다. Apple 로그인은 영향이 없다.
-2. `supabase functions deploy auth-password --no-verify-jwt` 와 `supabase functions deploy account`. `auth-password`는 로그인 전 경로가 있어 `verify_jwt = false`다.
+프로젝트마다(Aroom-dev, Aroom-prod) 따로 한다. 명령은 `node tools/supabase/remote.mjs <dev|prod> …`로 대상을 정한다(`docs/remote-supabase-setup.md`).
+
+1. `node tools/supabase/remote.mjs <dev|prod> db push` — `20261106000100_v0_password_auth.sql`. 트리거 때문에 이 순간부터 이메일 계정은 `review_login_email` 주소만 만들 수 있다. Apple 로그인은 영향이 없다.
+2. `node tools/supabase/remote.mjs <dev|prod> functions deploy auth-password account`. `auth-password`는 로그인 전 경로가 있어 `verify_jwt = false`다(`supabase/config.toml`).
 3. Supabase Dashboard → Authentication:
    - Sign In / Providers → **Email** 켬. 꺼져 있으면 비밀번호 로그인 전체가 막힌다(`email_provider_disabled`). "Allow new users to sign up"은 켠 채로 둔다. 끄면 새 Apple 계정도 막힌다.
    - **Confirm email** 켬. 메일 연결 전에도 켜 둔다. 꺼져 있으면 앱은 메일이 연결되지 않은 것으로 다룬다.
@@ -23,7 +25,7 @@
 
 1. Dashboard → Authentication → SMTP Settings에 제공자 값을 넣는다.
 2. Email Templates의 Confirm signup·Reset password에 기본값처럼 `{{ .ConfirmationURL }}`이 있는지 확인한다.
-3. URL Configuration → Redirect URLs에 `aroom://auth-callback`을 더한다(개발 빌드는 `aroom-dev://auth-callback`).
+3. URL Configuration → Redirect URLs에 Aroom-prod는 `aroom://auth-callback`, Aroom-dev는 `aroom-dev://auth-callback`을 더한다.
 4. 가림 주소로 재설정 메일을 보내려면 보내는 도메인을 Apple Developer의 Sign in with Apple for Email Communication에 등록한다. 등록 전에는 `@privaterelay.appleid.com`으로 메일이 전달되지 않는다. 구현 시점에 Apple 문서로 다시 확인한다.
 5. 메일 제공자를 처리방침의 처리를 맡기는 곳에 세 언어 모두 더하고, 심사 메모의 "Email sign-up and password reset are not open yet" 단락을 지운다.
 6. Confirm email이 켜져 있는지 다시 본 뒤 값 하나를 켠다.
@@ -42,7 +44,7 @@ update public.app_settings set value = 'true' where key = 'auth_email_enabled';
 
 ### 처음 만들기
 
-SQL Editor에서 첫 번째 주소를 허용한다. 값은 언제나 주소 하나이므로 두 번째 계정을 만들 때 다시 바꾼다.
+Aroom-prod의 SQL Editor에서 첫 번째 주소를 허용한다. 값은 언제나 주소 하나이므로 두 번째 계정을 만들 때 다시 바꾼다.
 
 ```sql
 update public.app_settings set value = to_jsonb('review-partner@example.com'::text) where key = 'review_login_email';

@@ -1,6 +1,13 @@
 # Secrets
 
-Set server secrets only with `supabase secrets set`. Never put keys in the app, repository, logs, pull requests, or chat. The example environment file contains empty values only. Use a dedicated Console workspace with a spending limit for the Anthropic key.
+Set server secrets only with `supabase secrets set`, per project through `node tools/supabase/remote.mjs dev|prod secrets set …`. Never put keys in the app, repository, logs, pull requests, or chat. The example environment file contains empty values only. Use a dedicated Console workspace with a spending limit for the Anthropic key.
+
+## Supabase projects
+
+Aroom-dev and Aroom-prod each have their own values ([remote Supabase setup](remote-supabase-setup.md#3-서버-비밀)). Generate dev values fresh; never copy a production secret into Aroom-dev.
+
+- Access tokens live only in untracked files with mode `600`: `~/.config/aroom/supabase-dev.env` (Aroom-dev) and `~/.config/aroom/supabase.env` (Aroom-prod), one `SUPABASE_ACCESS_TOKEN=` line each. Each token is scoped to its own project, so neither can change the other project.
+- The `lifecycle-sweep` cron job reads its key from each project's Vault (`lifecycle_sweep_service_role_key`), not from a file.
 
 ## Account deletion (US10)
 
