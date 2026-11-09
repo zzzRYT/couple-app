@@ -31,6 +31,6 @@ export function InvitePendingCard({ spaceId, expiresAt, now, offline, onOpenInvi
     <AppText variant="bodySm" tone="text2">{t('home.pending.hint')}</AppText>
     {/* V0-10: the partner may have sent their code instead; entering it moves this person into the partner's space. */}
     {onHaveCode && <><View style={{ height: 1, backgroundColor: color.divider }} /><Pressable accessibilityRole="button" accessibilityLabel={t('home.pending.haveCode')} accessibilityState={{ disabled: offline }} disabled={offline} onPress={onHaveCode}
-      style={({ pressed }) => ({ minHeight: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8, opacity: offline ? 0.5 : pressed ? 0.7 : 1 })}><AppText tone="primary" style={{ fontWeight: '700', flex: 1 }}>{t('home.pending.haveCode')}</AppText><Icon name="forward" size={18} color={color.primary} /></Pressable></>}
+      style={({ pressed }) => ({ minHeight: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8, opacity: offline ? 0.5 : pressed ? 0.7 : 1 })}><AppText tone="primary" style={[emphasis(15), { flex: 1 }]}>{t('home.pending.haveCode')}</AppText><Icon name="forward" size={18} color={color.primary} /></Pressable></>}
   </Card>;
 }
