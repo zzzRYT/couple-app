@@ -39,6 +39,8 @@ const SCREENS: Record<string, () => ReactElement> = {
   'home celebration card': () => home({ celebration, onSeen: noop }),
   'home pending invite': () => home({}, snapshotFixture({ memberCount: 1 })),
   'home error': () => <V0Error retry={noop} />,
+  'home error in tab': () => <V0Error retry={noop} title="Aroom" />,
+  'home offline empty': () => <V0Error offline retry={noop} />,
   'anniversary list': () => <AnniversaryList view={view} filter="all" pastOpen offline={false} birthdayState="mine" partner="Haru" onFilter={noop} onPast={noop} onAdd={noop} onItem={noop} onBirthday={noop} />,
   'anniversary list custom empty': () => <AnniversaryList view={view} filter="custom" pastOpen={false} offline={false} birthdayState="none" partner="Haru" onFilter={noop} onPast={noop} onAdd={noop} onItem={noop} onBirthday={noop} />,
   'anniversary detail automatic': () => <AnniversaryDetail item={{ key: 'd150', kind: 'days', date: '2025-05-30', n: 150 }} today="2025-05-01" startDate="2025-01-01" partner="Haru" userId="me" notify="default" notifyDefault="기본 설정" offline={false} onBack={noop} onEdit={noop} onDelete={noop} onSettings={noop} onMe={noop} />,

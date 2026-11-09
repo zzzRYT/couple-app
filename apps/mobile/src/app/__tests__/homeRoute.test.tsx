@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
-import { waitFor } from '@testing-library/react-native';
+import { fireEvent, waitFor } from '@testing-library/react-native';
 import { renderWithI18n } from '../../test/render';
 import { snapshotFixture, ME, PARTNER } from '../../test/fixtures';
 import HomeRoute from '../(tabs)/home';
@@ -35,4 +35,16 @@ it('V0-F03-AC-04 shows the partner-edited notice once per change, and the new st
   await waitFor(() => expect(seenReads()).toBe(2));
   expect(second.queryByText(notice)).toBeNull();
   await second.unmount();
+});
+
+it('V0-F13-AC-02 shows a failed refresh inside the home tab under the app header, and retries from there', async () => {
+  const ready = mockSpace.state;
+  mockSpace.state = { ...ready, status: 'error', snapshot: snapshotFixture() };
+  const screen = await renderWithI18n(<HomeRoute />);
+  expect(screen.getByText(screen.t('state.error.title'))).toBeTruthy();
+  expect(screen.getByText(screen.t('app.name'))).toBeTruthy();
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('common.retry') }));
+  expect(mockSpace.refresh).toHaveBeenCalled();
+  await screen.unmount();
+  mockSpace.state = ready;
 });

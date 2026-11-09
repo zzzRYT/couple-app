@@ -82,15 +82,16 @@ function AppNavigator({ fontsLoaded, onBootingChange, onSchemeChange }: { fontsL
   useEffect(() => {
     if (gate.kind === 'active' && inviteAfterActivation) { clearInviteAfterActivation(); router.push('/invite'); }
   }, [gate.kind, inviteAfterActivation, clearInviteAfterActivation]);
+  // Once a snapshot is on screen, a failed refresh shows inside the home and anniversaries tabs instead (V0-03), so Settings stays reachable.
   const failure = gate.kind === 'offlineEmpty' ? <V0Error offline retry={() => void reload()} />
-    : entry === 'active' && state.status === 'error' && !state.offline ? <V0Error retry={() => void refresh()} />
+    : entry === 'active' && state.status === 'error' && !state.offline && !state.snapshot ? <V0Error retry={() => void refresh()} />
     : gate.kind === 'booting' && session && (entry === 'error' || (entry === 'active' && state.status === 'error' && !state.snapshot)) ? <V0Error offline={state.offline} retry={() => { void reload(); }} />
     : null;
   const booting = !failure && gate.kind === 'booting';
   const { scheme } = useDisplayAppearance();
   useEffect(() => { onBootingChange(booting); }, [booting, onBootingChange]);
   useEffect(() => { onSchemeChange(scheme); }, [scheme, onSchemeChange]);
-  if (failure) return failure;
+  if (failure) return <>{failure}<UpdateNotice /></>;
   // The root splash covers booting (V0-12), so nothing is drawn under it.
   if (booting) return null;
   return <><AppStack gate={gate.kind} /><UpdateNotice /></>;
