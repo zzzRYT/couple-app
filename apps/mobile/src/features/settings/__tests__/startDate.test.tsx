@@ -22,15 +22,19 @@ const open = (snapshot = snapshotFixture(), refresh = jest.fn().mockResolvedValu
   mockUseSpace.mockReturnValue({ state: { snapshot, offline: false }, refresh });
   return { snapshot, refresh };
 };
-const confirm = () => (alert.mock.calls[0]![2] as { text: string; onPress?: () => void }[])[1]!;
+const confirm = () => (alert.mock.calls[0]![2] as { text: string; isPreferred?: boolean; onPress?: () => void }[])[1]!;
 
 it('V0-F12-AC-03 previews the day count, asks for confirmation and applies the date to both people', async () => {
   const { snapshot, refresh } = open();
   mockClient.updateAnniversary.mockResolvedValue(undefined);
   const screen = await renderWithI18n(<StartDateRoute />);
   expect(screen.getByText(screen.t('set.start.preview', { n: 3 }))).toBeTruthy();
+  expect(screen.getByText(screen.t('start.date.body'))).toBeTruthy();
   await fireEvent.press(screen.getByText(screen.t('common.save')));
   expect(alert).toHaveBeenCalledWith(screen.t('set.start.confirm.title'), expect.stringContaining('도담님'), expect.any(Array));
+  // V0-set-start-confirm: the dates as 2025.06.29, and 바꾸기 is the preferred button.
+  expect(alert.mock.calls[0]![1]).toContain('2025.06.29 → 2025.06.29');
+  expect(confirm()).toMatchObject({ text: screen.t('set.start.confirm.cta'), isPreferred: true });
   expect(mockClient.updateAnniversary).not.toHaveBeenCalled();
   confirm().onPress!();
   await waitFor(() => expect(mockBack).toHaveBeenCalled());
@@ -58,4 +62,6 @@ it('V0-F12-AC-04 shows the latest start date again after a version conflict', as
   expect(mockClient.snapshot).toHaveBeenCalledWith('space-1');
   expect(mockBack).not.toHaveBeenCalled();
   expect(screen.getByText(screen.t('set.start.preview', { n: 2 }))).toBeTruthy();
+  // The date on screen now differs from the saved one, so the change is spelled out before saving again.
+  expect(screen.getByText(screen.t('set.start.confirm.body', { old: '2025.06.29', new: '2025.06.30', name: '도담' }))).toBeTruthy();
 });
