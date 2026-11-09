@@ -2,7 +2,6 @@ import { fireEvent } from '@testing-library/react-native';
 import { renderWithI18n } from '../../../test/render';
 import { renderSweep } from '../../../test/a11y';
 import { snapshotFixture } from '../../../test/fixtures';
-import { formatAnniversary } from '../../../lib/dday';
 import type { MilestoneCelebration } from '../../../lib/client';
 import { V0HomeScreen } from '../V0HomeScreen';
 
@@ -57,12 +56,37 @@ it('V0-F03-AC-02 opens the list from "see all" and the tapped upcoming row', asy
   expect(onOccurrence).toHaveBeenCalledWith(expect.objectContaining({ seasonId: 'christmas' }));
 });
 
-it('V0-F03-AC-03 shows the pending home with the empty partner slot, waiting chip and invite hint', async () => {
+it('V0-F03-AC-03 shows the pending home with the empty partner slot, waiting chip, invite hint and the next anniversary', async () => {
   const screen = await renderWithI18n(homeAt('2026-11-02T03:00:00Z', {}, snapshotFixture({ memberCount: 1 })));
   expect(screen.getByText(screen.t('home.pending.chip'))).toBeTruthy();
   expect(screen.getByText(screen.t('home.pending.title'))).toBeTruthy();
   expect(screen.getByText(screen.t('home.pending.hint'))).toBeTruthy();
   expect(screen.getByLabelText(screen.t('home.names.a11y', { me: '하루', partner: screen.t('home.pending.partner') }))).toBeTruthy();
+  expect(screen.getByText(screen.t('home.next.label'))).toBeTruthy();
+  expect(screen.queryByText(screen.t('home.upcoming.title'))).toBeNull();
+});
+
+it('V0-F09-AC-01 shows the celebration card under the invite card on a pending milestone day, not the chip alone', async () => {
+  const screen = await renderWithI18n(homeAt('2025-10-06T03:00:00Z', { celebration: day100 }, snapshotFixture({ memberCount: 1 })));
+  expect(screen.getByText(screen.t('home.today.chip', { title: screen.t('anniv.days', { n: 100 }) }))).toBeTruthy();
+  expect(screen.getByText(screen.t('home.today.title', { title: screen.t('anniv.days', { n: 100 }) }))).toBeTruthy();
+});
+
+it('V0-F03-AC-01 reads the next card as one element and draws upcoming rows like the anniversary list', async () => {
+  const snapshot = snapshotFixture();
+  snapshot.anniversaries = [{ id: 'c', title: '처음 만난 날', memo: null, date: '2025-12-01', repeat: 'yearly', createdBy: 'a', updatedBy: 'a', createdAt: '2025-01-01T00:00:00Z', updatedAt: '2025-01-01T00:00:00Z', version: 1 }];
+  const screen = await renderWithI18n(homeAt('2026-11-02T03:00:00Z', {}, snapshot));
+  const pepero = screen.t('anniv.row.a11y', { title: screen.t('anniv.pepero'), date: '2026년 11월 11일 (수)', left: screen.t('dday.left', { n: 9 }) });
+  expect(screen.getByRole('button', { name: `${screen.t('home.next.label')}, ${pepero}` })).toBeTruthy();
+  expect(screen.getByText('11월 11일 (수)')).toBeTruthy();
+  expect(screen.getByRole('button', { name: screen.t('anniv.row.a11y', { title: '처음 만난 날', date: '2026년 12월 1일 (화)', left: screen.t('dday.left', { n: 29 }) }) })).toBeTruthy();
+  expect(screen.getByText(screen.t('anniv.badge.custom'))).toBeTruthy();
+});
+
+it('V0-F03-AC-01 writes the start date with a short month in English and reads the day count once', async () => {
+  const screen = await renderWithI18n(homeAt('2026-11-02T03:00:00Z'), 'en-US');
+  expect(screen.getByText(screen.t('dday.since', { date: 'Jun 29, 2025' }))).toBeTruthy();
+  expect(screen.getByLabelText(screen.t('dday.a11y', { n: 492, date: 'Jun 29, 2025' }))).toBeTruthy();
 });
 
 it('V0-F03-AC-04 shows the partner-edited notice and counts from the new start date', async () => {
@@ -70,14 +94,14 @@ it('V0-F03-AC-04 shows the partner-edited notice and counts from the new start d
   const notice = 'partner edited';
   const screen = await renderWithI18n(homeAt('2026-11-02T03:00:00Z', { partnerEdited: notice }, snapshot));
   expect(screen.getByText(notice)).toBeTruthy();
-  expect(screen.getByLabelText(screen.t('dday.a11y', { n: 398, date: formatAnniversary('2025-10-01', 'ko-KR') }))).toBeTruthy();
-  expect(screen.getByText(screen.t('dday.since', { date: formatAnniversary('2025-10-01', 'ko-KR') }))).toBeTruthy();
+  expect(screen.getByLabelText(screen.t('dday.a11y', { n: 398, date: '2025년 10월 1일' }))).toBeTruthy();
+  expect(screen.getByText(screen.t('dday.since', { date: '2025년 10월 1일' }))).toBeTruthy();
 });
 
 it('V0-F09-AC-01 shows the 100-day celebration card in place of the next card, with no room suggestion', async () => {
   const screen = await renderWithI18n(homeAt('2025-10-06T03:00:00Z', { celebration: day100 }));
   expect(screen.getByText(screen.t('home.today.title', { title: screen.t('anniv.days', { n: 100 }) }))).toBeTruthy();
-  expect(screen.getByText(screen.t('home.today.body.milestone', { date: formatAnniversary('2025-06-29', 'ko-KR'), n: 100 }))).toBeTruthy();
+  expect(screen.getByText(screen.t('home.today.body.milestone', { date: '2025년 6월 29일', n: 100 }))).toBeTruthy();
   expect(screen.queryByText(screen.t('home.next.label'))).toBeNull();
   expect(screen.queryByRole('button', { name: screen.t('milestone.action.suggest') })).toBeNull();
 });
@@ -85,7 +109,7 @@ it('V0-F09-AC-01 shows the 100-day celebration card in place of the next card, w
 it('V0-F09-AC-03 shows a day milestone three days late, and a season day only on the day itself', async () => {
   const late = { ...day100, daysAgo: 3 };
   const screen = await renderWithI18n(homeAt('2025-10-09T03:00:00Z', { celebration: late }));
-  expect(screen.getByText(screen.t('home.today.late', { date: formatAnniversary('2025-10-06', 'ko-KR'), title: screen.t('anniv.days', { n: 100 }) }))).toBeTruthy();
+  expect(screen.getByText(screen.t('home.today.late', { date: '10월 6일', title: screen.t('anniv.days', { n: 100 }) }))).toBeTruthy();
   const after = await renderWithI18n(homeAt('2026-11-12T03:00:00Z'));
   expect(after.queryByText(after.t('home.today.title.season', { title: after.t('anniv.pepero') }))).toBeNull();
 });

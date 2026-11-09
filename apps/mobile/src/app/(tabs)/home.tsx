@@ -7,7 +7,7 @@ import { useSpace } from '../../features/space/SpaceContext';
 import { useNow } from '../../lib/useNow';
 import { useMilestone } from '../../features/milestone/useMilestone';
 import { useTranslation } from 'react-i18next';
-import { formatAnniversary } from '../../lib/dday';
+import { formattedMonthDay } from '../../features/anniversaries/format';
 import { usePassword } from '../../features/auth/PasswordContext';
 import { SetPasswordSheet } from '../../features/auth/SetPasswordFlow';
 export default function HomeRoute() {
@@ -30,7 +30,7 @@ export default function HomeRoute() {
     void SecureStore.getItemAsync(key).then(async (seen) => {
       if (seen && Date.parse(seen) >= Date.parse(changedAt)) return;
       await SecureStore.setItemAsync(key, changedAt);
-      if (active) setPartnerEdited(t('home.partnerEdited', { name: snapshot.members.find((member) => member.userId === space.anniversaryChangedBy)?.displayName ?? t('home.pending.partner'), date: formatAnniversary(space.anniversaryDate, i18n.language) }));
+      if (active) setPartnerEdited(t('home.partnerEdited', { name: snapshot.members.find((member) => member.userId === space.anniversaryChangedBy)?.displayName ?? t('home.pending.partner'), date: formattedMonthDay(space.anniversaryDate, i18n.language) }));
     });
     return () => { active = false; };
   }, [snapshot, spaceId, userId, t, i18n.language]);

@@ -2,7 +2,6 @@ import * as SecureStore from 'expo-secure-store';
 import { waitFor } from '@testing-library/react-native';
 import { renderWithI18n } from '../../test/render';
 import { snapshotFixture, ME, PARTNER } from '../../test/fixtures';
-import { formatAnniversary } from '../../lib/dday';
 import HomeRoute from '../(tabs)/home';
 
 const mockSecure = new Map<string, string>();
@@ -27,7 +26,7 @@ it('V0-F03-AC-04 shows the partner-edited notice once per change, and the new st
   mockSpace.state.snapshot = snapshot;
   mockSecure.set(`v0.connected.seen.space-1.${ME}`, 'true');
   const first = await renderWithI18n(<HomeRoute />);
-  const notice = first.t('home.partnerEdited', { name: '도담', date: formatAnniversary('2025-10-01', 'ko-KR') });
+  const notice = first.t('home.partnerEdited', { name: '도담', date: '10월 1일' });
   expect(await first.findByText(notice)).toBeTruthy();
   expect(mockSecure.get(`v0.partnerEdited.seen.space-1.${ME}`)).toBe('2026-11-01T00:00:00Z');
   await first.unmount();
