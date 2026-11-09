@@ -778,6 +778,24 @@
    "w": 1760,
    "x": 1840,
    "y": 6220
+  },
+  "V0-10-connect.dc.html": {
+   "expand": "fill",
+   "h": 6030,
+   "page": "v0-home",
+   "title": "V0-10 상대 연결 (홈 · 설정에서)",
+   "w": 1760,
+   "x": 0,
+   "y": 8933
+  },
+  "copy-v0-connect.dc.html": {
+   "expand": "fill",
+   "h": 2300,
+   "page": "v0-home",
+   "title": "문구 · V0-10 상대 연결",
+   "w": 1760,
+   "x": 1840,
+   "y": 8933
   }
  },
  "createdOnFiles": {
@@ -1019,6 +1037,8 @@
   "copy-v0-home.dc.html",
   "V0-03-states.dc.html",
   "copy-v0-states.dc.html",
+  "V0-10-connect.dc.html",
+  "copy-v0-connect.dc.html",
   "V0-04-anniv.dc.html",
   "copy-v0-anniv.dc.html",
   "V0-05-anniv-edit.dc.html",
