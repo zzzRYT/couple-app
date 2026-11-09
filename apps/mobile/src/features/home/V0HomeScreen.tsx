@@ -18,7 +18,7 @@ import { KindTile } from '../anniversaries/KindTile';
 import { formattedDate, formattedYearMonthDay, occurrenceTitle, relativeDate } from '../anniversaries/format';
 import { splitBigDay, useLargeText } from '../../ui/textScale';
 
-export function V0HomeScreen({ state, now, onAnniversaries, onRefresh, onOpenInvite, onHaveCode, celebration, onSeen, partnerEdited, onHidePartnerEdited, seenKeys = [], seenReady = true, onLocalSeen, onOccurrence }: { state: SpaceState; now: string; onAnniversaries: () => void; onRefresh: () => void; onOpenInvite: () => void; onHaveCode?: () => void; celebration: MilestoneCelebration | null; onSeen: () => void; partnerEdited?: string | null; onHidePartnerEdited?: () => void; seenKeys?: string[]; seenReady?: boolean; onLocalSeen?: (key: string) => void; onOccurrence?: (item: Occurrence) => void }) {
+export function V0HomeScreen({ state, now, onAnniversaries, onRefresh, onOpenInvite, onHaveCode, celebration, onSeen, partnerEdited, onHidePartnerEdited, seenKeys = [], seenReady = true, onLocalSeen, onOccurrence }: { state: SpaceState; now: string; onAnniversaries: () => void; onRefresh: () => void; onOpenInvite: (reissue: boolean) => void; onHaveCode?: () => void; celebration: MilestoneCelebration | null; onSeen: () => void; partnerEdited?: string | null; onHidePartnerEdited?: () => void; seenKeys?: string[]; seenReady?: boolean; onLocalSeen?: (key: string) => void; onOccurrence?: (item: Occurrence) => void }) {
   const { t, i18n } = useTranslation(); const { emphasis } = useType();
   const color = useAppColor(); const insets = useSafeAreaInsets(); const clearance = useTabBarClearance(); const large = useLargeText();
   const [copied, setCopied] = useState<boolean | null>(null);

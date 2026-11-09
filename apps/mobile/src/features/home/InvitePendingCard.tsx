@@ -11,7 +11,7 @@ import { readV0Invite, type StoredInvite } from '../space/v0LocalData';
 
 const EXPIRING_MS = 30 * 60_000;
 /** V0-home-pending invite card. The code itself only exists on the device that made it; elsewhere the card offers a new one. */
-export function InvitePendingCard({ spaceId, expiresAt, now, offline, onOpenInvite, onHaveCode, onCopied }: { spaceId: string; expiresAt: string | null; now: string; offline: boolean; onOpenInvite: () => void; onHaveCode?: () => void; onCopied: (copied: boolean) => void }) {
+export function InvitePendingCard({ spaceId, expiresAt, now, offline, onOpenInvite, onHaveCode, onCopied }: { spaceId: string; expiresAt: string | null; now: string; offline: boolean; onOpenInvite: (reissue: boolean) => void; onHaveCode?: () => void; onCopied: (copied: boolean) => void }) {
   const { t } = useTranslation(); const color = useAppColor(); const { emphasis } = useType();
   const [invite, setInvite] = useState<StoredInvite | null>(null);
   useEffect(() => { let alive = true; void readV0Invite(spaceId).then((value) => { if (alive) setInvite(value); }); return () => { alive = false; }; }, [spaceId, expiresAt]);
@@ -27,7 +27,7 @@ export function InvitePendingCard({ spaceId, expiresAt, now, offline, onOpenInvi
     {usable ? <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>{expiry}<View style={{ flexDirection: 'row', gap: 6 }}>
       <IconButton compact tone="secondary" icon="copy" label={t('invite.copy')} disabled={offline} onPress={copy} />
       <IconButton compact tone="primary" icon="share" label={t('invite.share')} disabled={offline} onPress={share} />
-    </View></View> : <>{expiry}<Button label={t('invite.reissue')} disabled={offline} onPress={onOpenInvite} /></>}
+    </View></View> : <>{expiry}<Button label={t('invite.reissue')} disabled={offline} onPress={() => onOpenInvite(!!invite)} /></>}
     <AppText variant="bodySm" tone="text2">{t('home.pending.hint')}</AppText>
     {/* V0-10: the partner may have sent their code instead; entering it moves this person into the partner's space. */}
     {onHaveCode && <><View style={{ height: 1, backgroundColor: color.divider }} /><Pressable accessibilityRole="button" accessibilityLabel={t('home.pending.haveCode')} accessibilityState={{ disabled: offline }} disabled={offline} onPress={onHaveCode}
