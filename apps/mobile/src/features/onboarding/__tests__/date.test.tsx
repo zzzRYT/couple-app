@@ -42,3 +42,8 @@ it('V0-F02-AC-02 shows the future-date error and cannot go next', async () => {
   await fireEvent.press(screen.getByRole('button', { name: screen.t('common.next') }));
   expect(onNext).not.toHaveBeenCalled();
 });
+it('V0-start-date · English names the months in the wheel', async () => {
+  const screen = await renderWithI18n(<V0DateScreen initial="2026-10-27" now={now} timeZone="Asia/Seoul" onNext={jest.fn()} onBack={jest.fn()} />, 'en-US');
+  await fireEvent.press(screen.getByTestId('date-month'));
+  expect(screen.getByTestId('wheel-month-6')).toHaveTextContent('Jun');
+});

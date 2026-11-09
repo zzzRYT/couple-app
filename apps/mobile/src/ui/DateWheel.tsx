@@ -80,14 +80,14 @@ export function DateSegment({ field, value, error = false, label, testID, onPres
 const BAND_ROW = 40;
 const daysIn = (year: number, month: number) => new Date(Date.UTC(year, month, 0)).getUTCDate();
 function BandColumn({ field, values, value, label, onChange }: { field: Field; values: number[]; value: number; label: string; onChange: (value: number) => void }) {
-  const scroll = useRef<ComponentRef<typeof ScrollView>>(null); const color = useAppColor(); const { emphasis } = useType();
+  const scroll = useRef<ComponentRef<typeof ScrollView>>(null); const color = useAppColor(); const { emphasis } = useType(); const { i18n } = useTranslation();
   const index = Math.max(0, values.indexOf(value));
   // The day column shrinks when the month changes; keep the clamped day in the band.
   useEffect(() => { scroll.current?.scrollTo({ y: index * BAND_ROW, animated: false }); }, [values.length]);
   const select = (position: number) => { const next = values[Math.max(0, Math.min(values.length - 1, position))]; if (next !== undefined) onChange(next); };
   return <View accessible accessibilityRole="adjustable" accessibilityLabel={label} accessibilityValue={{ text: String(value) }} accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]} onAccessibilityAction={(event) => { const next = index + (event.nativeEvent.actionName === 'increment' ? 1 : -1); select(next); scroll.current?.scrollTo({ y: Math.max(0, Math.min(values.length - 1, next)) * BAND_ROW, animated: true }); }} style={{ flex: 1, height: BAND_ROW * 5 }}>
     <ScrollView ref={scroll} snapToInterval={BAND_ROW} decelerationRate="fast" showsVerticalScrollIndicator={false} contentOffset={{ x: 0, y: index * BAND_ROW }} contentContainerStyle={{ paddingVertical: BAND_ROW * 2 }} onMomentumScrollEnd={(event) => select(Math.round(event.nativeEvent.contentOffset.y / BAND_ROW))}>
-      {values.map((entry, position) => <Pressable key={entry} testID={`wheel-${field}-${entry}`} onPress={() => { select(position); scroll.current?.scrollTo({ y: position * BAND_ROW, animated: true }); }} style={{ height: BAND_ROW, alignItems: 'center', justifyContent: 'center' }}><AppText style={[position === index ? emphasis(21) : { fontSize: Math.abs(position - index) === 1 ? 19 : 17 }, { opacity: position === index ? 1 : Math.abs(position - index) === 1 ? 0.55 : 0.3, color: color.text }]}>{entry}</AppText></Pressable>)}
+      {values.map((entry, position) => <Pressable key={entry} testID={`wheel-${field}-${entry}`} onPress={() => { select(position); scroll.current?.scrollTo({ y: position * BAND_ROW, animated: true }); }} style={{ height: BAND_ROW, alignItems: 'center', justifyContent: 'center' }}><AppText style={[position === index ? emphasis(21) : { fontSize: Math.abs(position - index) === 1 ? 19 : 17 }, { opacity: position === index ? 1 : Math.abs(position - index) === 1 ? 0.55 : 0.3, color: color.text }]}>{fieldText(field, entry, i18n.language, '')}</AppText></Pressable>)}
     </ScrollView>
   </View>;
 }
