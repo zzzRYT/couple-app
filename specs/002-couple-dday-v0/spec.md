@@ -353,7 +353,7 @@ Apple로 들어온 사람에게 비밀번호를 만들 수 있다고 안내하�
 - **V0-F11 iOS 위젯**: 홈 small·medium·large, 잠금 circular·rectangular·inline. 외관 full color·dark·tinted(iOS 18)·clear(iOS 26)·vibrant. 상태: 보통·오늘·상대 연결 전·공간 없음·공간 끝남·자리표시. 공간 시간대 자정 timeline + 데이터 변경 시 reload. 공유 데이터는 `schemaVersion`이 있는 최소 JSON(이름·생일 연도·토큰 없음).
 - **V0-F12 최소 설정**: 내 정보, 우리(사귄 날 확인 후 두 사람 적용, 상대, 시간대), 알림, 화면(언어·모드, 이 기기만), 도움(문의·개인정보 처리방침·약관·버전), 계정(로그인·보안, 로그아웃, 연결 끊기, 계정 삭제 — V0-F18의 본인 확인).
 - **V0-F13 시스템 상태**: 로딩 스켈레톤, 불러오기 실패(전부 아니면 없음), 오프라인 읽기만(마지막 데이터 + 띠), 오프라인·데이터 없음, 상대가 연결 끊음·계정 삭제. S16 공통 상태(로그인 만료·업데이트 필요·권한 없음) 재사용.
-- **V0-F14 출시 자동화·OTA**: `workflow_dispatch` → EAS Build → EAS Submit → TestFlight, EAS Update preview → production. 첫 빌드는 `.dev` bundle id. 위젯 extension·권한·네이티브 변경은 새 빌드. 비밀은 저장소 밖. App Store에 더 높은 버전이 나오면 앱이 업데이트를 권한다(V0-11, App Store 조회).
+- **V0-F14 출시 자동화·OTA**: `workflow_dispatch` → EAS Build → EAS Submit → TestFlight, OTA preview → production(1.0.1부터 Hot Updater·Cloudflare, 1.0.0은 EAS Update). 첫 빌드는 `.dev` bundle id. 위젯 extension·권한·네이티브 변경은 새 빌드. 비밀은 저장소 밖. App Store에 더 높은 버전이 나오면 앱이 업데이트를 권한다(V0-11, App Store 조회).
 - **V0-F15 이메일·비밀번호 로그인(`V0-08`)**: 인증 제공자의 이메일·비밀번호를 쓰고, 앱은 `auth-password` 함수를 거쳐 로그인한다. 규칙은 8자 이상, 영문과 숫자를 함께, 이메일 주소와 다르게이며 서버에서도 검사한다. 연속 5회 실패하면 그 이메일은 10분 잠긴다(서버가 세고, 없는 이메일도 같게 응답). 메일 발송은 `app_settings.auth_email_enabled` 값 하나로 켠다. 꺼져 있는 동안 `V0-auth-signup-nomail`, `V0-auth-reset-nomail`, `V0-del-email-nomail`이 실제 화면이다.
 - **V0-F16 Apple 계정 비밀번호 안내(`V0-08`)**: 비밀번호는 선택이다. 없는 Apple 계정도 정상이고 어떤 화면도 막지 않는다. 새 계정은 `V0-auth-setpw-prompt`, 기존 계정은 홈 위 `V0-auth-setpw-sheet`를 한 번만 본다. Apple 계정 암호는 앱에 들어오지 않는다.
 - **V0-F17 로그인·보안(`V0-09`)**: 자격 증명에 따른 세 모습, 지금 비밀번호 확인 뒤 변경, 변경하면 다른 기기는 로그아웃.
@@ -414,7 +414,7 @@ Apple로 들어온 사람에게 비밀번호를 만들 수 있다고 안내하�
 |---|---|---|---|
 | A-02 | production bundle id | 정하지 않음. TestFlight는 `com.jinjinstar.aroom.dev`, 위젯 extension `com.jinjinstar.aroom.dev.widgets`, App Group `group.com.jinjinstar.aroom.dev` | 새 ASC 레코드·새 빌드 |
 | A-03 | TestFlight 테스터 | 내부 테스터(ASC 사용자, 최소 권한). 외부 테스터면 첫 빌드 Beta App Review | 오너 수동 단계만 |
-| A-04 | OTA 공급자 | EAS Update(channels preview/production), runtimeVersion `fingerprint` 정책 | 출시 슬라이스(S1) |
+| A-04 | OTA 공급자 | 1.0.1부터 Hot Updater(Cloudflare, channels preview/production), `fingerprint` 전략. 1.0.0은 EAS Update(2026-11-09 오너 변경, R4) | 출시 슬라이스(S1) |
 | A-05 | 앱이 닫힌 상대 기기 반영 | 다음에 앱을 열 때 반영(로컬 예약·위젯 timeline 교체). 서버 푸시 없음 | 푸시를 원하면 +4~7일 |
 | A-06 | 생일 연도(Q1) | 선택, 기본 꺼짐. 나이는 어디에도 표시하지 않음 | — |
 | A-07 | 주년 계산(Q3) | 달력 기준 | — |

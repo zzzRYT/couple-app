@@ -1,12 +1,12 @@
 # Mobile
 
-The owner creates and manages the Expo account. This app uses EAS for development, preview, TestFlight, production builds, and OTA updates. Check the current EAS plan allowance before using build capacity.
+The owner creates and manages the Expo account. This app uses EAS for development, preview, TestFlight and production builds. OTA updates come from Hot Updater on Cloudflare from 1.0.1 on; 1.0.0 still gets them from EAS Update ([docs/ota.md](../../docs/ota.md)). Check the current EAS plan allowance before using build capacity.
 
 ## Release
 
-- `development` is the dev client; `preview` is an ad hoc internal build; `testflight` is the store-signed iOS profile that uploads to the `preview` channel; `production` uses the `production` channel.
-- App version is `1.0.0`; EAS remote versioning increments the build number. OTA compatibility uses the `fingerprint` runtime policy.
-- Use **Actions → Release iOS** to build the `testflight` or `production` profile and optionally submit it to that profile's App Store Connect record. It runs only when started by hand, and `testflight` stays the default. Use **Actions → OTA** to publish a preview update or republish a checked update group to production.
+- `development` is the dev client; `preview` is an ad hoc internal build; `testflight` is the store-signed iOS profile on the `preview` OTA channel; `production` uses the `production` channel. The channel comes from `APP_VARIANT` through the `@hot-updater/expo` plugin in `app.config.ts`.
+- App version is `1.0.1` (1.0.0 is the first App Store release); EAS remote versioning increments the build number. OTA compatibility uses Hot Updater's `fingerprint` strategy (`fingerprint.json`).
+- Use **Actions → Release iOS** to build the `testflight` or `production` profile and optionally submit it to that profile's App Store Connect record. It runs only when started by hand, and `testflight` stays the default. Use **Actions → OTA** to deploy a preview update or promote a checked preview bundle to production, and **Actions → OTA (EAS, 1.0.0)** for installs of 1.0.0.
 - Before the first release, complete the [owner-only steps in H01](../../specs/002-couple-dday-v0/handoffs/H01-release-pipeline.md#10-owner-only-steps).
 
 ## TestFlight and App Store Connect

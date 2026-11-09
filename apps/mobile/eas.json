@@ -33,7 +33,6 @@
     },
     "testflight": {
       "distribution": "store",
-      "channel": "preview",
       "autoIncrement": true,
       "env": {
         "APP_VARIANT": "preview",
@@ -45,7 +44,6 @@
       }
     },
     "production": {
-      "channel": "production",
       "autoIncrement": true,
       "env": {
         "APP_VARIANT": "production",
