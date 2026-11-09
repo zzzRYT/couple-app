@@ -398,5 +398,9 @@
   "connect.move.i3": "내 이름과 생일은 그대로예요.",
   "connect.move.submit": "옮겨서 연결하기",
   "connect.err.own": "내가 만든 코드예요. 이 코드는 상대에게 보내 주세요.",
+  "update.title": "새 버전이 나왔어요",
+  "update.body": "App Store에서 {version} 버전으로 업데이트해 주세요. 새 기능과 고친 점이 들어 있어요.",
+  "update.action": "App Store에서 업데이트",
+  "common.later": "나중에",
   "mascot.name": "아루미"
 }

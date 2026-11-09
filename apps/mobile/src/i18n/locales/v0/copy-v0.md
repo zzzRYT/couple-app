@@ -1,6 +1,6 @@
 # V0 copy (ko / en / ja) — all V0 copy keys
 
-Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1794205601-5385`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
+Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1794206341-003e`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
 
 **Brand names**: the boards draw the app as 모피루 / Mopiru / モピル and the mascot as 모피 / Mopi / モピ. The owner has since decided (spec D-08, 2026-11-02): app **아룸 / Aroom / アルーム**, mascot **아루미 / Aroomi / アルーミ**. The table below keeps the board text verbatim; in the app only `app.name` and `mascot.name` hold the names, every other value references them with i18next nesting, and the Korean particle after 아룸 becomes 을/이/은/과/으로 (e.g. `widget.none.title` → `$t(app.name)을 시작해요`). See `../H02-v0-shell-home.md` §6.
 
@@ -468,3 +468,13 @@ sections: 이 화면의 문구
 | `connect.move.i3` | 내 이름과 생일은 그대로예요. | Your name and birthday stay the same. | 名前と誕生日はそのままです。 | 신규 · EN·JA 초안 |
 | `connect.move.submit` | 옮겨서 연결하기 | Move and connect | 移ってつながる | 신규 · EN·JA 초안 |
 | `connect.err.own` | 내가 만든 코드예요. 이 코드는 상대에게 보내 주세요. | That's your own code. Send it to your partner instead. | あなたが作ったコードです。相手に送ってください。 | 신규 · EN·JA 초안 |
+
+## V0-11 업데이트 알림 (`copy-v0-update.dc.html`)
+sections: 이 화면의 문구
+
+| key | ko | en | ja | status |
+|---|---|---|---|---|
+| `update.title` | 새 버전이 나왔어요 | A new version is out | 新しいバージョンが出ました | 신규 · EN·JA 초안 |
+| `update.body` | App Store에서 {version} 버전으로 업데이트해 주세요. 새 기능과 고친 점이 들어 있어요. | Update to version {version} on the App Store to get the latest features and fixes. | App Storeでバージョン{version}にアップデートしてください。新しい機能と修正が入っています。 | 신규 · EN·JA 초안 |
+| `update.action` | App Store에서 업데이트 | Update on the App Store | App Storeでアップデート | 신규 · EN·JA 초안 |
+| `common.later` | 나중에 | Not now | あとで | 재사용 · 기존 키 common.later |

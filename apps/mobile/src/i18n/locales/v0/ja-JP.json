@@ -398,5 +398,9 @@
   "connect.move.i3": "名前と誕生日はそのままです。",
   "connect.move.submit": "移ってつながる",
   "connect.err.own": "あなたが作ったコードです。相手に送ってください。",
+  "update.title": "新しいバージョンが出ました",
+  "update.body": "App Storeでバージョン{version}にアップデートしてください。新しい機能と修正が入っています。",
+  "update.action": "App Storeでアップデート",
+  "common.later": "あとで",
   "mascot.name": "アルーミ"
 }

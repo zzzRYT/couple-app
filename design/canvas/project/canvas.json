@@ -796,6 +796,24 @@
    "w": 1760,
    "x": 1840,
    "y": 8933
+  },
+  "V0-11-update.dc.html": {
+   "expand": "fill",
+   "h": 2900,
+   "page": "v0-home",
+   "title": "V0-11 업데이트 알림",
+   "w": 1760,
+   "x": 0,
+   "y": 15083
+  },
+  "copy-v0-update.dc.html": {
+   "expand": "fill",
+   "h": 820,
+   "page": "v0-home",
+   "title": "문구 · V0-11 업데이트 알림",
+   "w": 1760,
+   "x": 1840,
+   "y": 15083
   }
  },
  "createdOnFiles": {
@@ -1039,6 +1057,8 @@
   "copy-v0-states.dc.html",
   "V0-10-connect.dc.html",
   "copy-v0-connect.dc.html",
+  "V0-11-update.dc.html",
+  "copy-v0-update.dc.html",
   "V0-04-anniv.dc.html",
   "copy-v0-anniv.dc.html",
   "V0-05-anniv-edit.dc.html",

@@ -14,6 +14,8 @@
 | V0 · 홈·D+Day | [copy-v0-states.dc.html](../canvas/project/copy-v0-states.dc.html) | 문구 · V0-03 시스템 상태 |
 | V0 · 홈·D+Day | [V0-10-connect.dc.html](../canvas/project/V0-10-connect.dc.html) | V0-10 상대 연결 (홈 · 설정에서) |
 | V0 · 홈·D+Day | [copy-v0-connect.dc.html](../canvas/project/copy-v0-connect.dc.html) | 문구 · V0-10 상대 연결 |
+| V0 · 홈·D+Day | [V0-11-update.dc.html](../canvas/project/V0-11-update.dc.html) | V0-11 업데이트 알림 |
+| V0 · 홈·D+Day | [copy-v0-update.dc.html](../canvas/project/copy-v0-update.dc.html) | 문구 · V0-11 업데이트 알림 |
 | V0 · 기념일 | [V0-04-anniv.dc.html](../canvas/project/V0-04-anniv.dc.html) | V0-04 기념일 목록 · 상세 |
 | V0 · 기념일 | [copy-v0-anniv.dc.html](../canvas/project/copy-v0-anniv.dc.html) | 문구 · V0-04 기념일 |
 | V0 · 기념일 | [V0-05-anniv-edit.dc.html](../canvas/project/V0-05-anniv-edit.dc.html) | V0-05 기념일 추가 · 편집 |

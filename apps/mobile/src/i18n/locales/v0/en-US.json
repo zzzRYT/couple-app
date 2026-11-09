@@ -398,5 +398,9 @@
   "connect.move.i3": "Your name and birthday stay the same.",
   "connect.move.submit": "Move and connect",
   "connect.err.own": "That's your own code. Send it to your partner instead.",
+  "update.title": "A new version is out",
+  "update.body": "Update to version {version} on the App Store to get the latest features and fixes.",
+  "update.action": "Update on the App Store",
+  "common.later": "Not now",
   "mascot.name": "Aroomi"
 }

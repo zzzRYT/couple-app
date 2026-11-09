@@ -399,4 +399,8 @@ export type V0Key =
   | "connect.move.i3"
   | "connect.move.submit"
   | "connect.err.own"
+  | "update.title"
+  | "update.body"
+  | "update.action"
+  | "common.later"
   | "mascot.name";
