@@ -61,7 +61,7 @@ export function ResetScreen({ password, initialEmail = '', onBack, onApple }: { 
     <Screen onBack={onBack} footer={<Button label={t('login.reset.send')} loading={busy} disabled={!EMAIL_PATTERN.test(email.trim())} onPress={() => void send()} />}>
       <AppText variant="title" accessibilityRole="header">{t('login.reset.title')}</AppText>
       <AppText tone="text2">{t('login.reset.body')}</AppText>
-      <TextField label={t('login.email.label')} placeholder={t('login.email.placeholder')} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} autoComplete="username" textContentType="username" />
+      <TextField icon="mail" label={t('login.email.label')} placeholder={t('login.email.placeholder')} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} autoComplete="username" textContentType="username" />
       <AppText variant="bodySm" tone="text2">{t('auth.reset.apple')}</AppText>
       {failed && <Banner kind="danger" text={t('login.error.title')} body={t('login.error.body')} />}
     </Screen>

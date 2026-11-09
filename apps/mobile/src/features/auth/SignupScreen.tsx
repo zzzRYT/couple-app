@@ -54,7 +54,7 @@ export function SignupScreen({ password, onBack, onApple }: { password: Pick<Pas
   return (
     <Screen onBack={onBack} footer={<Button label={t('login.signup.submit')} loading={busy} disabled={!ready} onPress={() => void submit()} />}>
       <AppText variant="title" accessibilityRole="header">{t('login.signup.title')}</AppText>
-      <TextField label={t('login.email.label')} placeholder={t('login.email.placeholder')} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} autoComplete="username" textContentType="username" />
+      <TextField icon="mail" label={t('login.email.label')} placeholder={t('login.email.placeholder')} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} autoComplete="username" textContentType="username" />
       <PasswordField kind="new" label={t('login.pw.label')} value={secret} onChangeText={setSecret} invalid={secret.length > 0 && !rulesMet(rules)} />
       <RuleList rules={rules} typed={secret.length > 0} />
       <PasswordField kind="new" label={t('login.pw.confirm')} placeholder={t('login.pw.confirm.placeholder')} value={again} onChangeText={setAgain} error={mismatch ? t('login.pw.mismatch') : null} />

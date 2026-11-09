@@ -9,7 +9,7 @@ import { useType } from '../../theme/typography';
 import type { PasswordRules } from './passwordRules';
 import { isPrivateRelay } from './passwordRules';
 
-/** Every password field on the boards: hidden by default with a 44pt eye inside the field, iOS AutoFill on. `invalid` gives the danger edge of unmet rules without a message. */
+/** Every password field on the boards: a lock in front, hidden by default with a 44pt eye (eye-off while shown) inside the field, iOS AutoFill on. `invalid` gives the danger edge of unmet rules without a message. */
 export function PasswordField({ label, error, kind = 'current', invalid = false, ...props }: TextInputProps & { label: string; error?: string | null; kind?: 'current' | 'new'; invalid?: boolean }) {
   const { t } = useTranslation();
   const color = useAppColor();
@@ -17,11 +17,11 @@ export function PasswordField({ label, error, kind = 'current', invalid = false,
   const eye = t(shown ? 'login.pw.hide' : 'login.pw.show');
   return (
     <View>
-      <TextField {...props} label={label} error={error} secureTextEntry={!shown} autoCapitalize="none" autoCorrect={false} spellCheck={false}
-        textContentType={kind === 'new' ? 'newPassword' : 'password'} autoComplete={kind === 'new' ? 'new-password' : 'current-password'} style={{ paddingRight: 48, ...(invalid ? { borderColor: color.danger } : null) }} />
+      <TextField {...props} label={label} error={error} invalid={invalid} icon="lock" secureTextEntry={!shown} autoCapitalize="none" autoCorrect={false} spellCheck={false}
+        textContentType={kind === 'new' ? 'newPassword' : 'password'} autoComplete={kind === 'new' ? 'new-password' : 'current-password'} style={{ paddingRight: 48 }} />
       <Pressable accessibilityRole="button" accessibilityLabel={`${eye} · ${label}`} hitSlop={2} onPress={() => setShown((value) => !value)}
         style={{ position: 'absolute', right: 4, top: 26, width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
-        <Icon name="eye" size={22} color={shown ? color.primary : color.text2} />
+        <Icon name={shown ? 'eyeOff' : 'eye'} size={22} color={color.text2} />
       </Pressable>
     </View>
   );

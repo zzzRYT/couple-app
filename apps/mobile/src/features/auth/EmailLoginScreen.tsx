@@ -38,7 +38,7 @@ export function EmailLoginScreen({ password, onDone, onBack, onApple, onSignup, 
       {locked ? <AppleButton onPress={onApple} /> : <Button label={t('login.signup.link')} variant="ghost" onPress={onSignup} />}
     </>}>
       <AppText variant="title" accessibilityRole="header">{t('auth.email.entry')}</AppText>
-      <TextField label={t('login.email.label')} placeholder={t('login.email.placeholder')} value={email} onChangeText={setEmail} editable={!locked} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} autoComplete="username" textContentType="username" />
+      <TextField icon="mail" label={t('login.email.label')} placeholder={t('login.email.placeholder')} value={email} onChangeText={setEmail} editable={!locked} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} autoComplete="username" textContentType="username" />
       <View style={{ gap: tokens.spacing[1] }}>
         <PasswordField label={t('login.pw.label')} value={secret} onChangeText={setSecret} editable={!locked} onSubmitEditing={() => void submit()} returnKeyType="go" error={status === 'wrong' ? t('auth.login.wrong') : null} />
         {locked && <Banner kind="warn" text={t('auth.login.rate')} body={t('auth.login.rate.apple')} />}
