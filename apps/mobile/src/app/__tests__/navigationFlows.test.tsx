@@ -7,8 +7,7 @@ const tabsLayout = () => <Tabs><Tabs.Screen name="home" /><Tabs.Screen name="roo
 const routes = {
   _layout: () => <Stack />,
   '(auth)/_layout': () => <Stack />,
-  '(auth)/index': screen('welcome'),
-  '(auth)/welcome': screen('welcome'),
+  '(auth)/index': screen('intro'),
   '(auth)/login': screen('login'),
   '(auth)/email-code': screen('code'),
   '(onboarding)/_layout': () => <Stack />,
@@ -32,8 +31,8 @@ function countTabs(state: NavState | undefined): number {
 }
 
 const cases = [
-  { name: '1 cold signed-out start', start: '/welcome', actions: [], back: false, tabs: 0, path: '/welcome' },
-  { name: '2 sign-in success discards auth history', start: '/welcome', actions: [['push', '/login'], ['replace', '/home']], back: false, tabs: 1, path: '/home' },
+  { name: '1 signed-out start after a session expiry has no back', start: '/login', actions: [], back: false, tabs: 0, path: '/login' },
+  { name: '2 sign-in success discards auth history', start: '/login', actions: [['push', '/email-code'], ['replace', '/home']], back: false, tabs: 1, path: '/home' },
   { name: '3 created space then invite keeps Home below it', start: '/choose-space', actions: [['push', '/create-space'], ['replace', '/home'], ['push', '/invite']], back: true, tabs: 1, path: '/invite' },
   { name: '4 invite later returns to one Home root', start: '/home', actions: [['push', '/invite'], ['back']], back: false, tabs: 1, path: '/home' },
   { name: '5 Home opens invite above the existing tabs', start: '/home', actions: [['push', '/invite']], back: true, tabs: 1, path: '/invite' },
