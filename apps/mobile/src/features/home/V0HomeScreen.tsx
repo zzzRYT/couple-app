@@ -2,7 +2,8 @@ import { Fragment, useCallback, useState } from 'react';
 import { Image, Pressable, RefreshControl, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppText, Banner, Card, Chip, Skeleton, Toast, useTabBarClearance } from '../../ui/components';
+import { AppText, Card, Chip, Skeleton, Toast, useTabBarClearance } from '../../ui/components';
+import { OfflineBand } from '../space/OfflineBand';
 import { Icon, type IconName } from '../../ui/Icon';
 import { mascotPoses } from '../../scene/catalog';
 import { tokens } from '../../theme/tokens';
@@ -62,7 +63,7 @@ export function V0HomeScreen({ state, now, onAnniversaries, onRefresh, onOpenInv
   return <View style={{ flex: 1, backgroundColor: color.bg }}>
     <ScrollView style={{ flex: 1 }} refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />} contentContainerStyle={{ paddingTop: insets.top, paddingHorizontal: 20, paddingBottom: clearance + 16, gap: 14 }}>
       <View style={{ minHeight: 48, justifyContent: 'center' }}><AppText accessibilityRole="header" style={emphasis(16)}>{t('app.name')}</AppText></View>
-      {state.offline && <Banner band kind="warn" icon="offline" text={t('state.offline.banner', { time: state.lastSyncedAt ? new Intl.DateTimeFormat(lang, { hour: 'numeric', minute: '2-digit' }).format(new Date(state.lastSyncedAt)) : '' })} body={t('state.offline.readonly')} />}
+      {state.offline && <OfflineBand syncedAt={state.lastSyncedAt} />}
       <View style={{ alignItems: 'center', gap: 4 }}>
         {mascot && <Image accessibilityLabel={t('mascot.alt.wave')} source={mascotPoses.wave_main} resizeMode="contain" style={{ width: 96, height: 96 }} />}
         <View accessible accessibilityRole="text" accessibilityLabel={t('home.names.a11y', { me: name, partner })} style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
