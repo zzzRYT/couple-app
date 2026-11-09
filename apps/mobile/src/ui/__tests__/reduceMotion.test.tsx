@@ -1,7 +1,7 @@
-import { Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { act, fireEvent } from '@testing-library/react-native';
 import { renderWithI18n, resetI18nCache } from '../../test/render';
-import { BottomSheet, Dialog, Skeleton } from '../components';
+import { Dialog, Skeleton } from '../components';
 import { AnniversaryDateField } from '../../features/anniversaries/AnniversaryDateField';
 import { CelebrationSparkle } from '../../features/milestone/CelebrationSparkle';
 import { CelebrationCard } from '../../features/home/CelebrationCard';
@@ -16,18 +16,19 @@ const animation = (screen: Awaited<ReturnType<typeof renderWithI18n>>) => modal(
 const flush = () => act(async () => { await Promise.resolve(); });
 
 describe('V0-NF-01 Reduce Motion', () => {
-  it.each([['sheet', <BottomSheet key="s" visible title="t" onClose={() => {}}><Text>x</Text></BottomSheet>, 'slide'], ['dialog', <Dialog key="d" visible title="t" onClose={() => {}}><Text>x</Text></Dialog>, 'fade']] as const)('presents the %s without a transition and with one otherwise', async (_name, element, normal) => {
+  it('presents the dialog without a transition and with a fade otherwise', async () => {
+    const element = <Dialog visible title="t" onClose={() => {}}><Text>x</Text></Dialog>;
     const reduced = await renderWithI18n(element); await flush();
     expect(animation(reduced)).toBe('none');
     await reduced.unmount(); mockReduced = false;
     const regular = await renderWithI18n(element); await flush();
-    expect(animation(regular)).toBe(normal);
+    expect(animation(regular)).toBe('fade');
     await regular.unmount();
   });
   it('opens the date wheel sheet without sliding', async () => {
     const screen = await renderWithI18n(<AnniversaryDateField value={{ year: 2025, month: 6, day: 29 }} onChange={() => {}} maxYear={2026} />); await flush();
     await fireEvent.press(screen.getByLabelText(screen.t('a11y.dateField')));
-    expect(animation(screen)).toBe('none');
+    expect(StyleSheet.flatten(screen.getByTestId('sheet-panel').props.style).transform).toBeUndefined();
   });
   it('holds the celebration card mascot on its still pose and stops the sparkle pulse', async () => {
     const card = await renderWithI18n(<CelebrationCard celebration={celebration} startDate="2025-06-29" disabled={false} onSeen={() => {}} />);

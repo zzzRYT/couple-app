@@ -1,6 +1,7 @@
-import { fireEvent } from '@testing-library/react-native';
+import { act, fireEvent } from '@testing-library/react-native';
 import { renderWithI18n } from '../../../test/render';
 import { V0DateScreen } from '../V0DateScreen';
+import { tokens } from '../../../theme/tokens';
 const now = '2026-10-27T03:00:00Z';
 async function setup() {
   const onNext = jest.fn();
@@ -9,6 +10,7 @@ async function setup() {
     await fireEvent.press(screen.getByTestId('date-year'));
     await fireEvent.press(screen.getByTestId(`wheel-${field}-${value}`));
     await fireEvent.press(screen.getByRole('button', { name: screen.t('common.done') }));
+    await act(() => new Promise((resolve) => setTimeout(resolve, tokens.motion.transitionMs + 50)));
   };
   return { screen, onNext, pick };
 }
