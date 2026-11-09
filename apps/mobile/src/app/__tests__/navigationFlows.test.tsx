@@ -22,6 +22,7 @@ const routes = {
   '(tabs)/room': screen('room'),
   '(tabs)/settings/index': screen('settings'),
   invite: screen('invite'),
+  'settings/connect': screen('connect'),
   'prompt/index': screen('prompt'),
 };
 
@@ -45,6 +46,7 @@ const cases = [
   { name: '12 cold email code returns safely to login', start: '/email-code', actions: [['dismissTo', '/login']], back: false, tabs: 0, path: '/login' },
   { name: '13 create with empty history returns to choice', start: '/create-space', actions: [['dismissTo', '/choose-space']], back: false, tabs: 0, path: '/choose-space' },
   { name: '14 repeated prompt navigation resolves to one modal route', start: '/room', actions: [['navigate', '/prompt'], ['navigate', '/prompt']], back: true, tabs: 1, path: '/prompt' },
+  { name: '15 invite opened from Settings › Connect waits at Home', start: '/settings', actions: [['push', '/settings/connect'], ['push', '/invite'], ['dismissTo', '/home']], back: false, tabs: 1, path: '/home' },
 ] as const;
 
 it.each(cases)('$name', async ({ start, actions, back, tabs, path }) => {
