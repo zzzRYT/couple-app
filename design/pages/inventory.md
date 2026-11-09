@@ -8,6 +8,7 @@
 | V0 · 시작 (로그인·연결) | [copy-v0-start.dc.html](../canvas/project/copy-v0-start.dc.html) | 문구 · V0-01 시작 |
 | V0 · 시작 (로그인·연결) | [V0-08-auth.dc.html](../canvas/project/V0-08-auth.dc.html) | V0-08 로그인 · 비밀번호 |
 | V0 · 시작 (로그인·연결) | [copy-v0-auth.dc.html](../canvas/project/copy-v0-auth.dc.html) | 문구 · V0-08 로그인 · 비밀번호 |
+| V0 · 시작 (로그인·연결) | [V0-12-splash.dc.html](../canvas/project/V0-12-splash.dc.html) | V0-12 스플래시 (아루미) |
 | V0 · 홈·D+Day | [V0-02-home.dc.html](../canvas/project/V0-02-home.dc.html) | V0-02 홈 · D+Day |
 | V0 · 홈·D+Day | [copy-v0-home.dc.html](../canvas/project/copy-v0-home.dc.html) | 문구 · V0-02 홈 |
 | V0 · 홈·D+Day | [V0-03-states.dc.html](../canvas/project/V0-03-states.dc.html) | V0-03 시스템 상태 |

@@ -1,8 +1,9 @@
+import { useRef } from 'react';
 import { Image, View } from 'react-native';
-/** Minimal stand-in for Reanimated in Jest: animated styles are evaluated once from the current shared values, and the UI-thread clock never ticks. */
+/** Minimal stand-in for Reanimated in Jest: animated styles are evaluated once from the current shared values, and the UI-thread clock never ticks. Shared values keep their identity across renders, as in Reanimated. */
 const Animated = { View, Image };
 export default Animated;
-export const useSharedValue = <T,>(value: T) => ({ value });
+export const useSharedValue = <T,>(value: T) => useRef({ value }).current;
 export const useAnimatedStyle = (worklet: () => object) => worklet();
 export const useFrameCallback = () => ({ setActive: () => {}, isActive: false, callbackId: -1 });
 export const cancelAnimation = () => {};

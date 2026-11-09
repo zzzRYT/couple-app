@@ -1,5 +1,6 @@
 import { APP_IDENTITY, EAS_PROJECT, IOS_WIDGETS_SIGNED, appVariant } from './src/config/identity.ts';
 import { productionTarget, supabaseBuildValues } from './src/config/supabase.ts';
+import { SPLASH } from './src/config/splash.ts';
 
 // APP_VARIANT comes from the EAS build profile (eas.json). Development and preview builds use the separate .dev
 // bundle id so the owner can register it with Apple before the production name check (G2).
@@ -58,7 +59,14 @@ export default {
     version: '1.0.1',
     ios: { bundleIdentifier: iosBundleId, icon: { light: './assets/icon/icon.png', dark: './assets/icon/icon-dark.png', tinted: './assets/icon/icon-tinted.png' }, usesAppleSignIn: true, associatedDomains: ['applinks:aroom.jinjinstar.com', 'webcredentials:aroom.jinjinstar.com'], infoPlist: { ITSAppUsesNonExemptEncryption: false } },
     android: { package: dev ? APP_IDENTITY.devAndroidApplicationId : APP_IDENTITY.androidApplicationId, adaptiveIcon: { foregroundImage: './assets/icon/adaptive-icon-foreground.png', backgroundColor: '#FBF1E3', monochromeImage: './assets/icon/adaptive-icon-monochrome.png' }, intentFilters: [{ action: 'VIEW', autoVerify: true, data: [{ scheme: 'https', host: 'aroom.jinjinstar.com', pathPrefix: '/i/' }], category: ['BROWSABLE', 'DEFAULT'] }] },
-    plugins: ['expo-router', 'expo-apple-authentication', ['@hot-updater/expo', { channel: otaChannel }], ...(widgets ? widgetPlugins : [])],
+    plugins: [
+      'expo-router',
+      'expo-apple-authentication',
+      // V0-12 launch screen; src/features/splash/BrandSplash.tsx takes over with the same image, size and ground.
+      ['expo-splash-screen', { image: SPLASH.image, imageWidth: SPLASH.imageWidth, resizeMode: 'contain', backgroundColor: SPLASH.background.light, dark: { backgroundColor: SPLASH.background.dark } }],
+      ['@hot-updater/expo', { channel: otaChannel }],
+      ...(widgets ? widgetPlugins : []),
+    ],
     extra: { eas: { projectId: EAS_PROJECT.projectId }, appVariant: variant },
   },
 };
