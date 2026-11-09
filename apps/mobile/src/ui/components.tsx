@@ -24,23 +24,26 @@ export function AppText({ variant = 'body', tone = 'text', align, style, ...prop
   return <Text {...WORD_BREAK} {...props} style={[type(variant), { color: color[tone], textAlign: align }, style]} />;
 }
 type ActionProps = { label: string; onPress: () => void; disabled?: boolean; accessibilityLabel?: string; testID?: string };
-type Variant = 'primary' | 'secondary' | 'danger' | 'dangerOutline' | 'ghost';
-function buttonColors(variant: Variant, color: AppColor) {
+type Variant = 'primary' | 'secondary' | 'danger' | 'dangerOutline' | 'ghost' | 'apple';
+function buttonColors(variant: Variant, color: AppColor, dark: boolean) {
   switch (variant) {
     case 'primary': return { face: color.primary, ink: color.onPrimary, edge: color.line };
     case 'secondary': return { face: color.surface, ink: color.text, edge: color.line };
     case 'danger': return { face: color.danger, ink: color.onDanger, edge: color.line };
     case 'dangerOutline': return { face: color.surface, ink: color.danger, edge: color.danger };
     case 'ghost': return { face: 'transparent', ink: color.primary, edge: 'transparent' };
+    // Apple's own black and white (V0-09 "Apple로 다시 로그인해 확인"); the label is ours, so it cannot be the system button.
+    case 'apple': return dark ? { face: '#FFFFFF', ink: '#000000', edge: '#FFFFFF' } : { face: '#000000', ink: '#FFFFFF', edge: '#000000' };
   }
 }
 /** `outline` overrides the edge colour where the control sits on the room (the outline follows the room's day/night, components.md §1.2). */
 export function Button({ label, onPress, disabled = false, loading = false, variant = 'primary', icon, compact = false, outline, accessibilityLabel, testID }: ActionProps & { variant?: Variant; loading?: boolean; icon?: IconName; compact?: boolean; outline?: string }) {
   const color = useAppColor();
+  const dark = useDisplayAppearance().scheme === 'dark';
   const { type } = useType();
   const [pressed, setPressed] = useState(false);
   const inactive = disabled || loading;
-  const base = buttonColors(variant, color);
+  const base = buttonColors(variant, color, dark);
   const ghost = variant === 'ghost';
   const { face, ink, edge } = disabled && !ghost ? { face: color.surface2, ink: color.text2, edge: color.border } : disabled ? { ...base, ink: color.text2 } : base;
   const style: ViewStyle = {
@@ -73,19 +76,25 @@ export function IconButton({ icon, label, onPress, disabled = false, plain = fal
 /** Shared, translated back affordance used by screen scaffolds. */
 export function BackControl({ onPress }: { onPress: () => void }) {
   const { t } = useTranslation();
-  return <IconButton plain icon="back" label={t('a11y.back')} onPress={onPress} testID="screen-back" />;
+  return <IconButton plain icon="back" label={t('common.back')} onPress={onPress} testID="screen-back" />;
 }
-export function TextField({ label, error, hideLabel = false, ...props }: TextInputProps & { label: string; error?: string | null; hideLabel?: boolean }) {
+/** `icon` puts a leading glyph inside the field (V0-08/V0-09 mail and lock); `invalid` gives the danger edge without a message. A field that cannot be edited is dashed and filled, like a disabled button. */
+export function TextField({ label, error, hideLabel = false, icon, invalid = false, ...props }: TextInputProps & { label: string; error?: string | null; hideLabel?: boolean; icon?: IconName; invalid?: boolean }) {
   const color = useAppColor();
   const { type, emphasis } = useType();
   const [focused, setFocused] = useState(false);
-  const edge = error ? color.danger : focused ? color.focus : color.border;
+  const edge = error || invalid ? color.danger : focused ? color.focus : color.border;
+  const disabled = props.editable === false;
+  const face: ViewStyle = { minHeight: tokens.touch.toolbarHeight, borderWidth: tokens.border.outline.normal, borderColor: edge, backgroundColor: disabled ? color.surface2 : color.surface, borderRadius: tokens.radius.input, ...(disabled ? { borderStyle: 'dashed' as const } : null) };
+  const input = <TextInput placeholderTextColor={color.text2} {...props} accessibilityLabel={label}
+    onFocus={(event) => { setFocused(true); props.onFocus?.(event); }} onBlur={(event) => { setFocused(false); props.onBlur?.(event); }}
+    style={[type('body'), icon
+      ? { flex: 1, minHeight: tokens.touch.toolbarHeight - 2 * tokens.border.outline.normal, color: color.text, paddingRight: tokens.spacing[3], paddingVertical: tokens.spacing[2] }
+      : { ...face, color: color.text, paddingHorizontal: tokens.spacing[3], paddingVertical: tokens.spacing[2] }, props.style]} />;
   return (
     <View style={{ gap: tokens.spacing[1] }}>
       {!hideLabel && <Text {...WORD_BREAK} style={[emphasis(14), { color: color.text }]}>{label}</Text>}
-      <TextInput placeholderTextColor={color.text2} {...props} accessibilityLabel={label}
-        onFocus={(event) => { setFocused(true); props.onFocus?.(event); }} onBlur={(event) => { setFocused(false); props.onBlur?.(event); }}
-        style={[type('body'), { minHeight: tokens.touch.toolbarHeight, borderWidth: tokens.border.outline.normal, borderColor: edge, color: color.text, backgroundColor: props.editable === false ? color.surface2 : color.surface, paddingHorizontal: tokens.spacing[3], paddingVertical: tokens.spacing[2], borderRadius: tokens.radius.input }, props.style]} />
+      {icon ? <View style={[face, { flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[1], paddingLeft: tokens.spacing[3] }]}><Icon name={icon} size={20} color={color.text2} />{input}</View> : input}
       {error && <View style={{ flexDirection: 'row', gap: tokens.spacing[0], alignItems: 'center' }}><Icon name="warn" size={16} color={color.danger} /><Text {...WORD_BREAK} style={[type('bodySm'), { color: color.danger, flexShrink: 1 }]}>{error}</Text></View>}
     </View>
   );
@@ -205,37 +214,63 @@ export function BottomSheet({ visible, title, children, onClose }: { visible: bo
     </SheetModal>
   );
 }
-/** Settings-style row: icon + title + value + chevron, at least 56pt tall. */
-export function ListRow({ label, onPress, icon, value, valueTone = 'text2', danger = false, disabled = false, last = true, accessibilityLabel, testID }: ActionProps & { icon?: IconName; value?: string; valueTone?: 'text2' | 'primary'; danger?: boolean; last?: boolean }) {
+/** The 32pt `surface2` tile V0-07/V0-09 rows lead with. */
+export function RowTile({ icon, danger = false }: { icon: IconName; danger?: boolean }) {
   const color = useAppColor();
-  const { type } = useType();
-  const ink = danger ? color.danger : color.text;
+  return <View style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: color.surface2, alignItems: 'center', justifyContent: 'center' }}><Icon name={icon} size={18} color={danger ? color.danger : color.text2} /></View>;
+}
+/**
+ * Settings-style row: leading icon or tile, title, value, then a chevron, an external-link mark (opens outside the app) or
+ * nothing (an action that happens right here, like 로그아웃). At least 56pt tall.
+ */
+export function ListRow({ label, onPress, icon, tile, value, valueTone = 'text2', labelTone = 'text', trailing = 'chevron', danger = false, disabled = false, last = true, accessibilityLabel, testID }: ActionProps & { icon?: IconName; tile?: IconName; value?: string; valueTone?: 'text2' | 'primary'; labelTone?: 'text' | 'primary'; trailing?: 'chevron' | 'external' | 'none'; danger?: boolean; last?: boolean }) {
+  const color = useAppColor();
+  const { type, emphasis } = useType();
+  const ink = danger ? color.danger : labelTone === 'primary' ? color.primary : color.text;
+  const labelFace = danger ? emphasis(16) : type('body');
   // An action value (V0-10 "연결하기") is drawn like a link: primary and bold, with a primary chevron.
   const valueInk = valueTone === 'primary' ? color.primary : color.text2;
-  const valueWeight = valueTone === 'primary' ? { fontWeight: '700' as const } : null;
+  const valueFace = valueTone === 'primary' ? emphasis(14) : type('bodySm');
   const stacked = useLargeText() && !!value;
   return (
     <Pressable testID={testID} accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? (value ? `${label}, ${value}` : label)} accessibilityState={{ disabled }} disabled={disabled} onPress={onPress}
-      style={({ pressed }) => ({ minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[2], paddingVertical: tokens.spacing[2], borderBottomWidth: last ? 0 : 1, borderColor: color.divider, opacity: disabled ? 0.5 : pressed ? 0.7 : 1 })}>
-      {icon && <Icon name={icon} size={22} color={ink} />}
-      {stacked ? <View style={{ flex: 1 }}><Text {...WORD_BREAK} style={[type('body'), { color: ink }]}>{label}</Text><Text {...WORD_BREAK} style={[type('bodySm'), { color: valueInk }, valueWeight]}>{value}</Text></View> : <>
-        <Text {...WORD_BREAK} style={[type('body'), { color: ink, flex: 1 }]}>{label}</Text>
-        {value ? <Text {...WORD_BREAK} style={[type('bodySm'), { color: valueInk, flexShrink: 1, textAlign: 'right' }, valueWeight]}>{value}</Text> : null}
+      style={({ pressed }) => ({ minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: tile ? tokens.spacing[2] + 4 : tokens.spacing[2], paddingVertical: tokens.spacing[2], borderBottomWidth: last ? 0 : 1, borderColor: color.divider, opacity: disabled ? 0.5 : pressed ? 0.7 : 1 })}>
+      {tile ? <RowTile icon={tile} danger={danger} /> : icon && <Icon name={icon} size={22} color={ink} />}
+      {stacked ? <View style={{ flex: 1 }}><Text {...WORD_BREAK} style={[labelFace, { color: ink }]}>{label}</Text><Text {...WORD_BREAK} style={[valueFace, { color: valueInk }]}>{value}</Text></View> : <>
+        <Text {...WORD_BREAK} style={[labelFace, { color: ink, flex: 1 }]}>{label}</Text>
+        {value ? <Text {...WORD_BREAK} style={[valueFace, { color: valueInk, flexShrink: 1, textAlign: 'right' }]}>{value}</Text> : null}
       </>}
-      <Icon name="forward" size={18} color={valueInk} />
+      {trailing === 'chevron' && <Icon name="forward" size={18} color={valueInk} />}
+      {trailing === 'external' && <Icon name="externalLink" size={18} color={color.text2} />}
     </Pressable>
   );
 }
-/** A row that only shows something (V0-07: 상대, 버전, Apple로 로그인함): no chevron and nothing to press. */
-export function InfoRow({ label, value, last = true }: { label: string; value?: string; last?: boolean }) {
+/** A row that only shows something (V0-07: 상대, 버전; V0-09: 사용 중): no chevron and nothing to press. `subtitle` sits under the label (V0-sec-email address). */
+export function InfoRow({ label, value, subtitle, tile, last = true }: { label: string; value?: string; subtitle?: string; tile?: IconName; last?: boolean }) {
   const color = useAppColor();
   const { type } = useType();
   const stacked = useLargeText() && !!value;
+  const title = <Text {...WORD_BREAK} style={[type('body'), { color: color.text }]}>{label}</Text>;
   return (
-    <View accessible accessibilityLabel={value ? `${label}, ${value}` : label} style={{ minHeight: 56, flexDirection: stacked ? 'column' : 'row', alignItems: stacked ? 'flex-start' : 'center', gap: stacked ? 0 : tokens.spacing[2], paddingVertical: tokens.spacing[2], borderBottomWidth: last ? 0 : 1, borderColor: color.divider }}>
-      <Text {...WORD_BREAK} style={[type('body'), { color: color.text, flex: stacked ? undefined : 1 }]}>{label}</Text>
-      {value ? <Text {...WORD_BREAK} style={[type('bodySm'), { color: color.text2, flexShrink: 1, textAlign: stacked ? 'left' : 'right' }]}>{value}</Text> : null}
+    <View accessible accessibilityLabel={[label, subtitle, value].filter(Boolean).join(', ')} style={{ minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: tile ? tokens.spacing[2] + 4 : tokens.spacing[2], paddingVertical: tokens.spacing[2], borderBottomWidth: last ? 0 : 1, borderColor: color.divider }}>
+      {tile && <RowTile icon={tile} />}
+      <View style={{ flex: 1, flexDirection: stacked ? 'column' : 'row', alignItems: stacked ? 'flex-start' : 'center', gap: stacked ? 0 : tokens.spacing[2] }}>
+        {subtitle ? <View style={{ flex: stacked ? undefined : 1, gap: 1 }}>{title}<Text {...WORD_BREAK} style={[type('bodySm'), { fontSize: 13, color: color.text2 }]}>{subtitle}</Text></View> : <View style={{ flex: stacked ? undefined : 1 }}>{title}</View>}
+        {value ? <Text {...WORD_BREAK} style={[type('bodySm'), { color: color.text2, flexShrink: 1, textAlign: stacked ? 'left' : 'right' }]}>{value}</Text> : null}
+      </View>
     </View>
+  );
+}
+/** One choice of a single-choice list (V0-set-lang, -mode, -notify 미리 알림): a primary check on the chosen row, no chevron. */
+export function RadioRow({ label, selected, onPress, disabled = false, last = true }: { label: string; selected: boolean; onPress: () => void; disabled?: boolean; last?: boolean }) {
+  const color = useAppColor();
+  const { type } = useType();
+  return (
+    <Pressable accessibilityRole="radio" accessibilityLabel={label} accessibilityState={{ selected, disabled }} disabled={disabled} onPress={onPress}
+      style={({ pressed }) => ({ minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[2], borderBottomWidth: last ? 0 : 1, borderColor: color.divider, opacity: disabled ? 0.5 : pressed ? 0.7 : 1 })}>
+      <Text {...WORD_BREAK} style={[type('body'), { color: color.text, flex: 1 }]}>{label}</Text>
+      {selected ? <Icon name="check" size={22} color={color.primary} /> : <View style={{ width: 22 }} />}
+    </Pressable>
   );
 }
 /** The switch as drawn on V0-07 (51×31); the system one changes shape and sits off-centre on iOS 26. Hidden from screen readers: the control holding it carries the name and state. */
@@ -270,17 +305,42 @@ export function useTabBarClearance(): number {
   const insets = useSafeAreaInsets();
   return insets.bottom + (Platform.OS === 'ios' ? 49 : 80);
 }
-/** Screen scaffold: safe areas, 20pt gutter, optional back/close bar, scrolling body and a footer pinned above the home indicator. */
-export function Screen({ children, footer, onBack, onClose, scroll = true, center = false, bottomInset = true, testID }: {
-  children: ReactNode; footer?: ReactNode; onBack?: () => void; onClose?: () => void; scroll?: boolean; center?: boolean; bottomInset?: boolean; testID?: string;
+export type NavAction = { label: string; onPress: () => void; disabled?: boolean; loading?: boolean };
+/** The text action at the right of the nav bar (V0-set-me 저장): bold primary, a 48pt target. */
+function NavTextButton({ label, onPress, disabled = false, loading = false }: NavAction) {
+  const color = useAppColor();
+  const { emphasis } = useType();
+  const inactive = disabled || loading;
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: inactive, busy: loading }} disabled={inactive} onPress={onPress} hitSlop={4}
+      style={({ pressed }) => ({ minHeight: tokens.touch.minimum, minWidth: tokens.touch.minimum, paddingHorizontal: tokens.spacing[2] + 4, alignItems: 'center', justifyContent: 'center', opacity: pressed ? 0.7 : 1 })}>
+      {loading ? <ActivityIndicator size="small" color={color.primary} /> : <Text {...WORD_BREAK} style={[emphasis(16), { color: disabled ? color.text2 : color.primary }]}>{label}</Text>}
+    </Pressable>
+  );
+}
+/**
+ * Screen scaffold: safe areas, 20pt gutter, optional back/close bar, scrolling body and a footer pinned above the home indicator.
+ * `title` and `trailing` draw the V0 nav bar of pushed screens: back, a centered 17pt bold title and an optional text action.
+ */
+export function Screen({ children, footer, onBack, onClose, title, trailing, scroll = true, center = false, bottomInset = true, testID }: {
+  children: ReactNode; footer?: ReactNode; onBack?: () => void; onClose?: () => void; title?: string; trailing?: NavAction; scroll?: boolean; center?: boolean; bottomInset?: boolean; testID?: string;
 }) {
   const color = useAppColor();
+  const { emphasis } = useType();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const bar = onBack || onClose
+  const close = onClose && <IconButton plain icon="close" label={t('a11y.close')} onPress={onClose} testID="screen-close" />;
+  const side = { minWidth: tokens.touch.minimum, flexDirection: 'row' as const };
+  const bar = title || trailing
+    ? <View style={{ minHeight: tokens.touch.minimum + tokens.spacing[1], flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[0], marginHorizontal: GUTTER - 12 }}>
+      <View style={side}>{onBack && <BackControl onPress={onBack} />}</View>
+      {title ? <Text {...WORD_BREAK} accessibilityRole="header" style={[emphasis(17), { flex: 1, color: color.text, textAlign: 'center' }]}>{title}</Text> : <View style={{ flex: 1 }} />}
+      <View style={[side, { justifyContent: 'flex-end' }]}>{trailing ? <NavTextButton {...trailing} /> : close}</View>
+    </View>
+    : onBack || onClose
     ? <View style={{ height: tokens.touch.minimum + tokens.spacing[1], flexDirection: 'row', alignItems: 'center', justifyContent: onBack ? 'flex-start' : 'flex-end', marginHorizontal: GUTTER - 12 }}>
       {onBack && <BackControl onPress={onBack} />}
-      {onClose && <IconButton plain icon="close" label={t('a11y.close')} onPress={onClose} testID="screen-close" />}
+      {close}
     </View>
     : null;
   const body = { flexGrow: 1, paddingHorizontal: GUTTER, paddingTop: bar ? tokens.spacing[1] : tokens.spacing[3], paddingBottom: tokens.spacing[5], gap: tokens.spacing[3], justifyContent: center ? 'center' as const : 'flex-start' as const };

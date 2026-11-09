@@ -42,7 +42,14 @@ const paths = {
   room: 'M4 5.5 L20 5.5 L20 18.5 L4 18.5 Z M4 11 L20 11 M15 8.2 L16 8.2',
   globe: 'M12 3.5 A8.5 8.5 0 1 1 11.99 3.5 Z M3.5 12 L20.5 12 M12 3.5 C9.5 6 8.5 9 8.5 12 C8.5 15 9.5 18 12 20.5 C14.5 18 15.5 15 15.5 12 C15.5 9 14.5 6 12 3.5 Z',
   shield: 'M12 3.5 L19.5 6.5 L19.5 11.5 C19.5 16 16.5 19 12 20.5 C7.5 19 4.5 16 4.5 11.5 L4.5 6.5 Z',
+  moon: 'M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z',
+  document: 'M7 3h7l5 5v13H7zM14 3v5h5',
+  linkOff: 'M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1M3 3l18 18',
+  eyeOff: 'M3 3l18 18M10.6 5.6A10 10 0 0 1 12 5.5c6.5 0 10 6.5 10 6.5a17 17 0 0 1-3.2 3.9M6.6 6.6C3.7 8.4 2 12 2 12s3.5 6.5 10 6.5a9.6 9.6 0 0 0 4.2-.9M9.9 9.9a3 3 0 0 0 4.2 4.2',
+  apple: 'M16.5 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.3.9-1.3 1.3-2.6 1.3-2.7 0 0-2.5-1-2.5-3.7zM14.2 5.8c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.7 1.4-.6.7-1.1 1.8-1 2.9 1 .1 2.1-.5 2.7-1.3z',
 } as const;
+/** Brand marks are solid shapes, not lines. */
+const SOLID: ReadonlySet<string> = new Set(['apple']);
 export type IconName = keyof typeof paths;
 export function Icon({ name, size = 24, color, fill }: { name: IconName; size?: number; color: string; fill?: string }) {
   const scale = size / 24;
@@ -50,8 +57,10 @@ export function Icon({ name, size = 24, color, fill }: { name: IconName; size?: 
     <View pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={{ width: size, height: size }}>
       <Canvas style={{ width: size, height: size }}>
         <Group transform={[{ scale }]}>
-          {fill && <Path path={paths[name]} color={fill} style="fill" />}
-          <Path path={paths[name]} color={color} style="stroke" strokeWidth={name.startsWith('anniv') ? 2 : 2.2 / scale} strokeCap="round" strokeJoin="round" />
+          {SOLID.has(name) ? <Path path={paths[name]} color={color} style="fill" /> : <>
+            {fill && <Path path={paths[name]} color={fill} style="fill" />}
+            <Path path={paths[name]} color={color} style="stroke" strokeWidth={name.startsWith('anniv') ? 2 : 2.2 / scale} strokeCap="round" strokeJoin="round" />
+          </>}
           {name === 'annivPepero' && <Path path="M10.6 13.2L14 5.5M15.1 13.2l3.4-7.7" color={color} style="stroke" strokeWidth={4} strokeCap="round" strokeJoin="round" />}
         </Group>
       </Canvas>
