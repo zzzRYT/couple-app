@@ -3,7 +3,6 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AppText, Banner, BottomSheet, Button, Card, Chip, Screen } from '../../ui/components';
 import { Icon } from '../../ui/Icon';
-import { tokens } from '../../theme/tokens';
 import { useAppColor } from '../../theme/useAppColor';
 import type { PasswordPort } from './passwordPort';
 import { passwordRules, rulesMet } from './passwordRules';
