@@ -33,22 +33,29 @@ it('V0-F15-AC-01 takes email and password on one screen, hidden by default with 
   expect(field().props.secureTextEntry).toBe(true);
 });
 
-it('V0-F15-AC-02 shows one message for a wrong email or password and clears the password', async () => {
-  const screen = await login(port({ signIn: jest.fn().mockResolvedValue('wrong') }));
+it('V0-F15-AC-02 shows one message for a wrong email or password and keeps both filled so sign-in can be tried again', async () => {
+  const signIn = jest.fn().mockResolvedValue('wrong');
+  const screen = await login(port({ signIn }));
   await fill(screen);
   await submit(screen);
   expect(await screen.findByText(screen.t('auth.login.wrong'))).toBeTruthy();
-  expect(screen.getByLabelText(screen.t('login.pw.label')).props.value).toBe('');
+  expect(screen.getByLabelText(screen.t('login.email.label')).props.value).toBe('haru@example.com');
+  expect(screen.getByLabelText(screen.t('login.pw.label')).props.value).toBe('mopiru2026');
+  expect(screen.getByRole('button', { name: screen.t('login.pw.submit') }).props.accessibilityState.disabled).toBe(false);
+  await submit(screen);
+  expect(signIn).toHaveBeenCalledTimes(2);
 });
 
-it('V0-F15-AC-03 at the lock shows the rate message and offers Apple, with sign-in closed', async () => {
+it('V0-F15-AC-03 at the lock shows the rate message and offers Apple, with the fields and sign-in closed', async () => {
   const onApple = jest.fn();
   const screen = await login(port({ signIn: jest.fn().mockResolvedValue('locked') }), { onApple });
   await fill(screen);
   await submit(screen);
   expect(await screen.findByText(screen.t('auth.login.rate'))).toBeTruthy();
   expect(screen.getByText(screen.t('auth.login.rate.apple'))).toBeTruthy();
-  await fireEvent.changeText(screen.getByLabelText(screen.t('login.pw.label')), 'mopiru2026');
+  expect(screen.getByLabelText(screen.t('login.email.label')).props.editable).toBe(false);
+  expect(screen.getByLabelText(screen.t('login.pw.label')).props.editable).toBe(false);
+  expect(screen.getByLabelText(screen.t('login.pw.label')).props.value).toBe('');
   expect(screen.getByRole('button', { name: screen.t('login.pw.submit') }).props.accessibilityState.disabled).toBe(true);
   expect(screen.queryByRole('button', { name: screen.t('login.signup.link') })).toBeNull();
   await fireEvent.press(screen.getByRole('button', { name: screen.t('auth.apple') }));

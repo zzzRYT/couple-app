@@ -7,7 +7,7 @@ type Supabase = ReturnType<typeof createSupabase>;
 export type PasswordState = { hasPassword: boolean; promptSeen: boolean; email: string | null };
 export type SignInResult = 'ok' | 'wrong' | 'locked' | 'error';
 export type SetResult = 'ok' | 'wrong' | 'locked' | 'weak' | 'reauth' | 'error';
-/** Password operations the screens need. A password goes to the server over TLS and is never kept: not in state after the call, not on the device. */
+/** Password operations the screens need. A password goes to the server over TLS and is never kept on the device; a screen holds it only while the field shows it. */
 export type PasswordPort = {
   /** False until mail is connected, and when the answer cannot be read: nothing may claim a mail was sent. */
   mailConnected(): Promise<boolean>;
