@@ -204,20 +204,23 @@ export function BottomSheet({ visible, title, children, onClose }: { visible: bo
   );
 }
 /** Settings-style row: icon + title + value + chevron, at least 56pt tall. */
-export function ListRow({ label, onPress, icon, value, danger = false, disabled = false, last = true, accessibilityLabel, testID }: ActionProps & { icon?: IconName; value?: string; danger?: boolean; last?: boolean }) {
+export function ListRow({ label, onPress, icon, value, valueTone = 'text2', danger = false, disabled = false, last = true, accessibilityLabel, testID }: ActionProps & { icon?: IconName; value?: string; valueTone?: 'text2' | 'primary'; danger?: boolean; last?: boolean }) {
   const color = useAppColor();
   const { type } = useType();
   const ink = danger ? color.danger : color.text;
+  // An action value (V0-10 "연결하기") is drawn like a link: primary and bold, with a primary chevron.
+  const valueInk = valueTone === 'primary' ? color.primary : color.text2;
+  const valueWeight = valueTone === 'primary' ? { fontWeight: '700' as const } : null;
   const stacked = useLargeText() && !!value;
   return (
     <Pressable testID={testID} accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? (value ? `${label}, ${value}` : label)} accessibilityState={{ disabled }} disabled={disabled} onPress={onPress}
       style={({ pressed }) => ({ minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[2], paddingVertical: tokens.spacing[2], borderBottomWidth: last ? 0 : 1, borderColor: color.divider, opacity: disabled ? 0.5 : pressed ? 0.7 : 1 })}>
       {icon && <Icon name={icon} size={22} color={ink} />}
-      {stacked ? <View style={{ flex: 1 }}><Text {...WORD_BREAK} style={[type('body'), { color: ink }]}>{label}</Text><Text {...WORD_BREAK} style={[type('bodySm'), { color: color.text2 }]}>{value}</Text></View> : <>
+      {stacked ? <View style={{ flex: 1 }}><Text {...WORD_BREAK} style={[type('body'), { color: ink }]}>{label}</Text><Text {...WORD_BREAK} style={[type('bodySm'), { color: valueInk }, valueWeight]}>{value}</Text></View> : <>
         <Text {...WORD_BREAK} style={[type('body'), { color: ink, flex: 1 }]}>{label}</Text>
-        {value ? <Text {...WORD_BREAK} style={[type('bodySm'), { color: color.text2, flexShrink: 1, textAlign: 'right' }]}>{value}</Text> : null}
+        {value ? <Text {...WORD_BREAK} style={[type('bodySm'), { color: valueInk, flexShrink: 1, textAlign: 'right' }, valueWeight]}>{value}</Text> : null}
       </>}
-      <Icon name="forward" size={18} color={color.text2} />
+      <Icon name="forward" size={18} color={valueInk} />
     </Pressable>
   );
 }

@@ -1,6 +1,6 @@
 # V0 copy (ko / en / ja) — all V0 copy keys
 
-Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1793952106-add4`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
+Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1794206341-003e`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
 
 **Brand names**: the boards draw the app as 모피루 / Mopiru / モピル and the mascot as 모피 / Mopi / モピ. The owner has since decided (spec D-08, 2026-11-02): app **아룸 / Aroom / アルーム**, mascot **아루미 / Aroomi / アルーミ**. The table below keeps the board text verbatim; in the app only `app.name` and `mascot.name` hold the names, every other value references them with i18next nesting, and the Korean particle after 아룸 becomes 을/이/은/과/으로 (e.g. `widget.none.title` → `$t(app.name)을 시작해요`). See `../H02-v0-shell-home.md` §6.
 
@@ -445,3 +445,36 @@ sections: 이 화면의 문구
 | `acct.delete.reauth.body.email` | 계정을 지키기 위해 비밀번호를 입력해 주세요. | To protect your account, enter your password. | アカウントを守るため、パスワードを入力してください。 | 신규 · EN·JA 초안 |
 | `acct.delete.reauth.forgot.mail` | 재설정 메일을 받아 새 비밀번호를 만든 뒤 다시 삭제해 주세요. | Get a reset email, make a new password, then try deleting again. | 再設定メールを受け取り、新しいパスワードを作成してから、もう一度削除してください。 | 신규 · EN·JA 초안 |
 | `acct.delete.reauth.forgot.nomail` | 아직 재설정 메일을 보낼 수 없어요. 문의해 주시면 본인 확인 뒤에 계정을 삭제해 드려요. | We can't send reset emails yet. Contact us and we'll delete your account once we've confirmed it's you. | 再設定メールはまだ送れません。お問い合わせいただければ、本人確認のあとでアカウントを削除します。 | 신규 · EN·JA 초안 |
+
+## V0-10 상대 연결 (`copy-v0-connect.dc.html`)
+sections: 이 화면의 문구
+
+| key | ko | en | ja | status |
+|---|---|---|---|---|
+| `home.pending.haveCode` | 상대에게 코드를 받았어요 | I got a code from my partner | 相手からコードをもらった | 신규 · EN·JA 초안 |
+| `set.us.connect` | 연결하기 | Connect | つながる | 신규 · EN·JA 초안 |
+| `connect.title` | 상대와 연결하기 | Connect with your partner | 相手とつながる | 신규 · EN·JA 초안 |
+| `connect.body` | 한 사람이 코드를 보내고, 다른 사람이 그 코드를 넣으면 연결돼요. | One of you sends a code and the other enters it to connect. | ひとりがコードを送り、もうひとりが入力するとつながります。 | 신규 · EN·JA 초안 |
+| `connect.send.title` | 내 초대 코드 보내기 | Send my invite code | 招待コードを送る | 신규 · EN·JA 초안 |
+| `connect.send.body` | 상대가 넣으면 내 공간으로 들어와요 | Your partner enters it and joins your space | 相手が入力すると、あなたのスペースに参加します | 신규 · EN·JA 초안 |
+| `connect.enter.title` | 받은 코드 입력하기 | Enter a code I got | もらったコードを入力 | 신규 · EN·JA 초안 |
+| `connect.enter.body` | 상대가 보낸 8자리 코드로 상대의 공간에 들어가요 | Join your partner's space with their 8-character code | 相手の8桁のコードで相手のスペースに参加します | 신규 · EN·JA 초안 |
+| `connect.note` | 받은 코드로 들어가면 지금 내 공간은 닫히고, 상대 공간의 사귄 날과 기념일을 함께 써요. | Joining with a code closes your current space. You'll share your partner's start date and anniversaries. | もらったコードで参加すると今のスペースは閉じ、相手のスペースの付き合った日と記念日を一緒に使います。 | 신규 · EN·JA 초안 |
+| `connect.code.title` | 받은 코드를 입력해 주세요 | Enter your partner's code | 相手のコードを入力してください | 신규 · EN·JA 초안 |
+| `connect.code.body` | 상대에게 받은 8자리 코드를 넣으면 상대의 공간으로 옮겨서 연결돼요. | Enter the 8-character code from your partner to move into their space and connect. | 相手からもらった8桁のコードを入力すると、相手のスペースに移ってつながります。 | 신규 · EN·JA 초안 |
+| `connect.move.title` | 상대의 공간으로 옮길까요? | Move to your partner's space? | 相手のスペースに移りますか？ | 신규 · EN·JA 초안 |
+| `connect.move.i1` | 지금 내 공간은 닫혀요. 내가 만든 초대 코드도 더 이상 쓸 수 없어요. | Your current space closes, and the invite code you made stops working. | 今のスペースは閉じ、作った招待コードも使えなくなります。 | 신규 · EN·JA 초안 |
+| `connect.move.i2` | 사귄 날과 기념일은 상대 공간의 것을 함께 써요. 내 공간에 직접 추가한 기념일은 옮겨지지 않아요. | You'll share your partner's start date and anniversaries. Custom days you added in your space don't move over. | 付き合った日と記念日は相手のスペースのものを一緒に使います。自分のスペースで追加した記念日は移りません。 | 신규 · EN·JA 초안 |
+| `connect.move.i3` | 내 이름과 생일은 그대로예요. | Your name and birthday stay the same. | 名前と誕生日はそのままです。 | 신규 · EN·JA 초안 |
+| `connect.move.submit` | 옮겨서 연결하기 | Move and connect | 移ってつながる | 신규 · EN·JA 초안 |
+| `connect.err.own` | 내가 만든 코드예요. 이 코드는 상대에게 보내 주세요. | That's your own code. Send it to your partner instead. | あなたが作ったコードです。相手に送ってください。 | 신규 · EN·JA 초안 |
+
+## V0-11 업데이트 알림 (`copy-v0-update.dc.html`)
+sections: 이 화면의 문구
+
+| key | ko | en | ja | status |
+|---|---|---|---|---|
+| `update.title` | 새 버전이 나왔어요 | A new version is out | 新しいバージョンが出ました | 신규 · EN·JA 초안 |
+| `update.body` | App Store에서 {version} 버전으로 업데이트해 주세요. 새 기능과 고친 점이 들어 있어요. | Update to version {version} on the App Store to get the latest features and fixes. | App Storeでバージョン{version}にアップデートしてください。新しい機能と修正が入っています。 | 신규 · EN·JA 초안 |
+| `update.action` | App Store에서 업데이트 | Update on the App Store | App Storeでアップデート | 신규 · EN·JA 초안 |
+| `common.later` | 나중에 | Not now | あとで | 재사용 · 기존 키 common.later |

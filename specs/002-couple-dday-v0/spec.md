@@ -54,6 +54,8 @@
 4. **V0-F14-AC-04** — **Given** preview에서 확인한 업데이트, **When** 오너가 같은 업데이트 그룹을 production 채널로 승격하면, **Then** production 채널 빌드가 그 업데이트를 받는다. 롤백은 이전 그룹 재게시로 한다.
 5. **V0-F14-AC-05** — **Given** 저장소, **When** 비밀 정보를 찾아보면, **Then** Apple·EAS 토큰과 키는 저장소·로그에 없고 GitHub Actions secret과 EAS credentials에만 있다.
 6. **V0-F14-AC-06** — **Given** production App ID `com.jinjinstar.aroom`이 소유자 지시로 개인 팀에 등록되어 있고(2026-11-06) 이름·상표 확인(G2)은 아직 열려 있는 상태, **When** push·PR·예약으로 워크플로가 돌아도, **Then** production으로 빌드·제출하지 않는다. production 경로는 오너가 `release-ios`를 `profile=production`으로 직접 실행할 때만 쓴다(`identity.ts`의 G2 메모).
+7. **V0-F14-AC-07** — **Given** App Store에서 받은 production 앱, **When** 앱을 열거나 앱으로 돌아왔을 때(6시간에 한 번까지) 설치된 네이티브 버전이 App Store 조회(iTunes Lookup, 앱 id 6831581664)로 읽은 최신 버전보다 낮으면, **Then** `V0-update`(V0-11) 대화 상자가 보이고 "App Store에서 업데이트"는 App Store의 아룸 페이지를 연다. 버전이 같거나 높거나 조회가 실패하면 보이지 않고, development·preview 빌드는 확인하지 않는다. 새 서버 값이나 유료 서비스는 쓰지 않는다.
+8. **V0-F14-AC-08** — **Given** `V0-update`, **When** "나중에"를 누르면, **Then** 닫히고 이 기기에서 그 버전으로는 다시 묻지 않으며 더 새 버전이 나오면 다시 뜬다. 최소 버전 규칙이 없어 강제 업데이트는 없다. OTA 업데이트는 네이티브 버전을 바꾸지 않아 이 안내를 띄우거나 없애지 않는다.
 
 ---
 
@@ -80,6 +82,9 @@
 11. **V0-F02-AC-08** — **Given** A가 `V0-home-pending`에 있음, **When** B가 참여를 마치면, **Then** A는 앱을 연 동안에는 Realtime 힌트로, 아니면 다음에 앱을 열 때 `V0-start-connected`를 한 번 보고(V0-00 흐름 3) `V0-start-notify` 사전 안내를 거쳐 `V0-home`으로 간다.
 12. **V0-F02-AC-09** — **Given** 연결 흐름의 어느 단계, **When** 뒤로 버튼을 누르면(스와이프 뒤로는 PR 24대로 막혀 있음), **Then** 이전 단계로 돌아가고 입력한 값은 남아 있다. 공간을 만든 뒤(`V0-start-invite`)에는 날짜·프로필 단계로 돌아가지 않는다(PR 24의 안전한 뒤로 규칙).
 13. **V0-F02-AC-10** — **Given** 참여는 했지만 이름을 넣기 전에 앱을 끈 사람, **When** 앱을 다시 열면, **Then** 홈 대신 `V0-start-profile`부터 이어 간다.
+14. **V0-F02-AC-11** — **Given** 상대가 아직 참여하지 않은 공간(혼자 만든 공간), **When** 홈 `V0-home-pending`의 "상대에게 코드를 받았어요"나 설정 › 우리 › 상대의 "연결하기 ›"를 누르면, **Then** 각각 `V0-connect-code`(받은 코드 입력)와 `V0-connect`(내 초대 코드 보내기 / 받은 코드 입력하기)가 열린다(V0-10). 연결된 공간에서는 두 진입점이 없고 설정에 "{name} · 연결됨"만 보인다. 오프라인이면 두 진입점이 비활성이다.
+15. **V0-F02-AC-12** — **Given** 혼자 만든 공간이 있는 B, **When** `V0-connect-code`에 A의 유효한 코드를 넣고 `V0-connect-move`("상대의 공간으로 옮길까요?")에서 "옮겨서 연결하기"를 누르면, **Then** B의 공간을 닫고(기존 공간 종료) 같은 코드로 A의 공간에 참여해 두 사람 모두 연결된 공간을 본다. 서버 계약은 바꾸지 않는다. 만료·사용됨·틀림·인원 초과·네트워크 오류는 공간을 닫지 않고 S05 오류를, 이 기기에서 만든 내 코드는 `V0-connect-own`을 보여 준다. 혼자 공간이 있는 사람이 초대 링크를 열어도 같은 확인을 거친다.
+16. **V0-F02-AC-13** — **Given** B의 공간을 닫은 뒤, **When** 참여가 실패하면(그 사이 만료 등), **Then** 종료 알림을 확인 처리하고 코드를 들고 시작 화면의 코드 입력(`V0-start-enter`)으로 가서 S05 오류를 보여 준다. "공간이 끝났어요" 화면은 보이지 않는다.
 
 ---
 
@@ -348,7 +353,7 @@ Apple로 들어온 사람에게 비밀번호를 만들 수 있다고 안내하�
 - **V0-F11 iOS 위젯**: 홈 small·medium·large, 잠금 circular·rectangular·inline. 외관 full color·dark·tinted(iOS 18)·clear(iOS 26)·vibrant. 상태: 보통·오늘·상대 연결 전·공간 없음·공간 끝남·자리표시. 공간 시간대 자정 timeline + 데이터 변경 시 reload. 공유 데이터는 `schemaVersion`이 있는 최소 JSON(이름·생일 연도·토큰 없음).
 - **V0-F12 최소 설정**: 내 정보, 우리(사귄 날 확인 후 두 사람 적용, 상대, 시간대), 알림, 화면(언어·모드, 이 기기만), 도움(문의·개인정보 처리방침·약관·버전), 계정(로그인·보안, 로그아웃, 연결 끊기, 계정 삭제 — V0-F18의 본인 확인).
 - **V0-F13 시스템 상태**: 로딩 스켈레톤, 불러오기 실패(전부 아니면 없음), 오프라인 읽기만(마지막 데이터 + 띠), 오프라인·데이터 없음, 상대가 연결 끊음·계정 삭제. S16 공통 상태(로그인 만료·업데이트 필요·권한 없음) 재사용.
-- **V0-F14 출시 자동화·OTA**: `workflow_dispatch` → EAS Build → EAS Submit → TestFlight, EAS Update preview → production. 첫 빌드는 `.dev` bundle id. 위젯 extension·권한·네이티브 변경은 새 빌드. 비밀은 저장소 밖.
+- **V0-F14 출시 자동화·OTA**: `workflow_dispatch` → EAS Build → EAS Submit → TestFlight, EAS Update preview → production. 첫 빌드는 `.dev` bundle id. 위젯 extension·권한·네이티브 변경은 새 빌드. 비밀은 저장소 밖. App Store에 더 높은 버전이 나오면 앱이 업데이트를 권한다(V0-11, App Store 조회).
 - **V0-F15 이메일·비밀번호 로그인(`V0-08`)**: 인증 제공자의 이메일·비밀번호를 쓰고, 앱은 `auth-password` 함수를 거쳐 로그인한다. 규칙은 8자 이상, 영문과 숫자를 함께, 이메일 주소와 다르게이며 서버에서도 검사한다. 연속 5회 실패하면 그 이메일은 10분 잠긴다(서버가 세고, 없는 이메일도 같게 응답). 메일 발송은 `app_settings.auth_email_enabled` 값 하나로 켠다. 꺼져 있는 동안 `V0-auth-signup-nomail`, `V0-auth-reset-nomail`, `V0-del-email-nomail`이 실제 화면이다.
 - **V0-F16 Apple 계정 비밀번호 안내(`V0-08`)**: 비밀번호는 선택이다. 없는 Apple 계정도 정상이고 어떤 화면도 막지 않는다. 새 계정은 `V0-auth-setpw-prompt`, 기존 계정은 홈 위 `V0-auth-setpw-sheet`를 한 번만 본다. Apple 계정 암호는 앱에 들어오지 않는다.
 - **V0-F17 로그인·보안(`V0-09`)**: 자격 증명에 따른 세 모습, 지금 비밀번호 확인 뒤 변경, 변경하면 다른 기기는 로그아웃.

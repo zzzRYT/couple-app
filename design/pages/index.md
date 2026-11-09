@@ -20,6 +20,10 @@
 - [문구 · V0-02 홈](../canvas/project/copy-v0-home.dc.html)
 - [V0-03 시스템 상태](../canvas/project/V0-03-states.dc.html)
 - [문구 · V0-03 시스템 상태](../canvas/project/copy-v0-states.dc.html)
+- [V0-10 상대 연결 (홈 · 설정에서)](../canvas/project/V0-10-connect.dc.html)
+- [문구 · V0-10 상대 연결](../canvas/project/copy-v0-connect.dc.html)
+- [V0-11 업데이트 알림](../canvas/project/V0-11-update.dc.html)
+- [문구 · V0-11 업데이트 알림](../canvas/project/copy-v0-update.dc.html)
 
 ## V0 · 기념일 (v0-anniv)
 
