@@ -60,5 +60,8 @@ export default defineConfig((options) => {
     // The deployed Worker runs these plugins; the CLI and console must list the same ones.
     plugins: [apiKeys(), insights(), remoteConfig()],
     updateStrategy: 'fingerprint',
+    // Bumped when JS starts to rely on a config-plugin change the hash can't see (docs/ota.md).
+    // 2: the V0-12 launch screen that src/features/splash/BrandSplash.tsx takes over from.
+    fingerprint: { nativeVersion: 2 },
   };
 });

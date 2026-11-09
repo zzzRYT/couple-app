@@ -259,6 +259,7 @@ CI(`.github/workflows/ci.yml`)는 이미 lint·typecheck·mobile test·pgTAP·de
 | V0-F12-AC-04, -05 | Deno + pgTAP | `spaces/__tests__/time_zone.test.ts`, `supabase/tests/v0_space_time_zone.test.sql` |
 | V0-F12-AC-07, -08 | RNTL + 기존 Deno/pgTAP | `features/lifecycle/__tests__/lifecycle.test.tsx`, `features/account/__tests__/delete.test.tsx`, `supabase/tests/account_deletion.test.sql` |
 | V0-F13-AC-01~05 | RNTL | `features/home/__tests__/states.test.tsx`, `features/lifecycle/__tests__/lifecycle.test.tsx` |
+| V0-F13-AC-06, -07 | RNTL | `features/splash/__tests__/BrandSplash.test.tsx`, `src/app/__tests__/splash.test.tsx` |
 | V0-DR-01, -05, -06 | Jest + Deno | `anniversaries.test.ts`, `_shared/__tests__/parity.test.ts` |
 | V0-EC-01~12 | Jest(대부분) | `anniversaries.test.ts`의 `describe('V0-EC-xx')` |
 | V0-NF-01 | RNTL + 기기 | 각 화면 테스트의 a11y 라벨 검사, quickstart §접근성(200%, VoiceOver, 동작 줄이기) |

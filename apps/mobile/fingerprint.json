@@ -1,7 +1,7 @@
 {
   "ios": {
     "engine": "hot-updater/interface@1",
-    "hash": "64fd1e3ed8dce29112a96fce2e2cf7ae76a4e065bba77cb709bf4aba9aeef653",
+    "hash": "35a5db23df086b4cfc7185054a5aaed5fc4d8fc041a6c4c0f85b4dcf3b4984b6",
     "sources": [
       {
         "type": "contents",
@@ -374,6 +374,15 @@
       },
       {
         "type": "contents",
+        "id": "nativeVersion",
+        "contents": "2",
+        "reasons": [
+          "config"
+        ],
+        "hash": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+      },
+      {
+        "type": "contents",
         "id": "runtime",
         "contents": "react-native@0.88.0",
         "reasons": [
@@ -394,7 +403,7 @@
   },
   "android": {
     "engine": "hot-updater/interface@1",
-    "hash": "347a359ff0b26770c80c77324ca9c963564abc5099c35e7f29e9e8ba6e7ec2ee",
+    "hash": "6640bd20a25c0f09dc6f67b553de778c3aa04b635cbc75ed5ba3accc75c2d31e",
     "sources": [
       {
         "type": "contents",
@@ -749,6 +758,15 @@
       },
       {
         "type": "contents",
+        "id": "nativeVersion",
+        "contents": "2",
+        "reasons": [
+          "config"
+        ],
+        "hash": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+      },
+      {
+        "type": "contents",
         "id": "runtime",
         "contents": "react-native@0.88.0",
         "reasons": [
@@ -768,6 +786,7 @@
     ]
   },
   "inputs": {
-    "adapter": "expo"
+    "adapter": "expo",
+    "nativeVersion": 2
   }
 }
