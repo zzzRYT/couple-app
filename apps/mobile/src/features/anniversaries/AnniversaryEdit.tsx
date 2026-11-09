@@ -21,10 +21,10 @@ function length(value: string): number {
   const Segmenter = (Intl as unknown as { Segmenter?: new (locale?: string, options?: { granularity: 'grapheme' }) => { segment: (input: string) => Iterable<unknown> } }).Segmenter;
   return Segmenter ? Array.from(new Segmenter(undefined, { granularity: 'grapheme' }).segment(value)).length : Array.from(value).length;
 }
-export function AnniversaryEdit({ initial, today, partner, offline, initialNotify, notifyDefault, save, remove, reload, onClose, onSaved }: {
+export function AnniversaryEdit({ initial, today, partner, offline, initialNotify, notifyDefault, save, remove, reload, onClose, onGone, onSaved }: {
   initial?: CustomAnniversary; today: string; partner: string; offline: boolean; initialNotify: 'default' | 'off'; notifyDefault: string;
   save: (fields: AnniversaryFields, version: number | undefined, key: string, notify: Form['notify']) => Promise<void>;
-  remove: (version: number, key: string) => Promise<void>; reload: () => Promise<CustomAnniversary | undefined>; onClose: () => void; onSaved: (toast: 'saved' | 'deleted') => void;
+  remove: (version: number, key: string) => Promise<void>; reload: () => Promise<CustomAnniversary | undefined>; onClose: () => void; onGone: () => void; onSaved: (toast: 'saved' | 'deleted') => void;
 }) {
   const { t, i18n } = useTranslation(); const color = useAppColor(); const insets = useSafeAreaInsets(); const large = useLargeText();
   const defaults = (item?: CustomAnniversary, notify: Form['notify'] = initialNotify): Form => ({ title: item?.title ?? '', date: item?.date ?? today, repeat: item?.repeat ?? 'yearly', memo: item?.memo ?? '', notify });
@@ -32,15 +32,15 @@ export function AnniversaryEdit({ initial, today, partner, offline, initialNotif
   useEffect(() => { setForm((f) => ({ ...f, notify: initialNotify })); setBaseline((f) => ({ ...f, notify: initialNotify })); }, [initialNotify]);
   const titleLength = length(form.title), memoLength = length(form.memo ?? ''); const valid = !!form.title.trim() && titleLength <= 20 && memoLength <= 100 && parseCalendarDate(form.date) !== null;
   const dirty = JSON.stringify(form) !== JSON.stringify(baseline);
-  const close = () => dirty ? Alert.alert(t('edit.discard.title'), '', [{ text: t('edit.discard.cta'), style: 'destructive', onPress: onClose }, { text: t('edit.discard.keep'), style: 'cancel' }]) : onClose();
+  const close = () => dirty ? Alert.alert(t('edit.discard.title'), '', [{ text: t('edit.discard.cta'), style: 'destructive', onPress: onClose }, { text: t('edit.discard.keep'), isPreferred: true }]) : onClose();
   const errorFlow = async (err: unknown) => {
     if (err instanceof ApiError && err.code === 'VERSION_CONFLICT') {
       let latest: CustomAnniversary | undefined;
       try { latest = await reload(); } catch { setError(true); return; }
-      if (latest) { const next = defaults(latest, form.notify); setForm(next); setBaseline(next); setVersion(latest.version); key.current = randomUUID(); Alert.alert(t('edit.conflict.title', { name: partner }), t('edit.conflict.body')); return; }
-      Alert.alert(t('edit.gone.title'), t('edit.gone.body', { name: partner }), [{ text: t('common.ok'), onPress: onClose }]); return;
+      if (latest) { const next = defaults(latest, form.notify); setForm(next); setBaseline(next); setVersion(latest.version); key.current = randomUUID(); Alert.alert(t('edit.conflict.title', { name: partner }), t('edit.conflict.body'), [{ text: t('common.ok') }]); return; }
+      Alert.alert(t('edit.gone.title'), t('edit.gone.body', { name: partner }), [{ text: t('common.ok'), onPress: onGone }]); return;
     }
-    if (err instanceof ApiError && err.code === 'NOT_FOUND' && err.details.gone === true) { Alert.alert(t('edit.gone.title'), t('edit.gone.body', { name: partner }), [{ text: t('common.ok'), onPress: onClose }]); return; }
+    if (err instanceof ApiError && err.code === 'NOT_FOUND' && err.details.gone === true) { Alert.alert(t('edit.gone.title'), t('edit.gone.body', { name: partner }), [{ text: t('common.ok'), onPress: onGone }]); return; }
     setError(true);
   };
   const submit = async () => {

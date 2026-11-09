@@ -6,7 +6,7 @@ import { AnniversaryEdit } from '../AnniversaryEdit';
 import { AnniversaryList } from '../AnniversaryList';
 import { computeAnniversaries } from '../../../lib/anniversaries';
 const item = { id: 'x', title: 'Old', memo: null, date: '2025-05-03', repeat: 'yearly' as const, createdBy: 'me', updatedBy: 'me', createdAt: '2025-01-01T00:00:00Z', updatedAt: '2025-01-01T00:00:00Z', version: 1 };
-const base = { today: '2026-11-02', partner: 'Haru', offline: false, initialNotify: 'default' as const, notifyDefault: '기본 설정 (오후 8:30 · 3일 전)', remove: jest.fn(), reload: jest.fn(), onClose: jest.fn(), onSaved: jest.fn() };
+const base = { today: '2026-11-02', partner: 'Haru', offline: false, initialNotify: 'default' as const, notifyDefault: '기본 설정 (오후 8:30 · 3일 전)', remove: jest.fn(), reload: jest.fn(), onClose: jest.fn(), onGone: jest.fn(), onSaved: jest.fn() };
 it('V0-F07-AC-02 V0-F07-AC-10 prevents overflow, keeps the input and the same key after a network error', async () => {
   const save = jest.fn().mockRejectedValueOnce(new TypeError('offline')).mockResolvedValueOnce(undefined);
   const screen = await renderWithI18n(<AnniversaryEdit {...base} save={save} />);
@@ -29,7 +29,7 @@ it('V0-F07-AC-08 reloads latest values on a version conflict and lets the person
   const screen = await renderWithI18n(<AnniversaryEdit {...base} initial={item} save={jest.fn().mockRejectedValue(new ApiError(409, 'VERSION_CONFLICT'))} reload={jest.fn().mockResolvedValue({ ...item, title: 'Latest', version: 2 })} />);
   await fireEvent.press(screen.getByText(screen.t('common.save')));
   await waitFor(() => expect(screen.getByDisplayValue('Latest')).toBeTruthy());
-  expect(alert).toHaveBeenCalledWith(screen.t('edit.conflict.title', { name: 'Haru' }), screen.t('edit.conflict.body'));
+  expect(alert).toHaveBeenCalledWith(screen.t('edit.conflict.title', { name: 'Haru' }), screen.t('edit.conflict.body'), [{ text: screen.t('common.ok') }]);
   alert.mockRestore();
 });
 it('V0-F07-AC-07 warns before discarding changes and, offline, keeps saving locked', async () => {
@@ -38,14 +38,16 @@ it('V0-F07-AC-07 warns before discarding changes and, offline, keeps saving lock
   await fireEvent.changeText(screen.getByLabelText(screen.t('edit.field.title')), 'Our day');
   await fireEvent.press(screen.getByText(screen.t('common.save'))); expect(save).not.toHaveBeenCalled();
   await fireEvent.press(screen.getByText(screen.t('common.cancel')));
-  expect(alert).toHaveBeenCalledWith(screen.t('edit.discard.title'), '', expect.arrayContaining([expect.objectContaining({ style: 'destructive' })]));
+  expect(alert).toHaveBeenCalledWith(screen.t('edit.discard.title'), '', [expect.objectContaining({ text: screen.t('edit.discard.cta'), style: 'destructive' }), { text: screen.t('edit.discard.keep'), isPreferred: true }]);
   alert.mockRestore();
 });
-it('V0-F07-AC-09 shows the gone alert when the partner deleted the item', async () => {
-  const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
-  const screen = await renderWithI18n(<AnniversaryEdit {...base} initial={item} save={jest.fn().mockRejectedValue(new ApiError(404, 'NOT_FOUND', { gone: true }))} />);
+it('V0-F07-AC-09 shows the gone alert when the partner deleted the item and its OK leaves for the list', async () => {
+  const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined); const onGone = jest.fn(); const onClose = jest.fn();
+  const screen = await renderWithI18n(<AnniversaryEdit {...base} initial={item} onGone={onGone} onClose={onClose} save={jest.fn().mockRejectedValue(new ApiError(404, 'NOT_FOUND', { gone: true }))} />);
   await fireEvent.press(screen.getByText(screen.t('common.save')));
-  await waitFor(() => expect(alert).toHaveBeenCalledWith(screen.t('edit.gone.title'), screen.t('edit.gone.body', { name: 'Haru' }), expect.any(Array)));
+  await waitFor(() => expect(alert).toHaveBeenCalledWith(screen.t('edit.gone.title'), screen.t('edit.gone.body', { name: 'Haru' }), [expect.objectContaining({ text: screen.t('common.ok') })]));
+  (alert.mock.calls[0]![2] as { onPress?: () => void }[])[0]!.onPress!();
+  expect(onGone).toHaveBeenCalled(); expect(onClose).not.toHaveBeenCalled();
   alert.mockRestore();
 });
 it('V0-F07-AC-02 shows an empty title error after leaving the field', async () => {

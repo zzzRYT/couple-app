@@ -30,7 +30,7 @@ const view = computeAnniversaries({ startDate: '2025-01-01', timeZone: 'Asia/Seo
 const state = (snapshot = snapshotFixture()) => ({ status: 'ready' as const, snapshot, offline: false, lastSyncedAt: null });
 const celebration = { id: 'c', key: 'd500', kind: 'days', date: '2026-11-02', n: 500, daysAgo: 0, seenByMe: false, presetAvailable: false, presetId: 'milestone-day' } as unknown as MilestoneCelebration;
 const home = (extra: Record<string, unknown> = {}, snapshot = snapshotFixture()) => <V0HomeScreen state={state(snapshot)} now="2026-11-02T03:00:00Z" onAnniversaries={noop} onRefresh={noop} onOpenInvite={noop} celebration={null} onSeen={noop} {...extra} />;
-const editBase = { today: '2026-11-02', partner: 'Haru', offline: false, initialNotify: 'default' as const, notifyDefault: '기본 설정', remove: noop, reload: noop, onClose: noop, onSaved: noop, save: noop };
+const editBase = { today: '2026-11-02', partner: 'Haru', offline: false, initialNotify: 'default' as const, notifyDefault: '기본 설정', remove: noop, reload: noop, onClose: noop, onGone: noop, onSaved: noop, save: noop };
 const custom = { id: 'x', title: 'Trip', date: '2025-05-30', memo: 'Together', repeat: 'once' as const, createdBy: 'me', updatedBy: 'me', createdAt: '2025-01-01T00:00:00Z', updatedAt: '2025-01-01T00:00:00Z', version: 1 };
 
 /** Screens whose required text must wrap, not truncate, at 200% (V0-NF-01). */
