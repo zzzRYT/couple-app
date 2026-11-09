@@ -814,6 +814,15 @@
    "w": 1760,
    "x": 1840,
    "y": 15083
+  },
+  "V0-12-splash.dc.html": {
+   "expand": "fill",
+   "h": 4100,
+   "page": "v0-start",
+   "title": "V0-12 스플래시 (아루미)",
+   "w": 1760,
+   "x": 0,
+   "y": 20403
   }
  },
  "createdOnFiles": {
@@ -1069,6 +1078,7 @@
   "copy-v0-settings.dc.html",
   "V0-08-auth.dc.html",
   "copy-v0-auth.dc.html",
+  "V0-12-splash.dc.html",
   "V0-09-security.dc.html",
   "copy-v0-security.dc.html"
  ],

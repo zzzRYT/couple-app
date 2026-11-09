@@ -13,6 +13,7 @@
 - [문구 · V0-01 시작](../canvas/project/copy-v0-start.dc.html)
 - [V0-08 로그인 · 비밀번호](../canvas/project/V0-08-auth.dc.html)
 - [문구 · V0-08 로그인 · 비밀번호](../canvas/project/copy-v0-auth.dc.html)
+- [V0-12 스플래시 (아루미)](../canvas/project/V0-12-splash.dc.html)
 
 ## V0 · 홈·D+Day (v0-home)
 
