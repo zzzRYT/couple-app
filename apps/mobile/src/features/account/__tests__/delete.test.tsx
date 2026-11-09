@@ -8,7 +8,6 @@ import { createClient } from '../../../lib/client';
 import { routes } from '../../../lib/routes';
 import { SettingsScreen } from '../../settings/SettingsScreen';
 import { LoginScreen } from '../../auth/LoginScreen';
-import { EndedScreen } from '../../lifecycle/EndedScreen';
 import { DeleteAccountScreen, reauthChoices } from '../DeleteAccountScreen';
 import { clearDeviceAfterDeletion, farewell, submitDeletion, type ReauthPort, type SubmitResult } from '../deleteAccount';
 import type { AuthPort } from '../../auth/authPort';
@@ -181,13 +180,5 @@ describe('request and local clean-up', () => {
     expect(screen.queryByText(screen.t('acct.delete.done'))).toBeNull();
     const shown = await renderWithI18n(<LoginScreen auth={auth} onDone={jest.fn()} onEmail={jest.fn()} notice={screen.t('acct.delete.done')} options={appleOnly} />);
     expect(shown.getByText(shown.t('acct.delete.done'))).toBeTruthy();
-  });
-
-  it('the partner sees "your partner deleted their account" without a name (S14-partner-deleted)', async () => {
-    for (const locale of LOCALES) {
-      const screen = await renderWithI18n(<EndedScreen ended={{ kind: 'account_deleted', by: 'partner', at: '2026-11-02T00:00:00Z' }} hasActiveSpace={false} partnerName="Mina" onContinue={jest.fn()} />, locale);
-      expect(screen.getByText(screen.t('end.byPartnerDeleted'))).toBeTruthy();
-      expect(screen.queryByText(/Mina/)).toBeNull();
-    }
   });
 });

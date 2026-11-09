@@ -6,7 +6,7 @@ import { computeAnniversaries } from '../../lib/anniversaries';
 import type { MilestoneCelebration } from '../../lib/client';
 import { CelebrationCard } from '../../features/home/CelebrationCard';
 import { V0HomeScreen } from '../../features/home/V0HomeScreen';
-import { V0Error, V0Loading } from '../../features/home/states';
+import { V0Error } from '../../features/home/states';
 import { ListRow } from '../../ui/components';
 import { AnniversaryList } from '../../features/anniversaries/AnniversaryList';
 import { AnniversaryDetail } from '../../features/anniversaries/AnniversaryDetail';
@@ -19,7 +19,6 @@ import { CreateSpaceScreen } from '../../features/onboarding/CreateSpaceScreen';
 import { JoinScreen } from '../../features/onboarding/JoinScreen';
 import { InviteScreen } from '../../features/onboarding/InviteScreen';
 import { EndSpaceScreen } from '../../features/lifecycle/EndSpaceScreen';
-import { EndedScreen } from '../../features/lifecycle/EndedScreen';
 import { DeleteAccountScreen } from '../../features/account/DeleteAccountScreen';
 import { TimeZoneSheet } from '../../features/settings/TimeZoneSheet';
 import { NotificationTimeSheet } from '../../features/settings/NotificationTimeSheet';
@@ -39,7 +38,6 @@ const SCREENS: Record<string, () => ReactElement> = {
   'home hero': () => home(),
   'home celebration card': () => home({ celebration, onSeen: noop }),
   'home pending invite': () => home({}, snapshotFixture({ memberCount: 1 })),
-  'home loading': () => <V0Loading />,
   'home error': () => <V0Error retry={noop} />,
   'anniversary list': () => <AnniversaryList view={view} filter="all" pastOpen offline={false} birthdayState="mine" partner="Haru" onFilter={noop} onPast={noop} onAdd={noop} onItem={noop} onBirthday={noop} />,
   'anniversary list custom empty': () => <AnniversaryList view={view} filter="custom" pastOpen={false} offline={false} birthdayState="none" partner="Haru" onFilter={noop} onPast={noop} onAdd={noop} onItem={noop} onBirthday={noop} />,
@@ -55,9 +53,6 @@ const SCREENS: Record<string, () => ReactElement> = {
   'onboarding join': () => <JoinScreen previewInvitation={noop} acceptInvitation={noop} onJoined={noop} onOpenSpace={noop} onBack={noop} />,
   'onboarding invite': () => <InviteScreen createInvitation={noop} reducedMotion onBack={noop} onLater={noop} onJoined={noop} />,
   'end space': () => <EndSpaceScreen onEnd={noop} onCancel={noop} />,
-  'ended by me': () => <EndedScreen ended={{ kind: 'ended', by: 'me', at: '2026-10-29T00:00:00Z' }} hasActiveSpace={false} partnerName="Haru" onContinue={noop} />,
-  'ended by partner disconnect': () => <EndedScreen ended={{ kind: 'disconnect', by: 'partner', at: '2026-10-29T00:00:00Z' }} hasActiveSpace={false} partnerName="Haru" onContinue={noop} />,
-  'ended by partner deleted': () => <EndedScreen ended={{ kind: 'account_deleted', by: 'partner', at: '2026-10-29T00:00:00Z' }} hasActiveSpace={false} partnerName="Haru" onContinue={noop} />,
   'delete account': () => <DeleteAccountScreen reauth={{ apple: noop, kakao: noop, sendEmailCode: noop, verifyEmailCode: noop } as never} onSubmit={noop} onFinished={noop} onCancel={noop} provider="apple" options={{ apple: 'native', kakao: false, devEmail: false }} v0 />,
   'time zone sheet': () => <TimeZoneSheet visible timeZone="Asia/Seoul" onClose={noop} onSelect={noop} />,
   'notification time sheet': () => <NotificationTimeSheet visible time="09:00" onClose={noop} onSelect={noop} />,

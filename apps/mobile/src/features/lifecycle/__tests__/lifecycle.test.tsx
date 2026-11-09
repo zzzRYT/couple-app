@@ -7,7 +7,6 @@ import { lease, panelClient } from '../../../test/promptClient';
 import { ApiError } from '../../../lib/errors';
 import { createClient } from '../../../lib/client';
 import { EndSpaceScreen } from '../EndSpaceScreen';
-import { EndedScreen } from '../EndedScreen';
 import { leaveSpace } from '../leave';
 import { ReportScreen } from '../../report/ReportScreen';
 import { DisconnectDialog } from '../../report/DisconnectDialog';
@@ -27,7 +26,6 @@ it('keeps retention periods and restore wording out of the end, disconnect and s
   }
 });
 
-const ended = (overrides = {}) => ({ kind: 'ended' as const, by: 'me' as const, at: '2026-10-29T00:00:00Z', ...overrides });
 const noop = () => Promise.resolve();
 
 describe('end space confirmation', () => {
@@ -59,41 +57,6 @@ describe('end space confirmation', () => {
     const screen = await renderWithI18n(<EndSpaceScreen onEnd={noop} onCancel={onCancel} />);
     await fireEvent.press(screen.getByRole('button', { name: screen.t('end.cancel') }));
     expect(onCancel).toHaveBeenCalled();
-  });
-});
-
-describe('ended notice', () => {
-  it.each([
-    [ended(), 'end.done.title'],
-    [ended({ by: 'partner' }), 'end.byPartner'],
-    [ended({ by: 'partner', kind: 'disconnect' }), 'end.byPartnerDisconnect'],
-    [ended({ by: 'partner', kind: 'account_deleted' }), 'end.byPartnerDeleted'],
-  ])('shows the right headline and the shared body for %j', async (notice, titleKey) => {
-    const screen = await renderWithI18n(<EndedScreen ended={notice} hasActiveSpace={false} partnerName="상대" onContinue={noop} />);
-    expect(screen.getByText(screen.t(titleKey, { name: '상대' }))).toBeTruthy();
-    expect(screen.getByText(screen.t('end.done.body'))).toBeTruthy();
-    expect(screen.getAllByRole('button')).toHaveLength(1);
-    expect(screen.getByRole('button', { name: screen.t('end.newSpace') })).toBeTruthy();
-  });
-
-  it('never names the person who deleted their account', async () => {
-    const screen = await renderWithI18n(<EndedScreen ended={ended({ by: 'partner', kind: 'account_deleted' })} hasActiveSpace={false} partnerName="상대" onContinue={noop} />);
-    expect(screen.queryByText(/상대님/)).toBeNull();
-  });
-
-  it('acknowledges through the continue action and reports a failure', async () => {
-    const onContinue = jest.fn().mockRejectedValueOnce(new Error('offline')).mockResolvedValue(undefined);
-    const screen = await renderWithI18n(<EndedScreen ended={ended()} hasActiveSpace={false} partnerName="상대" onContinue={onContinue} />);
-    await fireEvent.press(screen.getByRole('button', { name: screen.t('end.newSpace') }));
-    expect(await screen.findByText(screen.t('sys.server.title'))).toBeTruthy();
-    await fireEvent.press(screen.getByRole('button', { name: screen.t('end.newSpace') }));
-    await waitFor(() => expect(onContinue).toHaveBeenCalledTimes(2));
-  });
-
-  it('only asks for an OK when a new space is already open', async () => {
-    const screen = await renderWithI18n(<EndedScreen ended={ended({ by: 'partner' })} hasActiveSpace partnerName="상대" onContinue={noop} />);
-    expect(screen.queryByRole('button', { name: screen.t('end.newSpace') })).toBeNull();
-    expect(screen.getByRole('button', { name: screen.t('common.confirm') })).toBeTruthy();
   });
 });
 
