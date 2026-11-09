@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Linking, Pressable, View, type TextInputProps } from 'react-native';
+import { Linking, Pressable, Text, View, type TextInputProps } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { AppText, Button, TextField } from '../../ui/components';
+import { AppText, Button, Card, TextField, WORD_BREAK } from '../../ui/components';
 import { Icon } from '../../ui/Icon';
 import { tokens } from '../../theme/tokens';
 import { useAppColor } from '../../theme/useAppColor';
+import { useType } from '../../theme/typography';
 import type { PasswordRules } from './passwordRules';
 import { isPrivateRelay } from './passwordRules';
 
@@ -52,19 +53,24 @@ export function CheckRow({ label, checked, onToggle }: { label: string; checked:
     </Pressable>
   );
 }
-/** The address to type on another device, with a copy button. The private-address note appears only for an Apple relay address. */
+/** V0-auth-setpw-done and V0-sec-apple-pw: one card with the address to type on another device and a copy link. The private-address note appears only for an Apple relay address. */
 export function LoginAddress({ email, copy }: { email: string; copy: (value: string) => Promise<unknown> }) {
   const { t } = useTranslation();
   const color = useAppColor();
+  const { emphasis } = useType();
   return (
-    <View style={{ gap: tokens.spacing[1] }}>
-      <AppText variant="bodySm" tone="text2">{t('set.security.loginEmail')}</AppText>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[2], padding: tokens.spacing[2], borderRadius: tokens.radius.card, borderWidth: tokens.border.outline.normal, borderColor: color.border, backgroundColor: color.surface }}>
-        <AppText selectable style={{ flex: 1 }}>{email}</AppText>
-        <Button compact variant="secondary" icon="copy" label={t('common.copy')} accessibilityLabel={t('common.copy.a11y')} onPress={() => void copy(email)} />
+    <Card style={{ paddingVertical: tokens.spacing[2], gap: tokens.spacing[0] }}>
+      <Text {...WORD_BREAK} style={[emphasis(13), { color: color.text2 }]}>{t('set.security.loginEmail')}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[1] }}>
+        <AppText selectable variant="bodySm" style={{ flex: 1 }}>{email}</AppText>
+        <Pressable accessibilityRole="button" accessibilityLabel={t('common.copy.a11y')} onPress={() => void copy(email)}
+          style={({ pressed }) => ({ minWidth: tokens.touch.minimum, minHeight: tokens.touch.minimum, paddingHorizontal: 6, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: tokens.spacing[0], opacity: pressed ? 0.7 : 1 })}>
+          <Icon name="copy" size={18} color={color.primary} />
+          <Text {...WORD_BREAK} style={[emphasis(14), { color: color.primary }]}>{t('common.copy')}</Text>
+        </Pressable>
       </View>
       {isPrivateRelay(email) && <AppText variant="bodySm" tone="text2">{t('set.security.relay')}</AppText>}
-    </View>
+    </Card>
   );
 }
 /** "문의하기 · address": the only way forward for an email account until mail is connected. `link` is the bare text link of V0-auth-signup-nomail. */
