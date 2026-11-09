@@ -66,7 +66,7 @@ export function SetPasswordFlow({ password, email, copy, start = 'prompt', onDon
       <Button label={t('auth.setpw.later')} variant="ghost" disabled={busy} onPress={onLater} />
     </>}>
       <AppText variant="title" accessibilityRole="header">{t('onb.pw.title')}</AppText>
-      <Chip kind="success" label={t('onb.pw.apple')} />
+      <Chip kind="success" icon="apple" label={t('onb.pw.apple')} />
       <AppText tone="text2">{t('onb.pw.body')}</AppText>
       <PasswordField kind="new" label={t('login.pw.label')} value={secret} onChangeText={setSecret} invalid={secret.length > 0 && !rulesMet(rules)} />
       <RuleList rules={rules} typed={secret.length > 0} />
