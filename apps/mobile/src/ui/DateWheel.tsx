@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View, type ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useAppColor } from '../theme/useAppColor';
 import { useType } from '../theme/typography';
@@ -58,21 +58,32 @@ export function DateWheel({ value, onChange, maxYear, minYear = maxYear - 80, in
     </View>
   );
 }
-/** S03-form: three outlined boxes; tapping one opens the wheel in a sheet (S03-picker). */
-export function DateField({ value, onChange, maxYear, error, renderPreview }: { value: DateParts; onChange: (value: DateParts) => void; maxYear: number; error?: boolean; renderPreview?: (draft: DateParts) => React.ReactNode }) {
+/** Segment widths as drawn: ko/ja year 1.5 : 1 : 1; English month 1.2, day 1, year 1.4. */
+const segmentFlex = (field: Field, language: string) => (language.startsWith('en') ? { month: 1.2, day: 1, year: 1.4 } : { year: 1.5, month: 1, day: 1 })[field];
+/** One outlined date box (V0-01 §2.5): the bold number with its small unit; English shows the month name and bare numbers. */
+export function DateSegment({ field, value, error = false, label, testID, onPress }: { field: Field; value: number; error?: boolean; label?: string; testID?: string; onPress?: () => void }) {
   const color = useAppColor();
   const { t, i18n } = useTranslation();
-  const { emphasis } = useType();
+  const { type, emphasis } = useType();
+  const en = i18n.language.startsWith('en');
+  const box: ViewStyle = { flex: segmentFlex(field, i18n.language), minHeight: tokens.touch.toolbarHeight, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: tokens.spacing[0], paddingHorizontal: tokens.spacing[2], borderRadius: tokens.radius.input, borderWidth: tokens.border.outline.normal, borderColor: error ? color.danger : color.border, backgroundColor: color.surface };
+  const content = <>
+    <Text style={[emphasis(20), { color: color.text }]}>{en ? fieldText(field, value, i18n.language, '') : value}</Text>
+    {!en && <Text style={[type('bodySm'), { color: color.text2 }]}>{t(unitKey[field])}</Text>}
+  </>;
+  if (!onPress) return <View style={box}>{content}</View>;
+  return <Pressable testID={testID} accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={({ pressed }) => [box, { opacity: pressed ? 0.8 : 1 }]}>{content}</Pressable>;
+}
+/** S03-form: three outlined boxes; tapping one opens the wheel in a sheet (S03-picker). */
+export function DateField({ value, onChange, maxYear, error, renderPreview }: { value: DateParts; onChange: (value: DateParts) => void; maxYear: number; error?: boolean; renderPreview?: (draft: DateParts) => React.ReactNode }) {
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(value);
   return (
     <>
       <View style={{ flexDirection: 'row', gap: tokens.spacing[1] }}>
         {fieldOrder(i18n.language).map((field) => (
-          <Pressable key={field} testID={`date-${field}`} accessibilityRole="button" accessibilityLabel={`${t('a11y.dateField')}, ${fieldText(field, value[field], i18n.language, t(unitKey[field]))}`} onPress={() => { setDraft(value); setOpen(true); }}
-            style={({ pressed }) => ({ flex: field === 'year' ? 1.4 : 1, minHeight: tokens.touch.toolbarHeight, alignItems: 'center', justifyContent: 'center', borderRadius: tokens.radius.input, borderWidth: tokens.border.outline.normal, borderColor: error ? color.danger : color.border, backgroundColor: color.surface, opacity: pressed ? 0.8 : 1 })}>
-            <Text style={[emphasis(16), { color: color.text }]}>{i18n.language.startsWith('en') ? fieldText(field, value[field], i18n.language, '') : `${value[field]} ${t(unitKey[field])}`}</Text>
-          </Pressable>
+          <DateSegment key={field} field={field} value={value[field]} error={error} testID={`date-${field}`} label={`${t('a11y.dateField')}, ${fieldText(field, value[field], i18n.language, t(unitKey[field]))}`} onPress={() => { setDraft(value); setOpen(true); }} />
         ))}
       </View>
       <BottomSheet visible={open} title={t('space.date.pick')} onClose={() => setOpen(false)}>

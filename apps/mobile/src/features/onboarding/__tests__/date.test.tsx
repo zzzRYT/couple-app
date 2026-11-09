@@ -27,7 +27,7 @@ it('V0-F02-AC-01 changes the day-count preview when a start date is picked', asy
 it('V0-F02-AC-02 shows the future-date error and cannot go next', async () => {
   const { screen, onNext, pick } = await setup();
   await pick('month', 12); await pick('day', 1);
-  expect(screen.getByText(screen.t('start.date.err.future'))).toBeTruthy();
+  expect(screen.getByRole('alert', { name: screen.t('start.date.err.future') })).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: screen.t('common.next') }));
   expect(onNext).not.toHaveBeenCalled();
 });
