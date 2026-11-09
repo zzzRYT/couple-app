@@ -69,8 +69,8 @@ export function SetPasswordFlow({ password, email, copy, start = 'prompt', onDon
       <AppText variant="title" accessibilityRole="header">{t('onb.pw.title')}</AppText>
       <Chip kind="success" label={t('onb.pw.apple')} />
       <AppText tone="text2">{t('onb.pw.body')}</AppText>
-      <PasswordField kind="new" label={t('login.pw.label')} value={secret} onChangeText={setSecret} />
-      <RuleList rules={rules} />
+      <PasswordField kind="new" label={t('login.pw.label')} value={secret} onChangeText={setSecret} invalid={secret.length > 0 && !rulesMet(rules)} />
+      <RuleList rules={rules} typed={secret.length > 0} />
       <PasswordField kind="new" label={t('login.pw.confirm')} placeholder={t('login.pw.confirm.placeholder')} value={again} onChangeText={setAgain} error={mismatch ? t('login.pw.mismatch') : null} />
       <AppText variant="bodySm" tone="text2">{t('auth.pw.stored')}</AppText>
       {failed && <Banner kind="danger" text={t('login.error.title')} body={t('login.error.body')} />}

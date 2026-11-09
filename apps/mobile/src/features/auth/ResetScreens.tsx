@@ -84,8 +84,8 @@ export function NewPasswordScreen({ password, email, onSaved, onExpired, onBack 
     <Screen onBack={onBack} footer={<Button label={t('login.pw.new.save')} loading={busy} disabled={!rulesMet(rules)} onPress={() => void save()} />}>
       <AppText variant="title" accessibilityRole="header">{t('login.pw.new.title')}</AppText>
       <AppText tone="text2">{t('login.pw.new.body')}</AppText>
-      <PasswordField kind="new" label={t('set.pw.new')} value={secret} onChangeText={setSecret} />
-      <RuleList rules={rules} />
+      <PasswordField kind="new" label={t('set.pw.new')} value={secret} onChangeText={setSecret} invalid={secret.length > 0 && !rulesMet(rules)} />
+      <RuleList rules={rules} typed={secret.length > 0} />
       {failed && <Banner kind="danger" text={t('login.error.title')} body={t('login.error.body')} />}
     </Screen>
   );

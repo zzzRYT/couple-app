@@ -9,8 +9,8 @@ import { useType } from '../../theme/typography';
 import type { PasswordRules } from './passwordRules';
 import { isPrivateRelay } from './passwordRules';
 
-/** Every password field on the boards: hidden by default with a 44pt eye inside the field, iOS AutoFill on. */
-export function PasswordField({ label, error, kind = 'current', ...props }: TextInputProps & { label: string; error?: string | null; kind?: 'current' | 'new' }) {
+/** Every password field on the boards: hidden by default with a 44pt eye inside the field, iOS AutoFill on. `invalid` gives the danger edge of unmet rules without a message. */
+export function PasswordField({ label, error, kind = 'current', invalid = false, ...props }: TextInputProps & { label: string; error?: string | null; kind?: 'current' | 'new'; invalid?: boolean }) {
   const { t } = useTranslation();
   const color = useAppColor();
   const [shown, setShown] = useState(false);
@@ -18,7 +18,7 @@ export function PasswordField({ label, error, kind = 'current', ...props }: Text
   return (
     <View>
       <TextField {...props} label={label} error={error} secureTextEntry={!shown} autoCapitalize="none" autoCorrect={false} spellCheck={false}
-        textContentType={kind === 'new' ? 'newPassword' : 'password'} autoComplete={kind === 'new' ? 'new-password' : 'current-password'} style={{ paddingRight: 48 }} />
+        textContentType={kind === 'new' ? 'newPassword' : 'password'} autoComplete={kind === 'new' ? 'new-password' : 'current-password'} style={{ paddingRight: 48, ...(invalid ? { borderColor: color.danger } : null) }} />
       <Pressable accessibilityRole="button" accessibilityLabel={`${eye} · ${label}`} hitSlop={2} onPress={() => setShown((value) => !value)}
         style={{ position: 'absolute', right: 4, top: 26, width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
         <Icon name="eye" size={22} color={shown ? color.primary : color.text2} />
@@ -26,19 +26,22 @@ export function PasswordField({ label, error, kind = 'current', ...props }: Text
     </View>
   );
 }
-/** The rule list is visible from the start; each line changes to met as the person types. Not colour alone: the icon changes too. */
-export function RuleList({ rules }: { rules: PasswordRules }) {
+/** The rule list is visible from the start; each line changes to met as the person types. Once something is `typed`, an unmet line turns to a danger warning. Not colour alone: the icon changes too. */
+export function RuleList({ rules, typed = false }: { rules: PasswordRules; typed?: boolean }) {
   const { t } = useTranslation();
   const color = useAppColor();
   const lines = [['login.pw.rule.len', rules.length], ['login.pw.rule.mix', rules.mix], ['login.pw.rule.email', rules.notEmail]] as const;
   return (
     <View accessible accessibilityLabel={`${t('login.pw.rules.a11y')}: ${lines.map(([key, met]) => `${t(key)} ${met ? '✓' : ''}`).join(', ')}`} style={{ gap: tokens.spacing[0] }}>
-      {lines.map(([key, met]) => (
-        <View key={key} style={{ flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[1] }}>
-          <Icon name={met ? 'check' : 'close'} size={16} color={met ? color.success : color.text2} />
-          <AppText variant="bodySm" tone={met ? 'success' : 'text2'}>{t(key)}</AppText>
-        </View>
-      ))}
+      {lines.map(([key, met]) => {
+        const tone = met ? 'success' : typed ? 'danger' : 'text2';
+        return (
+          <View key={key} style={{ flexDirection: 'row', alignItems: 'center', gap: tokens.spacing[1] }}>
+            <Icon name={met ? 'check' : typed ? 'warn' : 'close'} size={16} color={color[tone]} />
+            <AppText variant="bodySm" tone={tone}>{t(key)}</AppText>
+          </View>
+        );
+      })}
     </View>
   );
 }
