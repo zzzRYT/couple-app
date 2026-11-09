@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useColorScheme, View } from 'react-native';
-import { router, Stack } from 'expo-router';
+import { router } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Notifications from 'expo-notifications';
@@ -11,12 +11,12 @@ import { createI18n } from '../i18n';
 import { AppProvider } from '../lib/AppContext';
 import { SpaceProvider } from '../features/space/SpaceContext';
 import { appGate } from '../lib/appGate';
+import { AppStack } from '../lib/AppStack';
 import { useApp } from '../lib/AppContext';
 import { useSpace } from '../features/space/SpaceContext';
 import { PasswordProvider, usePassword } from '../features/auth/PasswordContext';
 import { peekPendingInvite } from '../lib/inviteLink';
 import { PreferencesProvider, useDisplayAppearance } from '../features/settings/preferences';
-import { V0_FEATURES } from '../config/features';
 import { V0Error } from '../features/home/states';
 import { useNotificationSync } from '../features/notifications/useNotificationSync';
 import { installNativeWidgets } from '../features/widgets/nativeWidgets';
@@ -93,39 +93,5 @@ function AppNavigator({ fontsLoaded, onBootingChange, onSchemeChange }: { fontsL
   if (failure) return failure;
   // The root splash covers booting (V0-12), so nothing is drawn under it.
   if (booting) return null;
-  return <><Stack screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="i/[code]" />
-    <Stack.Screen name="invite/[code]" />
-    <Stack.Screen name="auth-callback" options={{ gestureEnabled: false }} />
-    <Stack.Protected guard={gate.kind === 'passwordRecovery'}><Stack.Screen name="new-password" options={{ gestureEnabled: false }} /></Stack.Protected>
-    <Stack.Protected guard={gate.kind === 'needsPasswordPrompt'}><Stack.Screen name="set-password-prompt" options={{ gestureEnabled: false }} /></Stack.Protected>
-    <Stack.Protected guard={gate.kind === 'signedOut' || gate.kind === 'sessionExpired'}><Stack.Screen name="(auth)" options={{ gestureEnabled: false }} /></Stack.Protected>
-    <Stack.Protected guard={gate.kind === 'needsOnboardingChoice' || gate.kind === 'needsProfile'}><Stack.Screen name="(onboarding)" options={{ gestureEnabled: false }} /></Stack.Protected>
-    <Stack.Protected guard={gate.kind === 'ended'}><Stack.Screen name="ended" /></Stack.Protected>
-    <Stack.Protected guard={gate.kind === 'active'}>
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="anniversary/[key]" />
-      <Stack.Screen name="anniversary-edit" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
-      <Stack.Screen name="invite" />
-      <Stack.Screen name="connected" />
-      <Stack.Screen name="notify-intro" options={{ gestureEnabled: false }} />
-      <Stack.Screen name="join-has-space" />
-      <Stack.Screen name="connect-code" />
-      <Stack.Screen name="settings/connect" />
-      <Stack.Screen name="settings/end-space" />
-      <Stack.Screen name="settings/me" />
-      <Stack.Screen name="settings/start-date" />
-      <Stack.Screen name="settings/notifications" />
-      <Stack.Screen name="settings/language" />
-      <Stack.Screen name="settings/appearance" />
-      <Stack.Screen name="settings/disconnect" />
-      <Stack.Screen name="settings/security" />
-      <Stack.Screen name="settings/change-password" />
-      <Stack.Screen name="settings/set-password" />
-    </Stack.Protected>
-    <Stack.Protected guard={gate.kind === 'active' && V0_FEATURES.prompt}><Stack.Screen name="prompt/index" options={{ presentation: 'modal' }} /><Stack.Screen name="prompt/consent" options={{ presentation: 'modal' }} /></Stack.Protected>
-    <Stack.Protected guard={gate.kind === 'active' && V0_FEATURES.reportBlock}><Stack.Screen name="settings/report" /></Stack.Protected>
-    {/* Any signed-in state: the space may end (realtime) while the deletion is in flight, and the screen must stay mounted. */}
-    <Stack.Protected guard={gate.kind === 'active' || gate.kind === 'needsOnboardingChoice' || gate.kind === 'ended'}><Stack.Screen name="settings/delete-account" /><Stack.Screen name="settings/reset-password" /></Stack.Protected>
-  </Stack><UpdateNotice /></>;
+  return <><AppStack gate={gate.kind} /><UpdateNotice /></>;
 }
