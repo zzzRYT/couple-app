@@ -1,0 +1,87 @@
+name: OTA (EAS, 1.0.0)
+# Aroom 1.0.0 (build 1) shipped with the EAS Update client and keeps asking EAS until people install 1.0.1 or later.
+# Its native code comes from the commit below, so updates for it are built from that commit or a branch made from it.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Commit or branch with the 1.0.0 native code (fixes go on a branch from it)
+        type: string
+        default: b932faaac0776716efa433c10203b6ce6329c010
+      runtime:
+        description: EAS runtime of the 1.0.0 production build
+        type: string
+        default: 43596c365ca500cc0b696c82a4ddff0c1fac1caa
+      mode:
+        description: publish a new production update, or republish an earlier group (rollback)
+        type: choice
+        options: [publish, republish]
+        default: publish
+      message:
+        description: Required to publish
+        type: string
+        required: false
+      group:
+        description: Required to republish
+        type: string
+        required: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+        working-directory: .
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: '${{ secrets.EXPO_TOKEN }}'
+      - name: Validate required input
+        env:
+          MODE: ${{ inputs.mode }}
+          MESSAGE: ${{ inputs.message }}
+          GROUP: ${{ inputs.group }}
+        run: |
+          if [ "$MODE" = publish ] && [ -z "$MESSAGE" ]; then
+            echo 'A non-empty message is required to publish.' >&2
+            exit 1
+          fi
+          if [ "$MODE" = republish ] && [ -z "$GROUP" ]; then
+            echo 'A non-empty group is required to republish.' >&2
+            exit 1
+          fi
+      # An update for another runtime would publish without error and reach no installed 1.0.0 build.
+      - name: Check the runtime matches the 1.0.0 build
+        if: inputs.mode == 'publish'
+        env:
+          APP_VARIANT: production
+          EXPO_PUBLIC_APP_VARIANT: production
+          RUNTIME: ${{ inputs.runtime }}
+        run: |
+          actual="$(npx expo-updates runtimeversion:resolve --platform ios | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>process.stdout.write(JSON.parse(s).runtimeVersion))')"
+          if [ "$actual" != "$RUNTIME" ]; then
+            echo "Runtime $actual does not match the 1.0.0 build ($RUNTIME)." >&2
+            exit 1
+          fi
+      - name: Publish production update for 1.0.0
+        if: inputs.mode == 'publish'
+        env:
+          APP_VARIANT: production
+          EXPO_PUBLIC_APP_VARIANT: production
+          MESSAGE: ${{ inputs.message }}
+        run: eas update --channel production --environment production --platform ios --message "$MESSAGE" --non-interactive
+      - name: Republish earlier production group
+        if: inputs.mode == 'republish'
+        env:
+          GROUP: ${{ inputs.group }}
+        run: eas update:republish --group "$GROUP" --destination-channel production --non-interactive

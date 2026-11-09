@@ -11,10 +11,8 @@ test('V0-F14-AC-01 testflight profile is store signed and submits after a succes
   const eas = await accessor.readAsync();
   await EasJsonUtils.getBuildProfileAsync(accessor, 'ios', 'testflight');
   assert.equal(eas.build.testflight.distribution, 'store');
-  assert.equal(eas.build.testflight.channel, 'preview');
   assert.equal(eas.build.testflight.autoIncrement, true);
   assert.equal(eas.build.testflight.env.APP_VARIANT, 'preview');
-  assert.equal(eas.build.production.channel, 'production');
   assert.equal(eas.submit.testflight.ios.appleTeamId, '43ZASDF2J7');
   await EasJsonUtils.getSubmitProfileAsync(accessor, 'ios', 'testflight');
   assert.equal(eas.submit.testflight.ios.ascAppId, '6831056066');
@@ -39,22 +37,58 @@ test('V0-F14-AC-06 production submits to its own record and only from a manual r
   assert.match(workflow, /default: testflight/);
 });
 
-test('V0-F14-AC-03 preview runtime uses fingerprint and preview OTA environment', async () => {
-  const prior = process.env.APP_VARIANT;
-  process.env.APP_VARIANT = 'preview';
+const loadConfig = async (env, tag) => {
+  const prior = Object.fromEntries(Object.keys(env).map((name) => [name, process.env[name]]));
+  Object.assign(process.env, env);
   try {
-    const { default: config } = await import('../../apps/mobile/app.config.ts?v=preview');
-    assert.equal(config.expo.ios.bundleIdentifier, 'com.jinjinstar.aroom.dev');
-    assert.equal(config.expo.runtimeVersion.policy, 'fingerprint');
-    assert.match(config.expo.updates.url, /99310e9a-4aee-4116-b9da-b6a26460f7e3$/);
+    return (await import(`../../apps/mobile/app.config.ts?v=${tag}`)).default;
   } finally {
-    if (prior === undefined) delete process.env.APP_VARIANT;
-    else process.env.APP_VARIANT = prior;
+    for (const [name, value] of Object.entries(prior)) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
   }
+};
+const otaChannel = (config) => config.expo.plugins.find((plugin) => plugin[0] === '@hot-updater/expo')?.[1].channel;
+
+test('V0-F14-AC-03 builds carry Hot Updater on their variant channel and the fingerprint strategy', async () => {
+  const preview = await loadConfig({ APP_VARIANT: 'preview' }, 'preview');
+  assert.equal(preview.expo.ios.bundleIdentifier, 'com.jinjinstar.aroom.dev');
+  assert.equal(otaChannel(preview), 'preview');
+  assert.equal(otaChannel(await loadConfig({ APP_VARIANT: 'production' }, 'ota-production')), 'production');
+  assert.equal(otaChannel(await loadConfig({ APP_VARIANT: 'production', HOT_UPDATER_CHANNEL: 'ota-test' }, 'ota-test')), 'ota-test');
+  // expo-updates and Hot Updater both own the bundle URL, so builds from 1.0.1 on carry only Hot Updater.
+  assert.equal(preview.expo.updates, undefined);
+  assert.equal(preview.expo.runtimeVersion, undefined);
+  const mobile = JSON.parse(await read('apps/mobile/package.json'));
+  assert.equal(mobile.dependencies['expo-updates'], undefined);
+  assert.equal(mobile.dependencies['@hot-updater/react-native'], mobile.devDependencies['hot-updater']);
+  assert.match(await read('apps/mobile/hot-updater.config.ts'), /updateStrategy: 'fingerprint'/);
+  const fingerprint = JSON.parse(await read('apps/mobile/fingerprint.json'));
+  assert.match(fingerprint.ios.hash, /^[0-9a-f]{64}$/);
   const ota = await read('.github/workflows/ota.yml');
   assert.match(ota, /APP_VARIANT:\s*preview/);
   assert.match(ota, /EXPO_PUBLIC_APP_VARIANT:\s*preview/);
-  assert.match(ota, /eas update --channel preview --environment preview --platform ios/);
+  assert.match(ota, /eas env:exec preview 'npx hot-updater deploy --platform ios --channel preview /);
+});
+
+test('V0-F14-AC-03 EAS builds refuse a test channel and a missing client key', async () => {
+  await assert.rejects(loadConfig({ EAS_BUILD: 'true', APP_VARIANT: 'production', EXPO_PUBLIC_HOT_UPDATER_API_KEY: 'k', HOT_UPDATER_CHANNEL: 'ota-test' }, 'eas-channel'), /HOT_UPDATER_CHANNEL is for local test builds/);
+  await assert.rejects(loadConfig({ EAS_BUILD: 'true', APP_VARIANT: 'preview', EXPO_PUBLIC_HOT_UPDATER_API_KEY: '' }, 'eas-no-key'), /EXPO_PUBLIC_HOT_UPDATER_API_KEY must be set/);
+  const config = await loadConfig({ EAS_BUILD: 'true', APP_VARIANT: 'production', EXPO_PUBLIC_HOT_UPDATER_API_KEY: 'k' }, 'eas-ok');
+  assert.equal(otaChannel(config), 'production');
+});
+
+test('V0-F14-AC-03 OTA bundles need the client key and their channel variant', async () => {
+  const { checkBundleEnv } = await import('../../apps/mobile/hot-updater.config.ts');
+  const key = { EXPO_PUBLIC_HOT_UPDATER_API_KEY: 'k' };
+  assert.throws(() => checkBundleEnv('preview', { EXPO_PUBLIC_APP_VARIANT: 'preview' }), /EXPO_PUBLIC_HOT_UPDATER_API_KEY must be set/);
+  assert.throws(() => checkBundleEnv('preview', { ...key, EXPO_PUBLIC_APP_VARIANT: 'production' }), /APP_VARIANT and EXPO_PUBLIC_APP_VARIANT=preview/);
+  assert.doesNotThrow(() => checkBundleEnv('preview', { ...key, EXPO_PUBLIC_APP_VARIANT: 'preview' }));
+  assert.doesNotThrow(() => checkBundleEnv('ota-test', key));
+  // deploy defaults to production; production normally gets a promoted preview bundle.
+  assert.throws(() => checkBundleEnv('production', { ...key, EXPO_PUBLIC_APP_VARIANT: 'production' }), /bundle promote/);
+  assert.doesNotThrow(() => checkBundleEnv('production', { ...key, EXPO_PUBLIC_APP_VARIANT: 'production', HOT_UPDATER_PRODUCTION_DEPLOY: 'true' }));
 });
 
 test('store builds leave the widget extension out until its signing exists', async () => {
@@ -135,13 +169,24 @@ test('V0-F11-AC-01 the extension and the app share the App Group of their varian
   }
 });
 
-test('V0-F14-AC-04 production OTA republishes the checked preview group', async () => {
+test('V0-F14-AC-04 production OTA promotes the checked preview bundle', async () => {
   const ota = await read('.github/workflows/ota.yml');
-  assert.match(ota, /eas update:republish --group .*--destination-channel production/);
+  assert.match(ota, /npx hot-updater bundle promote "\$BUNDLE" --target production --action copy/);
+  assert.doesNotMatch(ota, /hot-updater deploy[^\n]*--channel production/);
+});
+
+test('V0-F14-AC-04 1.0.0 installs still get EAS updates built from the 1.0.0 native code', async () => {
+  const legacy = await read('.github/workflows/ota-eas-legacy.yml');
+  assert.match(legacy, /ref: \$\{\{ inputs\.ref \}\}/);
+  assert.match(legacy, /default: b932faaac0776716efa433c10203b6ce6329c010/);
+  assert.match(legacy, /default: 43596c365ca500cc0b696c82a4ddff0c1fac1caa/);
+  assert.match(legacy, /npx expo-updates runtimeversion:resolve --platform ios/);
+  assert.match(legacy, /eas update --channel production --environment production --platform ios/);
+  assert.match(legacy, /eas update:republish --group "\$GROUP" --destination-channel production/);
 });
 
 test('V0-F14-AC-05 release workflows use only the Expo token and contain no signing key material', async () => {
-  for (const path of ['.github/workflows/release-ios.yml', '.github/workflows/ota.yml']) {
+  for (const path of ['.github/workflows/release-ios.yml', '.github/workflows/ota.yml', '.github/workflows/ota-eas-legacy.yml']) {
     const workflow = await read(path);
     assert.match(workflow, /workflow_dispatch/);
     assert.doesNotMatch(workflow, /pull_request/);

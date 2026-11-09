@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       channel:
-        description: OTA destination channel
+        description: Hot Updater channel (builds from 1.0.1 on; 1.0.0 uses OTA (EAS, 1.0.0))
         type: choice
         options: [preview, production]
         default: preview
@@ -11,8 +11,8 @@ on:
         description: Required for preview updates
         type: string
         required: false
-      group:
-        description: Required for production republish
+      bundle:
+        description: Required for production - the checked preview bundle ID to promote
         type: string
         required: false
 jobs:
@@ -38,25 +38,26 @@ jobs:
         env:
           CHANNEL: ${{ inputs.channel }}
           MESSAGE: ${{ inputs.message }}
-          GROUP: ${{ inputs.group }}
+          BUNDLE: ${{ inputs.bundle }}
         run: |
           if [ "$CHANNEL" = preview ] && [ -z "$MESSAGE" ]; then
             echo 'A non-empty message is required for preview OTA updates.' >&2
             exit 1
           fi
-          if [ "$CHANNEL" = production ] && [ -z "$GROUP" ]; then
-            echo 'A non-empty group is required for production republish.' >&2
+          if [ "$CHANNEL" = production ] && [ -z "$BUNDLE" ]; then
+            echo 'A non-empty bundle ID is required for production promotion.' >&2
             exit 1
           fi
-      - name: Publish preview update
+      # The Cloudflare credentials and the client key live in the EAS preview environment; eas env:exec passes them to the CLI.
+      - name: Deploy preview update
         if: inputs.channel == 'preview'
         env:
           APP_VARIANT: preview
           EXPO_PUBLIC_APP_VARIANT: preview
           MESSAGE: ${{ inputs.message }}
-        run: eas update --channel preview --environment preview --platform ios --message "$MESSAGE" --non-interactive
-      - name: Republish production update
+        run: eas env:exec preview 'npx hot-updater deploy --platform ios --channel preview --message "$MESSAGE"' --non-interactive
+      - name: Promote checked preview bundle to production
         if: inputs.channel == 'production'
         env:
-          GROUP: ${{ inputs.group }}
-        run: eas update:republish --group "$GROUP" --destination-channel production --non-interactive
+          BUNDLE: ${{ inputs.bundle }}
+        run: eas env:exec preview 'npx hot-updater bundle promote "$BUNDLE" --target production --action copy --yes' --non-interactive

@@ -20,6 +20,7 @@ import { V0Error, V0Loading } from '../features/home/states';
 import { useNotificationSync } from '../features/notifications/useNotificationSync';
 import { installNativeWidgets } from '../features/widgets/nativeWidgets';
 import { UpdateNotice } from '../features/update/UpdateNotice';
+import { checkForOtaUpdate } from '../features/update/ota';
 
 void SplashScreen.preventAutoHideAsync();
 Notifications.setNotificationHandler({ handleNotification: async () => ({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false }) });
@@ -27,6 +28,7 @@ export default function RootLayout() {
   const [loaded, error] = useFonts(fontAssets);
   const [translator, setTranslator] = useState<i18n | null>(null);
   useEffect(() => { void createI18n().then((created) => { installNativeWidgets(created); setTranslator(created); }); }, []);
+  useEffect(() => { void checkForOtaUpdate(); }, []);
   useEffect(() => {
     if ((loaded || error) && translator) void SplashScreen.hideAsync();
   }, [loaded, error, translator]);
