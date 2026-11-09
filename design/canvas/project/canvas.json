@@ -628,7 +628,7 @@
   },
   "copy-v0-start.dc.html": {
    "expand": "fill",
-   "h": 4870,
+   "h": 4940,
    "page": "v0-start",
    "title": "문구 · V0-01 시작",
    "w": 1760,
@@ -637,7 +637,7 @@
   },
   "V0-02-home.dc.html": {
    "expand": "fill",
-   "h": 4873,
+   "h": 5883,
    "page": "v0-home",
    "title": "V0-02 홈 · D+Day",
    "w": 1760,
@@ -646,7 +646,7 @@
   },
   "copy-v0-home.dc.html": {
    "expand": "fill",
-   "h": 1807,
+   "h": 2017,
    "page": "v0-home",
    "title": "문구 · V0-02 홈",
    "w": 1760,
@@ -655,12 +655,12 @@
   },
   "V0-03-states.dc.html": {
    "expand": "fill",
-   "h": 3820,
+   "h": 3840,
    "page": "v0-home",
    "title": "V0-03 시스템 상태",
    "w": 1760,
    "x": 0,
-   "y": 4993
+   "y": 6003
   },
   "copy-v0-states.dc.html": {
    "expand": "fill",
@@ -669,11 +669,11 @@
    "title": "문구 · V0-03 시스템 상태",
    "w": 1760,
    "x": 1840,
-   "y": 4993
+   "y": 6003
   },
   "V0-04-anniv.dc.html": {
    "expand": "fill",
-   "h": 4836,
+   "h": 5786,
    "page": "v0-anniv",
    "title": "V0-04 기념일 목록 · 상세",
    "w": 1760,
@@ -682,7 +682,7 @@
   },
   "copy-v0-anniv.dc.html": {
    "expand": "fill",
-   "h": 2997,
+   "h": 3061,
    "page": "v0-anniv",
    "title": "문구 · V0-04 기념일",
    "w": 1760,
@@ -696,20 +696,20 @@
    "title": "V0-05 기념일 추가 · 편집",
    "w": 1760,
    "x": 0,
-   "y": 4956
+   "y": 5906
   },
   "copy-v0-edit.dc.html": {
    "expand": "fill",
-   "h": 2617,
+   "h": 2697,
    "page": "v0-anniv",
    "title": "문구 · V0-05 기념일 편집",
    "w": 1760,
    "x": 1840,
-   "y": 4956
+   "y": 5906
   },
   "V0-06-widgets.dc.html": {
    "expand": "fill",
-   "h": 8600,
+   "h": 9020,
    "page": "v0-widgets",
    "title": "V0-06 위젯",
    "w": 1760,
@@ -727,7 +727,7 @@
   },
   "V0-07-settings.dc.html": {
    "expand": "fill",
-   "h": 5812,
+   "h": 6752,
    "page": "v0-settings",
    "title": "V0-07 설정",
    "w": 1760,
@@ -736,7 +736,7 @@
   },
   "copy-v0-settings.dc.html": {
    "expand": "fill",
-   "h": 6100,
+   "h": 6310,
    "page": "v0-settings",
    "title": "문구 · V0-07 설정",
    "w": 1760,
@@ -754,7 +754,7 @@
   },
   "copy-v0-auth.dc.html": {
    "expand": "fill",
-   "h": 6900,
+   "h": 7110,
    "page": "v0-start",
    "title": "문구 · V0-08 로그인 · 비밀번호",
    "w": 1760,
@@ -763,12 +763,12 @@
   },
   "V0-09-security.dc.html": {
    "expand": "fill",
-   "h": 9300,
+   "h": 9360,
    "page": "v0-settings",
    "title": "V0-09 로그인·보안 · 계정 삭제 확인",
    "w": 1760,
    "x": 0,
-   "y": 6220
+   "y": 6872
   },
   "copy-v0-security.dc.html": {
    "expand": "fill",
@@ -777,7 +777,7 @@
    "title": "문구 · V0-09 로그인·보안",
    "w": 1760,
    "x": 1840,
-   "y": 6220
+   "y": 6872
   },
   "V0-10-connect.dc.html": {
    "expand": "fill",
@@ -786,16 +786,16 @@
    "title": "V0-10 상대 연결 (홈 · 설정에서)",
    "w": 1760,
    "x": 0,
-   "y": 8933
+   "y": 9963
   },
   "copy-v0-connect.dc.html": {
    "expand": "fill",
-   "h": 2300,
+   "h": 2410,
    "page": "v0-home",
    "title": "문구 · V0-10 상대 연결",
    "w": 1760,
    "x": 1840,
-   "y": 8933
+   "y": 9963
   },
   "V0-11-update.dc.html": {
    "expand": "fill",
@@ -804,7 +804,7 @@
    "title": "V0-11 업데이트 알림",
    "w": 1760,
    "x": 0,
-   "y": 15083
+   "y": 16113
   },
   "copy-v0-update.dc.html": {
    "expand": "fill",
@@ -813,11 +813,11 @@
    "title": "문구 · V0-11 업데이트 알림",
    "w": 1760,
    "x": 1840,
-   "y": 15083
+   "y": 16113
   },
   "V0-12-splash.dc.html": {
    "expand": "fill",
-   "h": 4100,
+   "h": 4150,
    "page": "v0-start",
    "title": "V0-12 스플래시 (아루미)",
    "w": 1760,

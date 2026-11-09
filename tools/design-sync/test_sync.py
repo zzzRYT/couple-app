@@ -41,7 +41,7 @@ class SyncTests(unittest.TestCase):
             project=Path(temp)
             head='<p>KO: 원본 · EN: 초안 · JA: 초안</p><table><tr><th>키</th><th>한국어</th><th>English</th><th>日本語</th><th>상태</th></tr>'
             (project/'copy-v0-a.dc.html').write_text(head+'<tr><td>x.one</td><td>하나<br>둘</td><td>a|b</td><td>j</td><td>신규 · EN·JA 초안</td></tr></table>')
-            (project/'copy-v0-b.dc.html').write_text(head+'<tr><td>x.one</td><td>하나<br>둘</td><td>a|b</td><td>j</td><td>재사용 · 기존 키 x.one</td></tr><tr><td>x.two</td><td>{y}</td><td>{M}</td><td>{y}</td><td>신규</td></tr></table>')
+            (project/'copy-v0-b.dc.html').write_text(head+'<tr><td>x.one</td><td>하나<br>둘</td><td>a|b</td><td>j</td><td>재사용 · 기존 키 x.one</td></tr><tr><td>x.two</td><td>{y}</td><td>{M}</td><td>{y}</td><td>신규</td></tr><tr><td>x.three</td><td>셋</td><td>c</td><td>c</td><td>제안 · 오너 승인 필요</td></tr></table>')
             (project/'canvas.json').write_text(json.dumps({'pages':[], 'boards':{'copy-v0-b.dc.html':{'title':'문구 · V0-02 B'}, 'copy-v0-a.dc.html':{'title':'문구 · V0-01 A'}}}))
             sections=sync.v0_sections(project)
             self.assertEqual([(t, [r['key'] for r in rows]) for t, _, rows in sections], [('V0-01 A', ['x.one']), ('V0-02 B', ['x.two'])])
