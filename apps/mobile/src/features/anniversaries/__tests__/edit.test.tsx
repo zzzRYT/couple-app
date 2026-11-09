@@ -50,6 +50,21 @@ it('V0-F07-AC-09 shows the gone alert when the partner deleted the item and its 
   expect(onGone).toHaveBeenCalled(); expect(onClose).not.toHaveBeenCalled();
   alert.mockRestore();
 });
+it('A-16 counts the title after trimming the spaces around it', async () => {
+  const screen = await renderWithI18n(<AnniversaryEdit {...base} save={jest.fn()} />);
+  await fireEvent.changeText(screen.getByLabelText(screen.t('edit.field.title')), `  ${'x'.repeat(20)} `);
+  expect(screen.getByText(screen.t('edit.counter', { n: 20, max: 20 }))).toBeTruthy();
+  expect(screen.queryByText(screen.t('edit.err.title.long'))).toBeNull();
+  expect(screen.getByRole('button', { name: screen.t('common.save') }).props.accessibilityState.disabled).toBe(false);
+});
+it('V0-05 previews the next date and D-n even when it is more than a year ahead', async () => {
+  const once = await renderWithI18n(<AnniversaryEdit {...base} initial={{ ...item, date: '2027-12-25', repeat: 'once' }} save={jest.fn()} />);
+  expect(once.getByText(once.t('edit.preview.next', { date: '12월 25일 (토)', left: once.t('dday.left', { n: 418 }) }))).toBeTruthy();
+  const yearly = await renderWithI18n(<AnniversaryEdit {...base} initial={{ ...item, date: '2028-03-01', repeat: 'yearly' }} save={jest.fn()} />);
+  expect(yearly.getByText(yearly.t('edit.preview.next', { date: '3월 1일 (수)', left: yearly.t('dday.left', { n: 485 }) }))).toBeTruthy();
+  const passed = await renderWithI18n(<AnniversaryEdit {...base} initial={{ ...item, date: '2025-05-03', repeat: 'yearly' }} save={jest.fn()} />);
+  expect(passed.getByText(passed.t('edit.preview.next', { date: '5월 3일 (월)', left: passed.t('dday.left', { n: 182 }) }))).toBeTruthy();
+});
 it('V0-F07-AC-02 shows an empty title error after leaving the field', async () => {
   const screen = await renderWithI18n(<AnniversaryEdit {...base} save={jest.fn()} />);
   await fireEvent(screen.getByLabelText(screen.t('edit.field.title')), 'blur');

@@ -40,6 +40,16 @@ function annualDate(year: number, month: number, day: number): string {
   return month === 2 && day === 29 && parseCalendarDate(date) === null ? `${year}-02-28` : date;
 }
 
+/** The edit sheet's preview: a yearly item's next date on or after today, a one-time item's own date, or null once a one-time date has passed. Not bound to the list's one-year window. */
+export function nextCustomDate(custom: { date: string; repeat: 'yearly' | 'once' }, today: string): string | null {
+  if (parseCalendarDate(custom.date) === null) return null;
+  if (custom.repeat === 'once') return custom.date >= today ? custom.date : null;
+  const month = Number(custom.date.slice(5, 7)), day = Number(custom.date.slice(8, 10));
+  const year = Math.max(Number(today.slice(0, 4)), Number(custom.date.slice(0, 4)));
+  const date = annualDate(year, month, day);
+  return date >= today ? date : annualDate(year + 1, month, day);
+}
+
 /** Calculate list and celebration occurrences in the space's calendar time zone. */
 export function computeAnniversaries(input: AnniversaryInput, nowIso: string) {
   const start = parseCalendarDate(input.startDate);

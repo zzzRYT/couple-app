@@ -7,7 +7,7 @@ import type { MilestoneCelebration } from '../../lib/client';
 import { CelebrationCard } from '../../features/home/CelebrationCard';
 import { V0HomeScreen } from '../../features/home/V0HomeScreen';
 import { V0Error } from '../../features/home/states';
-import { ListRow } from '../../ui/components';
+import { ListRow, Toast } from '../../ui/components';
 import { AnniversaryList } from '../../features/anniversaries/AnniversaryList';
 import { AnniversaryDetail } from '../../features/anniversaries/AnniversaryDetail';
 import { AnniversaryEdit } from '../../features/anniversaries/AnniversaryEdit';
@@ -22,7 +22,6 @@ import { EndSpaceScreen } from '../../features/lifecycle/EndSpaceScreen';
 import { DeleteAccountScreen } from '../../features/account/DeleteAccountScreen';
 import { TimeZoneSheet } from '../../features/settings/TimeZoneSheet';
 import { NotificationTimeSheet } from '../../features/settings/NotificationTimeSheet';
-import { AnniversaryToast } from '../../features/anniversaries/AnniversaryToast';
 import type { Locale } from '../../i18n';
 
 const noop = jest.fn();
@@ -58,7 +57,7 @@ const SCREENS: Record<string, () => ReactElement> = {
   'delete account': () => <DeleteAccountScreen reauth={{ apple: noop, kakao: noop, sendEmailCode: noop, verifyEmailCode: noop } as never} onSubmit={noop} onFinished={noop} onCancel={noop} provider="apple" options={{ apple: 'native', kakao: false, devEmail: false }} v0 />,
   'time zone sheet': () => <TimeZoneSheet visible timeZone="Asia/Seoul" onClose={noop} onSelect={noop} />,
   'notification time sheet': () => <NotificationTimeSheet visible time="09:00" onClose={noop} onSelect={noop} />,
-  'toast': () => <AnniversaryToast text="Saved" onHide={noop} />,
+  'toast': () => <Toast text="Saved" onHide={noop} />,
   'settings offline': () => <V0SettingsScreen snapshot={snapshotFixture()} offline version="1.0.0 (12)" onLogout={noop} onZone={noop} navigate={noop} />,
 };
 
@@ -79,7 +78,7 @@ describe.each(Object.entries(SCREENS))('%s', (_name, build) => {
 it('V0-NF-01 names the date wheels once the edit date field is open', async () => {
   for (const locale of LOCALES) {
     const { screen, missing, restore, t } = await renderSweep(<AnniversaryEdit {...editBase} />, locale);
-    await fireEvent.press(screen.getByLabelText(t('a11y.dateField')));
+    await fireEvent.press(screen.getByLabelText(t('edit.field.date')));
     expect(missing).toEqual([]);
     expect(unlabeledTouchables(screen.toJSON())).toEqual([]);
     restore();
