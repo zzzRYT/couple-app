@@ -60,14 +60,11 @@ export function computeAnniversaries(input: AnniversaryInput, nowIso: string) {
     add({ key: `d${n}`, kind: 'days', date: dateString(start + (n - 1) * DAY_MS), n });
   }
   const startYear = Number(input.startDate.slice(0, 4));
+  // My birthday shows once I enter it; the partner's only once both of us have (V0-F05-AC-01).
+  const birthdays = input.me.birthday ? [{ who: 'me' as const, ...input.me.birthday }, ...(input.partner?.birthday ? [{ who: 'partner' as const, ...input.partner.birthday }] : [])] : [];
   for (let y = year - 1; y <= year + 1; y++) {
     if (y > startYear) add({ key: `y${y - startYear}`, kind: 'years', date: annualDate(y, Number(input.startDate.slice(5, 7)), Number(input.startDate.slice(8, 10))), n: y - startYear });
-    if (input.me.birthday && input.partner?.birthday) {
-      for (const who of ['me', 'partner'] as const) {
-        const birthday = who === 'me' ? input.me.birthday : input.partner.birthday;
-        add({ key: `bday:${who}:${y}`, kind: 'birthday', date: annualDate(y, birthday.month, birthday.day), who });
-      }
-    }
+    for (const { who, month, day } of birthdays) add({ key: `bday:${who}:${y}`, kind: 'birthday', date: annualDate(y, month, day), who });
     add({ key: `season:pepero:${y}`, kind: 'season', date: annualDate(y, 11, 11), seasonId: 'pepero' });
     add({ key: `season:christmas:${y}`, kind: 'season', date: annualDate(y, 12, 25), seasonId: 'christmas' });
     for (const custom of input.customs) {

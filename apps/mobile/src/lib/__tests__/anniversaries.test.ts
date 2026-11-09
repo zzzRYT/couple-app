@@ -122,12 +122,14 @@ it('V0-DR-06-AC-01 leaves a Pepero Day before the start date out of the past lis
   const result = computeAnniversaries(input, '2026-12-05T03:00:00Z');
   expect([...result.past, ...result.todayItems, ...result.upcoming].some((item) => item.date === '2026-11-11')).toBe(false);
 });
-it('V0-EC-12 shows both birthdays only after the second person adds theirs', () => {
+it('V0-EC-12 shows my birthday alone and the partner birthday only after both added theirs', () => {
   const base = { startDate: '2025-06-29', timeZone: 'Asia/Seoul', me: { birthday: { month: 3, day: 1 } }, customs: [] };
   const keys = (partner: { birthday: { month: number; day: number } | null }) => {
     const result = computeAnniversaries({ ...base, partner }, '2026-02-01T03:00:00Z');
     return [...result.todayItems, ...result.upcoming].filter((item) => item.kind === 'birthday').map((item) => item.key);
   };
-  expect(keys({ birthday: null })).toEqual([]);
+  expect(keys({ birthday: null })).toEqual(['bday:me:2026']);
   expect(keys({ birthday: { month: 4, day: 2 } }).sort()).toEqual(['bday:me:2026', 'bday:partner:2026']);
+  const partnerOnly = computeAnniversaries({ ...base, me: { birthday: null }, partner: { birthday: { month: 4, day: 2 } } }, '2026-02-01T03:00:00Z');
+  expect([...partnerOnly.todayItems, ...partnerOnly.upcoming].some((item) => item.kind === 'birthday')).toBe(false);
 });

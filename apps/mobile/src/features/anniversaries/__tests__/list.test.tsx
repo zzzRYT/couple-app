@@ -67,12 +67,18 @@ it('V0-F08-AC-04 leaves out seasons and birthdays that fall before the start dat
   expect(items.every((item) => item.date >= '2026-12-01')).toBe(true);
   expect(items.some((item) => item.key === 'season:pepero:2026' || item.key === 'bday:me:2026')).toBe(false);
 });
-it('V0-F05-AC-01 shows the wait row and no partner birthday while only one side entered a birthday', async () => {
-  const view = computeAnniversaries({ ...common, startDate: '2025-01-01', timeZone: 'UTC', me: { birthday: { month: 3, day: 1 } } }, '2026-11-02T12:00:00Z');
-  expect([...view.past, ...view.upcoming].some((item) => item.kind === 'birthday')).toBe(false);
+it('V0-F05-AC-01 shows my birthday with the wait row right after it and no partner birthday while only I entered one', async () => {
+  const view = computeAnniversaries({ ...common, startDate: '2025-01-01', timeZone: 'UTC', me: { birthday: { month: 12, day: 1 } } }, '2026-11-02T12:00:00Z');
+  const birthdays = [...view.past, ...view.upcoming].filter((item) => item.kind === 'birthday');
+  expect(birthdays.length).toBeGreaterThan(0);
+  expect(birthdays.every((item) => item.who === 'me')).toBe(true);
   const screen = await renderWithI18n(<AnniversaryList view={view} filter="all" pastOpen={false} offline={false} birthdayState="wait" partner="Haru" onFilter={jest.fn()} onPast={jest.fn()} onAdd={jest.fn()} onItem={jest.fn()} onBirthday={jest.fn()} />);
-  expect(screen.getByText(screen.t('anniv.birthday.wait', { name: 'Haru' }))).toBeTruthy();
-  expect(screen.queryByText(screen.t('anniv.birthday.me'))).toBeNull();
+  const wait = screen.t('anniv.birthday.wait', { name: 'Haru' });
+  expect(screen.getByText(screen.t('anniv.birthday.me'))).toBeTruthy();
+  expect(screen.queryByText(screen.t('anniv.birthday', { name: 'Haru' }))).toBeNull();
+  const tree = JSON.stringify(screen.toJSON());
+  expect(tree.indexOf(screen.t('anniv.birthday.me'))).toBeLessThan(tree.indexOf(wait));
+  expect(tree.indexOf(wait)).toBeLessThan(tree.indexOf(screen.t('anniv.christmas')));
 });
 it('V0-F05-AC-02 shows both birthdays yearly by month and day with no age or birth year', async () => {
   const view = computeAnniversaries({ ...common, startDate: '2025-01-01', timeZone: 'UTC', me: { birthday: { month: 3, day: 1 } }, partner: { birthday: { month: 2, day: 29 } } }, '2026-11-02T12:00:00Z');
