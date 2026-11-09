@@ -108,6 +108,18 @@ it('V0-F15-AC-05 a sign-up refused by the server falls back to the closed screen
   expect(await screen.findByText(screen.t('auth.signup.nomail.title'))).toBeTruthy();
 });
 
+it('sign-up and reset say they are loading, not signing in, while the mail setting is read', async () => {
+  let answer: (value: boolean) => void = () => {};
+  const password = port({ mailConnected: jest.fn(() => new Promise<boolean>((resolve) => { answer = resolve; })) });
+  const signup = await renderWithI18n(<SignupScreen password={password} onBack={jest.fn()} onApple={jest.fn()} />);
+  expect(signup.getByRole('progressbar', { name: signup.t('state.loading') })).toBeTruthy();
+  expect(signup.queryByText(signup.t('login.processing'))).toBeNull();
+  await act(async () => { answer(false); });
+  const reset = await renderWithI18n(<ResetScreen password={password} onBack={jest.fn()} />);
+  expect(reset.getByRole('progressbar', { name: reset.t('state.loading') })).toBeTruthy();
+  await act(async () => { answer(false); });
+});
+
 it('V0-F15-AC-07 until mail is connected reset is V0-auth-reset-nomail and no mail is requested', async () => {
   const password = port();
   const screen = await renderWithI18n(<ResetScreen password={password} onBack={jest.fn()} onApple={jest.fn()} />);

@@ -25,7 +25,7 @@ export function ResetScreen({ password, initialEmail = '', onBack, onApple }: { 
     setBusy(false);
     if (ok) setSent(true); else setFailed(true);
   }
-  if (mail === null) return <Screen center onBack={onBack}><CycleLoader label={t('login.processing')} /></Screen>;
+  if (mail === null) return <Screen center onBack={onBack}><CycleLoader label={t('state.loading')} /></Screen>;
   if (!mail) {
     return (
       <Screen onBack={onBack}>

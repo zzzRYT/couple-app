@@ -30,7 +30,7 @@ export function SignupScreen({ password, onBack, onApple }: { password: Pick<Pas
     if (result === 'closed') setMail(false);
     else if (result === 'ok') { setSecret(''); setAgain(''); setSent(true); } else setFailed(true);
   }
-  if (mail === null) return <Screen center onBack={onBack}><CycleLoader label={t('login.processing')} /></Screen>;
+  if (mail === null) return <Screen center onBack={onBack}><CycleLoader label={t('state.loading')} /></Screen>;
   if (!mail) {
     return (
       <Screen onBack={onBack} footer={<>
