@@ -8,10 +8,10 @@
 
 1. ~~Expo 계정과 EAS 프로젝트~~ — 완료: `@zzzryt/aroom` 생성·연결(projectId `99310e9a-4aee-4116-b9da-b6a26460f7e3`, `apps/mobile/src/config/identity.ts`).
 2. **Apple Developer Program 가입 → App ID `com.jinjinstar.aroom.dev` 등록(Sign In with Apple capability) → `eas device:create`로 iPhone 등록** — `docs/apple-sign-in-setup.md` 1장. 운영 ID `com.jinjinstar.aroom`, `.widgets`, `group.com.jinjinstar.aroom`은 2026-11-06 소유자 지시로 개인 팀 `43ZASDF2J7`에 등록했다. 이름·상표 확인(G2)은 아직 열려 있다.
-3. **Supabase 원격 프로젝트 만들기**(개인 계정, Seoul, 무료) → `supabase link` → `db push` → 카탈로그 시드 1회 → `functions deploy` → `lifecycle-sweep` 하루 1회 예약(공간 종료 30일 뒤 완전 삭제도 이 함수가 하므로 **아래 C 확인 뒤에** 걸 것) — `docs/remote-supabase-setup.md`.
+3. ~~Supabase 원격 프로젝트~~ — 완료: Aroom-prod(Seoul)와 Aroom-dev(Sydney), 둘 다 무료. 원격 명령은 `node tools/supabase/remote.mjs dev|prod <명령>`으로 대상을 정해 실행한다. 아래 C·D의 `supabase …` 줄도 그렇게 읽는다 — `docs/remote-supabase-setup.md`.
 4. **Supabase Apple 공급자 켜기**, Client IDs = `com.jinjinstar.aroom.dev` — `docs/apple-sign-in-setup.md` 2장. 개발 빌드의 이메일 테스트 로그인을 원격에서 쓰려면 개발용 프로젝트에서만 Email 공급자를 켜 둔다.
-5. **서버 비밀**: `supabase secrets set INVITE_CODE_PEPPER=…`, `supabase secrets set ANTHROPIC_API_KEY=…`(Claude Max 포함 크레딧에 연결된 Console API 키, 전용 workspace에 지출 한도).
-6. **앱에 원격 값 넣기**: `eas env:create`로 `EXPO_PUBLIC_SUPABASE_URL`·`EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`(publishable 키만), 로컬 개발은 `apps/mobile/.env.local`.
+5. **서버 비밀**(프로젝트마다 따로, 운영 값을 dev에 복사하지 않음): `INVITE_CODE_PEPPER`, `ANTHROPIC_API_KEY`(Claude Max 포함 크레딧에 연결된 Console API 키, 전용 workspace에 지출 한도). Aroom-dev의 `ANTHROPIC_API_KEY`는 지금 운영 키와 같은 값이라 dev 전용 키로 바꾸거나 지울지 정해야 한다 — `docs/remote-supabase-setup.md` 3장.
+6. ~~앱에 원격 값 넣기~~ — 완료: EAS development·preview는 Aroom-dev, production은 Aroom-prod(preview에는 promote용 Aroom-prod 값도 있다). 로컬 개발은 `apps/mobile/.env.local` — `docs/remote-supabase-setup.md` 7장.
 7. **개발 빌드 설치와 실측**: `eas build --profile development --platform ios` → 등록된 iPhone에 설치 → `npx expo start --dev-client` → Apple 로그인 → 두 번째 기기(다른 Apple ID 또는 이메일 테스트 로그인)로 초대 수락 → 같은 D-day → 점유 → 프롬프트 → 미리 보기 → 적용 → 양쪽 같은 방. 이 PR은 실기기·실서비스 확인을 하지 않았다.
 8. **결정 확인**: 개발 빌드 전용 이메일 테스트 로그인을 남길지(가정). 원하지 않으면 알려 주면 지운다.
 

@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
+import * as Application from 'expo-application';
+import { supabaseTarget } from '../config/supabase';
 import { createApi } from './api';
 import { createClient, type Client } from './client';
 import { createSupabase, functionsCaller } from './supabase';
@@ -9,10 +11,14 @@ import type { AuthPort } from '../features/auth/authPort';
 import { passwordPort, type PasswordPort } from '../features/auth/passwordPort';
 type AppValue = { client: Client; auth: AuthPort; password: PasswordPort; realtime: RealtimePort; supabase: ReturnType<typeof createSupabase>; session: Session | null; sessionLoaded: boolean; sessionExpired: boolean; clearSessionExpired: () => void; userId: string | null };
 const AppContext = createContext<AppValue | null>(null);
-/** Public values only: the Supabase URL and publishable key come from EXPO_PUBLIC_* build variables, never from source. */
+/** Public values only: the Supabase URL and publishable key come from EXPO_PUBLIC_* build variables, never from source; the native bundle id picks which. */
 export function AppProvider({ children }: { children: ReactNode }) {
-  const url = process.env.EXPO_PUBLIC_SUPABASE_URL ?? 'http://127.0.0.1:54321';
-  const key = process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? '';
+  const { url, key } = supabaseTarget(Application.applicationId, {
+    url: process.env.EXPO_PUBLIC_SUPABASE_URL,
+    key: process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    prodUrl: process.env.EXPO_PUBLIC_SUPABASE_PROD_URL,
+    prodKey: process.env.EXPO_PUBLIC_SUPABASE_PROD_PUBLISHABLE_KEY,
+  });
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   const [sessionExpired, setSessionExpired] = useState(false);

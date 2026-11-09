@@ -31,9 +31,9 @@
 ## 2. Supabase 대시보드에서 할 일
 
 1. Authentication → Sign In / Providers → **Apple** → Enable.
-2. **Client IDs**에 `com.jinjinstar.aroom.dev`를 넣는다. 이름 확인(G2) 뒤 운영 빌드를 만들 때 `com.jinjinstar.aroom`를 쉼표로 덧붙인다. (Expo Go로 시험하고 싶을 때만 `host.exp.Exponent`도 덧붙인다. 아래 참고.)
+2. **Client IDs**: Aroom-dev에는 `com.jinjinstar.aroom.dev`만, Aroom-prod에는 `com.jinjinstar.aroom.dev,com.jinjinstar.aroom`을 넣는다(`docs/remote-supabase-setup.md` 6장). (Expo Go로 시험하고 싶을 때만 `host.exp.Exponent`도 덧붙인다. 아래 참고.)
 3. Secret Key(OAuth) 칸은 비워 둔다(네이티브 전용).
-4. **Email 공급자**: 비밀번호 로그인에 쓰므로 운영 프로젝트에서도 켠다(`docs/password-auth-operations.md`). 로컬 스택(`supabase start`)은 Apple과 Email이 둘 다 켜져 있다(`supabase/config.toml`).
+4. **Email 공급자**: 비밀번호 로그인에 쓰므로 두 프로젝트 모두 켠다(`docs/password-auth-operations.md`). 로컬 스택(`supabase start`)은 Apple과 Email이 둘 다 켜져 있다(`supabase/config.toml`).
 
 ## 3. 개발 빌드로 테스트하기
 
@@ -46,7 +46,7 @@ npx expo start --dev-client                           # 같은 Wi-Fi에서 앱�
 
 - 앱에서 Apple 버튼 → 기기의 Apple ID로 로그인 → 공간 만들기 화면으로 가면 성공이다.
 - 두 번째 사람은 다른 Apple ID가 있으면 두 번째 iPhone으로, 없으면 개발 빌드의 **이메일 테스트 로그인**(로그인 화면 아래쪽 버튼)으로 들어온다. 로컬 스택이면 코드 메일은 Mailpit `http://127.0.0.1:54324`에서 본다.
-- 개발 서버가 로컬 Supabase를 쓰려면 iPhone이 접근할 수 있는 주소가 필요하다: `apps/mobile/.env.local`에 `EXPO_PUBLIC_SUPABASE_URL=http://<맥의 LAN IP>:54321`과 로컬 publishable 키(`supabase status`의 `PUBLISHABLE_KEY`)를 넣는다. 로컬 스택에서 Apple 로그인은 Apple 공개 키 확인 때문에 맥이 인터넷에 연결돼 있어야 한다.
+- 개발 빌드는 EAS development 환경의 Aroom-dev를 쓴다. 개발 서버가 로컬 Supabase를 쓰려면 iPhone이 접근할 수 있는 주소가 필요하다: `apps/mobile/.env.local`에 `EXPO_PUBLIC_SUPABASE_URL=http://<맥의 LAN IP>:54321`과 로컬 publishable 키(`supabase status`의 `PUBLISHABLE_KEY`)를 넣는다. 로컬 스택에서 Apple 로그인은 Apple 공개 키 확인 때문에 맥이 인터넷에 연결돼 있어야 한다.
 
 ### iOS 시뮬레이터
 
