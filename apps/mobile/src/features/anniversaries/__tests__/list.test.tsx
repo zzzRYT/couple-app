@@ -14,6 +14,19 @@ it('V0-F08-AC-01 V0-F08-AC-03 V0-F05-AC-04 presents today, custom badge, past to
   const customRows = screen.getAllByText('Our day'); expect(customRows).toHaveLength(2);
   await fireEvent.press(customRows[0]!); expect(onItem).toHaveBeenCalledWith(expect.objectContaining({ customId: 'x' }));
 });
+it('V0-anniv-list-past puts the collapse button on the right of the past section header', async () => {
+  const onPast = jest.fn();
+  const screen = await renderWithI18n(<AnniversaryList view={view} filter="all" pastOpen offline={false} birthdayState="none" partner="Haru" onFilter={jest.fn()} onPast={onPast} onAdd={jest.fn()} onItem={jest.fn()} onBirthday={jest.fn()} />);
+  const tree = JSON.stringify(screen.toJSON());
+  expect(tree.indexOf(screen.t('anniv.section.past'))).toBeLessThan(tree.indexOf(screen.t('anniv.past.hide')));
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('anniv.past.hide') }));
+  expect(onPast).toHaveBeenCalled();
+});
+it('V0-03 shows the offline band with the last check time over the saved list', async () => {
+  const screen = await renderWithI18n(<AnniversaryList view={view} filter="all" pastOpen={false} offline syncedAt="2026-11-11T03:05:00Z" birthdayState="none" partner="Haru" onFilter={jest.fn()} onPast={jest.fn()} onAdd={jest.fn()} onItem={jest.fn()} onBirthday={jest.fn()} />);
+  expect(screen.getByText(new RegExp(screen.t('state.offline.banner', { time: '' }).trim()))).toBeTruthy();
+  expect(screen.getByText(screen.t('state.offline.readonly'))).toBeTruthy();
+});
 it('V0-F08-AC-02 custom filter omits other kinds and custom badges', async () => {
   const screen = await renderWithI18n(<AnniversaryList view={view} filter="custom" pastOpen={false} offline={false} birthdayState="none" partner="Haru" onFilter={jest.fn()} onPast={jest.fn()} onAdd={jest.fn()} onItem={jest.fn()} onBirthday={jest.fn()} />);
   expect(screen.queryByText(screen.t('anniv.pepero'))).toBeNull();
