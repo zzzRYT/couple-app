@@ -15,3 +15,24 @@ it('V0-EC-07 shows the expired state with a reissue action on the pending home',
   await fireEvent.press(screen.getByText(screen.t('invite.reissue')));
   expect(onOpenInvite).toHaveBeenCalled();
 });
+
+describe('V0-F02-AC-11 entering the partner code from Home (V0-10)', () => {
+  const render = (memberCount: number, offline = false, onHaveCode = jest.fn()) => {
+    const snapshot = snapshotFixture({ memberCount });
+    snapshot.space.invitation = { status: 'active', expiresAt: '2026-11-01T00:00:00Z' };
+    return renderWithI18n(<V0HomeScreen state={{ status: 'ready', snapshot, offline, lastSyncedAt: null }} now="2026-10-31T03:00:00Z" onAnniversaries={jest.fn()} onRefresh={jest.fn()} onOpenInvite={jest.fn()} onHaveCode={onHaveCode} celebration={null} onSeen={jest.fn()} />);
+  };
+  it('puts "상대에게 코드를 받았어요" under my code while waiting', async () => {
+    const onHaveCode = jest.fn();
+    const screen = await render(1, false, onHaveCode);
+    await fireEvent.press(await screen.findByRole('button', { name: screen.t('home.pending.haveCode') }));
+    expect(onHaveCode).toHaveBeenCalled();
+  });
+  it('is disabled offline and gone once connected', async () => {
+    const offline = await render(1, true);
+    expect((await offline.findByRole('button', { name: offline.t('home.pending.haveCode') })).props.accessibilityState.disabled).toBe(true);
+    offline.unmount();
+    const connected = await render(2);
+    expect(connected.queryByRole('button', { name: connected.t('home.pending.haveCode') })).toBeNull();
+  });
+});

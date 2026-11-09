@@ -9,7 +9,7 @@ it('defines the expected auth, onboarding and three tab routes', () => {
 });
 it('keeps the end-space, report and ended-notice screens outside the tab group so the tab bar is hidden', () => {
   const app = resolve(__dirname, '..');
-  expect(readdirSync(resolve(app, 'settings')).sort()).toEqual(['appearance.tsx', 'change-password.tsx', 'delete-account.tsx', 'disconnect.tsx', 'end-space.tsx', 'language.tsx', 'me.tsx', 'notifications.tsx', 'report.tsx', 'reset-password.tsx', 'security.tsx', 'set-password.tsx', 'start-date.tsx']);
+  expect(readdirSync(resolve(app, 'settings')).sort()).toEqual(['appearance.tsx', 'change-password.tsx', 'connect.tsx', 'delete-account.tsx', 'disconnect.tsx', 'end-space.tsx', 'language.tsx', 'me.tsx', 'notifications.tsx', 'report.tsx', 'reset-password.tsx', 'security.tsx', 'set-password.tsx', 'start-date.tsx']);
   expect(readdirSync(app)).toContain('ended.tsx');
   expect(readdirSync(resolve(app, '(tabs)/settings'))).toEqual(['index.tsx']);
 });

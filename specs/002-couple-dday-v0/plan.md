@@ -239,6 +239,7 @@ CI(`.github/workflows/ci.yml`)는 이미 lint·typecheck·mobile test·pgTAP·de
 | V0-F01-AC-01~03 | RNTL | `features/auth/__tests__/login.test.tsx`, `src/app/__tests__/navigationFlows.test.tsx` |
 | V0-F02-AC-01~07, -09, -10 | RNTL | `features/onboarding/__tests__/{create-space,profile,invite,join}.test.tsx`, `lib/__tests__/appGate.test.ts` |
 | V0-F02-AC-08 | XCUITest + RNTL | `PairUITest.swift`(pairtest), `features/home/__tests__/V0HomeScreen.test.tsx` |
+| V0-F02-AC-11~13 | RNTL + pgTAP | `features/{home,settings,onboarding,lifecycle}/__tests__/{invitePending,v0Settings,connect,join,moveSpace}.test.tsx`, `supabase/tests/v0_connect_from_space.test.sql` |
 | V0-F03-AC-01~05 | RNTL | `features/home/__tests__/V0HomeScreen.test.tsx`, `src/app/__tests__/routes.test.tsx` |
 | V0-F04-AC-01, V0-DR-02, V0-DR-03 | Jest + Deno + pgTAP | `lib/__tests__/anniversaries.test.ts`, `supabase/functions/_shared/__tests__/milestones.test.ts`, `supabase/tests/milestone.test.sql` |
 | V0-F04-AC-02 | RNTL | `features/anniversaries/__tests__/detail.test.tsx` |

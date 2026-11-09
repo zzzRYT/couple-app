@@ -77,6 +77,8 @@ function AppNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
       <Stack.Screen name="connected" />
       <Stack.Screen name="notify-intro" options={{ gestureEnabled: false }} />
       <Stack.Screen name="join-has-space" />
+      <Stack.Screen name="connect-code" />
+      <Stack.Screen name="settings/connect" />
       <Stack.Screen name="settings/end-space" />
       <Stack.Screen name="settings/me" />
       <Stack.Screen name="settings/start-date" />

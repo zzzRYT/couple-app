@@ -70,3 +70,20 @@ describe('V0-F12-AC-09 help rows', () => {
     expect(screen.getByText(screen.t('set.help.privacy'))).toBeTruthy();
   });
 });
+describe('V0-F02-AC-11 partner row (V0-10)', () => {
+  it('offers "연결하기" while nobody has joined and opens the connect screen', async () => {
+    const navigate = jest.fn();
+    const screen = await renderWithI18n(<V0SettingsScreen snapshot={snapshotFixture({ memberCount: 1 })} offline={false} version="0.1" onLogout={jest.fn()} onZone={jest.fn()} navigate={navigate} />);
+    await fireEvent.press(screen.getByRole('button', { name: `${screen.t('set.us.partner')}, ${screen.t('set.us.connect')}` }));
+    expect(navigate).toHaveBeenCalledWith('connect');
+  });
+  it('is disabled offline', async () => {
+    const screen = await renderWithI18n(<V0SettingsScreen snapshot={snapshotFixture({ memberCount: 1 })} offline version="0.1" onLogout={jest.fn()} onZone={jest.fn()} navigate={jest.fn()} />);
+    expect(screen.getByRole('button', { name: `${screen.t('set.us.partner')}, ${screen.t('set.us.connect')}` }).props.accessibilityState.disabled).toBe(true);
+  });
+  it('shows only the connected state once the partner joined: no connect action', async () => {
+    const screen = await renderWithI18n(<V0SettingsScreen snapshot={snapshotFixture()} offline={false} version="0.1" onLogout={jest.fn()} onZone={jest.fn()} navigate={jest.fn()} />);
+    expect(screen.getByLabelText(`${screen.t('set.us.partner')}, ${screen.t('set.us.connected', { name: '도담' })}`)).toBeTruthy();
+    expect(screen.queryByText(screen.t('set.us.connect'))).toBeNull();
+  });
+});

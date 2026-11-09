@@ -116,3 +116,59 @@ it('V0-F02-AC-07 "do not join" returns to code entry', async () => {
   expect(screen.getByRole('button', { name: screen.t('join.check') })).toBeTruthy();
   expect(acceptInvitation).not.toHaveBeenCalled();
 });
+
+describe('V0-F02-AC-12 entering a code while holding a space alone (V0-10)', () => {
+  async function inApp(previewInvitation: jest.Mock, moveFromSpace = jest.fn().mockResolvedValue(undefined), ownCode: string | null = 'ZZZZ-9999') {
+    const screen = await renderWithI18n(<JoinScreen previewInvitation={previewInvitation} acceptInvitation={jest.fn()} onJoined={jest.fn()} onOpenSpace={jest.fn()} moveFromSpace={moveFromSpace} ownCode={ownCode} />);
+    const enter = async (code: string) => {
+      await fireEvent.changeText(screen.getByLabelText(screen.t('connect.code.title')), code);
+      await fireEvent.press(screen.getByRole('button', { name: screen.t('join.check') }));
+    };
+    return { screen, enter, moveFromSpace };
+  }
+
+  it('asks to move when the valid code meets ALREADY_IN_SPACE, then moves with that code', async () => {
+    const { screen, enter, moveFromSpace } = await inApp(jest.fn().mockRejectedValue(new ApiError(409, 'ALREADY_IN_SPACE')));
+    expect(screen.getByText(screen.t('connect.code.body'))).toBeTruthy();
+    await enter('k7m4q9xp');
+    expect(await screen.findByText(screen.t('connect.move.title'))).toBeTruthy();
+    for (const key of ['connect.move.i1', 'connect.move.i2', 'connect.move.i3']) expect(screen.getByText(`• ${screen.t(key)}`)).toBeTruthy();
+    expect(moveFromSpace).not.toHaveBeenCalled();
+    await fireEvent.press(screen.getByRole('button', { name: screen.t('connect.move.submit') }));
+    expect(moveFromSpace).toHaveBeenCalledWith('K7M4Q9XP');
+  });
+
+  it('cancel goes back to the code with nothing ended, and a failed end shows the network error', async () => {
+    const { screen, enter, moveFromSpace } = await inApp(jest.fn().mockRejectedValue(new ApiError(409, 'ALREADY_IN_SPACE')), jest.fn().mockRejectedValue(new TypeError('Network request failed')));
+    await enter('K7M4Q9XP');
+    await fireEvent.press(await screen.findByRole('button', { name: screen.t('common.cancel') }));
+    expect(screen.getByLabelText(screen.t('connect.code.title')).props.value).toBe('K7M4-Q9XP');
+    expect(moveFromSpace).not.toHaveBeenCalled();
+    await fireEvent.press(screen.getByRole('button', { name: screen.t('join.check') }));
+    await fireEvent.press(await screen.findByRole('button', { name: screen.t('connect.move.submit') }));
+    expect(await screen.findByText(screen.t('join.err'))).toBeTruthy();
+  });
+
+  it('keeps S05 errors for expired, used, wrong and full codes instead of asking to move', async () => {
+    const { screen, enter } = await inApp(jest.fn().mockRejectedValue(new ApiError(410, 'INVITE_EXPIRED')));
+    await enter('K7M4Q9XP');
+    expect(await screen.findByText(screen.t('join.expired.title'))).toBeTruthy();
+    expect(screen.queryByText(screen.t('connect.move.title'))).toBeNull();
+  });
+
+  it('refuses this device\'s own code without asking the server or ending anything (V0-connect-own)', async () => {
+    const preview = jest.fn();
+    const { screen, enter, moveFromSpace } = await inApp(preview);
+    await enter('zzzz9999');
+    expect(await screen.findByText(screen.t('connect.err.own'))).toBeTruthy();
+    expect(preview).not.toHaveBeenCalled();
+    expect(moveFromSpace).not.toHaveBeenCalled();
+  });
+
+  it('an invite link opened with a space alone checks the code and asks to move', async () => {
+    const preview = jest.fn().mockRejectedValue(new ApiError(409, 'ALREADY_IN_SPACE'));
+    const screen = await renderWithI18n(<JoinScreen initialCode="K7M4Q9XP" previewInvitation={preview} acceptInvitation={jest.fn()} onJoined={jest.fn()} onOpenSpace={jest.fn()} moveFromSpace={jest.fn()} ownCode={null} />);
+    expect(await screen.findByText(screen.t('connect.move.title'))).toBeTruthy();
+    expect(preview).toHaveBeenCalledWith('K7M4Q9XP');
+  });
+});
