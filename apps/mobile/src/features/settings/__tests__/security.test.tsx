@@ -1,7 +1,18 @@
 import { fireEvent, waitFor } from '@testing-library/react-native';
+import { router } from 'expo-router';
 import { renderWithI18n } from '../../../test/render';
+import SecurityRoute from '../../../app/settings/security';
+import ChangePasswordRoute from '../../../app/settings/change-password';
 import { ChangePasswordScreen } from '../ChangePasswordScreen';
 import { SecurityScreen } from '../SecurityScreen';
+
+const mockParams: { saved?: string; forgot?: string } = {};
+jest.mock('expo-router', () => ({ router: { push: jest.fn(), back: jest.fn(), dismissTo: jest.fn() }, useFocusEffect: jest.fn(), useLocalSearchParams: () => mockParams }));
+jest.mock('expo-clipboard', () => ({ setStringAsync: jest.fn() }));
+jest.mock('../../auth/PasswordContext', () => ({ usePassword: () => ({ state: { hasPassword: true, promptSeen: true, email: 'x7k2m9qd4t@privaterelay.appleid.com' }, apple: true, reload: jest.fn() }) }));
+jest.mock('../../../lib/AppContext', () => ({ useApp: () => ({ supabase: {}, client: {}, password: { set: jest.fn() } }) }));
+jest.mock('../../../lib/reauth', () => ({ supabaseReauth: () => ({ apple: jest.fn() }) }));
+beforeEach(() => { delete mockParams.saved; delete mockParams.forgot; });
 
 const relay = 'x7k2m9qd4t@privaterelay.appleid.com';
 const open = (state: { hasPassword: boolean; email: string | null } | null, apple: boolean, onAction = jest.fn()) =>
@@ -70,6 +81,27 @@ it('V0-F17-AC-03 wrong and locked', async () => {
   await fill(locked);
   expect(await locked.findByText(locked.t('auth.login.rate'))).toBeTruthy();
   expect(locked.getByRole('button', { name: locked.t('common.save') }).props.accessibilityState.disabled).toBe(true);
+  // V0-sec-change-rate: neither field can be typed in while locked.
+  expect(locked.getByLabelText(locked.t('set.pw.current')).props.editable).toBe(false);
+  expect(locked.getByLabelText(locked.t('set.pw.new')).props.editable).toBe(false);
+});
+
+it('V0-F17-AC-02 the toast shows when the change screen returns to a Security screen that is still open', async () => {
+  const screen = await renderWithI18n(<SecurityRoute />);
+  expect(screen.queryByText(screen.t('set.pw.saved'))).toBeNull();
+  mockParams.saved = '1731100000000';
+  await screen.rerender(<SecurityRoute />);
+  expect(screen.getByText(screen.t('set.pw.saved'))).toBeTruthy();
+});
+
+it('V0-F17-AC-04 the forgot link of an Apple account opens the V0-sec-forgot sheet on Security', async () => {
+  const change = await renderWithI18n(<ChangePasswordRoute />);
+  await fireEvent.press(change.getByRole('button', { name: change.t('login.pw.forgot') }));
+  expect(router.dismissTo).toHaveBeenCalledWith({ pathname: '/settings/security', params: { forgot: expect.any(String) } });
+  mockParams.forgot = (router.dismissTo as jest.Mock).mock.calls[0][0].params.forgot;
+  const security = await renderWithI18n(<SecurityRoute />);
+  expect(security.getByText(security.t('set.pw.forgot.body'))).toBeTruthy();
+  expect(security.getByRole('button', { name: security.t('acct.delete.reauth.forgot.oauth') })).toBeTruthy();
 });
 
 it('V0-F17-AC-04 the forgot link leaves for the Apple check', async () => {
