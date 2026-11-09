@@ -34,7 +34,6 @@ export function AppStack({ gate }: { gate: AppGate['kind'] }) {
       <Stack.Screen name="join-has-space" />
       <Stack.Screen name="connect-code" />
       <Stack.Screen name="settings/connect" />
-      <Stack.Screen name="settings/end-space" />
       <Stack.Screen name="settings/me" />
       <Stack.Screen name="settings/start-date" />
       <Stack.Screen name="settings/notifications" />
@@ -47,6 +46,8 @@ export function AppStack({ gate }: { gate: AppGate['kind'] }) {
     </Stack.Protected>
     <Stack.Protected guard={gate === 'active' && V0_FEATURES.prompt} redirectTo={redirectTo}><Stack.Screen name="prompt/index" options={{ presentation: 'modal' }} /><Stack.Screen name="prompt/consent" options={{ presentation: 'modal' }} /></Stack.Protected>
     <Stack.Protected guard={gate === 'active' && V0_FEATURES.reportBlock} redirectTo={redirectTo}><Stack.Screen name="settings/report" /></Stack.Protected>
+    {/* S14 end-space (V1 copy about the room); V0 ends a space with 연결 끊기 instead. */}
+    <Stack.Protected guard={gate === 'active' && V0_FEATURES.endSpace} redirectTo={redirectTo}><Stack.Screen name="settings/end-space" /></Stack.Protected>
     {/* Any signed-in state: the space may end (realtime) while the deletion is in flight, and the screen must stay mounted. */}
     <Stack.Protected guard={gate === 'active' || gate === 'needsOnboardingChoice' || gate === 'ended'} redirectTo={redirectTo}><Stack.Screen name="settings/delete-account" /><Stack.Screen name="settings/reset-password" /></Stack.Protected>
   </Stack>;
