@@ -23,7 +23,6 @@ export default function DeleteAccountRoute() {
   // Unknown credentials fall back to what the account must have: an email account can only have a password.
   const held = { hasPassword: credentials?.hasPassword ?? !apple, apple, email: credentials?.email ?? session?.user.email ?? null, mail, password };
   return <DeleteAccountScreen v0 reauth={reauth} provider={lastUsedProvider(session?.user.app_metadata?.provider)} credentials={held}
-    onReset={() => router.push({ pathname: '/settings/reset-password', params: { email: held.email ?? '' } })}
     onSubmit={(input) => submitDeletion(() => client.deleteAccount(input))}
     onFinished={async (outcome) => {
       if (userId) await clearV0LocalData(userId, state.snapshot?.space.spaceId).catch(() => undefined);

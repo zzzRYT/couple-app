@@ -11,14 +11,14 @@ function reauth(): ReauthPort {
   return { apple: jest.fn().mockResolvedValue(appleCode), kakao: jest.fn(), sendEmailCode: jest.fn(), verifyEmailCode: jest.fn() };
 }
 function held(overrides: Partial<DeleteCredentials> = {}): DeleteCredentials {
-  return { hasPassword: true, apple: true, email: relay, mail: false, password: { verify: jest.fn().mockResolvedValue('ok') }, ...overrides };
+  return { hasPassword: true, apple: true, email: relay, mail: false, password: { verify: jest.fn().mockResolvedValue('ok'), requestReset: jest.fn().mockResolvedValue(true) }, ...overrides };
 }
-async function open(credentials: DeleteCredentials, onSubmit: (input: unknown) => Promise<SubmitResult> = jest.fn().mockResolvedValue('accepted'), port = reauth(), onReset = jest.fn()) {
+async function open(credentials: DeleteCredentials, onSubmit: (input: unknown) => Promise<SubmitResult> = jest.fn().mockResolvedValue('accepted'), port = reauth()) {
   const onFinished = jest.fn().mockResolvedValue(undefined);
-  const screen = await renderWithI18n(<DeleteAccountScreen v0 reauth={port} onSubmit={onSubmit} onFinished={onFinished} onCancel={jest.fn()} onReset={onReset} credentials={credentials} options={options} />);
+  const screen = await renderWithI18n(<DeleteAccountScreen v0 reauth={port} onSubmit={onSubmit} onFinished={onFinished} onCancel={jest.fn()} credentials={credentials} options={options} />);
   await fireEvent.press(screen.getByRole('checkbox', { name: screen.t('set.confirm.check') }));
   await fireEvent.press(screen.getByRole('button', { name: screen.t('set.delete.cta') }));
-  return { screen, onSubmit, onFinished, port, onReset };
+  return { screen, onSubmit, onFinished, port };
 }
 async function typeAndConfirm(screen: Awaited<ReturnType<typeof open>>['screen'], label: string) {
   await fireEvent.changeText(screen.getByLabelText(screen.t(label)), 'mopiru2026');
@@ -54,17 +54,22 @@ it('V0-F18-AC-02 the server answer maps to appleRequired and nothing is claimed'
 
 it('V0-F18-AC-03 wrong, then locked: Apple offers the way out; an email account waits', async () => {
   const verify = jest.fn().mockResolvedValueOnce('wrong').mockResolvedValueOnce('locked');
-  const { screen, port } = await open(held({ password: { verify } }));
+  const { screen, port } = await open(held({ password: { verify, requestReset: jest.fn() } }));
   await typeAndConfirm(screen, 'set.security.pwLabel');
   expect(await screen.findByText(screen.t('acct.delete.reauth.wrong'))).toBeTruthy();
   await typeAndConfirm(screen, 'set.security.pwLabel');
   expect(await screen.findByText(screen.t('acct.delete.reauth.rate'))).toBeTruthy();
+  // V0-del-pw-rate keeps the sheet's lines and a field that cannot be typed in.
+  expect(screen.getByText(screen.t('acct.delete.reauth.body'))).toBeTruthy();
+  expect(screen.getByText(screen.t('acct.delete.reauth.account', { provider: 'Apple', email: relay }))).toBeTruthy();
+  expect(screen.getByLabelText(screen.t('set.security.pwLabel')).props.editable).toBe(false);
   await fireEvent.press(screen.getByRole('button', { name: screen.t('acct.delete.reauth.forgot.oauth') }));
   await waitFor(() => expect(port.apple).toHaveBeenCalled());
 
-  const email = await open(held({ apple: false, email: 'haru@example.com', password: { verify: jest.fn().mockResolvedValue('locked') } }));
+  const email = await open(held({ apple: false, email: 'haru@example.com', password: { verify: jest.fn().mockResolvedValue('locked'), requestReset: jest.fn() } }));
   await typeAndConfirm(email.screen, 'login.pw.label');
   expect(await email.screen.findByText(email.screen.t('auth.login.rate'))).toBeTruthy();
+  expect(email.screen.getByLabelText(email.screen.t('login.pw.label')).props.editable).toBe(false);
   expect(email.screen.getByRole('button', { name: email.screen.t('acct.delete.reauth.submit') }).props.accessibilityState.disabled).toBe(true);
 });
 
@@ -75,12 +80,14 @@ it('V0-F18-AC-05 forgot: Apple again for an Apple account', async () => {
   expect(screen.getByRole('button', { name: screen.t('acct.delete.reauth.forgot.oauth') })).toBeTruthy();
 });
 
-it('V0-F18-AC-05 forgot: reset mail with mail on, contact without', async () => {
-  const on = await open(held({ apple: false, email: 'haru@example.com', mail: true }));
+it('V0-F18-AC-05 forgot: the reset mail goes from the sheet with mail on, contact without', async () => {
+  const credentials = held({ apple: false, email: 'haru@example.com', mail: true });
+  const on = await open(credentials);
   expect(on.screen.getByText(on.screen.t('acct.delete.reauth.body.email'))).toBeTruthy();
   await fireEvent.press(on.screen.getByRole('button', { name: on.screen.t('login.pw.forgot') }));
   await fireEvent.press(on.screen.getByRole('button', { name: on.screen.t('login.reset.send') }));
-  expect(on.onReset).toHaveBeenCalled();
+  expect(credentials.password.requestReset).toHaveBeenCalledWith('haru@example.com');
+  expect(await on.screen.findByText(on.screen.t('login.reset.sent.title'))).toBeTruthy();
   const off = await open(held({ apple: false, email: 'haru@example.com' }));
   await fireEvent.press(off.screen.getByRole('button', { name: off.screen.t('login.pw.forgot') }));
   expect(off.screen.getByText(off.screen.t('acct.delete.reauth.forgot.nomail'))).toBeTruthy();
