@@ -8,6 +8,15 @@ it('V0-F04-AC-02 automatic details are read-only and show their calculation', as
   expect(screen.getByText('기본 설정 (오후 8:30 · 3일 전)')).toBeTruthy();
   expect(screen.queryByText(screen.t('edit.delete'))).toBeNull();
 });
+it('ND10 leaves the date to the hero and draws no date row in the card', async () => {
+  const automatic = await renderWithI18n(<AnniversaryDetail item={seasonDetail} {...detailProps} />);
+  expect(automatic.getAllByText('2026년 11월 11일 (수)')).toHaveLength(1);
+  expect(automatic.queryByText(automatic.t('anniv.detail.when'))).toBeNull();
+  await automatic.unmount();
+  const custom = await renderWithI18n(<AnniversaryDetail item={{ key: 'custom:x', kind: 'custom', date: '2025-05-30', title: 'Trip', customId: 'x' }} custom={{ id: 'x', title: 'Trip', date: '2025-05-30', memo: null, repeat: 'once', createdBy: 'me', updatedBy: 'me', createdAt: '2025-01-01T00:00:00Z', updatedAt: '2025-01-01T00:00:00Z', version: 1 }} {...detailProps} />);
+  expect(custom.queryByText(custom.t('anniv.detail.when'))).toBeNull();
+  expect(custom.getByText(custom.t('anniv.detail.repeat'))).toBeTruthy();
+});
 it('V0-F07-AC-05 custom details can be edited and deleted', async () => {
   const onDelete = jest.fn();
   const screen = await renderWithI18n(<AnniversaryDetail item={{ key: 'custom:x', kind: 'custom', date: '2025-05-30', title: 'Trip', customId: 'x' }} custom={{ id: 'x', title: 'Trip', date: '2025-05-30', memo: 'Together', repeat: 'once', createdBy: 'me', updatedBy: 'me', createdAt: '2025-01-01T00:00:00Z', updatedAt: '2025-01-01T00:00:00Z', version: 1 }} today="2025-05-01" startDate="2025-01-01" timeZone="Asia/Seoul" partner="Haru" userId="me" notify="off" notifyDefault="기본 설정 (오후 8:30 · 3일 전)" offline={false} onBack={jest.fn()} onEdit={jest.fn()} onDelete={onDelete} onSettings={jest.fn()} onMe={jest.fn()} />);

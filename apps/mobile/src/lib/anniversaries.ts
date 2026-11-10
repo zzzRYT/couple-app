@@ -63,8 +63,9 @@ export function computeAnniversaries(input: AnniversaryInput, nowIso: string) {
   const first = annualDate(year - 1, month, day);
   const last = annualDate(year + 1, month, day);
   const items: Occurrence[] = [];
+  // Customs are dates the couple chose, so they keep dates before the relationship (ND12); the generated kinds start with it.
   const add = (item: Occurrence) => {
-    if (item.date >= input.startDate && item.date >= first && item.date <= last) items.push(item);
+    if ((item.kind === 'custom' || item.date >= input.startDate) && item.date >= first && item.date <= last) items.push(item);
   };
   for (const n of [50, 100, 150, 200, 300]) {
     add({ key: `d${n}`, kind: 'days', date: dateString(start + (n - 1) * DAY_MS), n });
@@ -90,6 +91,6 @@ export function computeAnniversaries(input: AnniversaryInput, nowIso: string) {
   const todayItems = items.filter((item) => item.date === today);
   const upcoming = items.filter((item) => item.date > today);
   const past = items.filter((item) => item.date < today).sort((a, b) => b.date.localeCompare(a.date) || compareKind(a, b));
-  const celebrationCandidates = items.filter((item) => item.date === today || ((item.kind === 'days' || item.kind === 'years') && parseCalendarDate(item.date)! >= current - 6 * DAY_MS && item.date < today)).sort(compareKind);
+  const celebrationCandidates = items.filter((item) => item.date === today || ((item.kind === 'days' || item.kind === 'years') && parseCalendarDate(item.date)! >= current - 6 * DAY_MS && item.date < today)).sort((a, b) => Number(a.date !== today) - Number(b.date !== today) || compareKind(a, b));
   return { today, dayCount: count.ok ? count.dayCount : null, todayItems, upcoming, past, celebrationCandidates };
 }
