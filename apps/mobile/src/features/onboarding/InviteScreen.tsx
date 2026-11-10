@@ -6,7 +6,6 @@ import { LoadingScreen } from '../../ui/CycleLoader';
 import { CodeBoxes } from '../../ui/CodeBoxes';
 import { Icon } from '../../ui/Icon';
 import { InlineHint } from '../../ui/InlineNote';
-import { Spot } from '../../ui/Spot';
 import { tokens } from '../../theme/tokens';
 import { useAppColor } from '../../theme/useAppColor';
 import { useType } from '../../theme/typography';
@@ -15,11 +14,11 @@ const EXPIRING_MS = 30 * 60_000;
 type Invitation = { code: string; expiresAt: string };
 export const formatInviteCode = (code: string) => { const clean = code.replace(/[^0-9a-z]/gi, '').toUpperCase(); return `${clean.slice(0, 4)}-${clean.slice(4, 8)}`; };
 /**
- * S04 invite. The raw code exists only in component state for display/share and is never logged. Sharing or copying the code moves on to the waiting state (S04-waiting).
+ * S04 invite. The raw code exists only in component state for display/share and is never logged. V0 waits on home with the code visible, so the code stays on screen after sharing or copying.
  * `existingInvitation` is the live code this device made, shown again as is; without it a live invitation shows the pending note. `reissue` makes a new code right away.
  */
-export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion, memberCount = 1, onJoined, onLater, onBack, copyCode, existingInvitation, existingInvitationExpiresAt, reissue = false, onInvitationCreated }: {
-  createInvitation: () => Promise<Invitation>; clock?: () => number; reducedMotion?: boolean; memberCount?: number; onJoined?: () => void; onLater?: () => void; onBack?: () => void; copyCode?: (code: string) => Promise<boolean>;
+export function InviteScreen({ createInvitation, clock = Date.now, memberCount = 1, onJoined, onLater, onBack, copyCode, existingInvitation, existingInvitationExpiresAt, reissue = false, onInvitationCreated }: {
+  createInvitation: () => Promise<Invitation>; clock?: () => number; memberCount?: number; onJoined?: () => void; onLater?: () => void; onBack?: () => void; copyCode?: (code: string) => Promise<boolean>;
   existingInvitation?: Invitation | null; existingInvitationExpiresAt?: string | null; reissue?: boolean; onInvitationCreated?: () => Promise<unknown> | void;
 }) {
   const color = useAppColor();
@@ -28,13 +27,12 @@ export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion
   const reopened = reissue ? null : existingInvitation ?? null;
   const [invite, setInvite] = useState<Invitation | null>(reopened);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error' | 'pending'>(reopened ? 'ready' : existingInvitationExpiresAt && !reissue ? 'pending' : 'loading');
-  const [view, setView] = useState<'code' | 'waiting'>('code');
   const [now, setNow] = useState(clock());
   const [confirmReissue, setConfirmReissue] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const initialized = useRef(false);
   const load = useCallback(async () => {
-    setStatus('loading'); setNotice(null); setView('code');
+    setStatus('loading'); setNotice(null);
     try { setInvite(await createInvitation()); setNow(clock()); setStatus('ready'); void Promise.resolve(onInvitationCreated?.()).catch(() => undefined); } catch { setStatus('error'); }
   }, [createInvitation, clock, onInvitationCreated]);
   useEffect(() => {
@@ -80,24 +78,11 @@ export function InviteScreen({ createInvitation, clock = Date.now, reducedMotion
   const toast = notice ? <Toast text={notice} icon={notice === t('invite.copied') ? 'check' : 'info'} onHide={hideNotice} /> : null;
   async function share() {
     const result = await Share.share({ message: t('invite.shareMsg', { code, link: `https://aroom.jinjinstar.com/i/${code}` }) }).catch(() => null);
-    if (result?.action === Share.sharedAction) { setNotice(null); setView('waiting'); } else setNotice(t('invite.shareCancelled'));
+    setNotice(result?.action === Share.sharedAction ? null : t('invite.shareCancelled'));
   }
   function copy() {
     if (!copyCode) return;
-    void copyCode(code).then((copied) => { setNotice(t(copied ? 'invite.copied' : 'invite.err.title')); if (copied) setView('waiting'); }).catch(() => setNotice(t('invite.err.title')));
-  }
-  if (view === 'waiting' && !expired) {
-    return (
-      <Screen center footer={<>
-        {toast}
-        <Button label={t('invite.code.label')} variant="secondary" onPress={() => setView('code')} />
-        {onLater && <Button label={t('common.next')} variant="ghost" onPress={onLater} />}
-      </>}>
-        <Spot kind="waiting" reducedMotion={reducedMotion} />
-        <AppText variant="title" accessibilityRole="header" align="center">{t('invite.waiting.title')}</AppText>
-        <AppText tone="text2" align="center">{t('invite.waiting.body')}</AppText>
-      </Screen>
-    );
+    void copyCode(code).then((copied) => setNotice(t(copied ? 'invite.copied' : 'invite.err.title'))).catch(() => setNotice(t('invite.err.title')));
   }
   const expiresAt = new Intl.DateTimeFormat(i18n.language, { month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(invite.expiresAt));
   return (

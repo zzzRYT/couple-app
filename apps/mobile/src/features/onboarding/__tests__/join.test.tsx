@@ -2,9 +2,9 @@ import { act, fireEvent } from '@testing-library/react-native';
 import { renderWithI18n } from '../../../test/render';
 import { JoinScreen, maskInviteInput } from '../JoinScreen';
 import { ApiError } from '../../../lib/errors';
-async function setup(previewInvitation: jest.Mock, acceptInvitation = jest.fn().mockResolvedValue({ spaceId: 's1', memberCount: 2 })) {
+async function setup(previewInvitation: jest.Mock, acceptInvitation = jest.fn().mockResolvedValue({ spaceId: 's1', memberCount: 2 }), myName: string | null = null) {
   const onJoined = jest.fn(); const onOpenSpace = jest.fn();
-  const screen = await renderWithI18n(<JoinScreen previewInvitation={previewInvitation} acceptInvitation={acceptInvitation} onJoined={onJoined} onOpenSpace={onOpenSpace} />);
+  const screen = await renderWithI18n(<JoinScreen previewInvitation={previewInvitation} acceptInvitation={acceptInvitation} onJoined={onJoined} onOpenSpace={onOpenSpace} myName={myName} />);
   const input = () => screen.getByLabelText(screen.t('join.title'));
   const check = () => fireEvent.press(screen.getByRole('button', { name: screen.t('join.check') }));
   return { screen, input, check, onJoined, onOpenSpace, acceptInvitation };
@@ -26,9 +26,19 @@ it('V0-F02-AC-06 and V0-F02-AC-07 confirm the space, then accept the invitation'
   expect(screen.getByText(screen.t('join.found.who', { name: '하루' }))).toBeTruthy();
   expect(screen.getByText(/사귄 날은 2025년 6월 29일/)).toBeTruthy();
   expect(screen.getByLabelText(screen.t('mascot.alt.wave'))).toBeTruthy();
+  expect(screen.queryByLabelText(screen.t('home.names.a11y', { me: '도담', partner: '하루' }))).toBeNull();
   await fireEvent.press(screen.getByRole('button', { name: screen.t('join.accept') }));
   expect(acceptInvitation).toHaveBeenCalledWith('K7M4Q9XP');
   expect(onJoined).toHaveBeenCalledWith('s1');
+});
+
+it('ND02 draws the names row only when the joiner already has a name', async () => {
+  const preview = jest.fn().mockResolvedValue({ anniversaryDate: '2025-06-29', memberCount: 1, displayName: '하루', timeZone: 'Asia/Seoul' });
+  const { screen, input, check } = await setup(preview, undefined, '도담');
+  await fireEvent.changeText(input(), 'k7m4q9xp');
+  await check();
+  expect(await screen.findByLabelText(screen.t('home.names.a11y', { me: '도담', partner: '하루' }))).toBeTruthy();
+  expect(screen.getByText(screen.t('join.found.who', { name: '하루' }))).toBeTruthy();
 });
 
 it.each([
@@ -48,6 +58,7 @@ it('keeps the typed code and offers the current space on ALREADY_IN_SPACE at acc
   await check();
   await fireEvent.press(await screen.findByRole('button', { name: screen.t('join.accept') }));
   expect(await screen.findByText(screen.t('join.hasSpace.title'))).toBeTruthy();
+  expect(screen.getByText(screen.t('join.hasSpace.body.v0'))).toBeTruthy();
   expect(input().props.value).toBe('AAAA-BBBB');
   await fireEvent.press(screen.getByRole('button', { name: screen.t('join.hasSpace.action') }));
   expect(onOpenSpace).toHaveBeenCalled();
@@ -80,10 +91,12 @@ it('checks a linked code automatically and shows confirmation', async () => {
   expect(preview).toHaveBeenCalledWith('AB12CD34');
   expect(preview).toHaveBeenCalledTimes(1);
 });
-it('shows the one-space message without checking an incoming code', async () => {
+it('shows the one-space message without checking an incoming code, pointing to 연결 끊기 rather than the V1 공간 종료', async () => {
   const preview = jest.fn();
   const screen = await renderWithI18n(<JoinScreen previewInvitation={preview} acceptInvitation={jest.fn()} onJoined={jest.fn()} onOpenSpace={jest.fn()} initialCode="AB12CD34" alreadyInSpace />);
   expect(screen.getByText(screen.t('join.hasSpace.title'))).toBeTruthy();
+  expect(screen.getByText(screen.t('join.hasSpace.body.v0'))).toBeTruthy();
+  expect(screen.queryByText(screen.t('join.hasSpace.body'))).toBeNull();
   expect(preview).not.toHaveBeenCalled();
 });
 it('pastes an invite link as a code', async () => {

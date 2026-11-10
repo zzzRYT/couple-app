@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Image, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AppText, Banner, Button, Card, Screen } from '../../ui/components';
+import { Icon } from '../../ui/Icon';
+import { useAppColor } from '../../theme/useAppColor';
+import { useType } from '../../theme/typography';
 import { CodeInput } from '../../ui/CodeBoxes';
 import { ApiError, errorBodyKey, errorKey } from '../../lib/errors';
 import { dayCount, formatAnniversary } from '../../lib/dday';
@@ -19,13 +22,16 @@ const OWN_CODE = 'OWN_CODE';
 /**
  * S05 join with the valid invitation's limited preview. With `moveFromSpace` (V0-10, a person holding a space alone), a valid
  * code answers ALREADY_IN_SPACE, so the screen asks to move into the partner's space instead of showing that error.
+ * `myName` is the joiner's stored name (e.g. starting again after a space ended); only then the card draws the names row (ND02).
  */
-export function JoinScreen({ previewInvitation, acceptInvitation, onJoined, onOpenSpace, readClipboard, onBack, initialCode, alreadyInSpace, moveFromSpace, ownCode }: {
+export function JoinScreen({ previewInvitation, acceptInvitation, onJoined, onOpenSpace, readClipboard, onBack, initialCode, alreadyInSpace, moveFromSpace, ownCode, myName }: {
   previewInvitation: (code: string) => Promise<{ anniversaryDate: string; displayName?: string | null; timeZone?: string }>; acceptInvitation: (code: string) => Promise<{ spaceId: string }>;
   onJoined: (spaceId: string) => void; onOpenSpace: () => void; readClipboard?: () => Promise<string>; onBack?: () => void; initialCode?: string | null; alreadyInSpace?: boolean;
-  moveFromSpace?: (code: string) => Promise<void>; ownCode?: string | null;
+  moveFromSpace?: (code: string) => Promise<void>; ownCode?: string | null; myName?: string | null;
 }) {
   const { t, i18n } = useTranslation();
+  const color = useAppColor();
+  const { emphasis } = useType();
   const [value, setValue] = useState(initialCode ? maskInviteInput(initialCode) : '');
   const [step, setStep] = useState<Step>('enter');
   const [problem, setProblem] = useState<Problem | null>(alreadyInSpace ? { code: 'ALREADY_IN_SPACE' } : null);
@@ -83,6 +89,9 @@ export function JoinScreen({ previewInvitation, acceptInvitation, onJoined, onOp
         <AppText variant="title" accessibilityRole="header">{t('join.found.title')}</AppText>
         {found && <>
           <Card tone="line" style={{ alignItems: 'center', paddingVertical: 22 }}>
+            {myName && found.displayName && <View accessible accessibilityRole="text" accessibilityLabel={t('home.names.a11y', { me: myName, partner: found.displayName })} style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 6 }}>
+              <AppText style={emphasis(16)}>{myName}</AppText><Icon name="heart" size={16} color={color.primary} fill={color.primary} /><AppText style={emphasis(16)}>{found.displayName}</AppText>
+            </View>}
             <AppText variant="heading" align="center">{t('join.found.who', { name: found.displayName ?? t('home.pending.partner') })}</AppText>
             <AppText tone="text2" align="center">{t('start.join.found.body', { date: formatAnniversary(found.anniversaryDate, i18n.language), n: (() => { const result = dayCount(found.anniversaryDate, new Date().toISOString(), found.timeZone ?? 'UTC'); return result.ok ? result.dayCount : 0; })() })}</AppText>
           </Card>
@@ -92,9 +101,9 @@ export function JoinScreen({ previewInvitation, acceptInvitation, onJoined, onOp
     );
   }
   const codeProblem = problem && typeof problem === 'object' && 'code' in problem ? problem.code : null;
-  const body = codeProblem && codeProblem !== OWN_CODE ? errorBodyKey(codeProblem) : null;
-  const title = moveFromSpace ? t('connect.code.title') : t('join.title');
   const hasSpace = codeProblem === 'ALREADY_IN_SPACE';
+  const body = hasSpace ? 'join.hasSpace.body.v0' : codeProblem && codeProblem !== OWN_CODE ? errorBodyKey(codeProblem) : null;
+  const title = moveFromSpace ? t('connect.code.title') : t('join.title');
   return (
     <Screen onBack={onBack} footer={hasSpace ? <>
       <Button label={t('join.hasSpace.action')} onPress={onOpenSpace} />
