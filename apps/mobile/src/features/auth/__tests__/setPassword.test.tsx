@@ -44,6 +44,28 @@ it('V0-F16-AC-02 hides the private address note for an ordinary address', async 
   expect(screen.queryByText(screen.t('set.security.relay'))).toBeNull();
 });
 
+it('V0-F16-AC-01 the prompt and the done screen have no back: the prompt is the first signed-in screen', async () => {
+  const screen = await renderWithI18n(<SetPasswordFlow password={set()} email="haru@example.com" copy={jest.fn()} onDone={jest.fn()} onLater={jest.fn()} />);
+  expect(screen.queryByTestId('screen-back')).toBeNull();
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('auth.setpw.cta') }));
+  expect(screen.getByTestId('screen-back')).toBeTruthy();
+  await fireEvent.changeText(screen.getByLabelText(screen.t('login.pw.label')), 'mopiru2026');
+  await fireEvent.changeText(screen.getByLabelText(screen.t('login.pw.confirm')), 'mopiru2026');
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('onb.pw.submit') }));
+  await screen.findByText(screen.t('auth.setpw.done.title'));
+  expect(screen.queryByTestId('screen-back')).toBeNull();
+});
+
+it('V0-F16-AC-02 a password that could not be saved says so, not that sign-in failed', async () => {
+  const screen = await renderWithI18n(<SetPasswordFlow start="form" password={{ set: jest.fn().mockResolvedValue('error') }} email="haru@example.com" copy={jest.fn()} onDone={jest.fn()} onLater={jest.fn()} />);
+  await fireEvent.changeText(screen.getByLabelText(screen.t('login.pw.label')), 'mopiru2026');
+  await fireEvent.changeText(screen.getByLabelText(screen.t('login.pw.confirm')), 'mopiru2026');
+  await fireEvent.press(screen.getByRole('button', { name: screen.t('onb.pw.submit') }));
+  expect(await screen.findByText(screen.t('auth.save.err.title'))).toBeTruthy();
+  expect(screen.getByText(screen.t('auth.save.err.body'))).toBeTruthy();
+  expect(screen.queryByText(screen.t('login.error.title'))).toBeNull();
+});
+
 it('V0-F16-AC-03 the sheet on home creates or skips', async () => {
   const onCreate = jest.fn(), onLater = jest.fn();
   const screen = await renderWithI18n(<SetPasswordSheet visible onCreate={onCreate} onLater={onLater} />);

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Linking, Pressable, Text, View, type TextInputProps } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { AppText, Button, Card, TextField, WORD_BREAK } from '../../ui/components';
+import { AppText, Banner, Button, Card, TextField, WORD_BREAK } from '../../ui/components';
 import { Icon } from '../../ui/Icon';
 import { tokens } from '../../theme/tokens';
 import { useAppColor } from '../../theme/useAppColor';
@@ -76,10 +76,50 @@ export function LoginAddress({ email, copy }: { email: string; copy: (value: str
     </Card>
   );
 }
-/** "문의하기 · address": the only way forward for an email account until mail is connected. `link` is the bare text link of V0-auth-signup-nomail. */
+/** "문의하기 · address": the only way forward for an email account until mail is connected, so the address is always on screen. `link` is the ghost link of V0-auth-signup-nomail. */
 export function ContactButton({ link = false }: { link?: boolean }) {
   const { t } = useTranslation();
   const address = t('auth.support.mail');
+  const label = `${t('set.help.contact')} · ${address}`;
   const open = () => void Linking.openURL(`mailto:${address}`).catch(() => undefined);
-  return link ? <Button variant="ghost" label={t('set.help.contact')} onPress={open} /> : <Button variant="secondary" icon="mail" label={`${t('set.help.contact')} · ${address}`} onPress={open} />;
+  return link ? <Button variant="ghost" label={label} onPress={open} /> : <Button variant="secondary" icon="mail" label={label} onPress={open} />;
+}
+const RESEND_COOLDOWN_MS = 60_000;
+const RESENT_MS = 2_000;
+/** Resend on V0-auth-signup-sent, -reset-sent and the confirmation link-exp: locked for 60 s after every mail that went out (`sent` when one just did), "보냈어요" briefly after a resend. */
+export function MailResend({ label, send, sent = false, variant = 'secondary' }: { label: string; send: () => Promise<boolean>; sent?: boolean; variant?: 'primary' | 'secondary' }) {
+  const { t } = useTranslation();
+  const [sentAt, setSentAt] = useState(() => (sent ? Date.now() : null));
+  const [now, setNow] = useState(Date.now);
+  const [status, setStatus] = useState<'idle' | 'busy' | 'resent' | 'failed'>('idle');
+  const left = sentAt === null ? 0 : Math.max(0, Math.ceil((sentAt + RESEND_COOLDOWN_MS - now) / 1000));
+  useEffect(() => {
+    if (sentAt === null) return;
+    const timer = setInterval(() => {
+      const at = Date.now();
+      setNow(at);
+      if (at >= sentAt + RESEND_COOLDOWN_MS) clearInterval(timer);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [sentAt]);
+  useEffect(() => {
+    if (status !== 'resent') return;
+    const timer = setTimeout(() => setStatus('idle'), RESENT_MS);
+    return () => clearTimeout(timer);
+  }, [status]);
+  async function resend() {
+    setStatus('busy');
+    const ok = await send().catch(() => false);
+    if (ok) { const at = Date.now(); setSentAt(at); setNow(at); }
+    setStatus(ok ? 'resent' : 'failed');
+  }
+  return (
+    <>
+      {status === 'failed' && <Banner kind="danger" text={t('auth.send.err.title')} body={t('auth.send.err.body')} />}
+      <Button label={label} variant={variant} loading={status === 'busy'} disabled={left > 0} onPress={() => void resend()} />
+      {status === 'resent'
+        ? <AppText variant="bodySm" tone="success" align="center" accessibilityRole="alert" accessibilityLiveRegion="polite">{t('auth.mail.resent')}</AppText>
+        : left > 0 && <AppText variant="bodySm" tone="text2" align="center">{t('auth.mail.resend.wait', { s: left })}</AppText>}
+    </>
+  );
 }
