@@ -146,22 +146,22 @@ export function Banner({ text, body, kind = 'info', action, icon, quiet = false,
     </View>
   );
 }
-/** V0 notice band: dark brown (light app) / cream (dark app), as wide as its container, hides itself after 3s; important information also stays on screen. */
-export function Toast({ text, onHide, icon = 'check' }: { text: string; onHide?: () => void; icon?: IconName }) {
+/** V0 notice band: dark brown (light app) / cream (dark app), as wide as its container, hides itself after `duration` ms or on a tap; important information also stays on screen. */
+export function Toast({ text, onHide, icon = 'check', duration = 3000 }: { text: string; onHide?: () => void; icon?: IconName; duration?: number }) {
   const dark = useDisplayAppearance().scheme === 'dark';
   const { emphasis } = useType();
   useEffect(() => {
     if (!onHide) return;
-    const timer = setTimeout(onHide, 3000);
+    const timer = setTimeout(onHide, duration);
     return () => clearTimeout(timer);
-  }, [onHide]);
+  }, [onHide, duration]);
   const face = dark ? tokens.color.app.dark.normal.text : tokens.color.app.light.normal.text;
   const ink = dark ? tokens.color.app.dark.normal.bg : tokens.color.app.light.normal.surface;
   return (
-    <View accessible accessibilityRole="alert" accessibilityLiveRegion="polite" style={{ alignSelf: 'stretch', flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: tokens.spacing[2], paddingHorizontal: tokens.spacing[3], borderRadius: 18, backgroundColor: face, shadowColor: '#000000', shadowOpacity: 0.18, shadowRadius: 18, shadowOffset: { width: 0, height: 6 } }}>
+    <Pressable accessible accessibilityRole="alert" accessibilityLiveRegion="polite" onPress={onHide} style={{ alignSelf: 'stretch', flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: tokens.spacing[2], paddingHorizontal: tokens.spacing[3], borderRadius: 18, backgroundColor: face, shadowColor: '#000000', shadowOpacity: 0.18, shadowRadius: 18, shadowOffset: { width: 0, height: 6 } }}>
       <Icon name={icon} size={20} color={ink} />
       <Text {...WORD_BREAK} style={[emphasis(15), { color: ink, flexShrink: 1 }]}>{text}</Text>
-    </View>
+    </Pressable>
   );
 }
 /** Placeholder block; give one `label` per loading region and leave the rest unlabelled so the state is read once. */

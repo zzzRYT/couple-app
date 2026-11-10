@@ -10,7 +10,8 @@ jest.mock('expo-secure-store', () => ({
   setItemAsync: jest.fn(async (key: string, value: string) => { mockSecure.set(key, value); }),
   deleteItemAsync: jest.fn(async (key: string) => { mockSecure.delete(key); }),
 }));
-jest.mock('expo-router', () => ({ router: { push: jest.fn(), navigate: jest.fn() } }));
+const mockFocus = { focused: true };
+jest.mock('expo-router', () => ({ router: { push: jest.fn(), navigate: jest.fn() }, useIsFocused: () => mockFocus.focused }));
 const mockApp = { client: {}, userId: '00000000-0000-0000-0000-00000000000a' };
 jest.mock('../../lib/AppContext', () => ({ useApp: () => mockApp }));
 jest.mock('../../features/auth/PasswordContext', () => ({ usePassword: () => ({ shouldPrompt: false, markPromptSeen: jest.fn() }) }));
@@ -35,6 +36,29 @@ it('V0-F03-AC-04 shows the partner-edited notice once per change, and the new st
   await waitFor(() => expect(seenReads()).toBe(2));
   expect(second.queryByText(notice)).toBeNull();
   await second.unmount();
+});
+
+it('V0-F03-AC-04 holds the partner-edited notice until home is in front, and marks it seen only once it shows', async () => {
+  mockSecure.clear();
+  const snapshot = snapshotFixture();
+  snapshot.space.anniversaryDate = '2025-10-01';
+  snapshot.space.anniversaryChangedBy = PARTNER;
+  snapshot.space.anniversaryChangedAt = '2026-11-03T00:00:00Z';
+  mockSpace.state.snapshot = snapshot;
+  mockSecure.set(`v0.connected.seen.space-1.${ME}`, 'true');
+  mockFocus.focused = false;
+  const screen = await renderWithI18n(<HomeRoute />);
+  const notice = screen.t('home.partnerEdited', { name: '도담', date: '10월 1일' });
+  await waitFor(() => expect(SecureStore.getItemAsync).toHaveBeenCalledWith(`v0.connected.seen.space-1.${ME}`));
+  expect(screen.queryByText(notice)).toBeNull();
+  expect(mockSecure.has(`v0.partnerEdited.seen.space-1.${ME}`)).toBe(false);
+  mockFocus.focused = true;
+  await screen.rerender(<HomeRoute />);
+  expect(await screen.findByText(notice)).toBeTruthy();
+  await waitFor(() => expect(mockSecure.get(`v0.partnerEdited.seen.space-1.${ME}`)).toBe('2026-11-03T00:00:00Z'));
+  await fireEvent.press(screen.getByText(notice));
+  expect(screen.queryByText(notice)).toBeNull();
+  await screen.unmount();
 });
 
 it('V0-F13-AC-02 shows a failed refresh inside the home tab under the app header, and retries from there', async () => {
