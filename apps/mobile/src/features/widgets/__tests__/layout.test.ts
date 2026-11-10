@@ -5,9 +5,9 @@ import * as modifiers from '@expo/ui/swift-ui/modifiers';
 import { i18nFor } from '../../../test/render';
 import { widgetLayout } from '../layout';
 import { buildWidgetSnapshot, type WidgetData } from '../snapshot';
-import { WIDGET_PLACEHOLDER, widgetProps, type WidgetProps } from '../widgetProps';
+import { WIDGET_PLACEHOLDER, widgetProps, type WidgetKind, type WidgetProps } from '../widgetProps';
 
-type Node = { type: unknown; props: Record<string, unknown> & { children?: unknown; modifiers?: { $type: string; [key: string]: unknown }[]; assetName?: string; destination?: string } };
+type Node = { type: unknown; props: Record<string, unknown> & { children?: unknown; currentValueLabel?: unknown; modifiers?: { $type: string; [key: string]: unknown }[]; assetName?: string; destination?: string; value?: number } };
 const FAMILIES = ['systemSmall', 'systemMedium', 'systemLarge', 'accessoryCircular', 'accessoryRectangular', 'accessoryInline'] as const;
 const LOCK = FAMILIES.slice(3);
 const MODES = [['light', 'fullColor'], ['dark', 'fullColor'], ['light', 'accented'], ['dark', 'vibrant']] as const;
@@ -28,7 +28,7 @@ function resolveTree(node: unknown): unknown {
   if (Array.isArray(node)) return node.map(resolveTree);
   const element = node as Node | null;
   if (!element || typeof element !== 'object' || !('type' in element)) return node;
-  return { ...element, props: { ...element.props, children: resolveTree(element.props.children) } };
+  return { ...element, props: { ...element.props, children: resolveTree(element.props.children), currentValueLabel: resolveTree(element.props.currentValueLabel) } };
 }
 function walk(node: unknown, visit: (node: Node) => void) {
   if (Array.isArray(node)) { node.forEach((child) => walk(child, visit)); return; }
@@ -36,6 +36,7 @@ function walk(node: unknown, visit: (node: Node) => void) {
   if (!element || typeof element !== 'object' || !('type' in element)) return;
   visit(element);
   walk(element.props.children, visit);
+  walk(element.props.currentValueLabel, visit);
 }
 const collect = (root: Node) => {
   const texts: string[] = [], assets: string[] = [], links: string[] = [], fills: unknown[] = [];
@@ -48,17 +49,19 @@ const collect = (root: Node) => {
   });
   return { texts, assets, links, mods, fills };
 };
-const propsOf = async (data: WidgetData, now = '2026-11-02T03:00:00.000Z', locale: 'ko-KR' | 'ja-JP' = 'ko-KR') => {
+const propsOf = async (data: WidgetData, now = '2026-11-02T03:00:00.000Z', locale: 'ko-KR' | 'ja-JP' = 'ko-KR', kind: WidgetKind = 'dday') => {
   const i18n = await i18nFor(locale);
   const snapshot = buildWidgetSnapshot({ ...data, locale }, now, (key, vars) => i18n.t(key, vars));
-  return widgetProps(snapshot, snapshot.entries[0]!, 'aroom-dev');
+  return widgetProps(snapshot, snapshot.entries[0]!, 'aroom-dev', kind);
 };
 const hasModifier = (root: Node, type: string, key: string, value: unknown) => collect(root).mods!.some((modifier) => modifier.$type === type && modifier[key] === value);
 
 describe('widgetLayout', () => {
   const states: [string, () => Promise<WidgetProps>][] = [
-    ['placeholder', async () => WIDGET_PLACEHOLDER], ['normal', () => propsOf(normal)], ['today', () => propsOf(normal, '2026-11-11T03:00:00.000Z')], ['pending', () => propsOf(pending)],
+    ['placeholder', async () => WIDGET_PLACEHOLDER.dday], ['normal', () => propsOf(normal)], ['today', () => propsOf(normal, '2026-11-11T03:00:00.000Z')], ['pending', () => propsOf(pending)],
     ['none', () => propsOf({ state: 'none' })], ['ended', () => propsOf({ state: 'ended' })], ['japanese', () => propsOf(normal, undefined, 'ja-JP')],
+    ['list placeholder', async () => WIDGET_PLACEHOLDER.list], ['list normal', () => propsOf(normal, undefined, undefined, 'list')], ['list today', () => propsOf(normal, '2026-11-11T03:00:00.000Z', undefined, 'list')],
+    ['list pending', () => propsOf(pending, undefined, undefined, 'list')], ['list japanese', () => propsOf(normal, undefined, 'ja-JP', 'list')],
   ];
   it.each(states)('V0-F11-AC-03 draws %s for every family and appearance from bundled assets only', async (_, props) => {
     const value = await props();
@@ -113,5 +116,61 @@ describe('widgetLayout', () => {
     const { texts, links } = collect(evaluate(await propsOf(normal, '2026-11-11T03:00:00.000Z'), { widgetFamily: 'systemMedium', widgetRenderingMode: 'fullColor' }));
     expect(texts).toContain('오늘은 빼빼로데이');
     expect(links).toHaveLength(3);
+  });
+});
+
+describe('ND24 the list widget', () => {
+  const list = (data: WidgetData = normal, now?: string) => propsOf(data, now, undefined, 'list');
+  const draw = async (widgetFamily: string, props: Promise<WidgetProps>, widgetRenderingMode = 'fullColor') => evaluate(await props, { widgetFamily, widgetRenderingMode, colorScheme: 'light' });
+  it('small puts the next anniversary first: next, title, D-n, date and D+N', async () => {
+    const { texts, links } = collect(await draw('systemSmall', list()));
+    expect(texts).toEqual(['다음', '빼빼로데이', 'D-9', '11월 11일 (수)', 'D+492']);
+    expect(links).toEqual([]);
+  });
+  it('small keeps the next anniversary while the partner has not joined', async () => {
+    expect(collect(await draw('systemSmall', list(pending))).texts).toEqual(['다음', '빼빼로데이', 'D-9', '11월 11일 (수)', 'D+492']);
+  });
+  it('small and circular celebrate the day itself like D+Day does', async () => {
+    for (const family of ['systemSmall', 'accessoryCircular']) {
+      expect(collect(await draw(family, list(normal, '2026-11-11T03:00:00.000Z'), 'vibrant')).texts).toEqual(collect(await draw(family, propsOf(normal, '2026-11-11T03:00:00.000Z'), 'vibrant')).texts);
+    }
+  });
+  it('circular is a gauge to the next anniversary with its icon and D-n', async () => {
+    const root = await draw('accessoryCircular', list(), 'vibrant');
+    const [gauge, center] = root.props.children as [Node, Node];
+    expect(gauge.type).toBe(swiftUi.Gauge);
+    expect(gauge.props.value).toBeCloseTo(92 / 101);
+    expect(hasModifier(gauge, 'gaugeStyle', 'style', 'circularCapacity')).toBe(true);
+    expect(gauge.props.children ?? gauge.props.currentValueLabel).toBeUndefined();
+    expect(center.type).toBe(swiftUi.VStack);
+    expect(collect(root)).toMatchObject({ texts: ['D-9'], assets: ['pepero'] });
+    expect(hasModifier(root, 'widgetURL', 'url', 'aroom-dev://home')).toBe(true);
+  });
+  it.each<[string, number]>([['systemMedium', 3], ['systemLarge', 6]])('%s lists %i rows with dates under the header and no D+N', async (family, count) => {
+    const custom = { id: CUSTOM, title: '처음 만난 날', date: '2026-05-17', repeat: 'yearly' };
+    const { texts, links, assets } = collect(await draw(family, list({ ...normal, dates: { ...dates, customs: [custom] } } as WidgetData)));
+    expect(texts[0]).toBe('다가오는 기념일');
+    expect(links).toHaveLength(count);
+    expect(texts).toContain('11월 11일 (수)');
+    expect(texts.join(' ')).not.toMatch(/D\+492|도담|하루 ·/);
+    expect(assets).not.toContain('mascot_wave');
+  });
+  it.each<[string, number]>([['systemMedium', 2], ['systemLarge', 5]])('%s gives the day itself a pill and %i rows', async (family, count) => {
+    const { texts, links } = collect(await draw(family, list(normal, '2026-11-11T03:00:00.000Z')));
+    expect(texts).toContain('오늘은 빼빼로데이');
+    expect(links).toHaveLength(count + 1);
+  });
+  it('previews a list skeleton in the gallery, not the D+N column', async () => {
+    const bars = (props: WidgetProps, widgetFamily: string) => { let count = 0; walk(evaluate(props, { widgetFamily }), (node) => { if (node.type === swiftUi.RoundedRectangle) count += 1; }); return count; };
+    expect(bars(WIDGET_PLACEHOLDER.list, 'systemMedium')).toBe(4);
+    expect(bars(WIDGET_PLACEHOLDER.list, 'systemLarge')).toBe(7);
+    expect(bars(WIDGET_PLACEHOLDER.dday, 'systemMedium')).toBe(8);
+  });
+  it('D+Day keeps its own layouts', async () => {
+    expect(collect(await draw('systemSmall', propsOf(normal))).texts).toContain('함께한 지');
+    let gauges = 0;
+    walk(await draw('accessoryCircular', propsOf(normal), 'vibrant'), (node) => { if (node.type === swiftUi.Gauge) gauges += 1; });
+    expect(gauges).toBe(0);
+    expect(collect(await draw('systemLarge', propsOf(normal))).links).toHaveLength(5);
   });
 });

@@ -64,7 +64,7 @@ Schema: `../contracts/widget-snapshot.schema.json` (`schemaVersion: 1`). Summary
 ```
 
 - Built by a pure function `buildWidgetSnapshot(input, nowIso, t)` in `apps/mobile/src/features/widgets/snapshot.ts` from the same inputs as `computeAnniversaries` + names + locale; `entries[i]` is computed by calling the engine with `nowIso` = that day's `showAt` (so D+N, today and D-n are exact per midnight in the **space** time zone, V0-DR-05).
-- `next` holds up to 5 items (large shows 5, medium 3, small/lock 1). `today` uses the same priority rule as the home card (주년 > 일수 > 생일 > 직접 > 시즌).
+- `next` holds up to 6 items (D+Day large shows 5, the list widget large 6, medium 3, small/lock 1). `today` uses the same priority rule as the home card (주년 > 일수 > 생일 > 직접 > 시즌).
 - Privacy (V0-NF-04): no birth year, memo, user ids, tokens, email. `privacySensitive: true` for custom titles and for birthday titles containing a name. Lock layouts never render `names` and must wrap titles in `.privacySensitive()`.
 - `state: 'none'` (signed out / no space) and `'ended'` carry a single entry and no names/titles.
 - Omit `today` when there is no anniversary that day (the schema allows the item or `null`; prefer omitting).
@@ -94,7 +94,7 @@ Deep links (the board writes `mopiru://…`, drawn before the name decision D-08
 
 | Scenario ids | Test | Assert |
 |---|---|---|
-| V0-F11-AC-05, -06, -07, -09, V0-NF-04 | `apps/mobile/src/features/widgets/__tests__/snapshot.test.ts` | schema-valid for normal/pending/none/ended; ≥35 entries; `showAt` = space-zone midnight (Asia/Seoul and America/New_York across DST); today item + priority; next ≤5 sorted; no year/memo/ids/tokens anywhere in the JSON (string search); custom titles flagged; names absent for none/ended; strings localized for ko/en/ja |
+| V0-F11-AC-05, -06, -07, -09, V0-NF-04 | `apps/mobile/src/features/widgets/__tests__/snapshot.test.ts` | schema-valid for normal/pending/none/ended; ≥35 entries; `showAt` = space-zone midnight (Asia/Seoul and America/New_York across DST); today item + priority; next ≤6 sorted; no year/memo/ids/tokens anywhere in the JSON (string search); custom titles flagged; names absent for none/ended; strings localized for ko/en/ja |
 | V0-F11-AC-09, V0-F13-AC-05, V0-F12-AC-07, -08, -10 | `features/widgets/__tests__/writer.test.ts` | writes on each trigger; debounced; logout/disconnect/ended/delete write `none`/`ended`; reload called |
 | V0-F11-AC-02 | `tools/tests/widget-strings.test.mjs` (add it to the `node --test` line in `.github/workflows/ci.yml`) | gallery strings in ko/en/ja match the overlay |
 | V0-F11-AC-01, -03, -04, -08 | device checklist | photos per family/appearance; midnight rollover without opening the app; airplane mode; reboot; tap targets |

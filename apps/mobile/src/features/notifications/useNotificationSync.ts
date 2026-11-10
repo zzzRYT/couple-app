@@ -14,10 +14,11 @@ const DEBOUNCE_MS = 500;
  * The one place that reacts to "the data changed": the dates in the snapshot, device preferences (including a newly granted
  * permission), language and the app coming back to the foreground. Reminders need an active space for this user; widgets also
  * follow the signed-out, no-space and ended states, and keep what they last showed while the entry is unknown (booting, offline).
+ * Whoever ends the space sees no space at once; only the partner sees it ended, until they acknowledge the notice.
  */
 export function useNotificationSync() {
   const { userId, sessionLoaded } = useApp();
-  const { entry, spaceId, state } = useSpace();
+  const { entry, ended, spaceId, state } = useSpace();
   const { i18n } = useTranslation();
   const snapshot = entry === 'active' && state.snapshot?.space.spaceId === spaceId && state.snapshot?.me.userId === userId ? state.snapshot : null;
   const partner = snapshot?.members.find((member) => member.userId !== snapshot.me.userId);
@@ -26,7 +27,7 @@ export function useNotificationSync() {
     partner: partner ? { birthday: partner.birthday, displayName: partner.displayName } : null,
     customs: snapshot.anniversaries.map(({ id, title, date, repeat }) => ({ id, title, date, repeat })),
   });
-  const closed = !userId ? (sessionLoaded ? 'none' : null) : entry === 'none' || entry === 'ended' ? entry : null;
+  const closed = !userId ? (sessionLoaded ? 'none' : null) : entry === 'ended' ? (ended?.by === 'me' ? 'none' : 'ended') : entry === 'none' ? 'none' : null;
   const widget = snapshot ? JSON.stringify({
     state: snapshot.space.memberCount < 2 ? 'pending' : 'normal', spaceId: snapshot.space.spaceId, names: { me: snapshot.me.displayName, partner: partner?.displayName ?? null },
   }) : closed && JSON.stringify({ state: closed });

@@ -33,6 +33,7 @@ const widgets = IOS_WIDGETS_SIGNED || process.env.IOS_WIDGETS === 'true';
 const widgetDefinitions = 'src/features/widgets/definitions.ts';
 const homeFamilies = ['systemMedium', 'systemLarge'];
 const ddayFamilies = ['systemSmall', ...homeFamilies, 'accessoryCircular', 'accessoryRectangular', 'accessoryInline'];
+const listFamilies = ['systemSmall', ...homeFamilies, 'accessoryCircular'];
 // Listed before expo-widgets: mods run last-added first, and this one needs the extension target that plugin creates.
 const widgetPlugins = [
   './plugins/withWidgetResources.js',
@@ -42,7 +43,7 @@ const widgetPlugins = [
     // The names are Localizable.strings keys: SwiftUI looks these literals up in the extension bundle.
     widgets: [
       { name: 'DDayWidget', displayName: 'widget.gallery.dday.name', description: 'widget.gallery.dday.desc', ios: { supportedFamilies: ddayFamilies, contentMarginsDisabled: true, initialLayout: widgetDefinitions } },
-      { name: 'ListWidget', displayName: 'widget.gallery.list.name', description: 'widget.gallery.list.desc', ios: { supportedFamilies: homeFamilies, contentMarginsDisabled: true, initialLayout: widgetDefinitions } },
+      { name: 'ListWidget', displayName: 'widget.gallery.list.name', description: 'widget.gallery.list.desc', ios: { supportedFamilies: listFamilies, contentMarginsDisabled: true, initialLayout: widgetDefinitions } },
     ],
   }],
 ];

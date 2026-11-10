@@ -2,7 +2,7 @@ import { i18nFor } from '../../../test/render';
 import type { Locale } from '../../../i18n';
 import { buildWidgetSnapshot, type WidgetData } from '../snapshot';
 import { appScheme, timelineOf, widgetPort } from '../nativeWidgets';
-import { widgetLinks, widgetProps, type WidgetProps } from '../widgetProps';
+import { widgetLinks, widgetProps, type WidgetKind, type WidgetProps } from '../widgetProps';
 
 const SPACE = '11111111-1111-4111-8111-111111111111';
 const CUSTOM = '22222222-2222-4222-8222-222222222222';
@@ -15,9 +15,9 @@ const snapshotOf = async (data: WidgetData, locale: Locale = 'ko-KR', now = NOW)
   return buildWidgetSnapshot({ ...data, locale }, now, (key, vars) => i18n.t(key, vars));
 };
 type Space = Extract<WidgetProps, { state: 'normal' | 'pending' }>;
-const first = async (data: WidgetData, locale?: Locale, now?: string) => {
+const first = async (data: WidgetData, locale?: Locale, now?: string, kind: WidgetKind = 'dday') => {
   const snapshot = await snapshotOf(data, locale, now);
-  return widgetProps(snapshot, snapshot.entries[0]!, 'aroom-dev') as Space;
+  return widgetProps(snapshot, snapshot.entries[0]!, 'aroom-dev', kind) as Space;
 };
 
 describe('widgetProps', () => {
@@ -46,9 +46,22 @@ describe('widgetProps', () => {
   });
   it.each(['none', 'ended'] as const)('V0-F11-AC-06 %s carries only its own copy and the start link', async (state) => {
     const snapshot = await snapshotOf({ state });
-    const props = widgetProps(snapshot, snapshot.entries[0]!, 'aroom-dev');
+    const props = widgetProps(snapshot, snapshot.entries[0]!, 'aroom-dev', 'list');
     expect(Object.keys(props).sort()).toEqual(['a11y', 'body', 'ja', 'state', 'title', 'url']);
     expect(props).toMatchObject({ state, url: 'aroom-dev://' });
+  });
+  it('ND24 tells the list widget which one it is, with the next word', async () => {
+    expect(await first(normal, 'ko-KR', NOW, 'list')).toMatchObject({ kind: 'list', nextWord: '다음' });
+    expect(await first(normal, 'en-US')).toMatchObject({ kind: 'dday', nextWord: 'Next' });
+  });
+  it('ND24 fills the gauge from the previous anniversary to the next one', async () => {
+    // 2026-11-02: the partner birthday 08-02 was 92 days ago and Pepero Day is in 9, so 92 of 101 days are gone.
+    expect((await first(normal)).gauge).toBeCloseTo(92 / 101);
+    expect((await first(normal, 'ko-KR', '2026-11-10T03:00:00.000Z')).gauge).toBeCloseTo(100 / 101);
+    expect((await first(normal, 'ko-KR', '2026-11-12T03:00:00.000Z')).gauge).toBeCloseTo(1 - 43 / 44);
+  });
+  it('ND24 keeps the gauge empty while the start date is still ahead', async () => {
+    expect((await first({ ...normal, dates: { ...dates, startDate: '2026-11-20' } } as WidgetData)).gauge).toBe(0);
   });
   it('V0-F11-AC-07 flags custom titles and partner birthdays, not built-in ones', async () => {
     const custom = { id: CUSTOM, title: '우리만의 날', date: '2026-11-05', repeat: 'none', version: 1 };
@@ -77,19 +90,20 @@ describe('V0-F11-AC-08 deep links', () => {
 describe('V0-F11-AC-04, -09 timeline', () => {
   it('shows each entry at its own midnight', async () => {
     const snapshot = await snapshotOf(normal);
-    const timeline = timelineOf(snapshot, 'aroom-dev');
+    const timeline = timelineOf(snapshot, 'aroom-dev', 'dday');
     expect(timeline).toHaveLength(36);
     expect(timeline[1]!.date.toISOString()).toBe('2026-11-02T15:00:00.000Z');
     expect(timeline[1]!.props).toMatchObject({ day: 'D+493' });
   });
-  it('replaces the whole timeline of every widget, then reloads them', async () => {
-    const widgets = [{ updateTimeline: jest.fn(), reload: jest.fn() }, { updateTimeline: jest.fn(), reload: jest.fn() }];
+  it('replaces the whole timeline of every widget, each with its own kind, then reloads them', async () => {
+    const widgets = { dday: { updateTimeline: jest.fn(), reload: jest.fn() }, list: { updateTimeline: jest.fn(), reload: jest.fn() } };
     const port = widgetPort(widgets, 'aroom-dev');
     await port.write(JSON.stringify(await snapshotOf(normal)));
     await port.reload();
-    for (const widget of widgets) {
+    for (const [kind, widget] of Object.entries(widgets)) {
       expect(widget.updateTimeline).toHaveBeenCalledTimes(1);
       expect(widget.updateTimeline.mock.calls[0][0]).toHaveLength(36);
+      expect(widget.updateTimeline.mock.calls[0][0][0].props).toMatchObject({ kind });
       expect(widget.reload).toHaveBeenCalledTimes(1);
     }
   });

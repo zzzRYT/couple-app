@@ -29,7 +29,7 @@ jest.mock('expo-secure-store', () => ({ getItemAsync: jest.fn(async () => null),
 
 const NOW = '2026-11-05T00:00:00.000Z';
 const mockApp = { userId: snapshotFixture().me.userId as string | null, sessionLoaded: true };
-const mockSpace = { entry: 'active', spaceId: 'space-1' as string | null, state: { snapshot: snapshotFixture() as ReturnType<typeof snapshotFixture> | null } };
+const mockSpace = { entry: 'active', ended: null as { kind: 'ended' | 'disconnect'; by: 'me' | 'partner'; at: string } | null, spaceId: 'space-1' as string | null, state: { snapshot: snapshotFixture() as ReturnType<typeof snapshotFixture> | null } };
 jest.mock('../../../lib/AppContext', () => ({ useApp: () => mockApp }));
 jest.mock('../../space/SpaceContext', () => ({ useSpace: () => mockSpace }));
 
@@ -104,10 +104,10 @@ describe('V0-F12-AC-07 V0-F12-AC-08 V0-F12-AC-10 V0-F13-AC-05 leaving', () => {
     await logout({ auth: { signOut: jest.fn() }, releaseSession: jest.fn(), clearPendingInvite: jest.fn(async () => undefined), resetSpace: jest.fn(), snapshot: snapshotFixture(), userId: 'me' });
     expect(last().state).toBe('none');
   });
-  it('V0-F12-AC-07 disconnect and end leave the ended state before the space is reset', async () => {
+  it('V0-F12-AC-07 disconnect and end leave the no-space state before the space is reset', async () => {
     const resetSpace = jest.fn(() => { calls.push('reset'); });
     await leaveSpace({ close: jest.fn(async () => undefined), releaseSession: jest.fn(), snapshot: snapshotFixture(), userId: 'me', resetSpace, reload: jest.fn(async () => undefined) });
-    expect(last().state).toBe('ended');
+    expect(last().state).toBe('none');
     expect(calls).toEqual(['write', 'reload', 'reset']);
   });
   it('keeps the widget when leaving fails', async () => {
@@ -141,7 +141,7 @@ describe('V0-F11-AC-09 data changed', () => {
   };
   beforeEach(() => {
     mockApp.userId = snapshotFixture().me.userId; mockApp.sessionLoaded = true;
-    mockSpace.entry = 'active'; mockSpace.spaceId = 'space-1'; mockSpace.state = { snapshot: snapshotFixture() };
+    mockSpace.entry = 'active'; mockSpace.ended = null; mockSpace.spaceId = 'space-1'; mockSpace.state = { snapshot: snapshotFixture() };
     jest.useFakeTimers({ now: new Date(NOW), doNotFake: ['setImmediate', 'nextTick', 'queueMicrotask'] });
   });
   afterEach(() => { jest.useRealTimers(); });
@@ -201,14 +201,21 @@ describe('V0-F11-AC-09 data changed', () => {
     await act(async () => { await translator.changeLanguage('ko-KR'); });
     await screen.unmount();
   });
-  it('V0-F13-AC-05 turns ended when the space ends while open', async () => {
+  it('V0-F13-AC-05 turns ended when the partner ends the space while open', async () => {
     const screen = await mount();
     await settled();
-    mockSpace.entry = 'ended';
+    mockSpace.entry = 'ended'; mockSpace.ended = { kind: 'disconnect', by: 'partner', at: NOW };
     await screen.rerender({});
     await settled();
     expect(last().state).toBe('ended');
     expect(last()).not.toHaveProperty('spaceId');
+    await screen.unmount();
+  });
+  it.each(['disconnect', 'ended'] as const)('V0-F11-AC-06 shows no space at once to the one who chose %s, before the notice is acknowledged', async (kind) => {
+    mockSpace.entry = 'ended'; mockSpace.ended = { kind, by: 'me', at: NOW }; mockSpace.spaceId = null; mockSpace.state = { snapshot: null };
+    const screen = await mount();
+    await settled();
+    expect(written.map((snapshot) => snapshot.state)).toEqual(['none']);
     await screen.unmount();
   });
   it('V0-F11-AC-06 turns none once the ended notice is acknowledged', async () => {

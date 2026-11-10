@@ -6,7 +6,8 @@ import { zonedInstant } from '../notifications/plan';
 
 type Translate = (key: string, vars?: Record<string, unknown>) => string;
 export type WidgetItem = Pick<Occurrence, 'key' | 'kind' | 'date'> & { title: string; daysLeft: number; privacySensitive: boolean };
-export type WidgetEntry = { date: string; showAt: string; dayCount?: number | null; today?: WidgetItem; next?: WidgetItem[] };
+/** `previous` is the latest anniversary before `date`, or the start date when there is none: the lock-screen gauge fills from it to `next[0]`. */
+export type WidgetEntry = { date: string; showAt: string; dayCount?: number | null; today?: WidgetItem; next?: WidgetItem[]; previous?: string };
 /** One document of `specs/002-couple-dday-v0/contracts/widget-snapshot.schema.json`. */
 export type WidgetSnapshot = {
   schemaVersion: 1; writtenAt: string; spaceId?: string; state: 'normal' | 'pending' | 'none' | 'ended'; locale: Locale; timeZone?: string; startDate?: string;
@@ -20,7 +21,8 @@ const hasSpace = (data: WidgetData): data is SpaceData => data.state === 'normal
 const DAY_MS = 86_400_000;
 /** Today plus the 35 days ahead the contract asks for. */
 const ENTRY_DAYS = 36;
-const MAX_NEXT = 5;
+/** The list widget's large size shows six. */
+const MAX_NEXT = 6;
 /** The extension has no i18n, so it gets every string its layouts use; the ones with placeholders stay templates it fills in. */
 const STRING_KEYS = ['app.name', 'dday.big', 'dday.left', 'dday.left.one', 'dday.since', 'dday.today', 'dday.together', 'home.pending.partner', 'widget.a11y', 'widget.ended', 'widget.gallery.list.name', 'widget.lock.days', 'widget.next', 'widget.none.body', 'widget.none.title', 'widget.pending', 'widget.pending.body', 'widget.today'];
 const PLACEHOLDERS = { n: '{n}', title: '{title}', left: '{left}', date: '{date}' };
@@ -37,7 +39,7 @@ function widgetEntry(date: string, dates: AnniversaryInput, partner: string, t: 
   const showAt = new Date(zonedInstant(date, '00:00', dates.timeZone)).toISOString();
   const view = computeAnniversaries(dates, showAt);
   const today = view.todayItems[0];
-  return { date, showAt, dayCount: view.dayCount, ...(today ? { today: widgetItem(today, date, partner, t) } : {}), next: view.upcoming.slice(0, MAX_NEXT).map((item) => widgetItem(item, date, partner, t)) };
+  return { date, showAt, dayCount: view.dayCount, ...(today ? { today: widgetItem(today, date, partner, t) } : {}), next: view.upcoming.slice(0, MAX_NEXT).map((item) => widgetItem(item, date, partner, t)), previous: view.past[0]?.date ?? dates.startDate };
 }
 /** The JSON the widget extension reads. Pure: everything comes from the arguments and nothing about the device is read. */
 export function buildWidgetSnapshot(data: WidgetData & { locale: Locale }, nowIso: string, t: Translate): WidgetSnapshot {
