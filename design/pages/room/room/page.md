@@ -14,22 +14,26 @@ Route: /(tabs)/room
 
 ## 이미지
 
+- [S07-gen-room__ios-day-light-ko.png](../../../exports/S07-gen-room__ios-day-light-ko.png)
+- [S07-obj-detail__ios-day-light-ko.png](../../../exports/S07-obj-detail__ios-day-light-ko.png)
+- [S07-decorated__ios-day-light-ko.png](../../../exports/S07-decorated__ios-day-light-ko.png)
+- [S07-decorated__ios-day-dark-ko.png](../../../exports/S07-decorated__ios-day-dark-ko.png)
+- [S07-decorated__ios-night-light-ko.png](../../../exports/S07-decorated__ios-night-light-ko.png)
 - [S07-decorated__android-night-dark-ko.png](../../../exports/S07-decorated__android-night-dark-ko.png)
 - [S07-decorated__ios-day-light-ko-hc.png](../../../exports/S07-decorated__ios-day-light-ko-hc.png)
-- [S07-gen-room__ios-day-light-ko.png](../../../exports/S07-gen-room__ios-day-light-ko.png)
-- [S07-decorated__ios-night-light-ko.png](../../../exports/S07-decorated__ios-night-light-ko.png)
-- [S07-decorated__ios-day-light-ko.png](../../../exports/S07-decorated__ios-day-light-ko.png)
-- [S07-no-mascot__ios-day-light-ko.png](../../../exports/S07-no-mascot__ios-day-light-ko.png)
-- [S07-decorated__ios-day-dark-ko.png](../../../exports/S07-decorated__ios-day-dark-ko.png)
 - [S07-decorated__android-night-dark-ja-200.png](../../../exports/S07-decorated__android-night-dark-ja-200.png)
 - [S07-protect__ios-day-light-ko.png](../../../exports/S07-protect__ios-day-light-ko.png)
-- [S07-obj-detail__ios-day-light-ko.png](../../../exports/S07-obj-detail__ios-day-light-ko.png)
+- [S07-no-mascot__ios-day-light-ko.png](../../../exports/S07-no-mascot__ios-day-light-ko.png)
+- [S07-first__ios-day-light-ko.png](../../../exports/S07-first__ios-day-light-ko.png)
+- [S07-chat-typing__ios-day-light-ko.png](../../../exports/S07-chat-typing__ios-day-light-ko.png)
 
 ## 상태와 상호작용
 
+> **2026-11-10 · 꾸미기 독으로 바뀌었어요.** 아래 설명과 상태 표의 일부는 2026-10 설계(꾸미기 시트 · 적용 확인 화면) 기준으로 남아 있어요. 지금 흐름은 방 아래 작은 독 + 방 위 미리 보기이고, 오너가 2026-11-10에 정한 규칙은 ① 적용 직후 방 위 ‘적용했어요 · 되돌리기’ 한 줄(한 단계 · 다시 적용 없음 · 다음 요청, 방 탭을 떠날 때, 3분 유휴에 끝남) ② 차례 부탁하기 · 넘겨주기 ③ 독의 ‘오늘 n번 남음’이에요. 현재 상태 목록은 캔버스 보드를, 규칙은 [interaction notes](../../../interaction-notes.md) §4–§6 · §9 · §14와 [spec](../../../../specs/001-couple-prompt-todo/spec.md)의 FR-011 · FR-013 · FR-028 · FR-030 · FR-031을 따르세요. 위 이미지는 현재 보드에서 다시 뽑았어요.
+
 - **캔버스 보드**: `S07-room, S24-tab-room`
 - **목적**: 마스코트가 기본 포함된 장면, 낮/밤, 네이티브 날짜 위젯, 방 도구 막대(꾸미기 하나), 시스템 탭 바, 로딩·오프라인 읽기 전용·동기화 중/실패·상대 변경 실시간 반영·장면 데이터 복구 오류, 날짜 위젯 숨김, 보호 영역.
-- **이동**: 탭 루트(방). 꾸미기 → 모달 시트(S08). 탭 바로 다른 탭. 되돌리기는 방 탭에 없고 꾸미기 시트 안(S09)에만 있어요.
+- **이동**: 탭 루트(방). 꾸미기 → 모달 시트(S08). 탭 바로 다른 탭. 되돌리기는 적용 직후 방 위 한 줄에만 있어요(S09-applied · S10).
 - 방 도구 막대는 방 화면 **자신의 도구 막대**(위쪽)이고, 아래 탭 바는 **시스템 컴포넌트**예요. 두 영역 + 날짜 위젯 + 시스템 안전 영역이 보호 영역이에요(장식이 가리거나 입력을 가로챌 수 없음).
 - 도구 막대 윤곽선은 방의 낮밤을 따라가요(낮 방 갈색, 밤 방 크림).
 - 상대가 꾸미는 중이면 꾸미기 알약이 "지켜보기"로 바뀌어요.

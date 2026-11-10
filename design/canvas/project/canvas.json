@@ -207,7 +207,7 @@
    "expand": "fill",
    "h": 8000,
    "page": "room",
-   "title": "S08 공유 꾸미기 대화 · 채팅 시트",
+   "title": "S08 꾸미기 독 · 시작 · 두 사람 · 막힐 때",
    "w": 1760,
    "x": 3680,
    "y": 0
@@ -216,16 +216,16 @@
    "expand": "fill",
    "h": 8000,
    "page": "room",
-   "title": "S09 채팅 미리 보기 · 적용 (확인 화면 없음)",
+   "title": "S09 방 위 미리 보기 · 적용 (꾸미기 독)",
    "w": 1760,
    "x": 1840,
    "y": 8120
   },
   "S10-undo.dc.html": {
    "expand": "fill",
-   "h": 7294,
+   "h": 7531,
    "page": "room",
-   "title": "S10 되돌리기 (적용 메시지 안 · 열린 대화 안에서만)",
+   "title": "S10 되돌리기 · 적용 직후 한 줄",
    "w": 1760,
    "x": 0,
    "y": 16240
@@ -336,7 +336,7 @@
    "title": "S24 방 탭",
    "w": 1760,
    "x": 1840,
-   "y": 23654
+   "y": 23891
   },
   "S26-tab-settings.dc.html": {
    "expand": "fill",
@@ -453,11 +453,11 @@
    "title": "문구 · S12 해외 AI 처리 동의",
    "w": 1760,
    "x": 0,
-   "y": 23654
+   "y": 23891
   },
   "copy-room-preview-confirm.dc.html": {
    "expand": "fill",
-   "h": 3200,
+   "h": 5498,
    "page": "room",
    "title": "문구 · S09 미리 보기 · 적용 확인",
    "w": 1760,
@@ -466,7 +466,7 @@
   },
   "copy-room-prompt-session.dc.html": {
    "expand": "fill",
-   "h": 5450,
+   "h": 7052,
    "page": "room",
    "title": "문구 · S08 공유 프롬프트 세션",
    "w": 1760,
@@ -475,16 +475,16 @@
   },
   "copy-room-room-tab.dc.html": {
    "expand": "fill",
-   "h": 900,
+   "h": 633,
    "page": "room",
    "title": "문구 · S24 방 탭",
    "w": 1760,
    "x": 3680,
-   "y": 23654
+   "y": 23891
   },
   "copy-room-room.dc.html": {
    "expand": "fill",
-   "h": 2650,
+   "h": 3568,
    "page": "room",
    "title": "문구 · S07 방 페이지",
    "w": 1760,
@@ -493,18 +493,18 @@
   },
   "copy-room-shared.dc.html": {
    "expand": "fill",
-   "h": 1550,
+   "h": 1810,
    "page": "room",
    "title": "문구 · 방 · 꾸미기 기능 공용",
    "w": 1760,
    "x": 0,
-   "y": 31774
+   "y": 32011
   },
   "copy-room-undo.dc.html": {
    "expand": "fill",
    "h": 2200,
    "page": "room",
-   "title": "문구 · S10 되돌리기 (열린 대화 안에서만)",
+   "title": "문구 · S10 되돌리기 (적용 직후 한 줄)",
    "w": 1760,
    "x": 1840,
    "y": 16240
@@ -619,7 +619,7 @@
   },
   "V0-01-start.dc.html": {
    "expand": "fill",
-   "h": 7763,
+   "h": 7843,
    "page": "v0-start",
    "title": "V0-01 시작 (로그인 · 연결)",
    "w": 1760,
@@ -637,7 +637,7 @@
   },
   "V0-02-home.dc.html": {
    "expand": "fill",
-   "h": 5883,
+   "h": 5993,
    "page": "v0-home",
    "title": "V0-02 홈 · D+Day",
    "w": 1760,
@@ -660,11 +660,11 @@
    "title": "V0-03 시스템 상태",
    "w": 1760,
    "x": 0,
-   "y": 6003
+   "y": 6113
   },
   "copy-v0-states.dc.html": {
    "expand": "fill",
-   "h": 1535,
+   "h": 1625,
    "page": "v0-home",
    "title": "문구 · V0-03 시스템 상태",
    "w": 1760,
@@ -673,7 +673,7 @@
   },
   "V0-04-anniv.dc.html": {
    "expand": "fill",
-   "h": 5786,
+   "h": 5836,
    "page": "v0-anniv",
    "title": "V0-04 기념일 목록 · 상세",
    "w": 1760,
@@ -682,7 +682,7 @@
   },
   "copy-v0-anniv.dc.html": {
    "expand": "fill",
-   "h": 3061,
+   "h": 3151,
    "page": "v0-anniv",
    "title": "문구 · V0-04 기념일",
    "w": 1760,
@@ -691,16 +691,16 @@
   },
   "V0-05-anniv-edit.dc.html": {
    "expand": "fill",
-   "h": 5772,
+   "h": 5852,
    "page": "v0-anniv",
    "title": "V0-05 기념일 추가 · 편집",
    "w": 1760,
    "x": 0,
-   "y": 5906
+   "y": 5956
   },
   "copy-v0-edit.dc.html": {
    "expand": "fill",
-   "h": 2697,
+   "h": 2877,
    "page": "v0-anniv",
    "title": "문구 · V0-05 기념일 편집",
    "w": 1760,
@@ -709,7 +709,7 @@
   },
   "V0-06-widgets.dc.html": {
    "expand": "fill",
-   "h": 9020,
+   "h": 9520,
    "page": "v0-widgets",
    "title": "V0-06 위젯",
    "w": 1760,
@@ -727,7 +727,7 @@
   },
   "V0-07-settings.dc.html": {
    "expand": "fill",
-   "h": 6752,
+   "h": 6812,
    "page": "v0-settings",
    "title": "V0-07 설정",
    "w": 1760,
@@ -736,7 +736,7 @@
   },
   "copy-v0-settings.dc.html": {
    "expand": "fill",
-   "h": 6310,
+   "h": 6400,
    "page": "v0-settings",
    "title": "문구 · V0-07 설정",
    "w": 1760,
@@ -745,16 +745,16 @@
   },
   "V0-08-auth.dc.html": {
    "expand": "fill",
-   "h": 13400,
+   "h": 13420,
    "page": "v0-start",
    "title": "V0-08 로그인 · 비밀번호",
    "w": 1760,
    "x": 0,
-   "y": 7883
+   "y": 7963
   },
   "copy-v0-auth.dc.html": {
    "expand": "fill",
-   "h": 7110,
+   "h": 7560,
    "page": "v0-start",
    "title": "문구 · V0-08 로그인 · 비밀번호",
    "w": 1760,
@@ -768,7 +768,7 @@
    "title": "V0-09 로그인·보안 · 계정 삭제 확인",
    "w": 1760,
    "x": 0,
-   "y": 6872
+   "y": 6932
   },
   "copy-v0-security.dc.html": {
    "expand": "fill",
@@ -781,12 +781,12 @@
   },
   "V0-10-connect.dc.html": {
    "expand": "fill",
-   "h": 6030,
+   "h": 6090,
    "page": "v0-home",
    "title": "V0-10 상대 연결 (홈 · 설정에서)",
    "w": 1760,
    "x": 0,
-   "y": 9963
+   "y": 10073
   },
   "copy-v0-connect.dc.html": {
    "expand": "fill",
@@ -804,7 +804,7 @@
    "title": "V0-11 업데이트 알림",
    "w": 1760,
    "x": 0,
-   "y": 16113
+   "y": 16283
   },
   "copy-v0-update.dc.html": {
    "expand": "fill",
@@ -822,7 +822,7 @@
    "title": "V0-12 스플래시 (아루미)",
    "w": 1760,
    "x": 0,
-   "y": 21403
+   "y": 21503
   }
  },
  "createdOnFiles": {
@@ -987,6 +987,15 @@
    "w": 240,
    "x": 0,
    "y": -300
+  },
+  "note-room-dock-1110": {
+   "x": 3680,
+   "y": -330,
+   "w": 260,
+   "text": "11/10 꾸미기 독: S07 위쪽 → S09 → S08 → S10 순서로 보세요. 오너가 3건을 정했어요(11/10): 적용 뒤 되돌리기 한 줄 · 차례 부탁하기와 넘겨주기 · 독에 남은 횟수. 정한 내용은 S09 맨 위 파란 상자예요.",
+   "size": "s",
+   "fill": "orange",
+   "page": "room"
   }
  },
  "order": [

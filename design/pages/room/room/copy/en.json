@@ -1,6 +1,6 @@
 {
   "status": "초안(원어민 검수 전)",
-  "generated": "Artifact 1794227595-8638; do not edit",
+  "generated": "Artifact 1794273208-8c73; do not edit",
   "keyStatus": {
     "room.ctl.settings": "approved",
     "room.syncing": "approved",
@@ -29,8 +29,16 @@
     "room.compose.unavailable": "new",
     "room.compose.partner": "new",
     "room.compose.consent": "new",
-    "room.compose.making": "new",
-    "room.compose.quota": "new"
+    "room.compose.quota": "new",
+    "room.start.hint": "new",
+    "room.idea.cozy": "new",
+    "room.idea.night": "new",
+    "room.idea.flowers": "new",
+    "room.idea.text": "new",
+    "room.idea.star": "new",
+    "room.compose.quota.info": "new",
+    "room.chip.idea.a11y": "new",
+    "room.chip.recent.a11y": "new"
   },
   "strings": {
     "room.ctl.settings": "Settings",
@@ -60,7 +68,15 @@
     "room.compose.unavailable": "You can decorate after the room reloads",
     "room.compose.partner": "{name} is decorating",
     "room.compose.consent": "Agree to AI processing to decorate · tap to review",
-    "room.compose.making": "Making a preview",
-    "room.compose.quota": "All used today · you can decorate again tomorrow"
+    "room.compose.quota": "All used today · you can decorate again tomorrow",
+    "room.start.hint": "You could say",
+    "room.idea.cozy": "Make it cozy",
+    "room.idea.night": "Like a night sky",
+    "room.idea.flowers": "Full of flowers",
+    "room.idea.text": "Add “Together today”",
+    "room.idea.star": "Add one more star",
+    "room.compose.quota.info": "Details",
+    "room.chip.idea.a11y": "Send this request: {text}",
+    "room.chip.recent.a11y": "Send a recent request again: {text}"
   }
 }

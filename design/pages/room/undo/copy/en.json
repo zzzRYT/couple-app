@@ -1,13 +1,13 @@
 {
   "status": "초안(원어민 검수 전)",
-  "generated": "Artifact 1794227595-8638; do not edit",
+  "generated": "Artifact 1794273208-8c73; do not edit",
   "keyStatus": {
     "undo.progress": "approved",
     "undo.done.title": "approved",
     "undo.err.title": "approved",
-    "chat.undo": "proposal",
-    "chat.undo.a11y": "proposal",
-    "prompt.msg.status.undone": "proposal",
+    "chat.undo": "new",
+    "chat.undo.a11y": "new",
+    "prompt.msg.status.undone": "new",
     "undo.done.body": "changed",
     "undo.conflict.title": "changed",
     "undo.conflict.body": "changed",

@@ -1,6 +1,6 @@
 {
   "status": "초안(원어민 검수 전)",
-  "generated": "Artifact 1794227595-8638; do not edit",
+  "generated": "Artifact 1794273208-8c73; do not edit",
   "keyStatus": {
     "sample.partner": "approved",
     "date.since": "approved",
@@ -55,7 +55,6 @@
     "preview.view.candidate": "approved",
     "preview.apply": "approved",
     "preview.cancel": "approved",
-    "preview.applyHint": "approved",
     "preview.undo": "approved",
     "preview.changes": "approved",
     "consent.sent.body": "approved",
@@ -188,7 +187,6 @@
     "preview.view.candidate": "プレビュー",
     "preview.apply": "反映する",
     "preview.cancel": "キャンセル",
-    "preview.applyHint": "反映するとふたりの部屋が変わり、反映した後は元に戻せません。",
     "preview.undo": "前のプレビューに戻す",
     "preview.changes": "変更内容",
     "consent.sent.body": "入力したリクエスト文と、作成に必要な部屋の配置（小物の種類・位置・文言）。一緒になった日、名前、メールアドレスは送信しません。",

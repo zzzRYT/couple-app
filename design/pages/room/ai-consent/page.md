@@ -15,6 +15,7 @@ Route: /prompt/consent
 ## 이미지
 
 - [S12-first__ios-light-ko.png](../../../exports/S12-first__ios-light-ko.png)
+- [S12-later__ios-day-light-ko.png](../../../exports/S12-later__ios-day-light-ko.png)
 
 ## 상태와 상호작용
 

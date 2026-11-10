@@ -1,14 +1,12 @@
 {
   "status": "초안(원어민 검수 전)",
-  "generated": "Artifact 1794227595-8638; do not edit",
+  "generated": "Artifact 1794273208-8c73; do not edit",
   "keyStatus": {
     "room.partnerLive": "approved",
-    "room.watch": "approved",
-    "coach.room": "changed"
+    "room.watch": "approved"
   },
   "strings": {
     "room.partnerLive": "{name} is decorating · live view",
-    "room.watch": "Watch",
-    "coach.room": "Type the room you want in the box below"
+    "room.watch": "Watch"
   }
 }

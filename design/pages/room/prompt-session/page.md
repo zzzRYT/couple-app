@@ -14,15 +14,20 @@ Route: /prompt
 
 ## 이미지
 
-- [S08-library__ios-day-light-ko.png](../../../exports/S08-library__ios-day-light-ko.png)
 - [S08-gen-refused__ios-day-light-ko.png](../../../exports/S08-gen-refused__ios-day-light-ko.png)
-- [S08-mine__ios-day-light-ko.png](../../../exports/S08-mine__ios-day-light-ko.png)
-- [S08-takeover__ios-day-light-en.png](../../../exports/S08-takeover__ios-day-light-en.png)
-- [S08-partner-typing__android-night-dark-ko.png](../../../exports/S08-partner-typing__android-night-dark-ko.png)
+- [S08-library__ios-day-light-ko.png](../../../exports/S08-library__ios-day-light-ko.png)
 - [S08-quota__ios-day-light-ko.png](../../../exports/S08-quota__ios-day-light-ko.png)
-- [S08-gen-refused-purpose__android-night-dark-ja.png](../../../exports/S08-gen-refused-purpose__android-night-dark-ja.png)
+- [S08-mine__ios-day-light-ko.png](../../../exports/S08-mine__ios-day-light-ko.png)
+- [S08-free__ios-day-light-ko.png](../../../exports/S08-free__ios-day-light-ko.png)
+- [S08-partner-typing__ios-day-light-ko.png](../../../exports/S08-partner-typing__ios-day-light-ko.png)
+- [S08-nudge__ios-day-light-ko.png](../../../exports/S08-nudge__ios-day-light-ko.png)
+- [S08-handover__ios-day-light-ko.png](../../../exports/S08-handover__ios-day-light-ko.png)
+- [S08-takeover__ios-day-light-ko.png](../../../exports/S08-takeover__ios-day-light-ko.png)
+- [S08-quota-last__ios-day-light-ko.png](../../../exports/S08-quota-last__ios-day-light-ko.png)
 
 ## 상태와 상호작용
+
+> **2026-11-10 · 꾸미기 독으로 바뀌었어요.** 아래 설명과 상태 표의 일부는 2026-10 설계(꾸미기 시트 · 적용 확인 화면) 기준으로 남아 있어요. 지금 흐름은 방 아래 작은 독 + 방 위 미리 보기이고, 오너가 2026-11-10에 정한 규칙은 ① 적용 직후 방 위 ‘적용했어요 · 되돌리기’ 한 줄(한 단계 · 다시 적용 없음 · 다음 요청, 방 탭을 떠날 때, 3분 유휴에 끝남) ② 차례 부탁하기 · 넘겨주기 ③ 독의 ‘오늘 n번 남음’이에요. 현재 상태 목록은 캔버스 보드를, 규칙은 [interaction notes](../../../interaction-notes.md) §4–§6 · §9 · §14와 [spec](../../../../specs/001-couple-prompt-todo/spec.md)의 FR-011 · FR-013 · FR-028 · FR-030 · FR-031을 따르세요. 위 이미지는 현재 보드에서 다시 뽑았어요.
 
 - **캔버스 보드**: `S08-prompt-session`
 - **목적**: 공유 대화와 미리 보기, 점유 상태 6가지(비어 있음 / 내가 점유 / 상대가 점유(쓰는 중·만드는 중) / 내 점유 만료 임박 / 내 점유 만료 / 상대 만료 후 이어받기), 이어받기 경합, 동의 필요, 하루 3회 소진, 오프라인, 미지원 요청, 브랜드 요청 거절, 실패·재시도, 키보드.
