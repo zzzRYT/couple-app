@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Switch, View } from 'react-native';
+import { Pressable, Switch, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AppText, Banner, Button, Screen, SwitchRow, TextField } from '../../ui/components';
 import { InlineError } from '../../ui/InlineNote';
@@ -13,7 +13,7 @@ function graphemes(value: string): string[] {
   const Segmenter = (Intl as unknown as { Segmenter?: new (locale?: string, options?: { granularity: 'grapheme' }) => { segment: (value: string) => Iterable<{ segment: string }> } }).Segmenter;
   return Segmenter ? Array.from(new Segmenter(undefined, { granularity: 'grapheme' }).segment(value), (part) => part.segment) : Array.from(value);
 }
-/** V0-start-profile, and V0-set-me with `editing`: the settings frame has a nav bar with 저장 and the settings labels. Offline, 저장 waits. */
+/** V0-start-profile, and V0-set-me with `editing`: the settings frame has a nav bar with 저장, the settings labels and 생일 지우기. Offline, 저장 waits. */
 export function ProfileScreen({ onSave, onBack, initialName = '', initialBirthday = null, editing = false, offline = false, partnerWait }: { onSave: (name: string, birthday: ProfileBirthday | null) => Promise<void>; onBack?: () => void; initialName?: string; initialBirthday?: ProfileBirthday | null; editing?: boolean; offline?: boolean; partnerWait?: string }) {
   const { t } = useTranslation(); const color = useAppColor(); const { emphasis } = useType();
   const [name, setName] = useState(initialName);
@@ -44,6 +44,9 @@ export function ProfileScreen({ onSave, onBack, initialName = '', initialBirthda
     </View>
     <AppText style={emphasis(14)}>{t(editing ? 'set.me.birthday' : 'start.profile.birthday')}</AppText>
     <BirthdayField value={birthday} includeYear={includeYear} onChange={setBirthday} />
+    {editing && birthday && <Pressable accessibilityRole="button" accessibilityLabel={t('set.me.birthday.clear')} onPress={() => setBirthday(null)} hitSlop={4} style={({ pressed }) => ({ alignSelf: 'flex-start', minHeight: 44, justifyContent: 'center', opacity: pressed ? 0.7 : 1 })}>
+      <AppText tone="danger" style={[emphasis(15), { textDecorationLine: 'underline' }]}>{t('set.me.birthday.clear')}</AppText>
+    </Pressable>}
     {editing
       ? <SwitchRow label={t('start.profile.year')} value={includeYear} onValueChange={toggleYear} />
       : <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}><AppText>{t('start.profile.year')}</AppText><Switch accessibilityLabel={t('start.profile.year')} value={includeYear} onValueChange={toggleYear} /></View>}

@@ -67,7 +67,8 @@ it('V0-F12-AC-04 shows the latest start date again after a version conflict', as
   const screen = await renderWithI18n(<StartDateRoute />);
   await fireEvent.press(screen.getByText(screen.t('common.save')));
   confirm().onPress!();
-  await waitFor(() => expect(screen.getByText(screen.t('state.error.title'))).toBeTruthy());
+  await waitFor(() => expect(screen.getByText(screen.t('set.save.err'))).toBeTruthy());
+  expect(screen.queryByText(screen.t('state.error.title'))).toBeNull();
   expect(refresh).toHaveBeenCalled();
   expect(mockClient.snapshot).toHaveBeenCalledWith('space-1');
   expect(mockBack).not.toHaveBeenCalled();

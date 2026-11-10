@@ -86,6 +86,14 @@ it('V0-F17-AC-03 wrong and locked', async () => {
   expect(locked.getByLabelText(locked.t('set.pw.new')).props.editable).toBe(false);
 });
 
+it.each(['error', 'weak', 'reauth'] as const)('V0-F17-AC-02 a %s save failure says the password was not saved, not that the screen failed to load', async (result) => {
+  const screen = await change(jest.fn().mockResolvedValue(result));
+  await fill(screen);
+  expect(await screen.findByText(screen.t('set.save.err'))).toBeTruthy();
+  expect(screen.queryByText(screen.t('state.error.title'))).toBeNull();
+  expect(screen.queryByText(screen.t('set.pw.wrong'))).toBeNull();
+});
+
 it('V0-F17-AC-02 the toast shows when the change screen returns to a Security screen that is still open', async () => {
   const screen = await renderWithI18n(<SecurityRoute />);
   expect(screen.queryByText(screen.t('set.pw.saved'))).toBeNull();

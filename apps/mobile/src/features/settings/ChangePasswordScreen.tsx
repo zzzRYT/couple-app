@@ -48,7 +48,7 @@ export function ChangePasswordScreen({ password, email, apple, onSaved, onForgot
       <PasswordField kind="new" label={t('set.pw.new')} value={next} onChangeText={setNext} editable={!locked} />
       {locked ? <PlainRules /> : <RuleList rules={rules} />}
       <Button label={t('login.pw.forgot')} variant="ghost" onPress={onForgot} />
-      {(failed === 'weak' || failed === 'error' || failed === 'reauth') && <Banner kind="danger" text={t('state.error.title')} />}
+      {(failed === 'weak' || failed === 'error' || failed === 'reauth') && <Banner kind="danger" text={t('set.save.err')} />}
     </Screen>
   );
 }
