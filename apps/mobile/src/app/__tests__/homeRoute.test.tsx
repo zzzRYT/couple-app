@@ -42,7 +42,7 @@ it('V0-F13-AC-02 shows a failed refresh inside the home tab under the app header
   mockSpace.state = { ...ready, status: 'error', snapshot: snapshotFixture() };
   const screen = await renderWithI18n(<HomeRoute />);
   expect(screen.getByText(screen.t('state.error.title'))).toBeTruthy();
-  expect(screen.getByText(screen.t('app.name'))).toBeTruthy();
+  expect(screen.getByRole('header', { name: screen.t('app.name') })).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: screen.t('common.retry') }));
   expect(mockSpace.refresh).toHaveBeenCalled();
   await screen.unmount();

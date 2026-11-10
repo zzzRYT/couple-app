@@ -89,6 +89,19 @@ it('V0-F03-AC-01 writes the start date with a short month in English and reads t
   expect(screen.getByLabelText(screen.t('dday.a11y', { n: 492, date: 'Jun 29, 2025' }))).toBeTruthy();
 });
 
+it('heads the home with the 아룸 wordmark in Korean and the Aroom wordmark in every other language, named in the reader\'s language', async () => {
+  const header = async (locale: 'ko-KR' | 'en-US' | 'ja-JP') => {
+    const screen = await renderWithI18n(homeAt('2026-11-02T03:00:00Z'), locale);
+    const image = screen.getByRole('header', { name: screen.t('app.name') });
+    return { name: screen.t('app.name'), source: image.props.source, width: image.props.style.width };
+  };
+  const [ko, en, ja] = [await header('ko-KR'), await header('en-US'), await header('ja-JP')];
+  expect([ko.name, en.name, ja.name]).toEqual(['아룸', 'Aroom', 'アルーム']);
+  expect(ja.source).toEqual(en.source);
+  expect(ko.source).not.toEqual(en.source);
+  expect(ko.width).toBeLessThan(en.width);
+});
+
 it('V0-F03-AC-04 shows the partner-edited notice and counts from the new start date', async () => {
   const snapshot = snapshotFixture(); snapshot.space.anniversaryDate = '2025-10-01';
   const notice = 'partner edited';

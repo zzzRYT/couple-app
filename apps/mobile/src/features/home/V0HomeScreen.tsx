@@ -18,6 +18,7 @@ import { AnniversaryRow } from '../anniversaries/AnniversaryRow';
 import { KindTile } from '../anniversaries/KindTile';
 import { formattedDate, formattedYearMonthDay, occurrenceTitle, relativeDate } from '../anniversaries/format';
 import { splitBigDay, useLargeText } from '../../ui/textScale';
+import { Wordmark } from '../../ui/Wordmark';
 
 export function V0HomeScreen({ state, now, onAnniversaries, onRefresh, onOpenInvite, onHaveCode, celebration, onSeen, partnerEdited, onHidePartnerEdited, seenKeys = [], seenReady = true, onLocalSeen, onOccurrence }: { state: SpaceState; now: string; onAnniversaries: () => void; onRefresh: () => void; onOpenInvite: (reissue: boolean) => void; onHaveCode?: () => void; celebration: MilestoneCelebration | null; onSeen: () => void; partnerEdited?: string | null; onHidePartnerEdited?: () => void; seenKeys?: string[]; seenReady?: boolean; onLocalSeen?: (key: string) => void; onOccurrence?: (item: Occurrence) => void }) {
   const { t, i18n } = useTranslation(); const { emphasis } = useType();
@@ -62,7 +63,7 @@ export function V0HomeScreen({ state, now, onAnniversaries, onRefresh, onOpenInv
     : partnerEdited ? { text: partnerEdited, icon: 'info', onHide: onHidePartnerEdited } : null;
   return <View style={{ flex: 1, backgroundColor: color.bg }}>
     <ScrollView style={{ flex: 1 }} refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />} contentContainerStyle={{ paddingTop: insets.top, paddingHorizontal: 20, paddingBottom: clearance + 16, gap: 14 }}>
-      <View style={{ minHeight: 48, justifyContent: 'center' }}><AppText accessibilityRole="header" style={emphasis(16)}>{t('app.name')}</AppText></View>
+      <View style={{ minHeight: 48, justifyContent: 'center' }}><Wordmark /></View>
       {state.offline && <OfflineBand syncedAt={state.lastSyncedAt} />}
       <View style={{ alignItems: 'center', gap: 4 }}>
         {mascot && <Image accessibilityLabel={t('mascot.alt.wave')} source={mascotPoses.wave_main} resizeMode="contain" style={{ width: 96, height: 96 }} />}
