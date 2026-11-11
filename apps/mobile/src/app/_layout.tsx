@@ -24,6 +24,8 @@ import { UpdateNotice } from '../features/update/UpdateNotice';
 import { checkForOtaUpdate } from '../features/update/ota';
 import { BrandSplash } from '../features/splash/BrandSplash';
 import { useResumeSplash } from '../features/splash/useResumeSplash';
+import { PostHogRoot } from '../config/posthog';
+import { posthogLog } from '../lib/posthogLog';
 
 /** The native launch screen goes once the in-app splash has drawn over it, or after this long if the image never reports. */
 const NATIVE_SPLASH_FALLBACK_MS = 1500;
@@ -44,7 +46,7 @@ export default function RootLayout() {
     nativeHidden.current = true;
     void SplashScreen.hideAsync();
   }, []);
-  useEffect(() => { void createI18n().then((created) => { installNativeWidgets(created); setTranslator(created); }); }, []);
+  useEffect(() => { void createI18n().then((created) => { installNativeWidgets(created); posthogLog.info('application_bootstrap_completed', { bootstrap_component: 'i18n' }); setTranslator(created); }); }, []);
   useEffect(() => { void checkForOtaUpdate(); }, []);
   useEffect(() => {
     const timer = setTimeout(hideNativeSplash, NATIVE_SPLASH_FALLBACK_MS);
@@ -54,20 +56,22 @@ export default function RootLayout() {
   // V0-12: the splash replaces the boot skeleton. A cold start follows the system scheme like the launch screen before
   // it; once the app has read its own display setting, later showings (warm start, signing in) follow that.
   return (
-    <View style={{ flex: 1 }}>
-      {ready && <I18nextProvider i18n={translator}>
-        <PreferencesProvider translator={translator}>
-          <AppProvider>
-            <SpaceProvider>
-              <PasswordProvider>
-                <AppNavigator fontsLoaded onBootingChange={setBooting} onSchemeChange={setAppScheme} />
-              </PasswordProvider>
-            </SpaceProvider>
-          </AppProvider>
-        </PreferencesProvider>
-      </I18nextProvider>}
-      <BrandSplash holding={!ready || booting} replay={resumed} scheme={appScheme ?? (system === 'dark' ? 'dark' : 'light')} label={translator?.t('state.loading')} onDrawn={hideNativeSplash} />
-    </View>
+    <PostHogRoot>
+      <View style={{ flex: 1 }}>
+        {ready && <I18nextProvider i18n={translator}>
+          <PreferencesProvider translator={translator}>
+            <AppProvider>
+              <SpaceProvider>
+                <PasswordProvider>
+                  <AppNavigator fontsLoaded onBootingChange={setBooting} onSchemeChange={setAppScheme} />
+                </PasswordProvider>
+              </SpaceProvider>
+            </AppProvider>
+          </PreferencesProvider>
+        </I18nextProvider>}
+        <BrandSplash holding={!ready || booting} replay={resumed} scheme={appScheme ?? (system === 'dark' ? 'dark' : 'light')} label={translator?.t('state.loading')} onDrawn={hideNativeSplash} />
+      </View>
+    </PostHogRoot>
   );
 }
 

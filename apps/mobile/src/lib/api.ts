@@ -1,5 +1,6 @@
 import { randomUUID } from 'expo-crypto';
 import { ApiError } from './errors';
+import { posthogLog } from './posthogLog';
 type Caller = (path: string, request: RequestInit) => Promise<Response>;
 type RequestOptions = { method?: string; body?: Record<string, unknown>; retries?: number; keyInBody?: boolean; timeoutMs?: number; idempotencyKey?: string };
 export function createApi(call: Caller, makeId: () => string = randomUUID) {
@@ -27,9 +28,19 @@ export function createApi(call: Caller, makeId: () => string = randomUUID) {
       for (let attempt = 0; ; attempt++) {
         try {
           const response = await send();
-          if (response.status < 500 || attempt >= retries) return response;
+          if (response.status < 500) {
+            if (attempt) posthogLog.info('api_request_recovered', { method, retry_count: attempt, status_code: response.status });
+            return response;
+          }
+          if (attempt >= retries) {
+            posthogLog.error('api_request_failed', { method, retry_count: attempt, status_code: response.status, failure_kind: 'server_error' });
+            return response;
+          }
         } catch (error) {
-          if (attempt >= retries) throw error;
+          if (attempt >= retries) {
+            posthogLog.error('api_request_failed', { method, retry_count: attempt, failure_kind: error instanceof TypeError && error.message === 'REQUEST_TIMEOUT' ? 'timeout' : 'network_error' });
+            throw error;
+          }
         }
       }
     },

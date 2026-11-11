@@ -16,6 +16,7 @@ import { useLargeText } from '../../ui/textScale';
 import { AnniversaryDateField } from './AnniversaryDateField';
 import { DeleteAction } from './DeleteAction';
 import { formattedDate, relativeDate } from './format';
+import { posthog } from '../../config/posthog';
 
 type Form = AnniversaryFields & { notify: 'default' | 'off' };
 function length(value: string): number {
@@ -49,9 +50,9 @@ export function AnniversaryEdit({ initial, today, partner, offline, initialNotif
   const submit = async () => {
     if (!valid || offline || saving) return;
     setSaving(true); setError(null);
-    try { await save({ title: form.title.trim(), memo: form.memo || null, date: form.date, repeat: form.repeat }, version, key.current, form.notify); onSaved('saved'); } catch (err) { await errorFlow('save')(err); } finally { setSaving(false); }
+    try { await save({ title: form.title.trim(), memo: form.memo || null, date: form.date, repeat: form.repeat }, version, key.current, form.notify); posthog?.capture('anniversary_saved', { action: initial ? 'updated' : 'created', repeat: form.repeat, notifications_enabled: form.notify === 'default' }); onSaved('saved'); } catch (err) { await errorFlow('save')(err); } finally { setSaving(false); }
   };
-  const deleteItem = () => Alert.alert(t('edit.delete.title'), partner ? t('edit.delete.body', { name: partner }) : t('edit.delete.body.unpaired'), [{ text: t('common.cancel'), style: 'cancel' }, { text: t('common.delete'), style: 'destructive', onPress: () => { if (!version) return; void remove(version, randomUUID()).then(() => onSaved('deleted')).catch(errorFlow('delete')); } }]);
+  const deleteItem = () => Alert.alert(t('edit.delete.title'), partner ? t('edit.delete.body', { name: partner }) : t('edit.delete.body.unpaired'), [{ text: t('common.cancel'), style: 'cancel' }, { text: t('common.delete'), style: 'destructive', onPress: () => { if (!version) return; void remove(version, randomUUID()).then(() => { posthog?.capture('anniversary_deleted'); onSaved('deleted'); }).catch(errorFlow('delete')); } }]);
   const next = nextCustomDate(form, today);
   const ready = valid && !offline;
   const choose = <T extends string>(field: 'repeat' | 'notify', selected: T, values: readonly T[], labels: string[]) => <View style={{ flexDirection: 'row', gap: 4, backgroundColor: color.surface2, padding: 3, borderRadius: 13 }}>{values.map((value, index) => <Pressable key={value} accessibilityRole="button" accessibilityState={{ selected: selected === value }} onPress={() => setForm({ ...form, [field]: value })} style={{ flex: 1, minHeight: 42, justifyContent: 'center', alignItems: 'center', backgroundColor: selected === value ? color.surface : 'transparent', borderWidth: selected === value ? 1.5 : 0, borderColor: color.line, borderRadius: 10 }}><AppText align="center" tone={selected === value ? 'text' : 'text2'} style={selected === value ? emphasis(15) : { fontSize: 15, lineHeight: 23 }}>{labels[index]}</AppText></Pressable>)}</View>;

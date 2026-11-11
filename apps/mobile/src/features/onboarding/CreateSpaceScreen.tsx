@@ -9,6 +9,7 @@ import { dayCount, todayIn } from '../../lib/dday';
 import { ApiError } from '../../lib/errors';
 import { tokens } from '../../theme/tokens';
 import { useType } from '../../theme/typography';
+import { posthog } from '../../config/posthog';
 
 type State = { kind: 'edit'; problem: null | 'future' | 'invalid' } | { kind: 'creating' } | { kind: 'created'; spaceId: string } | { kind: 'hasSpace' } | { kind: 'error' };
 /** S03: anniversary entry. The room time zone starts as the creator's IANA zone. */
@@ -27,6 +28,7 @@ export function CreateSpaceScreen({ createSpace, now, timeZone, onCreated, onOpe
     setState({ kind: 'creating' });
     try {
       const { spaceId } = await createSpace(iso, timeZone);
+      posthog?.capture('space_created');
       setState({ kind: 'created', spaceId });
     } catch (error) {
       setState(error instanceof ApiError && error.code === 'ALREADY_IN_SPACE' ? { kind: 'hasSpace' } : { kind: 'error' });

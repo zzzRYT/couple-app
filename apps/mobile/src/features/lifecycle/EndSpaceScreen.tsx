@@ -6,6 +6,7 @@ import { Icon } from '../../ui/Icon';
 import { CycleLoader } from '../../ui/CycleLoader';
 import { tokens } from '../../theme/tokens';
 import { useAppColor } from '../../theme/useAppColor';
+import { posthog } from '../../config/posthog';
 
 /** S14 confirm step: spells out the consequences (no period, no restore), needs a checkmark, then ends the space. */
 export function EndSpaceScreen({ onEnd, onCancel }: { onEnd: () => Promise<void>; onCancel: () => void }) {
@@ -17,7 +18,7 @@ export function EndSpaceScreen({ onEnd, onCancel }: { onEnd: () => Promise<void>
   async function confirm() {
     setBusy(true);
     setFailed(false);
-    try { await onEnd(); } catch { setFailed(true); setBusy(false); }
+    try { await onEnd(); posthog?.capture('space_ended'); } catch { setFailed(true); setBusy(false); }
   }
   return (
     <Screen onBack={busy ? undefined : onCancel} footer={<>

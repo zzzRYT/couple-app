@@ -7,6 +7,7 @@ import { useAppColor } from '../../theme/useAppColor';
 import { useType } from '../../theme/typography';
 import type { Birthday } from '../../lib/client';
 import { BirthdayField } from './BirthdayField';
+import { posthog } from '../../config/posthog';
 
 type ProfileBirthday = Birthday & { year: number | null };
 function graphemes(value: string): string[] {
@@ -30,7 +31,7 @@ export function ProfileScreen({ onSave, onBack, initialName = '', initialBirthda
     if (!clean) { setTouched(true); return; }
     const selected = skip ? null : birthday;
     setSaving(true); setFailed(false);
-    try { await onSave(clean, selected); } catch { setFailed(true); } finally { setSaving(false); }
+    try { await onSave(clean, selected); posthog?.capture('profile_saved', { context: editing ? 'settings' : 'onboarding', birthday_included: selected !== null }); } catch { setFailed(true); } finally { setSaving(false); }
   };
   const nameLabel = t(editing ? 'set.me.name' : 'start.profile.name');
   const toggleYear = (value: boolean) => { setIncludeYear(value); if (!value && birthday) setBirthday({ ...birthday, year: null }); };

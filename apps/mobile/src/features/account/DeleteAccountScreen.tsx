@@ -13,6 +13,7 @@ import type { Provider } from '../auth/authPort';
 import type { PasswordPort } from '../auth/passwordPort';
 import { CheckRow, ContactButton, PasswordField } from '../auth/passwordUi';
 import type { Reauth, ReauthPort, ReauthResult, SubmitResult } from './deleteAccount';
+import { posthog } from '../../config/posthog';
 
 type Phase = 'explain' | 'reauth' | 'password' | 'forgot' | 'appleMore' | 'progress';
 /** What the V0-09 sheets need. `apple` is an account with an Apple identity, whatever else it holds. */
@@ -54,7 +55,7 @@ export function DeleteAccountScreen({ reauth, onSubmit, onFinished, onCancel, pr
   async function submit(input: Reauth) {
     setPhase('progress');
     const outcome = await onSubmit(input);
-    if (outcome === 'accepted' || outcome === 'signedOut') { await onFinished(outcome); return; }
+    if (outcome === 'accepted' || outcome === 'signedOut') { posthog?.capture('account_deletion_completed'); await onFinished(outcome); return; }
     if (outcome === 'appleRequired') { setPhase('appleMore'); return; }
     if (outcome === 'reauthFailed') { setReauthFailed(true); setEmailSent(false); setPhase('reauth'); return; }
     setBanner(outcome === 'offline' ? 'offline' : 'fail');
