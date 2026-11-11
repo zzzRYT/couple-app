@@ -12,6 +12,8 @@ import { isNetworkError } from '../../lib/realtime';
 import { ApiError } from '../../lib/errors';
 import { tokens } from '../../theme/tokens';
 import { defaultSessionSettings, useSession, type SessionApi, type SessionSettings } from './useSession';
+import { posthog } from '../../config/posthog';
+import { captureDecorationGeneration } from '../../lib/aiObservability';
 
 export type PanelClient = SessionApi & {
   conversation(spaceId: string): Promise<Conversation>;
@@ -101,8 +103,13 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
       const acquired = await session.acquire();
       if (acquired && milestoneId) {
         setBusy('sending');
-        try { await client.milestonePreview(spaceId, acquired.sessionId ?? '', milestoneId, i18n.language as Locale); setViewCandidate(true); await load(); }
-        catch (error) { fail(error); }
+        const startedAt = Date.now();
+        try {
+          const generated = await client.milestonePreview(spaceId, acquired.sessionId ?? '', milestoneId, i18n.language as Locale);
+          captureDecorationGeneration({ conversationId: spaceId, kind: 'milestone', startedAt, output: generated });
+          posthog?.capture('prompt_preview_requested', { source: 'milestone' }); setViewCandidate(true); await load();
+        }
+        catch (error) { captureDecorationGeneration({ conversationId: spaceId, kind: 'milestone', startedAt, error }); fail(error); }
         finally { setBusy(null); }
       } else await load();
     } catch (error) { fail(error); }
@@ -111,37 +118,47 @@ export function PromptPanel({ client, snapshot, online, refreshToken = 0, onOpen
     try { await session.takeover(); await load(); } catch (error) { fail(error); }
   }
   /** The response of a generation request can get lost (backgrounding, network change) while the server finishes; ask the server what became of it. */
-  async function recover(text: string, knownIds: Set<string>, original: unknown) {
+  async function recover(text: string, knownIds: Set<string>, original: unknown, startedAt: number) {
     setBusy('checking');
     for (let attempt = 0; attempt < RECOVERY_ATTEMPTS && mounted.current; attempt++) {
       if (attempt > 0) await new Promise((resolve) => setTimeout(resolve, RECOVERY_INTERVAL_MS));
       let next: Conversation;
       try { next = await client.conversation(spaceId); } catch { continue; }
-      if (!mounted.current) return;
+      if (!mounted.current) { captureDecorationGeneration({ conversationId: spaceId, kind: 'prompt', startedAt, input: text, error: original }); return; }
       setConversation(next);
       const sent = next.messages.find((message) => message.kind === 'user_prompt' && message.authorUserId === me && message.bodyText === text && !knownIds.has(message.id));
       if (!sent) { if (attempt === 0) break; continue; }
       if (sent.state === 'queued') continue;
-      if (sent.state === 'previewed') { setDraft(''); setViewCandidate(true); return; }
-      if (sent.state !== 'cancelled') fail(sent.state === 'rejected' ? new ApiError(422, 'UNSUPPORTED_REQUEST') : original);
+      if (sent.state === 'previewed') {
+        captureDecorationGeneration({ conversationId: spaceId, kind: 'prompt', startedAt, input: text, output: next.currentPreview ?? undefined });
+        setDraft(''); setViewCandidate(true); return;
+      }
+      const failure = sent.state === 'rejected' ? new ApiError(422, 'UNSUPPORTED_REQUEST') : original;
+      captureDecorationGeneration({ conversationId: spaceId, kind: 'prompt', startedAt, input: text, error: failure });
+      if (sent.state !== 'cancelled') fail(failure);
       return;
     }
+    captureDecorationGeneration({ conversationId: spaceId, kind: 'prompt', startedAt, input: text, error: original });
     fail(original);
   }
   async function send() {
     const text = draft.trim();
     const knownIds = new Set(conversation?.messages.map((message) => message.id));
+    const startedAt = Date.now();
     setBusy('sending'); setNotice(null); session.noteActivity();
     try {
-      await client.requestPreview(spaceId, text, sessionId, snapshot.versionNumber); setDraft(''); setViewCandidate(true); await load();
+      const generated = await client.requestPreview(spaceId, text, sessionId, snapshot.versionNumber);
+      captureDecorationGeneration({ conversationId: spaceId, kind: 'prompt', startedAt, input: text, output: generated });
+      posthog?.capture('prompt_preview_requested', { source: 'text' }); setDraft(''); setViewCandidate(true); await load();
     } catch (error) {
-      if (isNetworkError(error) || (error instanceof ApiError && error.code === 'IN_PROGRESS')) await recover(text, knownIds, error); else fail(error);
+      if (isNetworkError(error) || (error instanceof ApiError && error.code === 'IN_PROGRESS')) await recover(text, knownIds, error, startedAt);
+      else { captureDecorationGeneration({ conversationId: spaceId, kind: 'prompt', startedAt, input: text, error }); fail(error); }
     } finally { if (mounted.current) setBusy(null); }
   }
   async function apply() {
     if (!preview) return;
     setConfirming(false); setBusy('applying');
-    try { const result = await client.confirmPreview(spaceId, preview.previewId, sessionId, snapshot.versionNumber); setApplied(true); session.clear(); await load(); onApplied?.(result.appliedVersion); } catch (error) { fail(error); } finally { setBusy(null); }
+    try { const result = await client.confirmPreview(spaceId, preview.previewId, sessionId, snapshot.versionNumber); posthog?.capture('prompt_preview_applied', { source: milestoneId ? 'milestone' : 'text' }); setApplied(true); session.clear(); await load(); onApplied?.(result.appliedVersion); } catch (error) { fail(error); } finally { setBusy(null); }
   }
   async function cancel() {
     if (!preview) return;

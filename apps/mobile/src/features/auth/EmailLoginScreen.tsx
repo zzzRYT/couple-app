@@ -10,6 +10,7 @@ import { AppleButton } from './AppleButton';
 import { EMAIL_PATTERN } from './authPort';
 import type { PasswordPort } from './passwordPort';
 import { PasswordField } from './passwordUi';
+import { posthog } from '../../config/posthog';
 
 /**
  * V0-auth-login and its wrong, rate and processing states. One message for a wrong email or password, so sign-up status stays hidden.
@@ -28,7 +29,7 @@ export function EmailLoginScreen({ password, onDone, onBack, onApple, onSignup, 
     setStatus('busy');
     const result = await password.signIn(email.trim(), secret).catch(() => 'error' as const);
     if (result === 'ok' || result === 'locked') setSecret('');
-    if (result === 'ok') onDone(); else setStatus(result);
+    if (result === 'ok') { posthog?.capture('authentication_completed', { method: 'email_password' }); onDone(); } else setStatus(result);
   }
   if (status === 'busy') return <Screen center><CycleLoader label={t('login.processing')} /></Screen>;
   const locked = status === 'locked';

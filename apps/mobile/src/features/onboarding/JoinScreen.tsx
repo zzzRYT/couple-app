@@ -10,6 +10,7 @@ import { ApiError, errorBodyKey, errorKey } from '../../lib/errors';
 import { dayCount, formatAnniversary } from '../../lib/dday';
 import { parseInvite } from '../../lib/inviteLink';
 import { mascotPoses } from '../../scene/catalog';
+import { posthog } from '../../config/posthog';
 
 const JOIN_ERRORS = ['INVITE_EXPIRED', 'INVITE_USED', 'INVITE_INVALID', 'SPACE_FULL', 'ALREADY_IN_SPACE'];
 export function maskInviteInput(value: string): string {
@@ -60,7 +61,7 @@ export function JoinScreen({ previewInvitation, acceptInvitation, onJoined, onOp
   }
   async function accept() {
     setStep('accepting');
-    try { onJoined((await acceptInvitation(code)).spaceId); } catch (error) { fail(error); }
+    try { const { spaceId } = await acceptInvitation(code); posthog?.capture('space_joined'); onJoined(spaceId); } catch (error) { fail(error); }
   }
   async function move() {
     if (!moveFromSpace) return;

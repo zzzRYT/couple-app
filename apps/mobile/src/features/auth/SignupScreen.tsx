@@ -7,6 +7,7 @@ import { EMAIL_PATTERN } from './authPort';
 import type { PasswordPort } from './passwordPort';
 import { passwordRules, rulesMet } from './passwordRules';
 import { CheckRow, ContactButton, MailResend, PasswordField, RuleList } from './passwordUi';
+import { posthog } from '../../config/posthog';
 
 /** V0-auth-signup and -err, -sent, -nomail. Until mail is connected -nomail is the real screen; a mail that was not sent is never claimed. */
 export function SignupScreen({ password, onBack, onApple }: { password: Pick<PasswordPort, 'mailConnected' | 'signUp' | 'resendConfirmation'>; onBack: () => void; onApple: () => void }) {
@@ -28,7 +29,7 @@ export function SignupScreen({ password, onBack, onApple }: { password: Pick<Pas
     const result = await password.signUp(email.trim(), secret).catch(() => 'error' as const);
     setBusy(false);
     if (result === 'closed') setMail(false);
-    else if (result === 'ok') { setSecret(''); setAgain(''); setSent(true); } else setFailed(true);
+    else if (result === 'ok') { posthog?.capture('signup_requested'); setSecret(''); setAgain(''); setSent(true); } else setFailed(true);
   }
   if (mail === null) return <Screen center onBack={onBack}><CycleLoader label={t('state.loading')} /></Screen>;
   if (!mail) {

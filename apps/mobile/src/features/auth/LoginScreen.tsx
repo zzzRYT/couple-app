@@ -14,6 +14,7 @@ import type { createSupabase } from '../../lib/supabase';
 import { ProviderButton } from './ProviderButton';
 import { EMAIL_PATTERN, type AuthPort, type Provider } from './authPort';
 import { mascotPoses } from '../../scene/catalog';
+import { posthog } from '../../config/posthog';
 
 type OAuthProvider = 'kakao' | 'apple';
 const features = [['start.intro.f1', 'annivDays', 'peach'], ['start.intro.f2', 'annivBirthday', 'butter'], ['start.intro.f3', 'annivCustom', 'lav']] as const;
@@ -41,7 +42,7 @@ export function LoginScreen({ auth, lastUsed, onDone, onEmail, onEmailLogin, onB
     setState(native ? { kind: 'choose' } : { kind: 'redirect', provider });
     const run = native ? auth.apple(() => setState({ kind: 'finishing' })) : auth.oauth(provider);
     const result = await run.catch(() => 'error' as const);
-    if (result === 'ok') { onDone(); setState({ kind: 'choose' }); } else setState({ kind: result, provider });
+    if (result === 'ok') { posthog?.capture('authentication_completed', { method: provider }); onDone(); setState({ kind: 'choose' }); } else setState({ kind: result, provider });
   }
   async function send() {
     if (!EMAIL_PATTERN.test(email.trim())) { setState({ kind: 'email', invalid: true, sending: false, failed: false }); return; }

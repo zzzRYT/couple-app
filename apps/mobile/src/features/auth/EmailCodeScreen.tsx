@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppText, Button, Screen, TextField } from '../../ui/components';
 import type { AuthPort } from './authPort';
+import { posthog } from '../../config/posthog';
 
 const RESEND_SECONDS = 60;
 type Problem = null | 'wrong' | 'expired' | 'error' | { rateLimitedMinutes: number };
@@ -19,7 +20,7 @@ export function EmailCodeScreen({ auth, email, onDone, onBack }: { auth: AuthPor
   async function confirm() {
     setBusy(true);
     const result = await auth.verifyCode(email, code).catch(() => 'error' as const);
-    if (result === 'ok') { setProblem(null); onDone(); } else { setBusy(false); setProblem(result); }
+    if (result === 'ok') { posthog?.capture('authentication_completed', { method: 'email_code' }); setProblem(null); onDone(); } else { setBusy(false); setProblem(result); }
   }
   async function resend() {
     setProblem(null); setCode(''); setWait(RESEND_SECONDS);
