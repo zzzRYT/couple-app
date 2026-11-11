@@ -14,9 +14,10 @@ import { useAppColor } from '../theme/useAppColor';
 import { useType } from '../theme/typography';
 import { dayCount } from '../lib/dday';
 import { useNow } from '../lib/useNow';
+import { track } from '../lib/analytics';
 export default function ConnectedRoute() {
   const { t } = useTranslation(); const { userId } = useApp(); const { spaceId, state } = useSpace(); const now = useNow(); const color = useAppColor(); const { emphasis } = useType();
-  useEffect(() => { if (spaceId && userId) void SecureStore.setItemAsync(`v0.connected.seen.${spaceId}.${userId}`, 'true'); }, [spaceId, userId]);
+  useEffect(() => { if (spaceId && userId) { void SecureStore.setItemAsync(`v0.connected.seen.${spaceId}.${userId}`, 'true'); track('couple_connected'); } }, [spaceId, userId]);
   const snapshot = state.snapshot;
   if (!snapshot) return null;
   const partner = snapshot.members.find((member) => member.userId !== userId)?.displayName ?? t('home.pending.partner');

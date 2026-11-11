@@ -7,10 +7,13 @@ import { notifyDefaultLabel } from '../../features/notifications/labels';
 import AnniversaryDetailRoute from '../anniversary/[key]';
 import AnniversariesRoute from '../(tabs)/anniversaries/index';
 import AnniversaryEditRoute from '../anniversary-edit';
+import { router } from 'expo-router';
+import { track } from '../../lib/analytics';
 
 let mockParams: Record<string, string | undefined> = {};
 jest.mock('expo-router', () => ({ router: { push: jest.fn(), replace: jest.fn(), back: jest.fn(), dismissTo: jest.fn() }, useLocalSearchParams: () => mockParams, useIsFocused: () => true }));
-const mockApp = { client: { deleteAnniversaryItem: jest.fn() }, userId: ME };
+const mockApp = { client: { deleteAnniversaryItem: jest.fn(), createAnniversary: jest.fn(async () => ({ id: 'new' })), updateAnniversaryItem: jest.fn(async () => ({ id: 'x' })) }, userId: ME };
+jest.mock('../../lib/analytics', () => ({ track: jest.fn() }));
 jest.mock('../../lib/AppContext', () => ({ useApp: () => mockApp }));
 const mockSpace = { state: { status: 'ready', snapshot: snapshotFixture(), offline: false, lastSyncedAt: null }, refresh: jest.fn(async () => undefined) };
 jest.mock('../../features/space/SpaceContext', () => ({ useSpace: () => mockSpace }));
@@ -107,5 +110,19 @@ describe('anniversary edit route', () => {
     withSnapshot(2);
     const paired = await renderWithI18n(<AnniversaryEditRoute />);
     expect(paired.getByText(paired.t('edit.shared.hint', { name: '도담' }))).toBeTruthy();
+  });
+  it.each([
+    ['counts a new anniversary', {}, 'createAnniversary', [['anniversary_added']]],
+    ['does not count an edit', { id: 'x' }, 'updateAnniversaryItem', []],
+  ] as const)('%s', async (_, params, call, tracked) => {
+    withSnapshot(2, (snapshot) => { snapshot.anniversaries = [trip]; });
+    mockParams = params;
+    jest.clearAllMocks();
+    const screen = await renderWithI18n(<AnniversaryEditRoute />);
+    await fireEvent.changeText(await screen.findByLabelText(screen.t('edit.field.title')), 'Concert');
+    await fireEvent.press(screen.getByText(screen.t('common.save')));
+    await waitFor(() => expect(router.replace).toHaveBeenCalledWith({ pathname: '/(tabs)/anniversaries', params: { toast: 'saved' } }));
+    expect(mockApp.client[call]).toHaveBeenCalledTimes(1);
+    expect(jest.mocked(track).mock.calls).toEqual(tracked);
   });
 });
