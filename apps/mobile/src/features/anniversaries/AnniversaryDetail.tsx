@@ -17,7 +17,7 @@ export function AnniversaryDetail({ item, custom, today, startDate, timeZone, pa
   const md = formattedMonthDay(item.date, i18n.language);
   const rule = item.kind === 'days' ? `${t('anniv.rule.days', { start: formattedYearMonthDay(startDate, i18n.language), n: item.n })}\n${t('anniv.detail.auto')}` : item.kind === 'years' ? `${t('anniv.rule.years', { md })}\n${t('anniv.detail.auto')}` : item.kind === 'birthday' ? t('anniv.rule.birthday', { md }) : item.kind === 'season' ? `${t('anniv.rule.fixed', { md })}\n${t('anniv.detail.auto.fixed')}` : t('anniv.rule.fixed', { md });
   const notification = notify === 'off' ? t('anniv.notify.off') : notifyDefault;
-  const info: [string, string][] = [[t('anniv.detail.when'), date]];
+  const info: [string, string][] = [];
   if (!custom) info.push([t('anniv.detail.rule'), rule]);
   else { info.push([t('anniv.detail.repeat'), t(`anniv.repeat.${custom.repeat}`)]); if (custom.memo) info.push([t('anniv.detail.memo'), custom.memo]); }
   info.push([t('anniv.detail.notify'), notification]);

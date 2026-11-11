@@ -16,7 +16,8 @@ export default function AnniversaryEditRoute() {
   useEffect(() => { if (snapshot && id) void getAnniversaryNotify(snapshot.me.userId, id).then(setNotify).catch(() => setNotify('default')); }, [snapshot?.me.userId, id]);
   useEffect(() => { if (snapshot && id && !initial.current) router.back(); }, [snapshot, id]);
   if (!snapshot || !notify || (id && !initial.current)) return null;
-  const partner = snapshot.members.find((member) => member.userId !== snapshot.me.userId)?.displayName ?? t('home.pending.partner');
+  const partnerMember = snapshot.members.find((member) => member.userId !== snapshot.me.userId);
+  const partner = partnerMember ? partnerMember.displayName ?? t('home.pending.partner') : null;
   const spaceId = snapshot.space.spaceId;
   return <AnniversaryEdit initial={initial.current} today={todayIn(now, snapshot.space.timeZone)} partner={partner} offline={state.offline} initialNotify={notify} notifyDefault={notifyDefaultLabel(prefs, i18n.language, t)} onClose={() => router.back()} onGone={() => { router.dismissTo('/(tabs)/anniversaries'); void refresh(); }} onSaved={(toast) => router.replace({ pathname: '/(tabs)/anniversaries', params: { toast } })}
     save={async (fields, version, key, choice) => { const item = id && version ? await client.updateAnniversaryItem(spaceId, id, fields, version, key) : await client.createAnniversary(spaceId, fields, key); await setAnniversaryNotify(snapshot.me.userId, item.id, choice); await refresh(); }}

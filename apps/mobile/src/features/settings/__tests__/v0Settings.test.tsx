@@ -116,3 +116,23 @@ describe('V0-F02-AC-11 partner row (V0-10)', () => {
     expect(screen.queryByText(screen.t('set.us.connect'))).toBeNull();
   });
 });
+describe('연결 끊기 is offered only to a connected couple', () => {
+  it('hides 연결 끊기 while nobody has joined and keeps 계정 삭제', async () => {
+    const screen = await renderWithI18n(<V0SettingsScreen snapshot={snapshotFixture({ memberCount: 1 })} offline={false} version="0.1" onLogout={jest.fn()} onZone={jest.fn()} navigate={jest.fn()} />);
+    expect(screen.queryByRole('button', { name: screen.t('set.account.disconnect') })).toBeNull();
+    expect(screen.getByRole('button', { name: screen.t('set.account.delete') })).toBeTruthy();
+  });
+  it('shows 연결 끊기 once the partner joined', async () => {
+    const navigate = jest.fn();
+    const screen = await renderWithI18n(<V0SettingsScreen snapshot={snapshotFixture()} offline={false} version="0.1" onLogout={jest.fn()} onZone={jest.fn()} navigate={navigate} />);
+    await fireEvent.press(screen.getByRole('button', { name: screen.t('set.account.disconnect') }));
+    expect(navigate).toHaveBeenCalledWith('disconnect');
+  });
+});
+it('a failed time-zone save says it was not saved, inside the sheet', async () => {
+  const screen = await renderWithI18n(<V0SettingsScreen snapshot={snapshotFixture()} offline={false} version="0.1" onLogout={jest.fn()} onZone={jest.fn().mockRejectedValue(new Error('offline'))} navigate={jest.fn()} />);
+  await fireEvent.press(screen.getByRole('button', { name: new RegExp(screen.t('set.us.tz')) }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Asia/Tokyo' }));
+  await waitFor(() => expect(screen.getByRole('alert', { name: screen.t('set.save.err') })).toBeTruthy());
+  expect(screen.getByText(screen.t('set.room.tz.pick'))).toBeTruthy();
+});

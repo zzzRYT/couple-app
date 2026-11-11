@@ -30,7 +30,7 @@ export async function leaveSpace({ close, releaseSession, snapshot, userId, rese
   if (userId) await clearMilestoneStorage(snapshot.space.spaceId, userId).catch(() => undefined);
   if (userId) await clearV0LocalData(userId, snapshot.space.spaceId).catch(() => undefined);
   await cancelV0Notifications().catch(() => undefined);
-  await clearWidgets('ended').catch(() => undefined);
+  await clearWidgets('none').catch(() => undefined);
   resetSpace();
   await reload();
 }

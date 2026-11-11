@@ -95,10 +95,10 @@ describe('V0-F12-AC-10 logout', () => {
 });
 
 describe('V0-F12-AC-07 disconnect and end', () => {
-  it('removes the same things and leaves the widget on ended', async () => {
+  it('removes the same things and leaves the widget on no space', async () => {
     await leaveSpace({ close: jest.fn(async () => undefined), releaseSession: jest.fn(), snapshot: snapshotFixture(), userId: ME, resetSpace: jest.fn(), reload: jest.fn(async () => undefined) });
     await expectNothingLeft();
-    expect(lastWidget()).toBe('ended');
+    expect(lastWidget()).toBe('none');
   });
 });
 

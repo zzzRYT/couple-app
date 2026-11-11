@@ -20,7 +20,7 @@ import { formattedDate, formattedYearMonthDay, occurrenceTitle, relativeDate } f
 import { splitBigDay, useLargeText } from '../../ui/textScale';
 import { Wordmark } from '../../ui/Wordmark';
 
-export function V0HomeScreen({ state, now, onAnniversaries, onRefresh, onOpenInvite, onHaveCode, celebration, onSeen, partnerEdited, onHidePartnerEdited, seenKeys = [], seenReady = true, onLocalSeen, onOccurrence }: { state: SpaceState; now: string; onAnniversaries: () => void; onRefresh: () => void; onOpenInvite: (reissue: boolean) => void; onHaveCode?: () => void; celebration: MilestoneCelebration | null; onSeen: () => void; partnerEdited?: string | null; onHidePartnerEdited?: () => void; seenKeys?: string[]; seenReady?: boolean; onLocalSeen?: (key: string) => void; onOccurrence?: (item: Occurrence) => void }) {
+export function V0HomeScreen({ state, now, onAnniversaries, onRefresh, onOpenInvite, onHaveCode, celebration, closedMilestoneKey = null, onSeen, partnerEdited, onHidePartnerEdited, seenKeys = [], seenReady = true, onLocalSeen, onOccurrence }: { state: SpaceState; now: string; onAnniversaries: () => void; onRefresh: () => void; onOpenInvite: (reissue: boolean) => void; onHaveCode?: () => void; celebration: MilestoneCelebration | null; closedMilestoneKey?: string | null; onSeen: () => void; partnerEdited?: string | null; onHidePartnerEdited?: () => void; seenKeys?: string[]; seenReady?: boolean; onLocalSeen?: (key: string) => void; onOccurrence?: (item: Occurrence) => void }) {
   const { t, i18n } = useTranslation(); const { emphasis } = useType();
   const color = useAppColor(); const insets = useSafeAreaInsets(); const clearance = useTabBarClearance(); const large = useLargeText();
   const [copied, setCopied] = useState<boolean | null>(null);
@@ -34,9 +34,11 @@ export function V0HomeScreen({ state, now, onAnniversaries, onRefresh, onOpenInv
   const partner = partnerMember?.displayName ?? t('home.pending.partner');
   const name = snapshot.me.displayName ?? '';
   const pending = space.memberCount < 2;
-  const candidate = seenReady ? view.celebrationCandidates.find((item) => item.kind === 'days' || item.kind === 'years' ? celebration?.key === item.key : !seenKeys.includes(item.key)) : undefined;
-  const showCelebration = candidate && (candidate.kind === 'days' || candidate.kind === 'years') ? celebration : null;
-  const localCelebration = candidate && candidate.kind !== 'days' && candidate.kind !== 'years' ? candidate : null;
+  const milestone = (item: Occurrence) => item.kind === 'days' || item.kind === 'years';
+  const closedToday = view.celebrationCandidates.some((item) => item.date === view.today && (milestone(item) ? item.key === closedMilestoneKey : seenKeys.includes(item.key)));
+  const candidate = seenReady ? view.celebrationCandidates.find((item) => !(closedToday && item.date === view.today) && (milestone(item) ? celebration?.key === item.key : !seenKeys.includes(item.key))) : undefined;
+  const showCelebration = candidate && milestone(candidate) ? celebration : null;
+  const localCelebration = candidate && !milestone(candidate) ? candidate : null;
   const celebrating = !!showCelebration || !!localCelebration;
   const mascot = !state.offline && !celebrating && !pending;
   const title = (item: Occurrence) => occurrenceTitle(item, partner, t);
@@ -59,8 +61,8 @@ export function V0HomeScreen({ state, now, onAnniversaries, onRefresh, onOpenInv
     : localCelebration ? <TodayCard title={localCelebration.kind === 'season' ? t('home.today.title.season', { title: title(localCelebration) }) : localCelebration.kind === 'birthday' ? t('home.today.title.birthday', { name: localCelebration.who === 'me' ? name : partner }) : t('home.today.title', { title: title(localCelebration) })} body={t('home.today.body.season')} onClose={() => onLocalSeen?.(localCelebration.key)} />
     : next ? nextCard(next) : null;
   const upcoming = view.upcoming.slice(celebrating ? 0 : 1, celebrating ? 3 : 4);
-  const notice: { text: string; icon: IconName; onHide?: () => void } | null = copied !== null ? { text: t(copied ? 'invite.copied' : 'invite.err.title'), icon: copied ? 'check' : 'info', onHide: hideCopied }
-    : partnerEdited ? { text: partnerEdited, icon: 'info', onHide: onHidePartnerEdited } : null;
+  const notice: { text: string; icon: IconName; onHide?: () => void; duration?: number } | null = copied !== null ? { text: t(copied ? 'invite.copied' : 'invite.err.title'), icon: copied ? 'check' : 'info', onHide: hideCopied }
+    : partnerEdited ? { text: partnerEdited, icon: 'info', onHide: onHidePartnerEdited, duration: 4500 } : null;
   return <View style={{ flex: 1, backgroundColor: color.bg }}>
     <ScrollView style={{ flex: 1 }} refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />} contentContainerStyle={{ paddingTop: insets.top, paddingHorizontal: 20, paddingBottom: clearance + 16, gap: 14 }}>
       <View style={{ minHeight: 48, justifyContent: 'center' }}><Wordmark /></View>
@@ -92,6 +94,6 @@ export function V0HomeScreen({ state, now, onAnniversaries, onRefresh, onOpenInv
         </View>}
       </>}
     </ScrollView>
-    {notice && <View pointerEvents="box-none" style={{ position: 'absolute', left: 20, right: 20, bottom: clearance + 13 }}><Toast key={notice.text} text={notice.text} icon={notice.icon} onHide={notice.onHide} /></View>}
+    {notice && <View pointerEvents="box-none" style={{ position: 'absolute', left: 20, right: 20, bottom: clearance + 13 }}><Toast key={notice.text} text={notice.text} icon={notice.icon} onHide={notice.onHide} duration={notice.duration} /></View>}
   </View>;
 }

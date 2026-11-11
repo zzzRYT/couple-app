@@ -1,5 +1,5 @@
-import { AccessoryWidgetBackground, HStack, Image, Link, Rectangle, RoundedRectangle, Spacer, Text, VStack, ZStack } from '@expo/ui/swift-ui';
-import { accessibilityElement, accessibilityLabel, background, containerBackground, font, foregroundStyle, frame, layoutPriority, lineLimit, minimumScaleFactor, offset, padding, privacySensitive, resizable, shapes, truncationMode, widgetAccentedRenderingMode, widgetURL, type ModifierConfig } from '@expo/ui/swift-ui/modifiers';
+import { AccessoryWidgetBackground, Gauge, HStack, Image, Link, Rectangle, RoundedRectangle, Spacer, Text, VStack, ZStack } from '@expo/ui/swift-ui';
+import { accessibilityElement, accessibilityLabel, background, containerBackground, font, foregroundStyle, frame, gaugeStyle, layoutPriority, lineLimit, minimumScaleFactor, offset, padding, privacySensitive, resizable, shapes, truncationMode, widgetAccentedRenderingMode, widgetURL, type ModifierConfig } from '@expo/ui/swift-ui/modifiers';
 import type { WidgetEnvironment } from 'expo-widgets';
 import type { WidgetProps, WidgetRow } from './widgetProps';
 
@@ -25,6 +25,8 @@ export function widgetLayout(props: WidgetProps, env: WidgetEnvironment) {
       ? { bg: '#2B2320', text: '#F7EBDD', text2: '#CDB8A5', primary: '#F0A67F', divider: '#4A3D36', skeleton: '#F7EBDD29' }
       : { bg: '#FFF8EC', text: '#3F2D22', text2: '#6B5444', primary: '#B24A24', divider: '#E3CDB0', skeleton: '#3F2D2229' };
   const ja = props.state !== 'placeholder' && props.ja;
+  /** The list kind trades the D+N column for the next anniversary: its own small, a gauge circular and list-only rows. */
+  const list = 'kind' in props && props.kind === 'list';
   const fonts = {
     display: ja ? 'Yomogi-Regular' : 'Gaegu-Bold',
     bold: ja ? 'ZenMaruGothic-Bold' : 'NotoSansKR-Bold',
@@ -54,15 +56,20 @@ export function widgetLayout(props: WidgetProps, env: WidgetEnvironment) {
   const root = (url: string, a11y: string, inset: number, content: React.ReactNode) => <VStack alignment="leading" spacing={0} modifiers={[padding({ all: inset }), frame({ maxWidth: Infinity, maxHeight: Infinity, alignment: 'topLeading' }), containerBackground(color.bg, 'widget'), widgetURL(url), accessibilityElement('ignore'), accessibilityLabel(a11y)]}>{content}</VStack>;
 
   if (props.state === 'placeholder') {
+    const rowBars = (count: number, height: number) => Array.from({ length: count }, (_, row) => <RoundedRectangle key={row} cornerRadius={height / 2} modifiers={[foregroundStyle(color.skeleton), frame({ height })]} />);
     const shell = (inset: number, content: React.ReactNode) => <VStack alignment="leading" spacing={0} modifiers={[padding({ all: inset }), frame({ maxWidth: Infinity, maxHeight: Infinity, alignment: 'topLeading' }), containerBackground(color.bg, 'widget')]}>{content}</VStack>;
     switch (family) {
       case 'accessoryCircular': return <ZStack modifiers={[containerBackground(color.bg, 'widget')]}><AccessoryWidgetBackground /><VStack spacing={6}>{bar(40, 10)}{bar(28, 8)}</VStack></ZStack>;
       case 'accessoryRectangular': return shell(4, <VStack alignment="leading" spacing={6}>{bar(80, 12)}{bar(128, 10)}{bar(104, 10)}</VStack>);
       case 'accessoryInline': return <HStack>{heart(13)}</HStack>;
-      case 'systemLarge': return shell(18, <VStack alignment="leading" spacing={12}>{bar(120, 10)}{bar(180, 40)}{bar(150, 9)}<Spacer modifiers={[frame({ height: 14 })]} />{bar(105, 9)}{[0, 1, 2, 3, 4].map((row) => <RoundedRectangle key={row} cornerRadius={7} modifiers={[foregroundStyle(color.skeleton), frame({ height: 14 })]} />)}</VStack>);
-      case 'systemMedium': return shell(14, <HStack spacing={14} alignment="top">
+      case 'systemLarge':
+        if (list) return shell(18, <VStack alignment="leading" spacing={26}>{bar(105, 9)}{rowBars(6, 14)}</VStack>);
+        return shell(18, <VStack alignment="leading" spacing={12}>{bar(120, 10)}{bar(180, 40)}{bar(150, 9)}<Spacer modifiers={[frame({ height: 14 })]} />{bar(105, 9)}{rowBars(5, 14)}</VStack>);
+      case 'systemMedium':
+        if (list) return shell(14, <VStack alignment="leading" spacing={22}>{bar(100, 9)}{rowBars(3, 12)}</VStack>);
+        return shell(14, <HStack spacing={14} alignment="top">
         <VStack alignment="leading" spacing={10} modifiers={[frame({ width: 128 })]}>{bar(102, 10)}{bar(64, 8)}{bar(115, 30)}{bar(77, 8)}</VStack>
-        <VStack alignment="leading" spacing={14} modifiers={[padding({ top: 4 })]}>{bar(100, 9)}{[0, 1, 2].map((row) => <RoundedRectangle key={row} cornerRadius={6} modifiers={[foregroundStyle(color.skeleton), frame({ height: 12 })]} />)}</VStack>
+        <VStack alignment="leading" spacing={14} modifiers={[padding({ top: 4 })]}>{bar(100, 9)}{rowBars(3, 12)}</VStack>
       </HStack>);
       default: return shell(14, <VStack alignment="leading" spacing={8}>{bar(91, 10)}{bar(52, 8)}<Spacer />{bar(104, 30)}<Spacer />{bar(117, 10)}</VStack>);
     }
@@ -91,9 +98,15 @@ export function widgetLayout(props: WidgetProps, env: WidgetEnvironment) {
   const todayPill = (size: number) => <Link destination={props.url}><HStack spacing={6} modifiers={[padding({ vertical: 5, horizontal: 8 }), background(color.divider, shapes.roundedRectangle({ cornerRadius: 10 }))]}>{image('sparkle', 16, color.primary)}{label(today!.line, fonts.bold, size, color.text)}<Spacer /></HStack></Link>;
   const mediumRow = (row: WidgetRow) => <Link key={row.url} destination={row.url}><HStack spacing={7}>{kindTile(row, 22, 12, 20)}{label(row.title, fonts.medium, 13, color.text, [frame({ maxWidth: Infinity, alignment: 'leading' })])}{leftText(row.left, 13)}</HStack></Link>;
   const largeRow = (row: WidgetRow) => <Link key={row.url} destination={row.url}><HStack spacing={9}>{kindTile(row, 26, 14, 24)}<VStack alignment="leading" spacing={0}>{label(row.title, fonts.bold, 14, color.text)}{label(row.date, fonts.body, 11, color.text2)}</VStack><Spacer />{leftText(row.left, 14)}</HStack></Link>;
+  const upcoming = (size: number, spacing: number, count: number) => <VStack alignment="leading" spacing={spacing}>{label(props.listTitle, fonts.bold, size, color.text2)}{today ? todayPill(size + 2) : null}{rows.slice(0, today ? count - 1 : count).map(largeRow)}</VStack>;
 
   switch (family) {
     case 'accessoryCircular':
+      // The widget renderer drops a Gauge's label slots, so the icon and D-n sit over the ring instead of in currentValueLabel.
+      if (list && next && !today) return <ZStack modifiers={[containerBackground(color.bg, 'widget'), widgetURL(props.url), accessibilityElement('ignore'), accessibilityLabel(props.a11y)]}>
+        <Gauge value={props.gauge} modifiers={[gaugeStyle('circularCapacity')]} />
+        <VStack spacing={1}>{image(next.icon, 13, color.text)}{label(next.left, fonts.bold, 17, color.text, [minimumScaleFactor(0.5)])}</VStack>
+      </ZStack>;
       return <ZStack modifiers={[containerBackground(color.bg, 'widget'), widgetURL(props.url), accessibilityElement('ignore'), accessibilityLabel(props.a11y)]}>
         <AccessoryWidgetBackground />
         {today
@@ -122,6 +135,7 @@ export function widgetLayout(props: WidgetProps, env: WidgetEnvironment) {
       return <HStack spacing={5} modifiers={[containerBackground(color.bg, 'widget'), widgetURL(props.url)]}>{heart(13)}{label(text, fonts.bold, 15, color.text, [privacySensitive(hide)])}</HStack>;
     }
     case 'systemMedium':
+      if (list) return root(props.url, props.a11y, 14, upcoming(11, 6, 3));
       return root(props.url, props.a11y, 14, <HStack spacing={2} alignment="top" modifiers={[frame({ maxHeight: Infinity })]}>
         <VStack alignment="leading" spacing={0} modifiers={[frame({ width: 128, alignment: 'leading' }), frame({ maxHeight: Infinity })]}>
           {names(props.names, 12)}
@@ -141,6 +155,7 @@ export function widgetLayout(props: WidgetProps, env: WidgetEnvironment) {
         </VStack>
       </HStack>);
     case 'systemLarge':
+      if (list) return root(props.url, props.a11y, 18, upcoming(12, 10, 6));
       return root(props.url, props.a11y, 18, <>
         <HStack spacing={8} alignment="top">
           <VStack alignment="leading" spacing={0}>
@@ -169,6 +184,14 @@ export function widgetLayout(props: WidgetProps, env: WidgetEnvironment) {
           {label(today.title, fonts.display, 19, color.text, [minimumScaleFactor(0.7)])}
           {dayRow(13, color.primary)}
         </VStack>
+      </>);
+      if (list && next) return root(props.url, props.a11y, 14, <>
+        {label(props.nextWord, fonts.medium, 11, color.text2)}
+        {label(next.title, fonts.bold, 16, color.text)}
+        <Spacer />
+        {big(next.left, ja ? 34 : 40, color.primary)}
+        <Spacer />
+        <HStack spacing={6}>{label(next.date, fonts.body, 11, color.text2)}<Spacer />{label(props.day, fonts.bold, 11, color.text)}</HStack>
       </>);
       if (pending) return root(props.url, props.a11y, 14, <>
         {label(props.together, fonts.medium, 11, color.text2)}

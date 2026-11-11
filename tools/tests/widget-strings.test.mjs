@@ -34,7 +34,7 @@ test('V0-F11-AC-02 the app config names only keys that have strings', async () =
     const { default: config } = await import('../../apps/mobile/app.config.ts?v=gallery');
     const [, options] = config.expo.plugins.find((plugin) => plugin[0] === 'expo-widgets');
     assert.deepEqual(options.widgets.flatMap((widget) => [widget.displayName, widget.description]), GALLERY_KEYS);
-    assert.deepEqual(options.widgets[1].ios.supportedFamilies, ['systemMedium', 'systemLarge']);
+    assert.deepEqual(options.widgets[1].ios.supportedFamilies, ['systemSmall', 'systemMedium', 'systemLarge', 'accessoryCircular']);
   } finally {
     if (prior === undefined) delete process.env.IOS_WIDGETS;
     else process.env.IOS_WIDGETS = prior;

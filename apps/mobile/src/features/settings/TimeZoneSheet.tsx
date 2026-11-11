@@ -9,7 +9,7 @@ export function TimeZoneSheet({ visible, timeZone, disabled, failed = false, onC
   const zones = useMemo(() => [...new Set(query.trim() ? supportedZones : [...fallbackZones, ...(timeZone ? [timeZone] : [])])].filter((zone) => zone.toLowerCase().includes(query.trim().toLowerCase())), [query, timeZone]);
   return <BottomSheet visible={visible} title={t('set.room.tz.pick')} onClose={onClose}>
     <TextField label={t('set.room.tz.search')} value={query} onChangeText={setQuery} autoCapitalize="none" autoCorrect={false} />
-    {failed && <InlineError text={t('state.error.body')} />}
+    {failed && <InlineError text={t('set.save.err')} />}
     {zones.map((zone) => <ListRow key={zone} label={zone} value={timeZone === zone ? '✓' : undefined} disabled={disabled} onPress={() => onSelect(zone)} />)}
   </BottomSheet>;
 }

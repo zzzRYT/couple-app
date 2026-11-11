@@ -33,7 +33,7 @@ describe('V0-DR-01…06 complete anniversary calendar', () => {
     expect(result.todayItems.map((item) => item.key)).toEqual(['y1', 'bday:me:2025', 'bday:partner:2025', 'custom:one:2025']);
     expect(result.celebrationCandidates.map((item) => item.key)).toEqual(result.todayItems.map((item) => item.key));
   });
-  it('includes both one-year window endpoints, and excludes dates before start', () => {
+  it('includes both one-year window endpoints, and leaves out a one-time custom older than the window', () => {
     const result = computeAnniversaries({ ...input, startDate: '2025-03-01', customs: [
       { id: 'past', title: 'Past', date: '2024-03-02', repeat: 'once' },
       { id: 'future', title: 'Future', date: '2027-03-02', repeat: 'once' },
@@ -121,6 +121,22 @@ it('V0-DR-06-AC-01 leaves a Pepero Day before the start date out of the past lis
   const input = { startDate: '2026-12-01', timeZone: 'Asia/Seoul', me: { birthday: null }, partner: null, customs: [] };
   const result = computeAnniversaries(input, '2026-12-05T03:00:00Z');
   expect([...result.past, ...result.todayItems, ...result.upcoming].some((item) => item.date === '2026-11-11')).toBe(false);
+});
+it('ND12 keeps customs dated before the start date while seasons and birthdays still start with the relationship', () => {
+  const input = { startDate: '2025-06-29', timeZone: 'Asia/Seoul', me: { birthday: { month: 6, day: 1 } }, partner: null, customs: [
+    { id: 'met', title: 'Met', date: '2025-05-17', repeat: 'once' as const },
+    { id: 'first', title: 'First', date: '2025-05-20', repeat: 'yearly' as const },
+  ] };
+  const result = computeAnniversaries(input, '2025-12-01T03:00:00Z');
+  expect(result.past.filter((item) => item.date < '2025-06-29').map((item) => item.key).sort()).toEqual(['custom:first:2025', 'custom:met']);
+  expect(result.upcoming.map((item) => item.key)).toContain('custom:first:2026');
+});
+it('ND06 puts an occasion that is today before a day or year milestone that is late', () => {
+  const input = { startDate: '2025-11-05', timeZone: 'Asia/Seoul', me: { birthday: { month: 11, day: 10 } }, partner: null, customs: [{ id: 'c', title: 'Ours', date: '2026-11-10', repeat: 'once' as const }] };
+  const result = computeAnniversaries(input, '2026-11-10T03:00:00Z');
+  expect(result.celebrationCandidates.map((item) => item.key)).toEqual(['bday:me:2026', 'custom:c', 'y1']);
+  const lateOnly = computeAnniversaries({ ...input, me: { birthday: null }, customs: [] }, '2026-11-10T03:00:00Z');
+  expect(lateOnly.celebrationCandidates.map((item) => item.key)).toEqual(['y1']);
 });
 it('V0-EC-12 shows my birthday alone and the partner birthday only after both added theirs', () => {
   const base = { startDate: '2025-06-29', timeZone: 'Asia/Seoul', me: { birthday: { month: 3, day: 1 } }, customs: [] };

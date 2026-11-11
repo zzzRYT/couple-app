@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { router } from 'expo-router';
+import { router, useIsFocused } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { V0HomeScreen } from '../../features/home/V0HomeScreen';
 import { V0Error } from '../../features/home/states';
@@ -15,7 +15,8 @@ import { Wordmark } from '../../ui/Wordmark';
 export default function HomeRoute() {
   const { client, userId } = useApp();
   const { shouldPrompt, markPromptSeen } = usePassword();
-  const { t, i18n } = useTranslation(); const [partnerEdited, setPartnerEdited] = useState<string | null>(null);
+  const { t, i18n } = useTranslation(); const focused = useIsFocused();
+  const [partnerEdited, setPartnerEdited] = useState<{ text: string; key: string; changedAt: string } | null>(null);
   const { state, refresh, spaceId, inviteAfterActivation } = useSpace();
   const milestone = useMilestone(spaceId, userId, !state.offline && state.status !== 'error', client, 'home', state.offline, state.snapshot?.space.updatedAt ?? '');
   const [seenKeys, setSeenKeys] = useState<string[]>([]); const [seenReady, setSeenReady] = useState(false);
@@ -26,16 +27,16 @@ export default function HomeRoute() {
   const hidePartnerEdited = useCallback(() => setPartnerEdited(null), []);
   useEffect(() => {
     const space = snapshot?.space;
+    if (!focused) { setPartnerEdited(null); return; }
     if (!snapshot || !spaceId || !userId || !space?.anniversaryChangedAt || !space.anniversaryChangedBy || space.anniversaryChangedBy === userId) return;
     const key = `v0.partnerEdited.seen.${spaceId}.${userId}`; const changedAt = space.anniversaryChangedAt;
     let active = true;
-    void SecureStore.getItemAsync(key).then(async (seen) => {
-      if (seen && Date.parse(seen) >= Date.parse(changedAt)) return;
-      await SecureStore.setItemAsync(key, changedAt);
-      if (active) setPartnerEdited(t('home.partnerEdited', { name: snapshot.members.find((member) => member.userId === space.anniversaryChangedBy)?.displayName ?? t('home.pending.partner'), date: formattedMonthDay(space.anniversaryDate, i18n.language) }));
+    void SecureStore.getItemAsync(key).then((seen) => {
+      if (!active || (seen && Date.parse(seen) >= Date.parse(changedAt))) return;
+      setPartnerEdited({ key, changedAt, text: t('home.partnerEdited', { name: snapshot.members.find((member) => member.userId === space.anniversaryChangedBy)?.displayName ?? t('home.pending.partner'), date: formattedMonthDay(space.anniversaryDate, i18n.language) }) });
     });
     return () => { active = false; };
-  }, [snapshot, spaceId, userId, t, i18n.language]);
+  }, [focused, snapshot, spaceId, userId, t, i18n.language]);
   useEffect(() => {
     if (!spaceId || !userId || memberCount !== 2 || state.offline || inviteAfterActivation) return;
     let active = true;
@@ -45,8 +46,11 @@ export default function HomeRoute() {
   }, [spaceId, userId, memberCount, state.offline, inviteAfterActivation]);
   const now = useNow();
   const failed = state.status === 'error' && !state.offline;
+  const errorShown = failed || (state.offline && !snapshot);
+  const shownEdit = errorShown ? null : partnerEdited;
+  useEffect(() => { if (shownEdit) void SecureStore.setItemAsync(shownEdit.key, shownEdit.changedAt); }, [shownEdit]);
   return <>
-    {failed || (state.offline && !snapshot) ? <V0Error offline={!failed} title={<Wordmark />} retry={() => void refresh()} /> : <V0HomeScreen state={state} now={now} onRefresh={() => void refresh()} onAnniversaries={() => router.navigate('/anniversaries')} onOpenInvite={(reissue) => router.push(reissue ? { pathname: '/invite', params: { reissue: '1' } } : '/invite')} onHaveCode={() => router.push('/connect-code')} celebration={milestone.celebration} onSeen={() => { if (milestone.celebration) void milestone.seen(milestone.celebration); }} partnerEdited={partnerEdited} onHidePartnerEdited={hidePartnerEdited} seenKeys={seenKeys} seenReady={seenReady} onLocalSeen={(key) => { if (!seenKey) return; const next = [...seenKeys.filter((entry) => entry !== key), key].slice(-50); setSeenKeys(next); void SecureStore.setItemAsync(seenKey, JSON.stringify(next)); }} onOccurrence={(item) => router.push({ pathname: '/anniversary/[key]', params: { key: encodeURIComponent(item.key) } })} />}
+    {errorShown ? <V0Error offline={!failed} title={<Wordmark />} retry={() => void refresh()} /> : <V0HomeScreen state={state} now={now} onRefresh={() => void refresh()} onAnniversaries={() => router.navigate('/anniversaries')} onOpenInvite={(reissue) => router.push(reissue ? { pathname: '/invite', params: { reissue: '1' } } : '/invite')} onHaveCode={() => router.push('/connect-code')} celebration={milestone.celebration} closedMilestoneKey={milestone.preset && !milestone.celebration ? milestone.preset.key : null} onSeen={() => { if (milestone.celebration) void milestone.seen(milestone.celebration); }} partnerEdited={shownEdit?.text} onHidePartnerEdited={hidePartnerEdited} seenKeys={seenKeys} seenReady={seenReady} onLocalSeen={(key) => { if (!seenKey) return; const next = [...seenKeys.filter((entry) => entry !== key), key].slice(-50); setSeenKeys(next); void SecureStore.setItemAsync(seenKey, JSON.stringify(next)); }} onOccurrence={(item) => router.push({ pathname: '/anniversary/[key]', params: { key: encodeURIComponent(item.key) } })} />}
     <SetPasswordSheet visible={!!shouldPrompt} onLater={() => void markPromptSeen()} onCreate={() => { void markPromptSeen(); router.push('/settings/set-password'); }} />
   </>;
 }

@@ -1,4 +1,4 @@
-import { fireEvent } from '@testing-library/react-native';
+import { act, fireEvent } from '@testing-library/react-native';
 import { renderWithI18n } from '../../../test/render';
 import { renderSweep } from '../../../test/a11y';
 import { snapshotFixture } from '../../../test/fixtures';
@@ -132,4 +132,39 @@ it('V0-F09-AC-05 closing a day or year card asks the server to record it for thi
   const screen = await renderWithI18n(homeAt('2025-10-06T03:00:00Z', { celebration: day100, onSeen }));
   await fireEvent.press(screen.getByLabelText(screen.t('home.today.close')));
   expect(onSeen).toHaveBeenCalledTimes(1);
+});
+
+it('V0-F09-AC-04 shows one celebration card a day: after one is closed the other occasions of today stay in the list', async () => {
+  const snapshot = snapshotFixture(); snapshot.me.birthday = { month: 11, day: 11, year: null };
+  const pepero = (screen: { t: (key: string, options?: Record<string, unknown>) => string }) => screen.t('home.today.title.season', { title: screen.t('anniv.pepero') });
+  const closedBirthday = await renderWithI18n(homeAt('2026-11-11T03:00:00Z', { seenKeys: ['bday:me:2026'] }, snapshot));
+  expect(closedBirthday.queryByText(pepero(closedBirthday))).toBeNull();
+  expect(closedBirthday.queryByLabelText(closedBirthday.t('home.today.close'))).toBeNull();
+  expect(closedBirthday.getByText(closedBirthday.t('home.next.label'))).toBeTruthy();
+  await closedBirthday.unmount();
+  const milestoneDay = snapshotFixture(); milestoneDay.space.anniversaryDate = '2025-11-11';
+  const closedMilestone = await renderWithI18n(homeAt('2026-11-11T03:00:00Z', { closedMilestoneKey: 'y1' }, milestoneDay));
+  expect(closedMilestone.queryByText(pepero(closedMilestone))).toBeNull();
+  expect(closedMilestone.queryByLabelText(closedMilestone.t('home.today.close'))).toBeNull();
+});
+
+it('V0-F09-AC-03 a late milestone card still shows after the card of today is closed', async () => {
+  const snapshot = snapshotFixture(); snapshot.space.anniversaryDate = '2025-07-31';
+  const late = { ...day100, milestoneDate: '2025-11-07', daysAgo: 4 };
+  const screen = await renderWithI18n(homeAt('2025-11-11T03:00:00Z', { celebration: late, seenKeys: ['season:pepero:2025'] }, snapshot));
+  expect(screen.getByText(screen.t('home.today.late', { date: '11월 7일', title: screen.t('anniv.days', { n: 100 }) }))).toBeTruthy();
+});
+
+it('V0-F03-AC-04 keeps the partner-edited notice for 4.5 seconds and hides it on a tap', async () => {
+  jest.useFakeTimers();
+  try {
+    const onHide = jest.fn();
+    const screen = await renderWithI18n(homeAt('2026-11-02T03:00:00Z', { partnerEdited: 'partner edited', onHidePartnerEdited: onHide }));
+    await act(() => { jest.advanceTimersByTime(4499); });
+    expect(onHide).not.toHaveBeenCalled();
+    await act(() => { jest.advanceTimersByTime(1); });
+    expect(onHide).toHaveBeenCalledTimes(1);
+    await fireEvent.press(screen.getByText('partner edited'));
+    expect(onHide).toHaveBeenCalledTimes(2);
+  } finally { jest.useRealTimers(); }
 });

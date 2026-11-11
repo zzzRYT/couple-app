@@ -118,6 +118,24 @@ it('V0-F07-AC-06 deletes after confirmation and reports it deleted', async () =>
   expect(remove.mock.calls[0]![0]).toBe(1);
   alert.mockRestore();
 });
+it('V0-F07-AC-06 ND13 shows the delete-failure toast when deleting fails and keeps the sheet open', async () => {
+  const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined); const onSaved = jest.fn();
+  const screen = await renderWithI18n(<AnniversaryEdit {...base} initial={item} save={jest.fn()} remove={jest.fn().mockRejectedValue(new TypeError('offline'))} onSaved={onSaved} />);
+  await fireEvent.press(screen.getByText(screen.t('edit.delete')));
+  (alert.mock.calls[0]![2] as { style?: string; onPress?: () => void }[]).find((button) => button.style === 'destructive')!.onPress!();
+  expect(await screen.findByText(screen.t('edit.delete.err'))).toBeTruthy();
+  expect(screen.queryByText(screen.t('edit.save.err'))).toBeNull();
+  expect(onSaved).not.toHaveBeenCalled();
+  alert.mockRestore();
+});
+it('ND15 uses the unpaired hint and delete body while no partner has joined', async () => {
+  const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
+  const screen = await renderWithI18n(<AnniversaryEdit {...base} partner={null} initial={item} save={jest.fn()} />);
+  expect(screen.getByText(screen.t('edit.shared.hint.unpaired'))).toBeTruthy();
+  await fireEvent.press(screen.getByText(screen.t('edit.delete')));
+  expect(alert).toHaveBeenCalledWith(screen.t('edit.delete.title'), screen.t('edit.delete.body.unpaired'), expect.any(Array));
+  alert.mockRestore();
+});
 it('V0-F07-AC-07 closes at once when nothing was changed', async () => {
   const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined); const onClose = jest.fn();
   const screen = await renderWithI18n(<AnniversaryEdit {...base} initial={item} save={jest.fn()} onClose={onClose} />);

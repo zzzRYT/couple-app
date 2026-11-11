@@ -1,6 +1,6 @@
 # V0 copy (ko / en / ja) — all V0 copy keys
 
-Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1794227595-8638`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
+Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1794274258-930a`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
 
 **Brand names**: the boards draw the app as 모피루 / Mopiru / モピル and the mascot as 모피 / Mopi / モピ. The owner has since decided (spec D-08, 2026-11-02): app **아룸 / Aroom / アルーム**, mascot **아루미 / Aroomi / アルーミ**. The table below keeps the board text verbatim; in the app only `app.name` and `mascot.name` hold the names, every other value references them with i18next nesting, and the Korean particle after 아룸 becomes 을/이/은/과/으로 (e.g. `widget.none.title` → `$t(app.name)을 시작해요`). See `../H02-v0-shell-home.md` §6.
 
@@ -159,6 +159,7 @@ sections: 이 화면의 문구
 | `end.byPartnerDeleted` | 상대가 계정을 삭제했어요 | Your partner deleted their account | 相手がアカウントを削除しました | 재사용 · 기존 키 end.byPartnerDeleted |
 | `state.ended.body` | 두 사람의 공간이 끝났어요. 날짜와 기념일은 더 이상 볼 수 없어요. | Your shared space has ended. Your dates and anniversaries are no longer available. | ふたりのスペースは終了しました。日付と記念日はもう表示されません。 | 신규 · EN·JA 초안 |
 | `state.ended.cta` | 새로 시작하기 | Start over | 新しく始める | 신규 · EN·JA 초안 |
+| `end.done.title` | 공간을 종료했어요 | Space ended | スペースを終了しました | 재사용 · 기존 키 end.done.title (ND08 · 내가 연결을 끊은 뒤) |
 | `time.sample` | 오후 9:12 | 9:12 PM | 21:12 | 재사용 · 기존 키 main.lastSeen.sample |
 
 ## V0-04 기념일 (`copy-v0-anniv.dc.html`)
@@ -224,9 +225,11 @@ sections: 이 화면의 문구
 | `edit.err.title.long` | 제목은 20자까지 쓸 수 있어요 | Titles can be up to 20 characters | タイトルは20文字までです | 신규 · EN·JA 초안 |
 | `edit.err.memo.long` | 메모는 100자까지 쓸 수 있어요 | Notes can be up to 100 characters | メモは100文字までです | 신규 · EN·JA 초안 |
 | `edit.shared.hint` | 저장하면 {name}님에게도 보여요. {name}님 앱이 닫혀 있으면 앱을 열 때 반영돼요. | Once saved, {name} sees it too. If {name}'s app is closed, their phone updates when they open it. | 保存すると{name}さんにも表示されます。{name}さんのアプリが閉じていると、次に開いたときに反映されます。 | 신규 · EN·JA 초안 |
+| `edit.shared.hint.unpaired` | 연결되면 상대에게도 함께 보여요. | Your partner will see it too once you connect. | つながると相手にも表示されます。 | 신규 · EN·JA 초안 (ND15 · 상대 연결 전) |
 | `edit.delete` | 이 기념일 삭제 | Delete this anniversary | この記念日を削除 | 신규 · EN·JA 초안 |
 | `edit.delete.title` | 기념일을 삭제할까요? | Delete this anniversary? | この記念日を削除しますか？ | 신규 · EN·JA 초안 |
 | `edit.delete.body` | {name}님 화면에서도 사라지고 되돌릴 수 없어요. | It'll disappear for {name} too, and this can't be undone. | {name}さんの画面からも消え、元に戻せません。 | 신규 · EN·JA 초안 |
+| `edit.delete.body.unpaired` | 삭제하면 되돌릴 수 없어요. | This can't be undone. | 削除すると元に戻せません。 | 신규 · EN·JA 초안 (ND15 · 상대 연결 전) |
 | `edit.saved` | 저장했어요 | Saved | 保存しました | 신규 · EN·JA 초안 |
 | `edit.deleted` | 삭제했어요 | Deleted | 削除しました | 신규 · EN·JA 초안 |
 | `edit.saving` | 저장하는 중이에요 | Saving | 保存しています | 신규 · EN·JA 초안 |
@@ -238,6 +241,7 @@ sections: 이 화면의 문구
 | `edit.discard.cta` | 버리기 | Discard | 破棄 | 신규 · EN·JA 초안 |
 | `edit.discard.keep` | 계속 고치기 | Keep editing | 編集を続ける | 신규 · EN·JA 초안 |
 | `edit.save.err` | 저장하지 못했어요. 고친 내용은 그대로 있어요. | Couldn't save. Your changes are still here. | 保存できませんでした。変更はそのまま残っています。 | 신규 · EN·JA 초안 |
+| `edit.delete.err` | 삭제하지 못했어요. 다시 시도해 주세요. | Couldn't delete. Please try again. | 削除できませんでした。もう一度お試しください。 | 신규 · 오너 승인 2026-11-10 (ND19) · EN·JA 초안 |
 
 ## V0-06 위젯 (`copy-v0-widgets.dc.html`)
 sections: 이 화면의 문구
@@ -268,6 +272,7 @@ sections: 이 화면의 문구
 | `set.me.name` | 이름 | Name | 名前 | 변경 · 기존 키 set.name (별명 → 이름) |
 | `set.me.birthday` | 생일 | Birthday | 誕生日 | 신규 · EN·JA 초안 |
 | `set.me.birthday.none` | 넣지 않음 | Not set | 未設定 | 신규 · EN·JA 초안 |
+| `set.me.birthday.clear` | 생일 지우기 | Remove birthday | 誕生日を削除 | 신규 · EN·JA 초안 (ND16) |
 | `set.me.birthday.partnerWait` | {name}님은 아직 생일을 넣지 않았어요. 둘 다 넣으면 서로 보여요. | {name} hasn't added a birthday yet. Once you both do, you'll see each other's. | {name}さんはまだ誕生日を入れていません。ふたりとも入れるとお互いに表示されます。 | 신규 · EN·JA 초안 |
 | `set.section.us` | 우리 | Us | ふたり | 신규 · EN·JA 초안 |
 | `set.us.start` | 사귄 날 | Start date | 付き合った日 | 신규 · EN·JA 초안 |
@@ -281,6 +286,7 @@ sections: 이 화면의 문구
 | `set.start.confirm.title` | 사귄 날을 바꿀까요? | Change your start date? | 付き合った日を変更しますか？ | 신규 · EN·JA 초안 |
 | `set.start.confirm.body` | {old} → {new}. {name}님 화면과 위젯, 날짜 기념일도 함께 바뀌어요. | {old} → {new}. {name}'s screen, widgets and milestone dates change too. | {old} → {new}。{name}さんの画面とウィジェット、記念日の日付も変わります。 | 신규 · EN·JA 초안 |
 | `set.start.confirm.cta` | 바꾸기 | Change | 変更する | 신규 · EN·JA 초안 |
+| `set.save.err` | 저장하지 못했어요. 다시 시도해 주세요. | Couldn't save. Please try again. | 保存できませんでした。もう一度お試しください。 | 신규 · 오너 승인 2026-11-10 (ND19) · EN·JA 초안 |
 | `set.section.notify` | 알림 | Notifications | 通知 | 재사용 · 기존 키 set.sec.notif |
 | `set.notify.toggle` | 기념일 알림 | Anniversary reminders | 記念日の通知 | 신규 · EN·JA 초안 |
 | `set.notify.time` | 알림 시간 | Time | 通知時刻 | 신규 · EN·JA 초안 |
@@ -369,6 +375,8 @@ sections: 이 화면의 문구
 | `login.signup.sent.body` | {email}로 보낸 메일의 링크를 누르면 가입이 끝나요. | Tap the link in the email we sent to {email} to finish signing up. | {email}に送ったメールのリンクをタップすると登録が完了します。 | 재사용 · 기존 키 login.signup.sent.body |
 | `login.mail.spam` | 메일이 오지 않으면 스팸함을 확인하거나 1분 뒤에 다시 보내 주세요. | If it doesn't arrive, check your spam folder or resend in a minute. | 届かない場合は迷惑メールフォルダを確認するか、1分後に再送してください。 | 재사용 · 기존 키 login.mail.spam |
 | `login.mail.resend` | 메일 다시 보내기 | Resend email | メールを再送する | 재사용 · 기존 키 login.mail.resend |
+| `auth.mail.resent` | 보냈어요 | Sent | 送りました | 신규 · EN·JA 초안 (ND21) |
+| `auth.mail.resend.wait` | {s}초 뒤에 다시 보낼 수 있어요 | You can resend in {s}s | {s}秒後にもう一度送れます | 신규 · EN·JA 초안 (ND21) |
 | `auth.signup.nomail.title` | 지금은 이메일로 가입할 수 없어요 | You can't sign up with email just yet | 今はメールで登録できません | 신규 · EN·JA 초안 |
 | `auth.signup.nomail.body` | 가입 확인 메일을 보낼 준비가 아직 안 됐어요. Apple로 계속하면 바로 시작할 수 있어요. | We can't send confirmation emails yet. Continue with Apple to start right away. | 確認メールを送る準備がまだできていません。Appleで続けるとすぐに始められます。 | 신규 · EN·JA 초안 |
 | `login.reset.title` | 비밀번호를 재설정할게요 | Let's reset your password | パスワードを再設定します | 재사용 · 기존 키 login.reset.title |
@@ -390,6 +398,9 @@ sections: 이 화면의 문구
 | `login.pw.new.save` | 저장하고 로그인 | Save and sign in | 保存してログイン | 재사용 · 기존 키 login.pw.new.save |
 | `auth.link.exp.title` | 이 링크는 쓸 수 없어요 | This link can't be used | このリンクは使えません | 신규 · EN·JA 초안 |
 | `auth.link.exp.body` | 링크가 만료됐거나 이미 쓰였어요. 재설정 메일을 다시 받아 주세요. | It expired or was already used. Please request a new reset email. | 有効期限が切れたか、すでに使われています。再設定メールをもう一度受け取ってください。 | 신규 · EN·JA 초안 |
+| `auth.link.confirmExp.title` | 이 확인 링크는 쓸 수 없어요 | This confirmation link can't be used | この確認リンクは使えません | 신규 · EN·JA 초안 (ND22) |
+| `auth.link.confirmExp.body` | 링크가 만료됐거나 이미 쓰였어요. 확인 메일을 다시 받아 주세요. | The link has expired or was already used. Get a new confirmation email. | リンクの期限が切れたか、すでに使われています。確認メールをもう一度受け取ってください。 | 신규 · EN·JA 초안 (ND22) |
+| `auth.link.confirmExp.resend` | 확인 메일 다시 보내기 | Resend confirmation email | 確認メールを再送する | 신규 · EN·JA 초안 (ND22) |
 | `auth.setpw.prompt.title` | 비밀번호도 만들어 둘까요? | Want to add a password too? | パスワードも作っておきますか？ | 신규 · EN·JA 초안 |
 | `auth.setpw.prompt.body` | 없어도 Apple로 계속 쓸 수 있어요. 만들어 두면 이런 점이 좋아요. | You can keep using Apple without one. Here's what it adds. | なくてもAppleでそのまま使えます。作っておくと、こんなことができます。 | 신규 · EN·JA 초안 |
 | `auth.setpw.prompt.b1` | 이메일과 비밀번호로도 로그인할 수 있어요 | You can also sign in with email and password | メールとパスワードでもログインできます | 신규 · EN·JA 초안 |
@@ -410,6 +421,10 @@ sections: 이 화면의 문구
 | `common.copy` | 복사 | Copy | コピー | 신규 · EN·JA 초안 |
 | `auth.setpw.done.again` | 설정 › 로그인·보안에서 언제든 다시 볼 수 있어요. | You can find it again anytime in Settings › Sign-in & security. | 設定 › ログイン・セキュリティでいつでも確認できます。 | 신규 · EN·JA 초안 |
 | `auth.setpw.sheet.body` | 없어도 지금처럼 Apple로 쓸 수 있어요. 만들어 두면 이메일로도 로그인하고, 계정 삭제도 비밀번호로 확인할 수 있어요. | You can keep using Apple as you do now. With a password, you can also sign in with email and confirm account deletion with it. | 今までどおりAppleで使えます。作っておくと、メールでもログインでき、アカウント削除もパスワードで確認できます。 | 신규 · EN·JA 초안 |
+| `auth.save.err.title` | 저장하지 못했어요 | Couldn't save | 保存できませんでした | 신규 · 오너 승인 2026-11-10 (ND19) · EN·JA 초안 |
+| `auth.save.err.body` | 잠시 후 다시 시도해 주세요. | Please try again in a moment. | しばらくしてからもう一度お試しください。 | 신규 · 오너 승인 2026-11-10 (ND19) · EN·JA 초안 |
+| `auth.send.err.title` | 메일을 보내지 못했어요 | Couldn't send the email | メールを送れませんでした | 신규 · 오너 승인 2026-11-10 (ND19) · EN·JA 초안 |
+| `auth.send.err.body` | 잠시 후 다시 시도해 주세요. | Please try again in a moment. | しばらくしてからもう一度お試しください。 | 신규 · 오너 승인 2026-11-10 (ND19) · EN·JA 초안 |
 
 ## V0-09 로그인·보안 (`copy-v0-security.dc.html`)
 sections: 이 화면의 문구
@@ -473,6 +488,7 @@ sections: 이 화면의 문구
 | `connect.move.i3` | 내 이름과 생일은 그대로예요. | Your name and birthday stay the same. | 名前と誕生日はそのままです。 | 신규 · EN·JA 초안 |
 | `connect.move.submit` | 옮겨서 연결하기 | Move and connect | 移ってつながる | 신규 · EN·JA 초안 |
 | `connect.err.own` | 내가 만든 코드예요. 이 코드는 상대에게 보내 주세요. | That's your own code. Send it to your partner instead. | あなたが作ったコードです。相手に送ってください。 | 신규 · EN·JA 초안 |
+| `join.hasSpace.body.v0` | 한 번에 하나의 공간만 쓸 수 있어요. 먼저 설정 › 연결 끊기로 지금 공간을 끝낸 뒤 코드를 다시 입력해 주세요. | You can only be in one space at a time. End your current space first in Settings › Disconnect, then enter the code again. | 同時に使えるスペースは1つだけです。まず設定 › つながりを解除で今のスペースを終えてから、もう一度コードを入力してください。 | 신규 · 오너 승인 2026-11-10 (ND19) · EN·JA 초안 |
 
 ## V0-11 업데이트 알림 (`copy-v0-update.dc.html`)
 sections: 이 화면의 문구

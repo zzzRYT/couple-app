@@ -2,6 +2,7 @@ import * as Linking from 'expo-linking';
 import { ApiError } from '../../lib/errors';
 import type { Client } from '../../lib/client';
 import type { createSupabase } from '../../lib/supabase';
+import { rememberMail } from './lastMail';
 type Supabase = ReturnType<typeof createSupabase>;
 
 export type PasswordState = { hasPassword: boolean; promptSeen: boolean; email: string | null };
@@ -45,6 +46,7 @@ export function passwordPort(supabase: Supabase, client: Client): PasswordPort {
     async signUp(email, password) {
       try {
         await client.passwordSignup(email, password, redirectTo());
+        await rememberMail({ kind: 'signup', email });
         return 'ok';
       } catch (error) {
         const code = failure(error);
@@ -53,10 +55,12 @@ export function passwordPort(supabase: Supabase, client: Client): PasswordPort {
     },
     async requestReset(email) {
       const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: redirectTo() });
+      if (!error) await rememberMail({ kind: 'reset' });
       return !error;
     },
     async resendConfirmation(email) {
       const { error } = await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo: redirectTo() } });
+      if (!error) await rememberMail({ kind: 'signup', email });
       return !error;
     },
     state: () => client.passwordState(),

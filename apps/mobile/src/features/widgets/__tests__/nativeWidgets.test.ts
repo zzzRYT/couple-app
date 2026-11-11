@@ -14,7 +14,7 @@ const install = () => jest.isolateModules(() => {
 });
 
 describe('installNativeWidgets', () => {
-  beforeEach(() => { jest.clearAllMocks(); mockDefinitions.mockReturnValue({ widgets: [] }); });
+  beforeEach(() => { jest.clearAllMocks(); mockDefinitions.mockReturnValue({ widgets: {} }); });
   it('stays off on a build without the widget module', () => {
     mockNativeModule.mockReturnValue(null);
     install();

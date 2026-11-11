@@ -29,6 +29,6 @@ export default function StartDateRoute() {
       {check.ok ? <Chip kind="info" icon="annivDays" label={t('set.start.preview', { n: check.dayCount })} /> : <InlineError text={t('start.date.err.future')} />}
     </View>
     {check.ok && value !== space.anniversaryDate && <InlineHint text={change} />}
-    {error && <Banner kind="danger" text={t('state.error.title')} />}
+    {error && <Banner kind="danger" text={t('set.save.err')} />}
   </Screen>;
 }

@@ -6,7 +6,7 @@ import { AppleButton } from './AppleButton';
 import { EMAIL_PATTERN } from './authPort';
 import type { PasswordPort } from './passwordPort';
 import { passwordRules, rulesMet } from './passwordRules';
-import { CheckRow, ContactButton, PasswordField, RuleList } from './passwordUi';
+import { CheckRow, ContactButton, MailResend, PasswordField, RuleList } from './passwordUi';
 
 /** V0-auth-signup and -err, -sent, -nomail. Until mail is connected -nomail is the real screen; a mail that was not sent is never claimed. */
 export function SignupScreen({ password, onBack, onApple }: { password: Pick<PasswordPort, 'mailConnected' | 'signUp' | 'resendConfirmation'>; onBack: () => void; onApple: () => void }) {
@@ -44,7 +44,7 @@ export function SignupScreen({ password, onBack, onApple }: { password: Pick<Pas
   }
   if (sent) {
     return (
-      <Screen onBack={onBack} footer={<Button label={t('login.mail.resend')} variant="secondary" onPress={() => void password.resendConfirmation(email.trim())} />}>
+      <Screen onBack={onBack} footer={<MailResend sent label={t('login.mail.resend')} send={() => password.resendConfirmation(email.trim())} />}>
         <AppText variant="title" accessibilityRole="header">{t('login.signup.sent.title')}</AppText>
         <AppText>{t('login.signup.sent.body', { email: email.trim() })}</AppText>
         <AppText variant="bodySm" tone="text2">{t('login.mail.spam')}</AppText>
@@ -60,7 +60,7 @@ export function SignupScreen({ password, onBack, onApple }: { password: Pick<Pas
       <PasswordField kind="new" label={t('login.pw.confirm')} placeholder={t('login.pw.confirm.placeholder')} value={again} onChangeText={setAgain} error={mismatch ? t('login.pw.mismatch') : null} />
       <CheckRow label={t('login.signup.terms')} checked={terms} onToggle={() => setTerms((value) => !value)} />
       <AppText variant="bodySm" tone="text2">{t('auth.pw.stored')}</AppText>
-      {failed && <Banner kind="danger" text={t('login.error.title')} body={t('login.error.body')} />}
+      {failed && <Banner kind="danger" text={t('auth.save.err.title')} body={t('auth.save.err.body')} />}
     </Screen>
   );
 }

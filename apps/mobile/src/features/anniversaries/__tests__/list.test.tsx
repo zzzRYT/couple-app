@@ -102,3 +102,18 @@ it('V0-F05-AC-02 shows both birthdays yearly by month and day with no age or bir
   expect(screen.getByText(screen.t('anniv.birthday', { name: 'Haru' }))).toBeTruthy();
   expect(JSON.stringify(screen.toJSON())).not.toMatch(/\b(19|20)\d\d\b(?!.*(?:수|월))/);
 });
+it('ND15 puts the connect hint in the partner birthday slot, right after my birthday, and it is not a button', async () => {
+  const view = computeAnniversaries({ ...common, startDate: '2025-01-01', timeZone: 'UTC', me: { birthday: { month: 12, day: 1 } } }, '2026-11-02T12:00:00Z');
+  const onBirthday = jest.fn();
+  const screen = await renderWithI18n(<AnniversaryList view={view} filter="all" pastOpen={false} offline={false} birthdayState="pending" partner="상대" onFilter={jest.fn()} onPast={jest.fn()} onAdd={jest.fn()} onItem={jest.fn()} onBirthday={onBirthday} />);
+  const hint = screen.t('home.pending.hint');
+  const tree = JSON.stringify(screen.toJSON());
+  expect(tree.indexOf(screen.t('anniv.birthday.me'))).toBeLessThan(tree.indexOf(hint));
+  expect(tree.indexOf(hint)).toBeLessThan(tree.indexOf(screen.t('anniv.christmas')));
+  await fireEvent.press(screen.getByText(hint)); expect(onBirthday).not.toHaveBeenCalled();
+});
+it('V0-F08-AC-02 ND12 shows no empty state in the custom filter while customs exist outside the window', async () => {
+  const view = computeAnniversaries({ ...common, startDate: '2025-01-01', timeZone: 'UTC', customs: [{ id: 'old', title: 'Old', date: '2024-05-01', repeat: 'once' }] }, '2026-11-02T12:00:00Z');
+  const screen = await renderWithI18n(<AnniversaryList view={view} filter="custom" hasCustoms pastOpen={false} offline={false} birthdayState="none" partner="Haru" onFilter={jest.fn()} onPast={jest.fn()} onAdd={jest.fn()} onItem={jest.fn()} onBirthday={jest.fn()} />);
+  expect(screen.queryByText(screen.t('anniv.empty.title'))).toBeNull();
+});

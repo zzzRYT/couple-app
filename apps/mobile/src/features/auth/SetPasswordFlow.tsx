@@ -72,7 +72,7 @@ export function SetPasswordFlow({ password, email, copy, start = 'prompt', onDon
       <RuleList rules={rules} typed={secret.length > 0} />
       <PasswordField kind="new" label={t('login.pw.confirm')} placeholder={t('login.pw.confirm.placeholder')} value={again} onChangeText={setAgain} error={mismatch ? t('login.pw.mismatch') : null} />
       <AppText variant="bodySm" tone="text2">{t('auth.pw.stored')}</AppText>
-      {failed && <Banner kind="danger" text={t('login.error.title')} body={t('login.error.body')} />}
+      {failed && <Banner kind="danger" text={t('auth.save.err.title')} body={t('auth.save.err.body')} />}
     </Screen>
   );
 }
