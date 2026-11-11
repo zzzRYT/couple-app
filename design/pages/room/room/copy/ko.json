@@ -1,6 +1,6 @@
 {
   "status": "원본",
-  "generated": "Artifact 1794227595-8638; do not edit",
+  "generated": "Artifact 1794273208-8c73; do not edit",
   "keyStatus": {
     "room.ctl.settings": "approved",
     "room.syncing": "approved",
@@ -29,8 +29,16 @@
     "room.compose.unavailable": "new",
     "room.compose.partner": "new",
     "room.compose.consent": "new",
-    "room.compose.making": "new",
-    "room.compose.quota": "new"
+    "room.compose.quota": "new",
+    "room.start.hint": "new",
+    "room.idea.cozy": "new",
+    "room.idea.night": "new",
+    "room.idea.flowers": "new",
+    "room.idea.text": "new",
+    "room.idea.star": "new",
+    "room.compose.quota.info": "new",
+    "room.chip.idea.a11y": "new",
+    "room.chip.recent.a11y": "new"
   },
   "strings": {
     "room.ctl.settings": "설정",
@@ -60,7 +68,15 @@
     "room.compose.unavailable": "방을 다시 불러온 뒤에 꾸밀 수 있어요",
     "room.compose.partner": "{name}님이 꾸미는 중이에요",
     "room.compose.consent": "AI 처리 동의 후 꾸밀 수 있어요 · 눌러서 확인",
-    "room.compose.making": "미리 보기를 만드는 중이에요",
-    "room.compose.quota": "오늘은 다 썼어요 · 내일 다시 꾸밀 수 있어요"
+    "room.compose.quota": "오늘은 다 썼어요 · 내일 다시 꾸밀 수 있어요",
+    "room.start.hint": "이렇게 말해 볼 수 있어요",
+    "room.idea.cozy": "포근한 방으로",
+    "room.idea.night": "밤하늘처럼 꾸며 줘",
+    "room.idea.flowers": "꽃이 가득하게",
+    "room.idea.text": "‘오늘도 같이’ 문구 달기",
+    "room.idea.star": "별 하나 더 달기",
+    "room.compose.quota.info": "자세히",
+    "room.chip.idea.a11y": "이 요청 보내기: {text}",
+    "room.chip.recent.a11y": "최근 요청 다시 보내기: {text}"
   }
 }

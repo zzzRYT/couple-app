@@ -77,9 +77,9 @@
 | 공통 문구 | [copy-common-1.dc.html](../canvas/project/copy-common-1.dc.html) | 문구 · 앱 공통 (1/2) |
 | 공통 문구 | [copy-common-2.dc.html](../canvas/project/copy-common-2.dc.html) | 문구 · 앱 공통 (2/2) |
 | Later · 방 · 꾸미기 | [S07-room.dc.html](../canvas/project/S07-room.dc.html) | S07 방 페이지 |
-| Later · 방 · 꾸미기 | [S08-prompt-session.dc.html](../canvas/project/S08-prompt-session.dc.html) | S08 공유 꾸미기 대화 · 채팅 시트 |
-| Later · 방 · 꾸미기 | [S09-preview-confirm.dc.html](../canvas/project/S09-preview-confirm.dc.html) | S09 채팅 미리 보기 · 적용 (확인 화면 없음) |
-| Later · 방 · 꾸미기 | [S10-undo.dc.html](../canvas/project/S10-undo.dc.html) | S10 되돌리기 (적용 메시지 안 · 열린 대화 안에서만) |
+| Later · 방 · 꾸미기 | [S08-prompt-session.dc.html](../canvas/project/S08-prompt-session.dc.html) | S08 꾸미기 독 · 시작 · 두 사람 · 막힐 때 |
+| Later · 방 · 꾸미기 | [S09-preview-confirm.dc.html](../canvas/project/S09-preview-confirm.dc.html) | S09 방 위 미리 보기 · 적용 (꾸미기 독) |
+| Later · 방 · 꾸미기 | [S10-undo.dc.html](../canvas/project/S10-undo.dc.html) | S10 되돌리기 · 적용 직후 한 줄 |
 | Later · 방 · 꾸미기 | [S12-ai-consent.dc.html](../canvas/project/S12-ai-consent.dc.html) | S12 해외 AI 처리 동의 |
 | Later · 방 · 꾸미기 | [S24-tab-room.dc.html](../canvas/project/S24-tab-room.dc.html) | S24 방 탭 |
 | Later · 방 · 꾸미기 | [copy-room-ai-consent.dc.html](../canvas/project/copy-room-ai-consent.dc.html) | 문구 · S12 해외 AI 처리 동의 |
@@ -88,7 +88,7 @@
 | Later · 방 · 꾸미기 | [copy-room-room-tab.dc.html](../canvas/project/copy-room-room-tab.dc.html) | 문구 · S24 방 탭 |
 | Later · 방 · 꾸미기 | [copy-room-room.dc.html](../canvas/project/copy-room-room.dc.html) | 문구 · S07 방 페이지 |
 | Later · 방 · 꾸미기 | [copy-room-shared.dc.html](../canvas/project/copy-room-shared.dc.html) | 문구 · 방 · 꾸미기 기능 공용 |
-| Later · 방 · 꾸미기 | [copy-room-undo.dc.html](../canvas/project/copy-room-undo.dc.html) | 문구 · S10 되돌리기 (열린 대화 안에서만) |
+| Later · 방 · 꾸미기 | [copy-room-undo.dc.html](../canvas/project/copy-room-undo.dc.html) | 문구 · S10 되돌리기 (적용 직후 한 줄) |
 | Later · V1 이후 (기록) | [L-S11-history.dc.html](../canvas/project/L-S11-history.dc.html) | L-S11 기록 화면 · 복구 (V1 이후) |
 | Later · V1 이후 (기록) | [L-S24-room-with-history.dc.html](../canvas/project/L-S24-room-with-history.dc.html) | L-S24 방 탭 · 기록 바로가기 · 4탭 (V1 이후) |
 | Later · V1 이후 (기록) | [L-S25-tab-history.dc.html](../canvas/project/L-S25-tab-history.dc.html) | L-S25 기록 탭 (V1 이후) |

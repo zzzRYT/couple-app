@@ -1,6 +1,6 @@
 {
   "status": "초안(원어민 검수 전)",
-  "generated": "Artifact 1794227595-8638; do not edit",
+  "generated": "Artifact 1794273208-8c73; do not edit",
   "keyStatus": {
     "sample.partner": "approved",
     "date.since": "approved",
@@ -55,7 +55,6 @@
     "preview.view.candidate": "approved",
     "preview.apply": "approved",
     "preview.cancel": "approved",
-    "preview.applyHint": "approved",
     "preview.undo": "approved",
     "preview.changes": "approved",
     "consent.sent.body": "approved",
@@ -188,7 +187,6 @@
     "preview.view.candidate": "Preview",
     "preview.apply": "Apply",
     "preview.cancel": "Cancel",
-    "preview.applyHint": "Applying changes the room for both of you, and it can't be undone once applied.",
     "preview.undo": "Go back to the previous preview",
     "preview.changes": "Changes",
     "consent.sent.body": "The request you typed, and the room layout needed to build it (item types, positions, text). Your together-date, names and email are not sent.",

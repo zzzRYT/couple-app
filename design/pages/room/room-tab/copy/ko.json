@@ -1,14 +1,12 @@
 {
   "status": "원본",
-  "generated": "Artifact 1794227595-8638; do not edit",
+  "generated": "Artifact 1794273208-8c73; do not edit",
   "keyStatus": {
     "room.partnerLive": "approved",
-    "room.watch": "approved",
-    "coach.room": "changed"
+    "room.watch": "approved"
   },
   "strings": {
     "room.partnerLive": "{name}님이 꾸미는 중 · 실시간으로 보고 있어요",
-    "room.watch": "지켜보기",
-    "coach.room": "아래 입력창에 원하는 방을 적어 보세요"
+    "room.watch": "지켜보기"
   }
 }

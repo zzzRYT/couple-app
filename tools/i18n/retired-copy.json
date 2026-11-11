@@ -4,6 +4,16 @@
     "en": "Try again",
     "ja": "言い直す"
   },
+  "preview.applied.body": {
+    "ko": "적용한 변경은 되돌릴 수 없어요. 상대 화면에는 동기화되면 바로 바뀌어요.",
+    "en": "Applied changes can't be undone. Your partner's screen updates as soon as it syncs.",
+    "ja": "反映した変更は元に戻せません。パートナーの画面は、同期され次第すぐに変わります。"
+  },
+  "preview.applyHint": {
+    "ko": "적용하면 두 사람의 방이 바뀌고, 적용한 뒤에는 되돌릴 수 없어요.",
+    "en": "Applying changes the room for both of you, and it can't be undone once applied.",
+    "ja": "反映するとふたりの部屋が変わり、反映した後は元に戻せません。"
+  },
   "preview.confirm.body": {
     "ko": "두 사람의 방이 바뀌어요. 적용한 뒤에는 되돌릴 수 없어요. 적용하기 전에 미리 보기를 한 번 더 확인해 주세요.",
     "en": "Your shared room will change for both of you. It can't be undone once applied, so take one more look at the preview first.",
@@ -19,15 +29,50 @@
     "en": "You both can see it, but the room hasn't changed.",
     "ja": "ふたりに表示されていますが、部屋はまだ変わっていません。"
   },
+  "prompt.consent.action": {
+    "ko": "안내 보기",
+    "en": "View details",
+    "ja": "詳細を見る"
+  },
+  "prompt.consent.need": {
+    "ko": "꾸미려면 두 사람 모두 해외 AI 처리에 동의해야 해요",
+    "en": "Both partners must agree to overseas AI processing before decorating",
+    "ja": "飾るには、ふたりとも海外でのAI処理に同意する必要があります"
+  },
   "prompt.expiring": {
     "ko": "{s}초 뒤에 풀려요",
     "en": "Releases in {s}s",
     "ja": "あと{s}秒で解除されます"
   },
+  "prompt.history.empty": {
+    "ko": "아직 대화가 없어요. 원하는 분위기를 적어 보세요.",
+    "en": "No conversation yet. Describe the mood you want.",
+    "ja": "まだ会話がありません。好きな雰囲気を書いてみてください。"
+  },
   "prompt.idle.me.action": {
     "ko": "다시 꾸미기",
     "en": "Decorate again",
     "ja": "もう一度飾る"
+  },
+  "prompt.idleHint": {
+    "ko": "3분 동안 아무것도 하지 않으면 자동으로 풀려요.",
+    "en": "If nothing happens for 3 minutes, it's released automatically.",
+    "ja": "3分間何もしないと、自動で解除されます。"
+  },
+  "prompt.msg.status.preview": {
+    "ko": "미리 보기를 만들었어요",
+    "en": "Preview created",
+    "ja": "プレビューを作成しました"
+  },
+  "prompt.partner.thinking": {
+    "ko": "미리 보기를 만드는 중이에요",
+    "en": "Creating a preview",
+    "ja": "プレビューを作成中です"
+  },
+  "prompt.sending": {
+    "ko": "만드는 중이에요",
+    "en": "Working on it",
+    "ja": "作成中です"
   },
   "prompt.start": {
     "ko": "내가 꾸밀게요",

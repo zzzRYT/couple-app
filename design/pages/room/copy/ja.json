@@ -1,6 +1,6 @@
 {
   "status": "초안(원어민 검수 전)",
-  "generated": "Artifact 1794227595-8638; do not edit",
+  "generated": "Artifact 1794273208-8c73; do not edit",
   "keyStatus": {
     "room.loading": "approved",
     "room.offline": "approved",
@@ -8,16 +8,14 @@
     "room.syncFail.body": "approved",
     "common.confirm": "approved",
     "prompt.free": "approved",
-    "prompt.idleHint": "approved",
     "prompt.placeholder": "approved",
-    "prompt.left": "approved",
-    "prompt.fail.title": "approved",
     "prompt.msg.me": "approved",
-    "prompt.msg.result": "approved",
     "preview.badge": "approved",
     "preview.partner.wait": "approved",
     "preview.partner.readonly": "approved",
-    "preview.changes.list": "approved"
+    "preview.changes.list": "approved",
+    "prompt.fail.title": "changed",
+    "prompt.msg.result": "changed"
   },
   "strings": {
     "room.loading": "部屋を読み込んでいます",
@@ -26,15 +24,13 @@
     "room.syncFail.body": "最後に確認した部屋を表示しています。",
     "common.confirm": "OK",
     "prompt.free": "今は誰も飾っていません",
-    "prompt.idleHint": "3分間何もしないと、自動で解除されます。",
     "prompt.placeholder": "どんな部屋にしたいですか？",
-    "prompt.left": "今日はあと{n}回試せます",
-    "prompt.fail.title": "プレビューを作れませんでした",
     "prompt.msg.me": "もう少し温かい雰囲気にして。クッションとランプを置きたい。",
-    "prompt.msg.result": "クッションを1個、ランプを1個置きました。プレビューを確認してください。",
     "preview.badge": "プレビュー · まだ反映されていません",
     "preview.partner.wait": "{name}さんが反映するか決めています",
     "preview.partner.readonly": "今は見ることだけできます",
-    "preview.changes.list": "クッション・ランプ・星を追加"
+    "preview.changes.list": "クッション・ランプ・星を追加",
+    "prompt.fail.title": "今回は作れませんでした",
+    "prompt.msg.result": "クッションを1個、ランプを1個置きました"
   }
 }

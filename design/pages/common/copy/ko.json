@@ -1,6 +1,6 @@
 {
   "status": "원본",
-  "generated": "Artifact 1794227595-8638; do not edit",
+  "generated": "Artifact 1794273208-8c73; do not edit",
   "keyStatus": {
     "sample.partner": "approved",
     "date.since": "approved",
@@ -55,7 +55,6 @@
     "preview.view.candidate": "approved",
     "preview.apply": "approved",
     "preview.cancel": "approved",
-    "preview.applyHint": "approved",
     "preview.undo": "approved",
     "preview.changes": "approved",
     "consent.sent.body": "approved",
@@ -188,7 +187,6 @@
     "preview.view.candidate": "미리 보기",
     "preview.apply": "적용하기",
     "preview.cancel": "취소",
-    "preview.applyHint": "적용하면 두 사람의 방이 바뀌고, 적용한 뒤에는 되돌릴 수 없어요.",
     "preview.undo": "이전 미리 보기로 되돌리기",
     "preview.changes": "변경 내용",
     "consent.sent.body": "내가 쓴 요청 글과, 요청을 만드는 데 필요한 방 배치(소품 종류·위치·문구). 함께한 날짜, 이름, 이메일은 보내지 않아요.",

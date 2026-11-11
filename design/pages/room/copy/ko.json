@@ -1,6 +1,6 @@
 {
   "status": "원본",
-  "generated": "Artifact 1794227595-8638; do not edit",
+  "generated": "Artifact 1794273208-8c73; do not edit",
   "keyStatus": {
     "room.loading": "approved",
     "room.offline": "approved",
@@ -8,16 +8,14 @@
     "room.syncFail.body": "approved",
     "common.confirm": "approved",
     "prompt.free": "approved",
-    "prompt.idleHint": "approved",
     "prompt.placeholder": "approved",
-    "prompt.left": "approved",
-    "prompt.fail.title": "approved",
     "prompt.msg.me": "approved",
-    "prompt.msg.result": "approved",
     "preview.badge": "approved",
     "preview.partner.wait": "approved",
     "preview.partner.readonly": "approved",
-    "preview.changes.list": "approved"
+    "preview.changes.list": "approved",
+    "prompt.fail.title": "changed",
+    "prompt.msg.result": "changed"
   },
   "strings": {
     "room.loading": "방을 불러오는 중이에요",
@@ -26,15 +24,13 @@
     "room.syncFail.body": "마지막으로 확인한 방을 보여 드리고 있어요.",
     "common.confirm": "확인",
     "prompt.free": "지금은 아무도 꾸미고 있지 않아요",
-    "prompt.idleHint": "3분 동안 아무것도 하지 않으면 자동으로 풀려요.",
     "prompt.placeholder": "어떻게 꾸미고 싶나요?",
-    "prompt.left": "오늘 {n}번 더 꾸밀 수 있어요",
-    "prompt.fail.title": "미리 보기를 만들지 못했어요",
     "prompt.msg.me": "분위기를 조금 포근하게 바꿔 줘. 쿠션이랑 조명을 놓고 싶어.",
-    "prompt.msg.result": "쿠션 1개, 조명 1개를 놓았어요. 미리 보기를 확인해 주세요.",
     "preview.badge": "미리 보기 · 아직 적용되지 않았어요",
     "preview.partner.wait": "{name}님이 적용할지 정하고 있어요",
     "preview.partner.readonly": "지금은 보기만 할 수 있어요",
-    "preview.changes.list": "쿠션 · 조명 · 별 추가"
+    "preview.changes.list": "쿠션 · 조명 · 별 추가",
+    "prompt.fail.title": "이번엔 만들지 못했어요",
+    "prompt.msg.result": "쿠션 1개, 조명 1개를 놓았어요"
   }
 }

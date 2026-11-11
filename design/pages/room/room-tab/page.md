@@ -15,8 +15,12 @@ Route: /(tabs)/room
 ## 이미지
 
 - [S24-partner__ios-day-light-ko.png](../../../exports/S24-partner__ios-day-light-ko.png)
+- [S07-first__ios-day-light-ko.png](../../../exports/S07-first__ios-day-light-ko.png)
+- [S09-chat-mine__ios-day-light-ko.png](../../../exports/S09-chat-mine__ios-day-light-ko.png)
 
 ## 상태와 상호작용
+
+> **2026-11-10 · 꾸미기 독으로 바뀌었어요.** 아래 설명과 상태 표의 일부는 2026-10 설계(꾸미기 시트 · 적용 확인 화면) 기준으로 남아 있어요. 지금 흐름은 방 아래 작은 독 + 방 위 미리 보기이고, 오너가 2026-11-10에 정한 규칙은 ① 적용 직후 방 위 ‘적용했어요 · 되돌리기’ 한 줄(한 단계 · 다시 적용 없음 · 다음 요청, 방 탭을 떠날 때, 3분 유휴에 끝남) ② 차례 부탁하기 · 넘겨주기 ③ 독의 ‘오늘 n번 남음’이에요. 현재 상태 목록은 캔버스 보드를, 규칙은 [interaction notes](../../../interaction-notes.md) §4–§6 · §9 · §14와 [spec](../../../../specs/001-couple-prompt-todo/spec.md)의 FR-011 · FR-013 · FR-028 · FR-030 · FR-031을 따르세요. 위 이미지는 현재 보드에서 다시 뽑았어요.
 
 | 상태 ID | 설명 | 사용하는 키 |
 |---|---|---|
