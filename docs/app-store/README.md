@@ -47,7 +47,7 @@ ASC 설문에 소유자가 답한다. 아래는 V0 동작 기준의 권장 답�
 
 ## App Privacy
 
-수집 데이터는 모두 **Tracking: No**, 목적은 **App Functionality**다.
+수집 데이터는 모두 **Tracking: No**다. 목적은 **App Functionality**이고, 사용 통계(PostHog, `apps/mobile/src/lib/analytics.ts`)에 쓰이는 항목만 **Analytics**가 붙는다.
 
 | ASC 분류 → 유형 | 앱에서의 내용 | 사용자 연결 |
 |---|---|---|
@@ -55,6 +55,7 @@ ASC 설문에 소유자가 답한다. 아래는 V0 동작 기준의 권장 답�
 | Contact Info → Email Address | Apple 로그인이 준 주소 또는 이메일 로그인 주소를 Supabase Auth가 보관. 가리기 주소일 수 있음 | Yes |
 | User Content → Other User Content | 사귄 날, 시간대, 직접 추가한 기념일(제목, 메모, 날짜, 반복), 생일 월·일, 선택 입력한 태어난 해 | Yes |
 | Identifiers → User ID | 계정 id(무작위 UUID) | Yes |
+| Usage Data → Product Interaction | 가입 완료, 초대 공유, 초대 링크로 열기, 연결 완료, 기념일 추가, 앱 설치·업데이트·열기 이벤트(PostHog). 목적 Analytics. 설치별 임의 ID로만 묶고 계정과 연결하지 않음 | No |
 | Diagnostics → Crash Data | `expo-updates`를 쓰는 앱에 Expo 공식 안내가 요구하는 답 | No |
 
 - Expo 공식 안내(<https://docs.expo.dev/distribution/app-stores/>)는 `expo-updates`를 쓰면 "Yes, we collect data"와 Crash Data를 고르라고 한다.
@@ -62,7 +63,9 @@ ASC 설문에 소유자가 답한다. 아래는 V0 동작 기준의 권장 답�
 - 1.0.1부터는 `expo-updates` 대신 Hot Updater가 Cloudflare에서 업데이트를 받는다(`docs/ota.md`). 요청에는 플랫폼, 업데이트 채널, 빌드 fingerprint, 현재 번들 ID, 앱 공통 키만 들어가고 기기·설치 식별자와 충돌 보고는 보내지 않는다(Insights 플러그인 미사용). 1.0.0 설치본은 계속 EAS Update를 쓰므로 위의 Crash Data·Device ID 답은 1.0.0 설치본이 남아 있는 동안 유지하는 쪽을 권장한다. 내릴 시점은 소유자 몫이다.
 - 비밀번호는 Supabase Auth에 해시로만 남는다. Apple의 "collect" 정의는 읽을 수 있는 형태로 보관하는 경우이고 비밀번호 유형도 없어서 따로 신고하지 않는다.
 - 봉인한 Apple 토큰은 서버가 열 수 있으므로 읽을 수 있는 형태로 볼 여지가 있고, 맞는 유형은 Other Data Types("Any other data types not mentioned")뿐이다. Apple 문서에 명시가 없으니 Other Data Types(App Functionality, 사용자 연결 Yes)로 신고하는 쪽을 권장하고, 최종 판단은 소유자 몫이다.
-- 나머지는 모두 No: 위치, 연락처, 건강, 금융, 민감 정보, 사진·영상, 오디오, 검색·방문 기록, 구매, 사용 데이터.
+- PostHog의 익명 ID는 설치마다 새로 만드는 임의 값이고 재설치하면 바뀐다. 위 Device ID 판단과 같은 이유로 Identifiers → Device ID에 목적 Analytics(사용자 연결 No)를 더하는 쪽을 권장한다. 이벤트에는 앱 버전, OS, 언어·시간대 같은 기기 정보가 붙고, 초대 코드·링크·이름·이메일·날짜·내용은 붙지 않는다. 세션 리플레이와 자동 캡처는 꺼져 있고 PostHog 프로젝트는 IP를 버린다. 무료 요금제라 이벤트는 1년 뒤 지워진다.
+- 생성되는 `PrivacyInfo.xcprivacy`의 `NSPrivacyCollectedDataTypes`는 이 변경 전부터 비어 있다(위 표의 항목도 선언되어 있지 않다). 매니페스트를 이 표와 맞추는 일은 네이티브 빌드가 필요한 별도 작업이다.
+- 나머지는 모두 No: 위치, 연락처, 건강, 금융, 민감 정보, 사진·영상, 오디오, 검색·방문 기록, 구매, 사용 데이터 중 Product Interaction 외 항목.
 - 알림은 기기에서 예약하고 위젯 데이터는 기기에 있으므로 Apple 기준의 "수집"이 아니다.
 - 신고·방·프롬프트·커버 사진이 돌아오면 이 표를 다시 쓴다.
 

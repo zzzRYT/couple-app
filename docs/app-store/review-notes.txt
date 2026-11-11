@@ -34,4 +34,4 @@ CONTENT
 Names and anniversaries are visible only to the two connected people. There is no public feed, no chat, no discovery and no way to find or match with new people. A space is joined only with a code one person gives the other.
 
 OTHER
-The app is iPhone only and portrait only. There are no ads, no analytics, no in-app purchases, and no AI features.
+The app is iPhone only and portrait only. There are no ads, no in-app purchases, and no AI features. The app sends anonymous usage events (PostHog) tied to a random per-install ID, not to the account, and does not track users across other companies' apps or websites.
