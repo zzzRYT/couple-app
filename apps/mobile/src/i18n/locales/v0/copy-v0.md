@@ -1,6 +1,6 @@
 # V0 copy (ko / en / ja) — all V0 copy keys
 
-Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1794271371-5476-interim`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
+Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1794274258-930a`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
 
 **Brand names**: the boards draw the app as 모피루 / Mopiru / モピル and the mascot as 모피 / Mopi / モピ. The owner has since decided (spec D-08, 2026-11-02): app **아룸 / Aroom / アルーム**, mascot **아루미 / Aroomi / アルーミ**. The table below keeps the board text verbatim; in the app only `app.name` and `mascot.name` hold the names, every other value references them with i18next nesting, and the Korean particle after 아룸 becomes 을/이/은/과/으로 (e.g. `widget.none.title` → `$t(app.name)을 시작해요`). See `../H02-v0-shell-home.md` §6.
 
