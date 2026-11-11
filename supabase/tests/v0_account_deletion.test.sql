@@ -17,7 +17,7 @@ insert into ctx select 'kept', (public.create_custom_anniversary('00000000-0000-
 select public.update_custom_anniversary('00000000-0000-0000-0000-0000000000b2',(select v from ctx where k='pair'),(select v from ctx where k='kept'),1,'Trip 2','memo','2026-11-21','once');
 insert into ctx select 'gone', (public.create_custom_anniversary('00000000-0000-0000-0000-0000000000b2',(select v from ctx where k='pair'),'Removed',null,'2026-12-01','once')->>'id')::uuid;
 select public.delete_custom_anniversary('00000000-0000-0000-0000-0000000000b2',(select v from ctx where k='pair'),(select v from ctx where k='gone'),1);
-select is((select count(*) from public.space_anniversary where space_id=(select v from ctx where k='pair')),2::bigint,'setup: one live and one soft-deleted item');
+select is((select count(*) from public.space_anniversary where space_id=(select v from ctx where k='pair') and preset_id is null),2::bigint,'setup: one live and one soft-deleted item');
 
 -- ① the profile scrub at acceptance: name and the whole birthday are nulled, the partner's profile is untouched
 select public.begin_account_deletion('00000000-0000-0000-0000-0000000000b2','email','app',null,null);
