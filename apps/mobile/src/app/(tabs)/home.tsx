@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { formattedMonthDay } from '../../features/anniversaries/format';
 import { usePassword } from '../../features/auth/PasswordContext';
 import { SetPasswordSheet } from '../../features/auth/SetPasswordFlow';
+import { Wordmark } from '../../ui/Wordmark';
 export default function HomeRoute() {
   const { client, userId } = useApp();
   const { shouldPrompt, markPromptSeen } = usePassword();
@@ -45,7 +46,7 @@ export default function HomeRoute() {
   const now = useNow();
   const failed = state.status === 'error' && !state.offline;
   return <>
-    {failed || (state.offline && !snapshot) ? <V0Error offline={!failed} title={t('app.name')} retry={() => void refresh()} /> : <V0HomeScreen state={state} now={now} onRefresh={() => void refresh()} onAnniversaries={() => router.navigate('/anniversaries')} onOpenInvite={(reissue) => router.push(reissue ? { pathname: '/invite', params: { reissue: '1' } } : '/invite')} onHaveCode={() => router.push('/connect-code')} celebration={milestone.celebration} onSeen={() => { if (milestone.celebration) void milestone.seen(milestone.celebration); }} partnerEdited={partnerEdited} onHidePartnerEdited={hidePartnerEdited} seenKeys={seenKeys} seenReady={seenReady} onLocalSeen={(key) => { if (!seenKey) return; const next = [...seenKeys.filter((entry) => entry !== key), key].slice(-50); setSeenKeys(next); void SecureStore.setItemAsync(seenKey, JSON.stringify(next)); }} onOccurrence={(item) => router.push({ pathname: '/anniversary/[key]', params: { key: encodeURIComponent(item.key) } })} />}
+    {failed || (state.offline && !snapshot) ? <V0Error offline={!failed} title={<Wordmark />} retry={() => void refresh()} /> : <V0HomeScreen state={state} now={now} onRefresh={() => void refresh()} onAnniversaries={() => router.navigate('/anniversaries')} onOpenInvite={(reissue) => router.push(reissue ? { pathname: '/invite', params: { reissue: '1' } } : '/invite')} onHaveCode={() => router.push('/connect-code')} celebration={milestone.celebration} onSeen={() => { if (milestone.celebration) void milestone.seen(milestone.celebration); }} partnerEdited={partnerEdited} onHidePartnerEdited={hidePartnerEdited} seenKeys={seenKeys} seenReady={seenReady} onLocalSeen={(key) => { if (!seenKey) return; const next = [...seenKeys.filter((entry) => entry !== key), key].slice(-50); setSeenKeys(next); void SecureStore.setItemAsync(seenKey, JSON.stringify(next)); }} onOccurrence={(item) => router.push({ pathname: '/anniversary/[key]', params: { key: encodeURIComponent(item.key) } })} />}
     <SetPasswordSheet visible={!!shouldPrompt} onLater={() => void markPromptSeen()} onCreate={() => { void markPromptSeen(); router.push('/settings/set-password'); }} />
   </>;
 }

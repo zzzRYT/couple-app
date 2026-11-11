@@ -28,6 +28,6 @@ export default tseslint.config(
     },
   },
   { files: ['**/*.{js,mjs}'], languageOptions: { globals: { module: 'readonly', require: 'readonly', __dirname: 'readonly', process: 'readonly' } } },
-  { files: ['apps/mobile/src/scene/catalog.ts', 'apps/mobile/src/scene/catalogImages.ts', 'apps/mobile/src/theme/fonts.ts', 'apps/mobile/src/ui/CycleLoader.tsx', 'apps/mobile/src/features/splash/BrandSplash.tsx'], rules: { '@typescript-eslint/no-require-imports': 'off' } },
+  { files: ['apps/mobile/src/scene/catalog.ts', 'apps/mobile/src/scene/catalogImages.ts', 'apps/mobile/src/theme/fonts.ts', 'apps/mobile/src/ui/CycleLoader.tsx', 'apps/mobile/src/features/splash/BrandSplash.tsx', 'apps/mobile/src/ui/Wordmark.tsx'], rules: { '@typescript-eslint/no-require-imports': 'off' } },
   { files: ['**/*.test.{ts,tsx}'], languageOptions: { globals: { it: 'readonly', expect: 'readonly', describe: 'readonly', __dirname: 'readonly' } } },
 );

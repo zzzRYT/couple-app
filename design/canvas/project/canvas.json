@@ -823,6 +823,15 @@
    "w": 1760,
    "x": 0,
    "y": 21503
+  },
+  "C08-wordmark.dc.html": {
+   "expand": "fill",
+   "h": 1700,
+   "page": "characters",
+   "title": "C08 워드마크 (01 Gaegu)",
+   "w": 1760,
+   "x": 1840,
+   "y": 9181
   }
  },
  "createdOnFiles": {
@@ -1089,7 +1098,8 @@
   "copy-v0-auth.dc.html",
   "V0-12-splash.dc.html",
   "V0-09-security.dc.html",
-  "copy-v0-security.dc.html"
+  "copy-v0-security.dc.html",
+  "C08-wordmark.dc.html"
  ],
  "pages": [
   {

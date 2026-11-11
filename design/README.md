@@ -20,6 +20,7 @@
 | [`mascot/`](mascot/README.md) | **마스코트(독립 패키지)**: 소유자가 생성형 AI 도구로 만든 캐릭터 시트 원본, 포즈별 컷아웃, 방향 A 가공본(@1x·@2x·@3x), 비교 시트, 가공 보고서. 캔버스의 **캐릭터 섹션 C01~C07**와 짝이에요. **`mascot/vector/`에 벡터 버전**(자동 트레이스한 SVG 11포즈·앱 아이콘 얼굴·PDF, 캔버스 C07) | 모두 |
 | [`figcraft/`](figcraft/README.md) | **FigCraft 보기용 사본**: 캔버스를 오프라인으로 편하게 보려고 `.figcraft` 문서 하나로 모으는 방법(캔버스 → FigCraft 한 방향, 편집용 아님). 동기화 스크립트는 `tools/figcraft-sync/`. `.figcraft` 파일 자체는 크기(15MB 초과) 때문에 저장소에 넣지 않았고 로컬 `~/Documents/Aroom-design/`에 있어요 | 모두 |
 | [`icon/`](icon/README.md) | **앱 아이콘**: 아루미 얼굴 후보 3개(A/B/C, **소유자가 A를 선택**, B·C는 탈락 후보), 선택안(A)의 iOS light·dark·tinted, Android adaptive(전경·배경·monochrome), 스플래시·파비콘·스토어용, 크기·마스크 점검 그림. 새 그림 없이 마스코트 파일에서 파생(권리 상태도 마스코트와 같아요). 캔버스 **C06** | 구현·디자인 |
+| [`wordmark/`](wordmark/README.md) | **워드마크(01 Gaegu, 소유자 선택)**: 아루미 얼굴 + 아룸/Aroom 글자, 밝게·어둡게·단색 28pt와 저작권 줄용 12pt 글자형(SVG·PNG @1x~@3x), 언어·여백·최소 크기 규칙. 홈 상단에 쓰여요 | 구현·디자인 |
 | [`reference-library/`](reference-library/README.md) | **기준 라이브러리(P2 생성 장식)**: AI가 새 배경 조각·말풍선 틀·방 소품을 만들 때 스타일 앵커로 주는 앱 소유 레퍼런스 14개(JSON, **자리표시 그림**)·스타일 규칙·소유자 승인 체크리스트·미리 보기·대비 시트. 검증기·렌더러는 `tools/aroomi-shape/` | 디자인·구현 |
 | [`assets-sketch/`](assets-sketch/) | 일반 오브젝트 **자리표시 스케치** SVG 19개(최종 그림이 아니에요) | 일러스트레이터 |
 | [`canvas/`](canvas/README.md) | Claude Design 캔버스 원본 파일(`project/*.dc.html`, `canvas.json`). 보드 S00~S28(S11·S17·S25 없음) | 디자인 |
