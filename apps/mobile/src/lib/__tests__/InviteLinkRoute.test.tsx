@@ -12,3 +12,11 @@ it('stores a valid incoming route before returning to the authentication/space g
   expect(savePendingInvite).toHaveBeenCalledWith('TESTCODE');
   expect(jest.mocked(savePendingInvite).mock.invocationCallOrder[0]!).toBeLessThan(jest.mocked(router.replace).mock.invocationCallOrder[0]!);
 });
+
+it('does not consume an old invite when the incoming code is invalid', async () => {
+  jest.clearAllMocks();
+  jest.mocked(useLocalSearchParams).mockReturnValue({ code: 'invalid' });
+  render(<InviteLinkRoute />);
+  await waitFor(() => expect(router.replace).toHaveBeenCalledWith('/'));
+  expect(savePendingInvite).not.toHaveBeenCalled();
+});
