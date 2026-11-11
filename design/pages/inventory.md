@@ -74,6 +74,7 @@
 | 캐릭터 | [C05-harmonized-vs-supplied.dc.html](../canvas/project/C05-harmonized-vs-supplied.dc.html) | C05 하모나이즈 vs 원본 |
 | 캐릭터 | [C06-app-icon.dc.html](../canvas/project/C06-app-icon.dc.html) | C06 앱 아이콘 (모피루) |
 | 캐릭터 | [C07-vector-version.dc.html](../canvas/project/C07-vector-version.dc.html) | C07 벡터 버전 (모피) |
+| 캐릭터 | [C08-wordmark.dc.html](../canvas/project/C08-wordmark.dc.html) | C08 워드마크 (01 Gaegu) |
 | 공통 문구 | [copy-common-1.dc.html](../canvas/project/copy-common-1.dc.html) | 문구 · 앱 공통 (1/2) |
 | 공통 문구 | [copy-common-2.dc.html](../canvas/project/copy-common-2.dc.html) | 문구 · 앱 공통 (2/2) |
 | Later · 방 · 꾸미기 | [S07-room.dc.html](../canvas/project/S07-room.dc.html) | S07 방 페이지 |

@@ -151,6 +151,7 @@
 - [C05 하모나이즈 vs 원본](../canvas/project/C05-harmonized-vs-supplied.dc.html)
 - [C06 앱 아이콘 (모피루)](../canvas/project/C06-app-icon.dc.html)
 - [C07 벡터 버전 (모피)](../canvas/project/C07-vector-version.dc.html)
+- [C08 워드마크 (01 Gaegu)](../canvas/project/C08-wordmark.dc.html)
 
 ## 공통 문구 (shared)
 
