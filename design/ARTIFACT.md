@@ -2,7 +2,7 @@
 
 정본: https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X
 
-버전: 1794274258-930a
+버전: 1794387715-f47d
 
 동기화 날짜: 2026-11-11
 
