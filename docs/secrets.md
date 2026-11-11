@@ -26,3 +26,7 @@ Hot Updater ([ota.md](ota.md)) keeps its credentials in the EAS `preview` enviro
 - `EXPO_PUBLIC_HOT_UPDATER_API_KEY` (`preview` and `production`): the client key every update request sends in `x-api-key`. It ships inside the app, so it only gates the Worker; revoke or add keys with `hot-updater api-key`. EAS builds of preview and production fail without it.
 
 A local `apps/mobile/.env.hotupdater` with the first three also works; `.env*` is ignored.
+
+## Analytics
+
+- `EXPO_PUBLIC_POSTHOG_TOKEN` (`development`, `preview` and `production`): the project token of PostHog project `Aroom` (Settings > Project > Project token, starts with `phc_`). It ships inside the app and can only send events, never read them. A build or OTA bundle without it sends no analytics. Preview bundles are promoted to production as is, so preview carries the same token. Never use a personal API key (`phx_`) here.
