@@ -10,3 +10,6 @@ apps/mobile/ios/
 apps/mobile/android/
 dist/
 coverage/
+
+.next/
+*.tsbuildinfo

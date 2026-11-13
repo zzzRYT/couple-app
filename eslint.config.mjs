@@ -4,7 +4,7 @@ import reactNative from 'eslint-plugin-react-native';
 import i18next from 'eslint-plugin-i18next';
 
 export default tseslint.config(
-  { ignores: ['**/node_modules/**', '**/dist/**', 'design/**', 'specs/**'] },
+  { ignores: ['**/node_modules/**', '**/dist/**', '**/.next/**', '**/next-env.d.ts', 'design/**', 'specs/**'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
