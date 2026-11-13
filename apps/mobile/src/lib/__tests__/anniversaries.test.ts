@@ -149,3 +149,12 @@ it('V0-EC-12 shows my birthday alone and the partner birthday only after both ad
   const partnerOnly = computeAnniversaries({ ...base, me: { birthday: null }, partner: { birthday: { month: 4, day: 2 } } }, '2026-02-01T03:00:00Z');
   expect([...partnerOnly.todayItems, ...partnerOnly.upcoming].some((item) => item.kind === 'birthday')).toBe(false);
 });
+
+it('calculates built-in couple days as season items and preserves edited preset rows without duplicates', () => {
+  const input = { startDate: '2025-01-01', timeZone: 'UTC', me: { birthday: null }, partner: null, customs: [] as { id: string; title: string; date: string; repeat: 'yearly'; presetId: string }[] };
+  const days = computeAnniversaries(input, '2026-02-14T12:00:00Z');
+  expect(days.todayItems).toContainEqual(expect.objectContaining({ kind: 'season', seasonId: 'valentine' }));
+  expect(days.upcoming).toContainEqual(expect.objectContaining({ kind: 'season', seasonId: 'white' }));
+  const retained = computeAnniversaries({ ...input, customs: [{ id: 'v', title: 'Our day', date: '2026-02-14', repeat: 'yearly', presetId: 'valentine' }] }, '2026-02-14T12:00:00Z');
+  expect(retained.todayItems.filter((item) => item.date === '2026-02-14')).toEqual([expect.objectContaining({ kind: 'custom', customId: 'v' })]);
+});

@@ -1,6 +1,6 @@
 import { dayCount, parseCalendarDate, todayIn } from './dday';
 
-export type Occurrence = { key: string; kind: 'days' | 'years' | 'birthday' | 'season' | 'custom'; date: string; n?: number; who?: 'me' | 'partner'; seasonId?: 'pepero' | 'christmas'; customId?: string; title?: string; presetId?: string | null };
+export type Occurrence = { key: string; kind: 'days' | 'years' | 'birthday' | 'season' | 'custom'; date: string; n?: number; who?: 'me' | 'partner'; seasonId?: 'pepero' | 'christmas' | 'valentine' | 'white'; customId?: string; title?: string; presetId?: string | null };
 const dateString = (timestamp: number) => new Date(timestamp).toISOString().slice(0, 10);
 
 export function computeMilestoneView(startDate: string, timeZone: string, nowIso: string) {
@@ -76,6 +76,9 @@ export function computeAnniversaries(input: AnniversaryInput, nowIso: string) {
   for (let y = year - 1; y <= year + 1; y++) {
     if (y > startYear) add({ key: `y${y - startYear}`, kind: 'years', date: annualDate(y, Number(input.startDate.slice(5, 7)), Number(input.startDate.slice(8, 10))), n: y - startYear });
     for (const { who, month, day } of birthdays) add({ key: `bday:${who}:${y}`, kind: 'birthday', date: annualDate(y, month, day), who });
+    for (const [id, month, day] of [['valentine', 2, 14], ['white', 3, 14]] as const) {
+      if (!input.customs.some((custom) => custom.presetId === id)) add({ key: `season:${id}:${y}`, kind: 'season', date: annualDate(y, month, day), seasonId: id });
+    }
     add({ key: `season:pepero:${y}`, kind: 'season', date: annualDate(y, 11, 11), seasonId: 'pepero' });
     add({ key: `season:christmas:${y}`, kind: 'season', date: annualDate(y, 12, 25), seasonId: 'christmas' });
     for (const custom of input.customs) {
