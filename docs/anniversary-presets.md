@@ -1,14 +1,14 @@
 # Couple-day presets
 
-Couples get well-known couple days in their anniversary list. Two are added automatically; eleven more are offered on the add screen. The registry lives in `public.anniversary_preset` (migration `20261111000100_v0_anniversary_preset.sql`) and is mirrored by `apps/mobile/src/lib/anniversaryPresets.ts`; a test keeps the two and the `anniv.preset.*` copy in step. Design: V0-04 and V0-05 boards of the artifact (version `1794387715-f47d`).
+Couples get well-known couple days in their anniversary list. Two are built-in season days; eleven more are offered on the add screen. The optional preset registry lives in `public.anniversary_preset` and is mirrored by `apps/mobile/src/lib/anniversaryPresets.ts`; the original registry also retains the two historical IDs for compatibility. Design: V0-04 and V0-05 boards of the artifact (version `1794387715-f47d`).
 
 None of these days is a public holiday. 부부의 날 is the only legal commemorative day (법정기념일, not a day off); the rest are informal commercial or pop-culture observances. The app shows them as anniversaries, never as holidays.
 
 ## Classification
 
-A day is **auto** when it is for romantic couples by definition and mainstream: it has its own encyclopedia article, every source reviewed agrees on its name and date, and it is observed beyond internet lists (several countries or national commercial scale). Only Valentine's Day and White Day pass. Every other day is **optional**.
+A day is **built-in** when it is for romantic couples by definition and mainstream: it has its own encyclopedia article, every source reviewed agrees on its name and date, and it is observed beyond internet lists (several countries or national commercial scale). Only Valentine's Day and White Day pass this couple-day rule. Every other day is **optional**.
 
-| id | Date | Auto | Region label | ko (stored title) | en | ja | Status | Sources |
+| id | Date | Built-in | Region label | ko (stored title) | en | ja | Status | Sources |
 |---|---|---|---|---|---|---|---|---|
 | `valentine` | 2/14 | yes | none | 발렌타인데이 | Valentine's Day | バレンタインデー | Informal, worldwide | [1] [5] [9] |
 | `white` | 3/14 | yes | none | 화이트데이 | White Day | ホワイトデー | Informal, KR · JP · TW · CN | [1] [7] [8] |
@@ -30,14 +30,14 @@ Left out: 블랙데이 4/14 (a singles' day [6]), 그린데이 8/14 and 포토�
 
 ## Behaviour
 
-- **Auto days** are seeded by `seed_couple_presets`: from `create_space` for a new couple, and once for every active space when the migration runs. A row is yearly, titled in Korean, dated at the next occurrence in the space's time zone, with no creator. The detail screen says it was added for the couple.
-- **No duplicates, no comeback.** `space_anniversary.preset_id` has a unique index per space that also covers soft-deleted rows. A deleted preset keeps its slot, so seeding never re-creates it. Before inserting, seeding adopts a row the couple already made for the same yearly day under any of the preset's three names, active or deleted.
+- **Built-in days** (Valentine, White Day, Pepero Day and Christmas) are calculated on the client as season anniversaries, localized and treated like other season days for notifications and widgets. They do not require custom rows.
+- **Existing rows.** The cleanup migration removes untouched previously seeded Valentine and White Day rows, including tombstones. Edited or user-created rows are preserved; a retained preset row takes precedence over its corresponding built-in day in the client. Optional preset IDs remain unique per space, including soft-deleted rows.
 - **Optional days** appear as chips above the title on the add screen. A chip fills the localized title, the next date and yearly repeat; saving sends `presetId`. A day the couple already has is shown as 추가됨 and disabled. Adding the same preset again returns the existing row; adding one that was deleted revives it.
 - **Names follow the reader.** A preset row whose title is still the stored Korean title shows in the reader's language everywhere (list, home, detail, widgets, notifications). A renamed row shows as written.
 
 ## Rollout
 
-Apply the migration before the edge function. The deployed function's call without `p_preset` still matches the new `create_custom_anniversary` through its default, and older apps simply show the Korean title on seeded rows. The backfill posts one realtime `anniversary` event per active space.
+Apply the cleanup migration first, then deploy the spaces function, then release the mobile OTA. The function RPC signatures and optional preset API remain compatible with the previously shipped app. Between migration and OTA, older builds no longer see removed seeded days until updated; retained edited rows remain available. The migration stops both new-space seeding and the legacy seed function via the registry flags.
 
 ## Sources
 
