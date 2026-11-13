@@ -24,6 +24,8 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm --filter @couple/scene-contract test
       - run: pnpm --filter mobile test
+      - run: pnpm --filter @couple/admin test
+      - run: pnpm --filter @couple/admin build
       # Functions tests need Auth and Realtime too, so the whole local stack starts (migrations and seed apply on start).
       - run: supabase start -x studio,imgproxy,vector,logflare,supavisor
       - run: supabase test db
