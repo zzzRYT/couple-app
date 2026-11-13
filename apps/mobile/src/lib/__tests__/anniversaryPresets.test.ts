@@ -13,12 +13,12 @@ const titles = (p: AnniversaryPreset) => ['ko-KR', 'en-US', 'ja-JP'].map((locale
 it('matches the server table and the Korean copy', () => {
   const sql = readFileSync(resolve(__dirname, '../../../../../supabase/migrations/20261111000100_v0_anniversary_preset.sql'), 'utf8');
   const rows = [...sql.matchAll(/^ \('(\w+)',(\d+),(\d+),(true|false),'((?:[^']|'')*)'/gm)].map(([, id, month, day, auto, title]) => ({ id, month: Number(month), day: Number(day), auto: auto === 'true', ko: title!.replace(/''/g, "'") }));
-  expect(rows).toEqual(ANNIVERSARY_PRESETS.map(({ id, month, day, auto, ko: title }) => ({ id, month, day, auto, ko: title })));
+  expect(rows).toEqual(ANNIVERSARY_PRESETS.map(({ id, month, day, builtIn, ko: title }) => ({ id, month, day, auto: builtIn, ko: title })));
   for (const p of ANNIVERSARY_PRESETS) expect((ko as Record<string, string>)[`anniv.preset.${p.id}`]).toBe(p.ko);
 });
 
 it('adds only the days that are for lovers by definition on its own', () => {
-  expect(ANNIVERSARY_PRESETS.filter((p) => p.auto).map((p) => p.id).sort()).toEqual(['valentine', 'white']);
+  expect(ANNIVERSARY_PRESETS.filter((p) => p.builtIn).map((p) => p.id).sort()).toEqual(['valentine', 'white']);
   expect(ANNIVERSARY_PRESETS.map((p) => p.month * 100 + p.day)).toEqual([...ANNIVERSARY_PRESETS.map((p) => p.month * 100 + p.day)].sort((a, b) => a - b));
 });
 
@@ -51,4 +51,15 @@ it('counts a preset as added by its row or by a hand-made yearly row under any o
   expect(presetAdded(kiss, [row('Kiss Day', '2026-06-15')], titles)).toBe(false);
   expect(presetAdded(kiss, [row('Kiss Day', '2026-06-14', { repeat: 'once' })], titles)).toBe(false);
   expect(presetAdded(kiss, [row('Our day', '2026-06-14')], titles)).toBe(false);
+});
+
+
+it.each([['valentine', '2027-02-14'], ['white', '2027-03-14']] as const)('localizes the built-in %s season day', async (id, date) => {
+  const view = computeAnniversaries({ startDate: '2025-01-01', timeZone: 'UTC', me: { birthday: null }, partner: null, customs: [] }, `${date}T12:00:00Z`);
+  const item = view.todayItems.find((entry) => entry.seasonId === id)!;
+  for (const locale of ['ko-KR', 'en-US', 'ja-JP'] as const) {
+    const t = (await i18nFor(locale)).t as (key: string) => string;
+    expect(occurrenceTitle(item, 'Haru', t)).toBe(t(`anniv.preset.${id}`));
+    expect(item.kind).toBe('season');
+  }
 });

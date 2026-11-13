@@ -25,13 +25,13 @@ Deno.test('V0-F07-AC-02 V0-F07-AC-03 V0-F07-AC-08 V0-F07-AC-09 V0-F07-AC-10 V0-F
   const gone = await call(h, owner, 'PATCH', item, { ...input, expectedVersion: 2 });
   assertEquals([gone.status, gone.body.error.code, gone.body.error.gone], [404, 'NOT_FOUND', true]);
 });
-Deno.test('anniversary presets: a new space has the couple days, presetId is validated, passed through and never doubled', async () => {
+Deno.test('anniversary presets: a new space has no seeded days, presetId is validated, passed through and never doubled', async () => {
   const h = spacesHandler(await localDeps());
   const owner = await makeUser('anniversary-preset-owner');
   const created = await call(h, owner, 'POST', '/spaces/spaces', { anniversaryDate: '2025-01-01', timeZone: 'Asia/Seoul' });
   const path = `/spaces/spaces/${created.body.spaceId}/anniversaries`;
   const snapshot = await call(h, owner, 'GET', `/spaces/spaces/${created.body.spaceId}/snapshot`);
-  assertEquals(snapshot.body.anniversaries.map((item: { presetId: string }) => item.presetId).sort(), ['valentine', 'white']);
+  assertEquals(snapshot.body.anniversaries, []);
   const input = { title: '삼겹살데이', memo: null, date: '2027-03-03', repeat: 'yearly' };
   for (const presetId of ['bad id', 'a'.repeat(33), 3, 'nope']) assertEquals((await call(h, owner, 'POST', path, { ...input, presetId })).body.error.code, 'INVALID_REQUEST');
   const first = await call(h, owner, 'POST', path, { ...input, presetId: 'samgyeopsal' });

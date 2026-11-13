@@ -96,7 +96,7 @@ describe('buildWidgetSnapshot', () => {
   it('V0-NF-04 flags custom titles and the partner birthday, and nothing else', async () => {
     const { entries } = await build(space({ customs: [{ id: CUSTOM, title: '비밀 여행', date: '2026-11-03', repeat: 'yearly' }], partner: { birthday: { month: 11, day: 4 }, displayName: '하루' }, me: { birthday: { month: 11, day: 5 } } }));
     const flags = Object.fromEntries(entries[0]!.next!.map((item) => [item.title, item.privacySensitive]));
-    expect(flags).toEqual({ '비밀 여행': true, '하루 생일': true, '내 생일': false, '빼빼로데이': false, '크리스마스': false, '2주년': false });
+    expect(flags).toEqual({ '비밀 여행': true, '하루 생일': true, '내 생일': false, '빼빼로데이': false, '크리스마스': false, '발렌타인데이': false });
   });
   it('V0-F11-AC-07 V0-NF-04 carries no memo, user id, email, token or birth year', async () => {
     const custom = { id: CUSTOM, title: '여행', date: '2026-11-20', repeat: 'once' as const, memo: 'secret-memo', createdBy: 'user-id-a' };

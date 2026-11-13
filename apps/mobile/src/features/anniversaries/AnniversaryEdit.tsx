@@ -19,7 +19,7 @@ import { DeleteAction } from './DeleteAction';
 import { formattedDate, formattedMonthDay, relativeDate } from './format';
 
 type Form = AnniversaryFields & { notify: 'default' | 'off'; presetId: string | null };
-const OPTIONAL_PRESETS = ANNIVERSARY_PRESETS.filter((preset) => !preset.auto);
+const OPTIONAL_PRESETS = ANNIVERSARY_PRESETS.filter((preset) => !preset.builtIn);
 function length(value: string): number {
   const Segmenter = (Intl as unknown as { Segmenter?: new (locale?: string, options?: { granularity: 'grapheme' }) => { segment: (input: string) => Iterable<unknown> } }).Segmenter;
   return Segmenter ? Array.from(new Segmenter(undefined, { granularity: 'grapheme' }).segment(value)).length : Array.from(value).length;
