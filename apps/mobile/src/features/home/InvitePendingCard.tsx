@@ -8,6 +8,7 @@ import { useAppColor } from '../../theme/useAppColor';
 import { useType } from '../../theme/typography';
 import { CodeBoxes } from '../../ui/CodeBoxes';
 import { readV0Invite, type StoredInvite } from '../space/v0LocalData';
+import { track } from '../../lib/analytics';
 
 const EXPIRING_MS = 30 * 60_000;
 /** V0-home-pending invite card. The code itself only exists on the device that made it; elsewhere the card offers a new one. */
@@ -17,8 +18,8 @@ export function InvitePendingCard({ spaceId, expiresAt, now, offline, onOpenInvi
   useEffect(() => { let alive = true; void readV0Invite(spaceId).then((value) => { if (alive) setInvite(value); }); return () => { alive = false; }; }, [spaceId, expiresAt]);
   const left = expiresAt ? Date.parse(expiresAt) - Date.parse(now) : 0;
   const usable = !!invite && invite.expiresAt === expiresAt && left > 0;
-  const share = useCallback(() => { if (invite) void Share.share({ message: t('invite.shareMsg', { code: invite.code, link: `https://aroom.jinjinstar.com/i/${invite.code}` }) }); }, [invite, t]);
-  const copy = () => { if (invite) void Clipboard.setStringAsync(invite.code).then(onCopied, () => onCopied(false)); };
+  const share = useCallback(() => { if (invite) void Share.share({ message: t('invite.shareMsg', { code: invite.code, link: `https://aroom.jinjinstar.com/i/${invite.code}` }) }).then((result) => { if (result.action === Share.sharedAction) track('invite_shared', { surface: 'home_card', method: 'share' }); }, () => undefined); }, [invite, t]);
+  const copy = () => { if (invite) void Clipboard.setStringAsync(invite.code).then((copied) => { if (copied) track('invite_shared', { surface: 'home_card', method: 'copy' }); onCopied(copied); }, () => onCopied(false)); };
   const minutes = Math.max(0, Math.ceil(left / 60_000)), expiring = left <= EXPIRING_MS;
   const expiry = left > 0 ? <AppText style={[emphasis(13), { color: expiring ? color.warn : color.text2, flexShrink: 1 }]}>{expiring ? t('invite.expiring', { m: minutes }) : t('invite.expires', { h: Math.floor(minutes / 60), m: minutes % 60 })}</AppText> : null;
   return <Card tone="line" style={{ gap: 10, paddingVertical: 14 }}><AppText accessibilityRole="header" style={emphasis(16)}>{t('home.pending.title')}</AppText>

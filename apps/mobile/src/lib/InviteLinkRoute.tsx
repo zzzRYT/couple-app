@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import { parseInvite, savePendingInvite } from './inviteLink';
 import { useSpace } from '../features/space/SpaceContext';
+import { track } from './analytics';
 /** Both platform links and the development scheme enter through this route. */
 export function InviteLinkRoute() {
   const { entry } = useSpace();
@@ -14,5 +15,6 @@ export function InviteLinkRoute() {
       router.replace(entry === 'active' ? '/join-has-space' : '/join');
     })();
   }, [code, entry]);
+  useEffect(() => { if (typeof code === 'string' && parseInvite(code)) track('invite_opened'); }, [code]);
   return null;
 }

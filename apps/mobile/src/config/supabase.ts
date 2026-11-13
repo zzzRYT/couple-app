@@ -1,4 +1,4 @@
-import { APP_IDENTITY } from './identity.ts';
+import { isStoreApp } from './identity.ts';
 
 /** The hosted Supabase projects (docs/remote-supabase-setup.md). Refs are public configuration; URLs and keys come from EXPO_PUBLIC_* build variables. */
 export const SUPABASE_PROJECTS = {
@@ -28,7 +28,7 @@ export function productionTarget(values: SupabaseBuildValues): SupabaseTarget | 
  * marks that bundle as crashed and goes back to the previous one.
  */
 export function supabaseTarget(applicationId: string | null | undefined, values: SupabaseBuildValues): SupabaseTarget {
-  if (applicationId !== APP_IDENTITY.iosBundleId && applicationId !== APP_IDENTITY.androidApplicationId) {
+  if (!isStoreApp(applicationId)) {
     return { url: values.url ?? 'http://127.0.0.1:54321', key: values.key ?? '' };
   }
   const target = productionTarget(values);

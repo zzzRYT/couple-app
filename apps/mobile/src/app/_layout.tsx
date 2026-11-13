@@ -24,6 +24,7 @@ import { UpdateNotice } from '../features/update/UpdateNotice';
 import { checkForOtaUpdate } from '../features/update/ota';
 import { BrandSplash } from '../features/splash/BrandSplash';
 import { useResumeSplash } from '../features/splash/useResumeSplash';
+import { startAnalytics } from '../lib/analytics';
 
 /** The native launch screen goes once the in-app splash has drawn over it, or after this long if the image never reports. */
 const NATIVE_SPLASH_FALLBACK_MS = 1500;
@@ -46,6 +47,7 @@ export default function RootLayout() {
   }, []);
   useEffect(() => { void createI18n().then((created) => { installNativeWidgets(created); setTranslator(created); }); }, []);
   useEffect(() => { void checkForOtaUpdate(); }, []);
+  useEffect(() => { startAnalytics(); }, []);
   useEffect(() => {
     const timer = setTimeout(hideNativeSplash, NATIVE_SPLASH_FALLBACK_MS);
     return () => clearTimeout(timer);

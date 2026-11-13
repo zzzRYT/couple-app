@@ -2,9 +2,11 @@ import { act, fireEvent } from '@testing-library/react-native';
 import { Share } from 'react-native';
 import { renderWithI18n } from '../../../test/render';
 import { InviteScreen, formatInviteCode } from '../InviteScreen';
+import { track } from '../../../lib/analytics';
+jest.mock('../../../lib/analytics', () => ({ track: jest.fn() }));
 const start = Date.parse('2026-10-27T03:00:00Z');
 let clock = start;
-beforeEach(() => { clock = start; jest.useFakeTimers(); });
+beforeEach(() => { clock = start; jest.useFakeTimers(); jest.mocked(track).mockClear(); });
 afterEach(() => jest.useRealTimers());
 const codeLabel = (t: (key: string, options?: Record<string, unknown>) => string, code: string) => t('a11y.code', { code: code.split('').join(' ') });
 const invitation = (code: string, hours = 24) => ({ invitationId: code, code, expiresAt: new Date(clock + hours * 3_600_000).toISOString() });
@@ -98,6 +100,7 @@ it('reports share cancellation and network errors', async () => {
   await fireEvent.press(screen.getByRole('button', { name: screen.t('a11y.share') }));
   expect(share).toHaveBeenCalledWith({ message: screen.t('invite.shareMsg', { code: 'EEEE-FFFF', link: 'https://aroom.jinjinstar.com/i/EEEE-FFFF' }) });
   expect(await screen.findByText(screen.t('invite.shareCancelled'))).toBeTruthy();
+  expect(track).not.toHaveBeenCalled();
 });
 
 it('V0-F02-AC-05 keeps the code on screen after sharing and leaves when the partner has joined', async () => {
@@ -110,6 +113,7 @@ it('V0-F02-AC-05 keeps the code on screen after sharing and leaves when the part
   expect(screen.getByRole('button', { name: screen.t('a11y.share') })).toBeTruthy();
   expect(screen.queryByText(screen.t('invite.waiting.title'))).toBeNull();
   expect(screen.queryByText(screen.t('invite.shareCancelled'))).toBeNull();
+  expect(track).toHaveBeenCalledWith('invite_shared', { surface: 'invite_screen', method: 'share' });
   await screen.rerender(<InviteScreen createInvitation={createInvitation} clock={() => clock} memberCount={2} onJoined={onJoined} />);
   expect(onJoined).toHaveBeenCalled();
 });
@@ -121,6 +125,7 @@ it('copies the displayed invitation code and keeps it on screen with the copied 
   await fireEvent.press(await screen.findByRole('button', { name: screen.t('a11y.copy') }));
   expect(copyCode).toHaveBeenCalledWith('AAAA-BBBB');
   expect(await screen.findByText(screen.t('invite.copied'))).toBeTruthy();
+  expect(track).toHaveBeenCalledWith('invite_shared', { surface: 'invite_screen', method: 'copy' });
   expect(screen.getByLabelText(codeLabel(screen.t, 'AAAA-BBBB'))).toBeTruthy();
   expect(screen.queryByText(screen.t('invite.waiting.title'))).toBeNull();
 });

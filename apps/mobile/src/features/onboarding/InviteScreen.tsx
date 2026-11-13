@@ -9,6 +9,7 @@ import { InlineHint } from '../../ui/InlineNote';
 import { tokens } from '../../theme/tokens';
 import { useAppColor } from '../../theme/useAppColor';
 import { useType } from '../../theme/typography';
+import { track } from '../../lib/analytics';
 
 const EXPIRING_MS = 30 * 60_000;
 type Invitation = { code: string; expiresAt: string };
@@ -78,11 +79,13 @@ export function InviteScreen({ createInvitation, clock = Date.now, memberCount =
   const toast = notice ? <Toast text={notice} icon={notice === t('invite.copied') ? 'check' : 'info'} onHide={hideNotice} /> : null;
   async function share() {
     const result = await Share.share({ message: t('invite.shareMsg', { code, link: `https://aroom.jinjinstar.com/i/${code}` }) }).catch(() => null);
-    setNotice(result?.action === Share.sharedAction ? null : t('invite.shareCancelled'));
+    const shared = result?.action === Share.sharedAction;
+    if (shared) track('invite_shared', { surface: 'invite_screen', method: 'share' });
+    setNotice(shared ? null : t('invite.shareCancelled'));
   }
   function copy() {
     if (!copyCode) return;
-    void copyCode(code).then((copied) => setNotice(t(copied ? 'invite.copied' : 'invite.err.title'))).catch(() => setNotice(t('invite.err.title')));
+    void copyCode(code).then((copied) => { if (copied) track('invite_shared', { surface: 'invite_screen', method: 'copy' }); setNotice(t(copied ? 'invite.copied' : 'invite.err.title')); }).catch(() => setNotice(t('invite.err.title')));
   }
   const expiresAt = new Intl.DateTimeFormat(i18n.language, { month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(invite.expiresAt));
   return (

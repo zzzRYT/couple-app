@@ -13,6 +13,10 @@ export const APP_IDENTITY = {
   supportEmail: 'jinjinstar3@gmail.com' as string | null,
   PLACEHOLDER: false,
 } as const;
+/** The App Store and Play Store builds; every other native build is a development one. */
+export function isStoreApp(applicationId: string | null | undefined): boolean {
+  return applicationId === APP_IDENTITY.iosBundleId || applicationId === APP_IDENTITY.androidApplicationId;
+}
 /** Off until H04 §9 steps 1-3 are done: a store build with the extension has no signing for it, so Release iOS fails. Simulator builds need no signing and turn it on with `IOS_WIDGETS=true`. */
 export const IOS_WIDGETS_SIGNED = true;
 /** Expo project @zzzryt/aroom; the id is public configuration, not a secret. */
