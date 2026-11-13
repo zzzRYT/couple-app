@@ -25,7 +25,7 @@ export function useNotificationSync() {
   const dates = snapshot && JSON.stringify({
     startDate: snapshot.space.anniversaryDate, timeZone: snapshot.space.timeZone, me: { birthday: snapshot.me.birthday },
     partner: partner ? { birthday: partner.birthday, displayName: partner.displayName } : null,
-    customs: snapshot.anniversaries.map(({ id, title, date, repeat }) => ({ id, title, date, repeat })),
+    customs: snapshot.anniversaries.map(({ id, title, date, repeat, presetId }) => ({ id, title, date, repeat, presetId })),
   });
   const closed = !userId ? (sessionLoaded ? 'none' : null) : entry === 'ended' ? (ended?.by === 'me' ? 'none' : 'ended') : entry === 'none' ? 'none' : null;
   const widget = snapshot ? JSON.stringify({

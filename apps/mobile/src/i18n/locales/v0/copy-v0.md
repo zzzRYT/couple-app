@@ -1,6 +1,6 @@
 # V0 copy (ko / en / ja) — all V0 copy keys
 
-Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1794274258-930a`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
+Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1794387715-f47d`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
 
 **Brand names**: the boards draw the app as 모피루 / Mopiru / モピル and the mascot as 모피 / Mopi / モピ. The owner has since decided (spec D-08, 2026-11-02): app **아룸 / Aroom / アルーム**, mascot **아루미 / Aroomi / アルーミ**. The table below keeps the board text verbatim; in the app only `app.name` and `mascot.name` hold the names, every other value references them with i18next nesting, and the Korean particle after 아룸 becomes 을/이/은/과/으로 (e.g. `widget.none.title` → `$t(app.name)을 시작해요`). See `../H02-v0-shell-home.md` §6.
 
@@ -203,6 +203,22 @@ sections: 이 화면의 문구
 | `anniv.detail.openSettings` | 알림 설정 열기 | Open reminder settings | 通知設定を開く | 신규 · EN·JA 초안 |
 | `anniv.detail.birthday.note` | 생일은 본인만 고칠 수 있어요. | Only the birthday person can change it. | 誕生日は本人だけが変更できます。 | 신규 · EN·JA 초안 |
 | `set.me.edit.title` | 내 정보 고치기 | Edit my info | 自分の情報を編集 | 재사용 · 기존 키 set.me.edit.title |
+| `anniv.preset.valentine` | 발렌타인데이 | Valentine's Day | バレンタインデー | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.preset.white` | 화이트데이 | White Day | ホワイトデー | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.preset.diary` | 다이어리데이 | Diary Day | ダイアリーデー | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.preset.samgyeopsal` | 삼겹살데이 | Samgyeopsal Day | サムギョプサルデー | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.preset.rose` | 로즈데이 | Rose Day | ローズデー | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.preset.married` | 부부의 날 | Married Couples Day | 夫婦の日 | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.preset.kiss` | 키스데이 | Kiss Day | キスデー | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.preset.silver` | 실버데이 | Silver Day | シルバーデー | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.preset.wine` | 와인데이 | Wine Day | ワインデー | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.preset.movie` | 무비데이 | Movie Day | ムービーデー | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.preset.goodCouple` | 좋은 부부의 날 | Good Spouses Day | いい夫婦の日 | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.preset.hug` | 허그데이 | Hug Day | ハグデー | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.preset.xmasEve` | 크리스마스 이브 | Christmas Eve | クリスマスイブ | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.preset.region.kr` | 한국 | Korea | 韓国 | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.preset.region.jp` | 일본 | Japan | 日本 | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.detail.preset.auto` | 커플 기념일이라 자동으로 넣었어요. 지우면 다시 생기지 않아요. | Added automatically as a couple day. If you delete it, it won't come back. | カップルの記念日として自動で追加しました。削除しても再び追加されません。 | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
 
 ## V0-05 기념일 편집 (`copy-v0-edit.dc.html`)
 sections: 이 화면의 문구
@@ -242,6 +258,8 @@ sections: 이 화면의 문구
 | `edit.discard.keep` | 계속 고치기 | Keep editing | 編集を続ける | 신규 · EN·JA 초안 |
 | `edit.save.err` | 저장하지 못했어요. 고친 내용은 그대로 있어요. | Couldn't save. Your changes are still here. | 保存できませんでした。変更はそのまま残っています。 | 신규 · EN·JA 초안 |
 | `edit.delete.err` | 삭제하지 못했어요. 다시 시도해 주세요. | Couldn't delete. Please try again. | 削除できませんでした。もう一度お試しください。 | 신규 · 오너 승인 2026-11-10 (ND19) · EN·JA 초안 |
+| `edit.presets.title` | 함께하면 재밌는 날 | Fun days to add | 一緒に楽しむ日 | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `edit.presets.added` | 추가됨 | Added | 追加済み | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
 
 ## V0-06 위젯 (`copy-v0-widgets.dc.html`)
 sections: 이 화면의 문구

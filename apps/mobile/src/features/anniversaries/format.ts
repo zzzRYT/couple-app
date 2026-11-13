@@ -1,4 +1,5 @@
 import type { Occurrence } from '../../lib/anniversaries';
+import { presetTitle } from '../../lib/anniversaryPresets';
 import { parseCalendarDate } from '../../lib/dday';
 type TFunction = (key: string, vars?: Record<string, unknown>) => string;
 export function occurrenceTitle(item: Occurrence, partner: string, t: TFunction): string {
@@ -7,7 +8,7 @@ export function occurrenceTitle(item: Occurrence, partner: string, t: TFunction)
     case 'years': return t('anniv.years', { n: item.n });
     case 'birthday': return item.who === 'me' ? t('anniv.birthday.me') : t('anniv.birthday', { name: partner });
     case 'season': return t(item.seasonId === 'pepero' ? 'anniv.pepero' : 'anniv.christmas');
-    case 'custom': return item.title ?? '';
+    case 'custom': return presetTitle({ presetId: item.presetId, title: item.title ?? '' }, t);
   }
 }
 export function formattedDate(date: string, language: string, long: boolean): string {

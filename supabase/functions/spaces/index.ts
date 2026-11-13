@@ -15,6 +15,11 @@ function anniversaryBody(body: Record<string, unknown>) {
   if (body.repeat !== 'yearly' && body.repeat !== 'once') throw new AppError('INVALID_REQUEST');
   return { p_title: title, p_memo: body.memo, p_date: calendarDate(body.date), p_repeat: body.repeat };
 }
+function presetId(value: unknown): string | null {
+  if (value === undefined || value === null) return null;
+  if (typeof value !== 'string' || !/^[A-Za-z]{1,32}$/.test(value)) throw new AppError('INVALID_REQUEST');
+  return value;
+}
 function expectedVersion(value: unknown): number {
   if (!Number.isInteger(value) || (value as number) < 1) throw new AppError('INVALID_REQUEST');
   return value as number;
@@ -55,7 +60,7 @@ export function spacesHandler(deps: Deps) {
     route('PATCH', '/spaces/:spaceId/anniversary', ({ userId, params, body, deps }) =>
       deps.db.rpc('update_anniversary', { actor: userId, target: uuidParam(params.spaceId), anniversary: calendarDate(body.anniversaryDate), expected: str(body.expectedUpdatedAt, 64) })),
     route('POST', '/spaces/:spaceId/anniversaries', async ({ userId, params, body, deps }) =>
-      json(await deps.db.rpc('create_custom_anniversary', { actor: userId, target: uuidParam(params.spaceId), ...anniversaryBody(body) }), 201)),
+      json(await deps.db.rpc('create_custom_anniversary', { actor: userId, target: uuidParam(params.spaceId), ...anniversaryBody(body), p_preset: presetId(body.presetId) }), 201)),
     route('PATCH', '/spaces/:spaceId/anniversaries/:anniversaryId', ({ userId, params, body, deps }) =>
       deps.db.rpc('update_custom_anniversary', { actor: userId, target: uuidParam(params.spaceId), p_id: uuidParam(params.anniversaryId), p_expected_version: expectedVersion(body.expectedVersion), ...anniversaryBody(body) })),
     route('DELETE', '/spaces/:spaceId/anniversaries/:anniversaryId', async ({ userId, params, body, deps }) => {

@@ -673,7 +673,7 @@
   },
   "V0-04-anniv.dc.html": {
    "expand": "fill",
-   "h": 5836,
+   "h": 6088,
    "page": "v0-anniv",
    "title": "V0-04 기념일 목록 · 상세",
    "w": 1760,
@@ -682,7 +682,7 @@
   },
   "copy-v0-anniv.dc.html": {
    "expand": "fill",
-   "h": 3151,
+   "h": 4487,
    "page": "v0-anniv",
    "title": "문구 · V0-04 기념일",
    "w": 1760,
@@ -691,21 +691,21 @@
   },
   "V0-05-anniv-edit.dc.html": {
    "expand": "fill",
-   "h": 5852,
+   "h": 6972,
    "page": "v0-anniv",
    "title": "V0-05 기념일 추가 · 편집",
    "w": 1760,
    "x": 0,
-   "y": 5956
+   "y": 6208
   },
   "copy-v0-edit.dc.html": {
    "expand": "fill",
-   "h": 2877,
+   "h": 3044,
    "page": "v0-anniv",
    "title": "문구 · V0-05 기념일 편집",
    "w": 1760,
    "x": 1840,
-   "y": 5906
+   "y": 6158
   },
   "V0-06-widgets.dc.html": {
    "expand": "fill",

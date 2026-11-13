@@ -6,7 +6,7 @@ import { AnniversaryEdit } from '../AnniversaryEdit';
 import { AnniversaryList } from '../AnniversaryList';
 import { computeAnniversaries } from '../../../lib/anniversaries';
 const item = { id: 'x', title: 'Old', memo: null, date: '2025-05-03', repeat: 'yearly' as const, createdBy: 'me', updatedBy: 'me', createdAt: '2025-01-01T00:00:00Z', updatedAt: '2025-01-01T00:00:00Z', version: 1 };
-const base = { today: '2026-11-02', partner: 'Haru', offline: false, initialNotify: 'default' as const, notifyDefault: '기본 설정 (오후 8:30 · 3일 전)', remove: jest.fn(), reload: jest.fn(), onClose: jest.fn(), onGone: jest.fn(), onSaved: jest.fn() };
+const base = { customs: [], today: '2026-11-02', partner: 'Haru', offline: false, initialNotify: 'default' as const, notifyDefault: '기본 설정 (오후 8:30 · 3일 전)', remove: jest.fn(), reload: jest.fn(), onClose: jest.fn(), onGone: jest.fn(), onSaved: jest.fn() };
 it('V0-F07-AC-02 V0-F07-AC-10 prevents overflow, keeps the input and the same key after a network error', async () => {
   const save = jest.fn().mockRejectedValueOnce(new TypeError('offline')).mockResolvedValueOnce(undefined);
   const screen = await renderWithI18n(<AnniversaryEdit {...base} save={save} />);
@@ -154,4 +154,48 @@ it('V0-F07-AC-11 disables add, edit and delete while offline', async () => {
   await fireEvent.changeText(edit.getByLabelText(edit.t('edit.field.title')), 'Changed');
   expect(edit.getByRole('button', { name: edit.t('common.save') }).props.accessibilityState.disabled).toBe(true);
   expect(edit.getByRole('button', { name: edit.t('edit.delete') }).props.accessibilityState.disabled).toBe(true);
+});
+it('offers the optional couple days on a new item; a tap fills the form and saves the canonical title with the preset', async () => {
+  const save = jest.fn().mockResolvedValue(undefined);
+  const screen = await renderWithI18n(<AnniversaryEdit {...base} save={save} />);
+  expect(screen.getByText(screen.t('edit.presets.title'))).toBeTruthy();
+  expect(screen.queryByText(screen.t('anniv.preset.valentine'))).toBeNull();
+  await fireEvent.changeText(screen.getByLabelText(screen.t('edit.field.memo')), 'grill');
+  await fireEvent.press(screen.getByRole('button', { name: new RegExp(screen.t('anniv.preset.samgyeopsal')) }));
+  expect(screen.getByDisplayValue(screen.t('anniv.preset.samgyeopsal'))).toBeTruthy();
+  expect(screen.getByRole('button', { name: new RegExp(screen.t('anniv.preset.samgyeopsal')) }).props.accessibilityState.selected).toBe(true);
+  expect(screen.getByText(`3월 3일 · ${screen.t('anniv.preset.region.kr')}`)).toBeTruthy();
+  await fireEvent.press(screen.getByText(screen.t('common.save')));
+  await waitFor(() => expect(save).toHaveBeenCalled());
+  expect(save.mock.calls[0]![0]).toEqual({ title: '삼겹살데이', memo: 'grill', date: '2027-03-03', repeat: 'yearly', presetId: 'samgyeopsal' });
+});
+it('drops the preset once the title is edited after a tap', async () => {
+  const save = jest.fn().mockResolvedValue(undefined);
+  const screen = await renderWithI18n(<AnniversaryEdit {...base} save={save} />, 'en-US');
+  await fireEvent.press(screen.getByRole('button', { name: new RegExp(screen.t('anniv.preset.wine')) }));
+  await fireEvent.changeText(screen.getByLabelText(screen.t('edit.field.title')), 'Wine night');
+  await fireEvent.press(screen.getByText(screen.t('common.save')));
+  await waitFor(() => expect(save).toHaveBeenCalled());
+  expect(save.mock.calls[0]![0]).toEqual({ title: 'Wine night', memo: null, date: '2027-10-14', repeat: 'yearly' });
+});
+it('disables the days the couple already has, including a hand-made one under another language\'s name', async () => {
+  const customs = [{ ...item, id: 'k', title: 'Kiss Day', date: '2024-06-14' }, { ...item, id: 'h', title: '허그데이', date: '2026-12-14', presetId: 'hug' }];
+  const screen = await renderWithI18n(<AnniversaryEdit {...base} customs={customs} save={jest.fn()} />);
+  for (const id of ['kiss', 'hug']) {
+    const chip = screen.getByRole('button', { name: new RegExp(screen.t(`anniv.preset.${id}`)) });
+    expect(chip.props.accessibilityState).toMatchObject({ disabled: true });
+  }
+  expect(screen.getAllByText(screen.t('edit.presets.added'))).toHaveLength(2);
+  expect(screen.getByRole('button', { name: new RegExp(screen.t('anniv.preset.rose')) }).props.accessibilityState).toMatchObject({ selected: false, disabled: false });
+});
+it('shows a preset row in the reader\'s language and keeps its stored title when saved unchanged', async () => {
+  const save = jest.fn().mockResolvedValue(undefined);
+  const valentine = { ...item, title: '발렌타인데이', date: '2027-02-14', presetId: 'valentine', createdBy: null, updatedBy: null };
+  const screen = await renderWithI18n(<AnniversaryEdit {...base} initial={valentine} save={save} />, 'en-US');
+  expect(screen.getByDisplayValue("Valentine's Day")).toBeTruthy();
+  expect(screen.queryByText(screen.t('edit.presets.title'))).toBeNull();
+  await fireEvent.changeText(screen.getByLabelText(screen.t('edit.field.memo')), 'dinner');
+  await fireEvent.press(screen.getByText(screen.t('common.save')));
+  await waitFor(() => expect(save).toHaveBeenCalled());
+  expect(save.mock.calls[0]![0]).toEqual({ title: '발렌타인데이', memo: 'dinner', date: '2027-02-14', repeat: 'yearly' });
 });

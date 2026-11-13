@@ -1,6 +1,6 @@
 import { dayCount, parseCalendarDate, todayIn } from './dday';
 
-export type Occurrence = { key: string; kind: 'days' | 'years' | 'birthday' | 'season' | 'custom'; date: string; n?: number; who?: 'me' | 'partner'; seasonId?: 'pepero' | 'christmas'; customId?: string; title?: string };
+export type Occurrence = { key: string; kind: 'days' | 'years' | 'birthday' | 'season' | 'custom'; date: string; n?: number; who?: 'me' | 'partner'; seasonId?: 'pepero' | 'christmas'; customId?: string; title?: string; presetId?: string | null };
 const dateString = (timestamp: number) => new Date(timestamp).toISOString().slice(0, 10);
 
 export function computeMilestoneView(startDate: string, timeZone: string, nowIso: string) {
@@ -28,7 +28,7 @@ export type AnniversaryInput = {
   timeZone: string;
   me: { birthday: { month: number; day: number } | null };
   partner: { birthday: { month: number; day: number } | null; displayName?: string | null } | null;
-  customs: { id: string; title: string; date: string; repeat: 'yearly' | 'once' }[];
+  customs: { id: string; title: string; date: string; repeat: 'yearly' | 'once'; presetId?: string | null }[];
 };
 
 const DAY_MS = 86_400_000;
@@ -81,9 +81,9 @@ export function computeAnniversaries(input: AnniversaryInput, nowIso: string) {
     for (const custom of input.customs) {
       if (parseCalendarDate(custom.date) === null) continue;
       if (custom.repeat === 'once') {
-        if (y === year) add({ key: `custom:${custom.id}`, kind: 'custom', date: custom.date, customId: custom.id, title: custom.title });
+        if (y === year) add({ key: `custom:${custom.id}`, kind: 'custom', date: custom.date, customId: custom.id, title: custom.title, presetId: custom.presetId });
       } else if (y >= Number(custom.date.slice(0, 4))) {
-        add({ key: `custom:${custom.id}:${y}`, kind: 'custom', date: annualDate(y, Number(custom.date.slice(5, 7)), Number(custom.date.slice(8, 10))), customId: custom.id, title: custom.title });
+        add({ key: `custom:${custom.id}:${y}`, kind: 'custom', date: annualDate(y, Number(custom.date.slice(5, 7)), Number(custom.date.slice(8, 10))), customId: custom.id, title: custom.title, presetId: custom.presetId });
       }
     }
   }

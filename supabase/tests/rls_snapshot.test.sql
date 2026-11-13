@@ -21,7 +21,7 @@ select is(public.space_snapshot('00000000-0000-0000-0000-000000000051',(select v
 select is(public.space_snapshot('00000000-0000-0000-0000-000000000052',(select v from ctx where k='a'))->'me'->'birthday'->>'year','1998','each member sees only own birth year');
 select ok(not (public.space_snapshot('00000000-0000-0000-0000-000000000051',(select v from ctx where k='a'))->'members' @> '[{"birthday":{"year":1998}}]'::jsonb),'partner birth year not exposed');
 select ok((select bool_and(member->'birthday' <> 'null'::jsonb and member->'hasBirthday' = 'true'::jsonb and not (member->'birthday' ? 'year')) from jsonb_array_elements(public.space_snapshot('00000000-0000-0000-0000-000000000051',(select v from ctx where k='a'))->'members') member),'S3 reveals month and day after both enter birthdays, never the year');
-select is(public.space_snapshot('00000000-0000-0000-0000-000000000051',(select v from ctx where k='a'))->'anniversaries','[]'::jsonb,'no custom anniversaries yet');
+select is((select array_agg(m->>'presetId' order by m->>'presetId') from jsonb_array_elements(public.space_snapshot('00000000-0000-0000-0000-000000000051',(select v from ctx where k='a'))->'anniversaries') m),'{valentine,white}'::text[],'only the seeded couple days, no custom anniversaries yet');
 update public.couple_space set status='ended' where id=(select v from ctx where k='a');
 select is(public.space_snapshot('00000000-0000-0000-0000-000000000051',(select v from ctx where k='a')),null,'ended space looks like a missing space');
 select * from finish();
