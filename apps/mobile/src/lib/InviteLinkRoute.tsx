@@ -8,7 +8,11 @@ export function InviteLinkRoute() {
   const { code } = useLocalSearchParams<{ code?: string }>();
   useEffect(() => {
     const parsed = typeof code === 'string' ? parseInvite(code) : null;
-    void (async () => { if (parsed) await savePendingInvite(parsed); router.replace(entry === 'active' ? '/join-has-space' : '/join'); })();
+    void (async () => {
+      if (!parsed) { router.replace('/'); return; }
+      await savePendingInvite(parsed);
+      router.replace(entry === 'active' ? '/join-has-space' : '/join');
+    })();
   }, [code, entry]);
   return null;
 }

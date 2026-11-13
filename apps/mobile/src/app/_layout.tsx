@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useColorScheme, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, usePathname } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Notifications from 'expo-notifications';
@@ -75,10 +75,23 @@ function AppNavigator({ fontsLoaded, onBootingChange, onSchemeChange }: { fontsL
   const { session, sessionLoaded, sessionExpired } = useApp();
   const { entry, spaceId, ended, state, reload, refresh, inviteAfterActivation, clearInviteAfterActivation } = useSpace();
   const { shouldPrompt, recovery } = usePassword();
+  const pathname = usePathname();
+  const pathnameRef = useRef(pathname);
+  pathnameRef.current = pathname;
   const [pending, setPending] = useState<string | null | undefined>(undefined);
   useNotificationSync();
   useEffect(() => { void peekPendingInvite().then(setPending); }, []);
   const gate = appGate({ fontsLoaded, sessionLoaded, hasSession: !!session, sessionExpired, entry, spaceId, ended, pendingInviteLoaded: pending !== undefined, pendingInvite: pending, snapshotProfile: state.snapshot ? state.snapshot.me.displayName : undefined, passwordRecovery: recovery, passwordPrompt: shouldPrompt });
+  // A link received before sign-in is stored while the auth gate is shown. Once an existing
+  // account reaches its space, deliver it there too; the link route itself handles warm starts.
+  useEffect(() => {
+    if (gate.kind !== 'active') return;
+    let cancelled = false;
+    void peekPendingInvite().then((code) => {
+      if (code && !cancelled && !/^\/(?:i|invite)\//.test(pathnameRef.current) && pathnameRef.current !== '/join-has-space') router.push('/join-has-space');
+    });
+    return () => { cancelled = true; };
+  }, [gate.kind]);
   useEffect(() => {
     if (gate.kind === 'active' && inviteAfterActivation) { clearInviteAfterActivation(); router.push('/invite'); }
   }, [gate.kind, inviteAfterActivation, clearInviteAfterActivation]);
