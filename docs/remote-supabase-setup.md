@@ -71,7 +71,7 @@ select cron.schedule('expire-prompt-sessions', '* * * * *', $$select public.expi
 select cron.schedule('lifecycle-sweep-daily', '0 18 * * *', $$select net.http_post(url := 'https://<ref>.supabase.co/functions/v1/lifecycle-sweep', headers := jsonb_build_object('Content-Type','application/json','Authorization','Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'lifecycle_sweep_service_role_key')), body := '{}'::jsonb, timeout_milliseconds := 60000) as request_id$$);
 ```
 
-키는 Vault에만 둔다. `lifecycle-sweep`은 `Authorization`이 런타임의 `SUPABASE_SERVICE_ROLE_KEY`와 정확히 같아야 받는다. Aroom-dev에서는 그 값이 legacy JWT가 아니라 기본 secret 키(`sb_secret_…`)라서, 다른 키를 넣으면 401이 난다. 넣은 뒤에는 작업을 한 번 돌려 `net._http_response`의 상태가 200인지 본다.
+키는 Vault에만 둔다. `lifecycle-sweep`은 `Authorization`이 런타임의 `SUPABASE_SERVICE_ROLE_KEY`와 정확히 같아야 받는다. 두 프로젝트 모두 그 값이 legacy service_role JWT가 아니라 기본 secret 키(`sb_secret_…`)라서, 다른 키를 넣으면 401이 난다. secret 키를 교체하면 Vault 값도 `vault.update_secret`으로 바꾼다. 넣은 뒤에는 작업을 한 번 돌려 `net._http_response`의 상태가 200인지 본다.
 
 ## 6. 인증
 
