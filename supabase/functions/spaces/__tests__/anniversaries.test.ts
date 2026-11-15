@@ -33,7 +33,7 @@ Deno.test('anniversary presets: a new space has the couple days, presetId is val
   const snapshot = await call(h, owner, 'GET', `/spaces/spaces/${created.body.spaceId}/snapshot`);
   assertEquals(snapshot.body.anniversaries.map((item: { presetId: string }) => item.presetId).sort(), ['valentine', 'white']);
   const input = { title: '삼겹살데이', memo: null, date: '2027-03-03', repeat: 'yearly' };
-  for (const presetId of ['bad id', 'a'.repeat(33), 3, 'nope']) assertEquals((await call(h, owner, 'POST', path, { ...input, presetId })).body.error.code, 'INVALID_REQUEST');
+  for (const presetId of ['bad id', 'a'.repeat(33), 3, 'nope', 'married', 'goodCouple']) assertEquals((await call(h, owner, 'POST', path, { ...input, presetId })).body.error.code, 'INVALID_REQUEST');
   const first = await call(h, owner, 'POST', path, { ...input, presetId: 'samgyeopsal' });
   assertEquals([first.status, first.body.presetId], [201, 'samgyeopsal']);
   assertEquals((await call(h, owner, 'POST', path, { ...input, presetId: 'samgyeopsal' })).body.id, first.body.id);
