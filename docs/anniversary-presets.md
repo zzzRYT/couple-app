@@ -1,8 +1,8 @@
 # Couple-day presets
 
-Couples get well-known couple days in their anniversary list. Two are added automatically; eleven more are offered on the add screen. The registry lives in `public.anniversary_preset` (migration `20261111000100_v0_anniversary_preset.sql`) and is mirrored by `apps/mobile/src/lib/anniversaryPresets.ts`; a test keeps the two and the `anniv.preset.*` copy in step. Design: V0-04 and V0-05 boards of the artifact (version `1794387715-f47d`).
+Couples get well-known couple days in their anniversary list. Two are added automatically; nine more are offered on the add screen. The registry lives in `public.anniversary_preset` (migrations `20261111000100_v0_anniversary_preset.sql` and `20261115000100_v0_retire_married_presets.sql`) and is mirrored by `apps/mobile/src/lib/anniversaryPresets.ts`; a test keeps the two and the `anniv.preset.*` copy in step. Design: V0-04 and V0-05 boards of the artifact (version `1794729122-0949`).
 
-None of these days is a public holiday. 부부의 날 is the only legal commemorative day (법정기념일, not a day off); the rest are informal commercial or pop-culture observances. The app shows them as anniversaries, never as holidays.
+None of these days is a public holiday; all are informal commercial or pop-culture observances. The app shows them as anniversaries, never as holidays.
 
 ## Classification
 
@@ -15,18 +15,18 @@ A day is **auto** when it is for romantic couples by definition and mainstream: 
 | `diary` | 1/14 | no | Korea | 다이어리데이 | Diary Day | ダイアリーデー | Informal (14th-day series) | [1] [3] [4] [5] |
 | `samgyeopsal` | 3/3 | no | Korea | 삼겹살데이 | Samgyeopsal Day | サムギョプサルデー | Informal food day, promoted by MAFRA | [2] [10] |
 | `rose` | 5/14 | no | Korea | 로즈데이 | Rose Day | ローズデー | Informal (14th-day series) | [1] [3] [4] [5] |
-| `married` | 5/21 | no | Korea | 부부의 날 | Married Couples Day | 夫婦の日 | Legal commemorative day since 2007 | [11] [12] |
 | `kiss` | 6/14 | no | Korea | 키스데이 | Kiss Day | キスデー | Informal (14th-day series) | [3] [4] [5] |
 | `silver` | 7/14 | no | Korea | 실버데이 | Silver Day | シルバーデー | Informal (14th-day series) | [1] [4] [5] |
 | `wine` | 10/14 | no | Korea | 와인데이 | Wine Day | ワインデー | Informal (14th-day series) | [1] [4] [5] |
 | `movie` | 11/14 | no | Korea | 무비데이 | Movie Day | ムービーデー | Informal; Orange Day is a variant | [4] [5] |
-| `goodCouple` | 11/22 | no | Japan | 좋은 부부의 날 | Good Spouses Day | いい夫婦の日 | Informal, Japan | [13] |
 | `hug` | 12/14 | no | Korea | 허그데이 | Hug Day | ハグデー | Informal; Money/Sock Day are variants | [4] [5] |
-| `xmasEve` | 12/24 | no | none | 크리스마스 이브 | Christmas Eve | クリスマスイブ | Informal; Japan's main couples' night | [4] [14] |
+| `xmasEve` | 12/24 | no | none | 크리스마스 이브 | Christmas Eve | クリスマスイブ | Informal; Japan's main couples' night | [4] [11] |
 
 Every row repeats yearly on a fixed solar date. 빼빼로데이 (11/11) and 크리스마스 (12/25) stay the built-in season rows.
 
 Left out: 블랙데이 4/14 (a singles' day [6]), 그린데이 8/14 and 포토데이 9/14 (vague custom, disputed name), 칠석 (lunar 7/7 in Korea; rows store solar dates), 恋人の日 6/12 (industry promotion, little awareness), Sweetest Day (floating date), 커플데이/투투데이 2/22 (no reliable source), and food days that are not couple days (가래떡데이, 오이데이, 구구데이). The Japanese title for 6/14 is キスデー because Japan's own キスの日 is 5/23.
+
+Married-couple days (부부의 날 5/21, いい夫婦の日 11/22) are left out because Aroom is for couples before marriage. Both were offered until 2026-11; their rows stay in `anniversary_preset` with `offered = false`, so anniversaries couples already added keep their `preset_id`, title and date and show the stored title, while new adds with those ids are rejected.
 
 ## Behaviour
 
@@ -51,7 +51,4 @@ Apply the migration before the edge function. The deployed function's call witho
 8. 위키백과, 화이트데이: https://ko.wikipedia.org/wiki/화이트데이
 9. Wikipedia, Valentine's Day: https://en.wikipedia.org/wiki/Valentine%27s_Day
 10. 농사로 (농촌진흥청), 3월 3일은 무슨 날?: https://www.nongsaro.go.kr/portal/ps/psb/psby/vodPlay.ps?mvpNo=2829
-11. 위키백과, 부부의 날: https://ko.wikipedia.org/wiki/부부의_날
-12. 위키백과, 대한민국의 기념일: https://ko.wikipedia.org/wiki/대한민국의_기념일
-13. Wikipedia, Good Spouses Day: https://en.wikipedia.org/wiki/Good_Spouses_Day
-14. Tokyo Tourism, Tokyo Christmas guide: https://www.tokyotourism.org/tokyo-christmas-guide/
+11. Tokyo Tourism, Tokyo Christmas guide: https://www.tokyotourism.org/tokyo-christmas-guide/

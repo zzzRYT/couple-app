@@ -10,9 +10,11 @@ import { todayIn } from '../dday';
 const preset = (id: string) => presetOf(id)!;
 const titles = (p: AnniversaryPreset) => ['ko-KR', 'en-US', 'ja-JP'].map((locale) => (JSON.parse(readFileSync(resolve(__dirname, '../../i18n/locales/v0', `${locale}.json`), 'utf8')) as Record<string, string>)[`anniv.preset.${p.id}`]!);
 
-it('matches the server table and the Korean copy', () => {
-  const sql = readFileSync(resolve(__dirname, '../../../../../supabase/migrations/20261111000100_v0_anniversary_preset.sql'), 'utf8');
-  const rows = [...sql.matchAll(/^ \('(\w+)',(\d+),(\d+),(true|false),'((?:[^']|'')*)'/gm)].map(([, id, month, day, auto, title]) => ({ id, month: Number(month), day: Number(day), auto: auto === 'true', ko: title!.replace(/''/g, "'") }));
+it('matches the offered rows of the server table and the Korean copy', () => {
+  const migration = (name: string) => readFileSync(resolve(__dirname, '../../../../../supabase/migrations', name), 'utf8');
+  const retired = migration('20261115000100_v0_retire_married_presets.sql').match(/set offered=false where id in \(([^)]*)\)/)![1]!.match(/\w+/g)!;
+  const rows = [...migration('20261111000100_v0_anniversary_preset.sql').matchAll(/^ \('(\w+)',(\d+),(\d+),(true|false),'((?:[^']|'')*)'/gm)].map(([, id, month, day, auto, title]) => ({ id: id!, month: Number(month), day: Number(day), auto: auto === 'true', ko: title!.replace(/''/g, "'") })).filter((row) => !retired.includes(row.id));
+  expect(retired).toEqual(['married', 'goodCouple']);
   expect(rows).toEqual(ANNIVERSARY_PRESETS.map(({ id, month, day, auto, ko: title }) => ({ id, month, day, auto, ko: title })));
   for (const p of ANNIVERSARY_PRESETS) expect((ko as Record<string, string>)[`anniv.preset.${p.id}`]).toBe(p.ko);
 });
@@ -30,15 +32,18 @@ it('finds the next occurrence on or after today, across the year end and in the 
   expect(nextPresetDate(preset('white'), todayIn('2026-03-14T15:30:00Z', 'Asia/Seoul'))).toBe('2027-03-14');
 });
 
-it('shows a preset row in the reader\'s language until the couple renames it', async () => {
-  const customs = [{ id: 'v', title: '발렌타인데이', date: '2027-02-14', repeat: 'yearly' as const, presetId: 'valentine' }, { id: 'r', title: '우리 키스데이', date: '2026-06-14', repeat: 'yearly' as const, presetId: 'kiss' }];
+it('shows a preset row in the reader\'s language until the couple renames it, and a retired preset row as stored', async () => {
+  const customs = [{ id: 'v', title: '발렌타인데이', date: '2027-02-14', repeat: 'yearly' as const, presetId: 'valentine' }, { id: 'r', title: '우리 키스데이', date: '2026-06-14', repeat: 'yearly' as const, presetId: 'kiss' }, { id: 'm', title: '부부의 날', date: '2026-05-21', repeat: 'yearly' as const, presetId: 'married' }];
   const view = computeAnniversaries({ startDate: '2025-01-01', timeZone: 'Asia/Seoul', me: { birthday: null }, partner: null, customs }, '2027-02-01T00:00:00Z');
   const valentine = view.upcoming.find((item) => item.customId === 'v')!;
+  const retired = view.upcoming.find((item) => item.customId === 'm')!;
+  expect(retired.date).toBe('2027-05-21');
   for (const [locale, title] of [['ko-KR', '발렌타인데이'], ['en-US', "Valentine's Day"], ['ja-JP', 'バレンタインデー']] as const) {
     const t = (await i18nFor(locale)).t as (key: string) => string;
     expect(occurrenceTitle(valentine, 'Haru', t)).toBe(title);
     expect(presetTitle(customs[1]!, t)).toBe('우리 키스데이');
     expect(presetTitle({ title: '발렌타인데이' }, t)).toBe('발렌타인데이');
+    expect(occurrenceTitle(retired, 'Haru', t)).toBe('부부의 날');
   }
 });
 
