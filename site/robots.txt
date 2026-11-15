@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /i/
+Disallow: /delete-account/
+Disallow: /en/delete-account/
+Disallow: /ja/delete-account/
+Sitemap: https://aroom.jinjinstar.com/sitemap.xml
