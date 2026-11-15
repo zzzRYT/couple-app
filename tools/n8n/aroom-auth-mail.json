@@ -1,0 +1,336 @@
+{
+  "name": "Aroom auth mail",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "aroom-auth-mail",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "id": "hook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "aroom-auth-mail"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Shared with the n8n Code node; regenerate the workflow after editing.\nconst crypto = require('crypto');\nconst { URL, URLSearchParams } = require('url');\nfunction prepare(raw, headers, secret, authUrl, now = Date.now(), profileLocale = null) {\n  const id = headers['webhook-id'], timestamp = headers['webhook-timestamp'], signatures = headers['webhook-signature'];\n  if (!id || !/^\\d+$/.test(timestamp || '') || !signatures || Math.abs(now / 1000 - Number(timestamp)) > 300 || !/^v1,whsec_[A-Za-z0-9+/]+={0,2}$/.test(secret || '')) throw Error('Invalid webhook');\n  const key = Buffer.from(secret.slice(9), 'base64');\n  if (!key.length) throw Error('Invalid webhook');\n  const expected = crypto.createHmac('sha256', key).update(`${id}.${timestamp}.${raw}`).digest();\n  const valid = signatures.split(' ').some(s => { const [v, b] = s.split(','); if (v !== 'v1' || !b) return false; const value = Buffer.from(b, 'base64'); return value.length === expected.length && crypto.timingSafeEqual(value, expected); });\n  if (!valid) throw Error('Invalid webhook');\n  const { user, email_data: data } = JSON.parse(raw);\n  const action = data.email_action_type;\n  const copy = {\n    ko: { signup: ['이메일을 확인해 주세요', '아룸 가입을 마치려면 링크를 열어 주세요.'], recovery: ['비밀번호 재설정', '아룸 비밀번호를 재설정하려면 링크를 열어 주세요.'], email_change: ['이메일 변경 확인', '이메일 변경을 확인하려면 링크를 열어 주세요.'], reauthentication: ['본인 확인 코드', '아룸 본인 확인 코드입니다:'], magiclink: ['로그인 링크', '아룸에 로그인하려면 링크를 열어 주세요.'], invite: ['아룸 초대', '초대를 수락하려면 링크를 열어 주세요.'] },\n    en: { signup: ['Confirm your email', 'Open the link to finish signing up for Aroom.'], recovery: ['Reset your password', 'Open the link to reset your Aroom password.'], email_change: ['Confirm your email change', 'Open the link to confirm your email change.'], reauthentication: ['Your verification code', 'Your Aroom verification code:'], magiclink: ['Sign in to Aroom', 'Open the link to sign in to Aroom.'], invite: ['Your Aroom invitation', 'Open the link to accept your invitation.'] },\n    ja: { signup: ['メールアドレスの確認', 'リンクを開いてアルームの登録を完了してください。'], recovery: ['パスワードの再設定', 'リンクを開いてアルームのパスワードを再設定してください。'], email_change: ['メールアドレス変更の確認', 'リンクを開いてメールアドレスの変更を確認してください。'], reauthentication: ['本人確認コード', 'アルームの本人確認コードです：'], magiclink: ['ログインリンク', 'リンクを開いてアルームにログインしてください。'], invite: ['アルームへの招待', 'リンクを開いて招待を承認してください。'] }\n  };\n  const language = String(profileLocale || user.user_metadata?.locale || user.user_metadata?.i18n || 'ko').toLowerCase().split(/[-_]/)[0];\n  const template = (copy[language] || copy.ko)[action];\n  if (!template) throw Error('Unsupported email action');\n  const make = (to, hash, token) => {\n    if (!to) throw Error('Missing recipient');\n    let content;\n    if (action === 'reauthentication') { if (!token) throw Error('Missing code'); content = token; }\n    else {\n      if (!hash) throw Error('Missing token');\n      const base = new URL(authUrl); if (!['https:', 'http:'].includes(base.protocol)) throw Error('Invalid auth URL');\n      const url = new URL(base.toString().replace(/\\/$/, '') + '/verify');\n      url.search = new URLSearchParams({ token: hash, type: action, redirect_to: data.redirect_to || data.site_url }).toString();\n      content = url.toString();\n    }\n    return { to, subject: template[0], text: `${template[1]}\\n\\n${content}` };\n  };\n  if (action === 'email_change') {\n    const messages = [];\n    if (data.token_hash_new) messages.push(make(user.email, data.token_hash_new, data.token));\n    messages.push(make(user.new_email, data.token_hash, data.token_new || data.token));\n    return messages;\n  }\n  return [make(user.email, data.token_hash, data.token)];\n}\nif (typeof module !== 'undefined') module.exports = { prepare };\n\ntry {\n const raw = (await this.helpers.getBinaryDataBuffer(0, 'data')).toString('utf8');\n prepare(raw, $json.headers, $env.AROOM_AUTH_HOOK_SECRET, $env.AROOM_SUPABASE_AUTH_URL);\n const id = JSON.parse(raw).user.id;\n if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) throw Error('Invalid user');\n return [{json: {valid: true, raw, headers: $json.headers, userId: id}}];\n} catch (_) { return [{json: {valid: false}}]; }"
+      },
+      "id": "verify",
+      "name": "Verify and prepare",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "valid",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if",
+      "name": "Valid",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT (SELECT locale FROM public.user_profile WHERE user_id = $1::uuid) AS locale",
+        "options": {
+          "queryReplacement": "={{ $(\"Verify and prepare\").first().json.userId }}"
+        }
+      },
+      "id": "locale",
+      "name": "Read profile locale",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        630,
+        -100
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Shared with the n8n Code node; regenerate the workflow after editing.\nconst crypto = require('crypto');\nconst { URL, URLSearchParams } = require('url');\nfunction prepare(raw, headers, secret, authUrl, now = Date.now(), profileLocale = null) {\n  const id = headers['webhook-id'], timestamp = headers['webhook-timestamp'], signatures = headers['webhook-signature'];\n  if (!id || !/^\\d+$/.test(timestamp || '') || !signatures || Math.abs(now / 1000 - Number(timestamp)) > 300 || !/^v1,whsec_[A-Za-z0-9+/]+={0,2}$/.test(secret || '')) throw Error('Invalid webhook');\n  const key = Buffer.from(secret.slice(9), 'base64');\n  if (!key.length) throw Error('Invalid webhook');\n  const expected = crypto.createHmac('sha256', key).update(`${id}.${timestamp}.${raw}`).digest();\n  const valid = signatures.split(' ').some(s => { const [v, b] = s.split(','); if (v !== 'v1' || !b) return false; const value = Buffer.from(b, 'base64'); return value.length === expected.length && crypto.timingSafeEqual(value, expected); });\n  if (!valid) throw Error('Invalid webhook');\n  const { user, email_data: data } = JSON.parse(raw);\n  const action = data.email_action_type;\n  const copy = {\n    ko: { signup: ['이메일을 확인해 주세요', '아룸 가입을 마치려면 링크를 열어 주세요.'], recovery: ['비밀번호 재설정', '아룸 비밀번호를 재설정하려면 링크를 열어 주세요.'], email_change: ['이메일 변경 확인', '이메일 변경을 확인하려면 링크를 열어 주세요.'], reauthentication: ['본인 확인 코드', '아룸 본인 확인 코드입니다:'], magiclink: ['로그인 링크', '아룸에 로그인하려면 링크를 열어 주세요.'], invite: ['아룸 초대', '초대를 수락하려면 링크를 열어 주세요.'] },\n    en: { signup: ['Confirm your email', 'Open the link to finish signing up for Aroom.'], recovery: ['Reset your password', 'Open the link to reset your Aroom password.'], email_change: ['Confirm your email change', 'Open the link to confirm your email change.'], reauthentication: ['Your verification code', 'Your Aroom verification code:'], magiclink: ['Sign in to Aroom', 'Open the link to sign in to Aroom.'], invite: ['Your Aroom invitation', 'Open the link to accept your invitation.'] },\n    ja: { signup: ['メールアドレスの確認', 'リンクを開いてアルームの登録を完了してください。'], recovery: ['パスワードの再設定', 'リンクを開いてアルームのパスワードを再設定してください。'], email_change: ['メールアドレス変更の確認', 'リンクを開いてメールアドレスの変更を確認してください。'], reauthentication: ['本人確認コード', 'アルームの本人確認コードです：'], magiclink: ['ログインリンク', 'リンクを開いてアルームにログインしてください。'], invite: ['アルームへの招待', 'リンクを開いて招待を承認してください。'] }\n  };\n  const language = String(profileLocale || user.user_metadata?.locale || user.user_metadata?.i18n || 'ko').toLowerCase().split(/[-_]/)[0];\n  const template = (copy[language] || copy.ko)[action];\n  if (!template) throw Error('Unsupported email action');\n  const make = (to, hash, token) => {\n    if (!to) throw Error('Missing recipient');\n    let content;\n    if (action === 'reauthentication') { if (!token) throw Error('Missing code'); content = token; }\n    else {\n      if (!hash) throw Error('Missing token');\n      const base = new URL(authUrl); if (!['https:', 'http:'].includes(base.protocol)) throw Error('Invalid auth URL');\n      const url = new URL(base.toString().replace(/\\/$/, '') + '/verify');\n      url.search = new URLSearchParams({ token: hash, type: action, redirect_to: data.redirect_to || data.site_url }).toString();\n      content = url.toString();\n    }\n    return { to, subject: template[0], text: `${template[1]}\\n\\n${content}` };\n  };\n  if (action === 'email_change') {\n    const messages = [];\n    if (data.token_hash_new) messages.push(make(user.email, data.token_hash_new, data.token));\n    messages.push(make(user.new_email, data.token_hash, data.token_new || data.token));\n    return messages;\n  }\n  return [make(user.email, data.token_hash, data.token)];\n}\nif (typeof module !== 'undefined') module.exports = { prepare };\n\nconst verified = $('Verify and prepare').first().json;\nreturn prepare(verified.raw, verified.headers, $env.AROOM_AUTH_HOOK_SECRET, $env.AROOM_SUPABASE_AUTH_URL, Date.now(), $json.locale).map(json => ({json}));"
+      },
+      "id": "render",
+      "name": "Render mail",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $env.AROOM_MAIL_FROM }}",
+        "toEmail": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.text }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "send",
+      "name": "Send email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        660,
+        -100
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json: {failed: $input.all().some(item => !!item.json.error)}}];"
+      },
+      "id": "result",
+      "name": "Check delivery",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        860,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "failed",
+              "leftValue": "={{ $json.failed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "sentif",
+      "name": "Delivery error",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1060,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ {} }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "ok",
+      "name": "Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        900,
+        -180
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"error\": { \"http_code\": 500, \"message\": \"Email delivery failed\" } } }}",
+        "options": {
+          "responseCode": 500
+        }
+      },
+      "id": "fail",
+      "name": "Delivery failed",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        900,
+        -20
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"error\": { \"http_code\": 401, \"message\": \"Invalid webhook\" } } }}",
+        "options": {
+          "responseCode": 401
+        }
+      },
+      "id": "reject",
+      "name": "Reject",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        660,
+        130
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Verify and prepare",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify and prepare": {
+      "main": [
+        [
+          {
+            "node": "Valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid": {
+      "main": [
+        [
+          {
+            "node": "Read profile locale",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read profile locale": {
+      "main": [
+        [
+          {
+            "node": "Render mail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delivery failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Render mail": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email": {
+      "main": [
+        [
+          {
+            "node": "Check delivery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check delivery": {
+      "main": [
+        [
+          {
+            "node": "Delivery error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delivery error": {
+      "main": [
+        [
+          {
+            "node": "Delivery failed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "none",
+    "saveManualExecutions": false
+  },
+  "active": false
+}

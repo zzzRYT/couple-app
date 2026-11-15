@@ -475,3 +475,9 @@ import_map = "./functions/deno.json"
 # The operator route authenticates with the service-role key itself; user routes verify the JWT in the function (createHandler).
 verify_jwt = false
 
+
+# Opt in only in an isolated local stack; see docs/auth-mail-n8n.md.
+[auth.hook.send_email]
+enabled = false
+uri = "http://host.docker.internal:55339/auth-mail"
+secrets = "env(AROOM_LOCAL_AUTH_HOOK_SECRET)"

@@ -21,20 +21,7 @@
 
 ## 메일 연결
 
-코드 변경은 필요 없다. 제공자와 보내는 주소는 오너가 정한다. 그 전까지 `V0-auth-signup-nomail`, `V0-auth-reset-nomail`, `V0-del-email-nomail`이 실제 화면이다.
-
-1. Dashboard → Authentication → SMTP Settings에 제공자 값을 넣는다.
-2. Email Templates의 Confirm signup·Reset password에 기본값처럼 `{{ .ConfirmationURL }}`이 있는지 확인한다.
-3. URL Configuration → Redirect URLs에 Aroom-prod는 `aroom://auth-callback`, Aroom-dev는 `aroom-dev://auth-callback`을 더한다.
-4. 가림 주소로 재설정 메일을 보내려면 보내는 도메인을 Apple Developer의 Sign in with Apple for Email Communication에 등록한다. 등록 전에는 `@privaterelay.appleid.com`으로 메일이 전달되지 않는다. 구현 시점에 Apple 문서로 다시 확인한다.
-5. 메일 제공자를 처리방침의 처리를 맡기는 곳에 세 언어 모두 더하고, 심사 메모의 "Email sign-up and password reset are not open yet" 단락을 지운다.
-6. Confirm email이 켜져 있는지 다시 본 뒤 값 하나를 켠다.
-
-```sql
-update public.app_settings set value = 'true' where key = 'auth_email_enabled';
-```
-
-되돌리려면 `'false'`로 바꾼다. 앱은 다음 화면부터 닫힌 상태를 보여 준다.
+메일 연결은 [n8n 인증 메일 운영 절차](auth-mail-n8n.md)를 따른다. Aroom-dev를 먼저 확인한 뒤 Aroom-prod에 적용한다. 연결 전에는 `V0-auth-signup-nomail`, `V0-auth-reset-nomail`, `V0-del-email-nomail`이 실제 화면이다. 절차의 마지막 단계에서만 `auth_email_enabled`를 켠다.
 
 ## App Review 데모 계정
 
