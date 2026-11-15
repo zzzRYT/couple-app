@@ -19,6 +19,7 @@ export type V0Key =
   | "anniv.years"
   | "anniv.birthday"
   | "anniv.birthday.me"
+  | "anniv.playful.toggle"
   | "anniv.pepero"
   | "anniv.christmas"
   | "anniv.kind.milestone"

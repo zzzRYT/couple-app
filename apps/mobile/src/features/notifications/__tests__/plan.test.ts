@@ -133,3 +133,13 @@ describe('planNotifications', () => {
     expect(JSON.stringify(plan.map((item) => item.body))).not.toContain('1999');
   });
 });
+
+it('keeps relationship days under the season opt-out and never schedules list-only playful days', async () => {
+  const t = await translate();
+  const all = planNotifications(input({ includePlayful: true }), prefs(), t, '2026-05-01T00:00:00Z');
+  expect(all.some((item) => item.data.key === 'season:rose:2026')).toBe(true);
+  expect(all.some((item) => item.data.key.includes('season:diary:') || item.data.key.includes('season:wine:'))).toBe(false);
+  expect(all.length).toBeLessThanOrEqual(50);
+  const disabled = planNotifications(input(), prefs({ kinds: { milestone: true, birthday: true, season: false, custom: true } }), t, '2026-05-01T00:00:00Z');
+  expect(disabled.some((item) => item.data.key.startsWith('season:'))).toBe(false);
+});

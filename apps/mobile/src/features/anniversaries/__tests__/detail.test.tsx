@@ -68,7 +68,7 @@ it('names a seeded couple day in the reader\'s language and explains it was adde
   const item = { key: 'custom:v:2027', kind: 'custom' as const, date: '2027-02-14', title: custom.title, customId: 'v', presetId: 'valentine' };
   const screen = await renderWithI18n(<AnniversaryDetail item={item} custom={custom} {...detailProps} />, 'ja-JP');
   expect(screen.getByText('バレンタインデー')).toBeTruthy();
-  expect(screen.getByText(screen.t('anniv.detail.preset.auto'))).toBeTruthy();
+  expect(screen.queryByText(screen.t('anniv.detail.preset.auto'))).toBeNull();
   await screen.unmount();
   const optional = await renderWithI18n(<AnniversaryDetail item={{ ...item, presetId: 'kiss' }} custom={{ ...custom, title: '키스데이', presetId: 'kiss', createdBy: 'me' }} {...detailProps} />);
   expect(optional.queryByText(optional.t('anniv.detail.preset.auto'))).toBeNull();

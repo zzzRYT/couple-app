@@ -63,7 +63,7 @@ export function planNotifications(input: AnniversaryInput, prefs: NotifyPrefs, t
   const offsets = prefs.early === 'none' ? [0] : [0, EARLY_DAYS[prefs.early]];
   const planned = new Map<string, PlannedNotification>();
   const add = (item: Occurrence) => {
-    if (!prefs.kinds[KIND_PREF[item.kind]] || item.who === 'me' || (item.customId && prefs.offIds.includes(item.customId))) return;
+    if (item.playful || !prefs.kinds[KIND_PREF[item.kind]] || item.who === 'me' || (item.customId && prefs.offIds.includes(item.customId))) return;
     for (const days of offsets) {
       const id = `v0:${item.kind}:${item.key}:${item.date}:${days}`;
       if (planned.has(id)) continue;

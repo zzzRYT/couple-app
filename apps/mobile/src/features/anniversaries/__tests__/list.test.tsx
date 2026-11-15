@@ -117,3 +117,11 @@ it('V0-F08-AC-02 ND12 shows no empty state in the custom filter while customs ex
   const screen = await renderWithI18n(<AnniversaryList view={view} filter="custom" hasCustoms pastOpen={false} offline={false} birthdayState="none" partner="Haru" onFilter={jest.fn()} onPast={jest.fn()} onAdd={jest.fn()} onItem={jest.fn()} onBirthday={jest.fn()} />);
   expect(screen.queryByText(screen.t('anniv.empty.title'))).toBeNull();
 });
+
+it('exposes the playful-days switch in the all list', async () => {
+  const onPlayful = jest.fn();
+  const screen = await renderWithI18n(<AnniversaryList view={view} filter="all" pastOpen={false} offline={false} birthdayState="none" partner="Haru" onFilter={jest.fn()} onPast={jest.fn()} onAdd={jest.fn()} onItem={jest.fn()} onBirthday={jest.fn()} playful={false} onPlayful={onPlayful} />);
+  const toggle = screen.getByLabelText(screen.t('anniv.playful.toggle'));
+  await fireEvent(toggle, 'valueChange', true);
+  expect(onPlayful).toHaveBeenCalledWith(true);
+});

@@ -149,3 +149,26 @@ it('V0-EC-12 shows my birthday alone and the partner birthday only after both ad
   const partnerOnly = computeAnniversaries({ ...base, me: { birthday: null }, partner: { birthday: { month: 4, day: 2 } } }, '2026-02-01T03:00:00Z');
   expect([...partnerOnly.todayItems, ...partnerOnly.upcoming].some((item) => item.kind === 'birthday')).toBe(false);
 });
+
+it('calculates built-in couple days as season items and preserves edited preset rows without duplicates', () => {
+  const input = { startDate: '2025-01-01', timeZone: 'UTC', me: { birthday: null }, partner: null, customs: [] as { id: string; title: string; date: string; repeat: 'yearly'; presetId: string }[] };
+  const days = computeAnniversaries(input, '2026-02-14T12:00:00Z');
+  expect(days.todayItems).toContainEqual(expect.objectContaining({ kind: 'season', seasonId: 'valentine' }));
+  expect(days.upcoming).toContainEqual(expect.objectContaining({ kind: 'season', seasonId: 'white' }));
+  const retained = computeAnniversaries({ ...input, customs: [{ id: 'v', title: 'Our day', date: '2026-02-14', repeat: 'yearly', presetId: 'valentine' }] }, '2026-02-14T12:00:00Z');
+  expect(retained.todayItems.filter((item) => item.date === '2026-02-14')).toEqual([expect.objectContaining({ kind: 'custom', customId: 'v' })]);
+});
+
+it('shows relationship days by default and playful days only when requested, without duplicating a saved preset', () => {
+  const input = { startDate: '2025-01-01', timeZone: 'UTC', me: { birthday: null }, partner: null, customs: [] as { id: string; title: string; date: string; repeat: 'yearly'; presetId: string }[] };
+  const all = (options: typeof input & { includePlayful?: boolean }) => {
+    const view = computeAnniversaries(options, '2026-03-01T12:00:00Z');
+    return [...view.todayItems, ...view.upcoming, ...view.past];
+  };
+  expect(all(input)).toEqual(expect.arrayContaining([expect.objectContaining({ seasonId: 'rose', kind: 'season' }), expect.objectContaining({ seasonId: 'kiss', kind: 'season' })]));
+  expect(all(input).some((item) => item.seasonId === 'samgyeopsal')).toBe(false);
+  expect(all({ ...input, includePlayful: true })).toEqual(expect.arrayContaining([expect.objectContaining({ seasonId: 'samgyeopsal', playful: true })]));
+  const saved = all({ ...input, includePlayful: true, customs: [{ id: 's', title: 'Dinner', date: '2026-03-03', repeat: 'yearly', presetId: 'samgyeopsal' }] });
+  expect(saved.some((item) => item.seasonId === 'samgyeopsal')).toBe(false);
+  expect(saved.some((item) => item.customId === 's')).toBe(true);
+});

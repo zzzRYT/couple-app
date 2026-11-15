@@ -58,7 +58,7 @@ describe('widgetProps', () => {
     // 2026-11-02: the partner birthday 08-02 was 92 days ago and Pepero Day is in 9, so 92 of 101 days are gone.
     expect((await first(normal)).gauge).toBeCloseTo(92 / 101);
     expect((await first(normal, 'ko-KR', '2026-11-10T03:00:00.000Z')).gauge).toBeCloseTo(100 / 101);
-    expect((await first(normal, 'ko-KR', '2026-11-12T03:00:00.000Z')).gauge).toBeCloseTo(1 - 43 / 44);
+    expect((await first(normal, 'ko-KR', '2026-11-12T03:00:00.000Z')).gauge).toBeCloseTo(1 - 32 / 33);
   });
   it('ND24 keeps the gauge empty while the start date is still ahead', async () => {
     expect((await first({ ...normal, dates: { ...dates, startDate: '2026-11-20' } } as WidgetData)).gauge).toBe(0);

@@ -6,7 +6,6 @@ import { useAppColor } from '../../theme/useAppColor';
 import { AppText, Button, Card, Screen } from '../../ui/components';
 import type { Occurrence } from '../../lib/anniversaries';
 import type { CustomAnniversary } from '../../lib/client';
-import { presetOf } from '../../lib/anniversaryPresets';
 import { todayIn } from '../../lib/dday';
 import { OfflineBand } from '../space/OfflineBand';
 import { DeleteAction } from './DeleteAction';
@@ -27,6 +26,6 @@ export function AnniversaryDetail({ item, custom, today, startDate, timeZone, pa
     {offline && <OfflineBand syncedAt={syncedAt} />}
     <View style={{ alignItems: 'center', gap: 6, marginTop: 4 }}><KindTile item={item} size={64} /><AppText variant="heading" align="center" style={{ fontSize: 26, lineHeight: 39 }}>{title}</AppText><AppText tone="text2" style={{ fontSize: 15, lineHeight: 23 }}>{date}</AppText><AppText tone="primary" variant="display" style={{ fontSize: 44, lineHeight: 51 }}>{relativeDate(item.date, today, t)}</AppText></View>
     <Card style={{ padding: 0, gap: 0, overflow: 'hidden' }}>{info.map(([label, value], index) => <Fragment key={label}>{index > 0 && <View style={{ height: 1, marginLeft: 66, backgroundColor: color.divider }} />}<View style={{ gap: 2, paddingVertical: 12, paddingHorizontal: 16 }}><AppText tone="text2" style={emphasis(13)}>{label}</AppText><AppText>{value}</AppText></View></Fragment>)}</Card>
-    {custom ? <><AppText tone="text2" style={note}>{presetOf(custom.presetId)?.auto && custom.createdBy === null ? t('anniv.detail.preset.auto') : t(custom.createdBy === userId ? 'anniv.detail.byMe' : 'anniv.detail.by', { name: partner, date: formattedMonthDay(todayIn(custom.updatedAt, timeZone), i18n.language) })}</AppText></> : <><AppText tone="text2" style={note}>{t(item.kind === 'birthday' ? 'anniv.detail.birthday.note' : 'anniv.detail.system.note')}</AppText>{item.kind === 'birthday' && item.who === 'me' && <Button variant="secondary" label={t('set.me.edit.title')} onPress={onMe} />}<Button variant="secondary" icon="bell" label={t('anniv.detail.openSettings')} onPress={onSettings} /></>}
+    {custom ? <><AppText tone="text2" style={note}>{t((custom.createdBy ?? custom.updatedBy) === userId ? 'anniv.detail.byMe' : 'anniv.detail.by', { name: partner, date: formattedMonthDay(todayIn(custom.updatedAt, timeZone), i18n.language) })}</AppText></> : <><AppText tone="text2" style={note}>{t(item.kind === 'birthday' ? 'anniv.detail.birthday.note' : 'anniv.detail.system.note')}</AppText>{item.kind === 'birthday' && item.who === 'me' && <Button variant="secondary" label={t('set.me.edit.title')} onPress={onMe} />}<Button variant="secondary" icon="bell" label={t('anniv.detail.openSettings')} onPress={onSettings} /></>}
   </Screen>;
 }

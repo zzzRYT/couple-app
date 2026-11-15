@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode } from 'react';
-import { Image, Pressable, ScrollView, View } from 'react-native';
+import { Image, Pressable, ScrollView, Switch, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useType } from '../../theme/typography';
@@ -12,7 +12,8 @@ import { OfflineBand } from '../space/OfflineBand';
 import { AnniversaryRow } from './AnniversaryRow';
 
 type ViewModel = ReturnType<typeof computeAnniversaries>;
-export function AnniversaryList({ view, filter, pastOpen, offline, syncedAt = null, hasCustoms = false, birthdayState, partner, onFilter, onPast, onAdd, onItem, onBirthday }: {
+export function AnniversaryList({ view, filter, pastOpen, offline, syncedAt = null, hasCustoms = false, birthdayState, partner, onFilter, onPast, onAdd, onItem, onBirthday, playful = false, playfulReady = true, onPlayful }: {
+  playful?: boolean; playfulReady?: boolean; onPlayful?: (value: boolean) => void;
   view: ViewModel; filter: 'all' | 'custom'; pastOpen: boolean; offline: boolean; syncedAt?: string | null; hasCustoms?: boolean; birthdayState: 'mine' | 'wait' | 'pending' | 'none'; partner: string;
   onFilter: (filter: 'all' | 'custom') => void; onPast: () => void; onAdd: () => void; onItem: (item: Occurrence) => void; onBirthday: () => void;
 }) {
@@ -32,6 +33,7 @@ export function AnniversaryList({ view, filter, pastOpen, offline, syncedAt = nu
   return <View style={{ flex: 1, backgroundColor: color.bg, paddingTop: insets.top }}>
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20 }}><AppText variant="title" accessibilityRole="header">{t('tab.anniv')}</AppText><Pressable accessibilityRole="button" accessibilityLabel={t('anniv.add')} accessibilityState={{ disabled: offline }} disabled={offline} onPress={onAdd} style={{ width: 48, height: 48, borderRadius: 24, borderWidth: 2, borderStyle: offline ? 'dashed' : 'solid', borderColor: color.line, backgroundColor: offline ? color.surface2 : color.primary, alignItems: 'center', justifyContent: 'center' }}><Icon name="plus" color={offline ? color.text2 : color.onPrimary} /></Pressable></View>
     <View style={{ flexDirection: 'row', marginHorizontal: 20, marginTop: 10, padding: 3, gap: 3, backgroundColor: color.surface2, borderRadius: 13 }}>{(['all', 'custom'] as const).map((value) => <Pressable key={value} accessibilityRole="button" accessibilityState={{ selected: filter === value }} onPress={() => onFilter(value)} style={{ flex: 1, minHeight: 42, alignItems: 'center', justifyContent: 'center', borderRadius: 10, borderWidth: filter === value ? 1.5 : 0, borderColor: color.line, backgroundColor: filter === value ? color.surface : 'transparent' }}><AppText tone={filter === value ? 'text' : 'text2'} style={filter === value ? emphasis(15) : { fontSize: 15, lineHeight: 23 }}>{t(`anniv.filter.${value}`)}</AppText></Pressable>)}</View>
+    {filter === 'all' && onPlayful && <View style={{ marginHorizontal: 20, marginTop: 10, minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}><AppText style={{ flex: 1 }}>{t('anniv.playful.toggle')}</AppText><Switch accessibilityLabel={t('anniv.playful.toggle')} disabled={!playfulReady} value={playful} onValueChange={onPlayful} /></View>}
     {offline && <View style={{ paddingHorizontal: 20, paddingTop: 10 }}><OfflineBand syncedAt={syncedAt} /></View>}
     {filter === 'custom' && !hasCustoms && !today.length && !upcoming.length && !past.length ? <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: 36, paddingBottom: clearance }}><Image source={mascotPoses.lookup} accessibilityLabel={t('mascot.alt.lookup')} style={{ width: 140, height: 140 }} resizeMode="contain" /><AppText variant="heading" align="center" style={{ fontSize: 22, lineHeight: 28 }}>{t('anniv.empty.title')}</AppText><AppText tone="text2" align="center">{t('anniv.empty.body')}</AppText><View style={{ minWidth: 220, maxWidth: '100%', marginTop: 4 }}><Button label={t('anniv.add')} icon="plus" disabled={offline} onPress={onAdd} /></View></View> : <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: clearance + 16, gap: 14 }}>
       {section('anniv.section.today', rows(today))}{section('anniv.section.upcoming', upcomingRows)}

@@ -7,7 +7,7 @@ export function occurrenceTitle(item: Occurrence, partner: string, t: TFunction)
     case 'days': return t('anniv.days', { n: item.n });
     case 'years': return t('anniv.years', { n: item.n });
     case 'birthday': return item.who === 'me' ? t('anniv.birthday.me') : t('anniv.birthday', { name: partner });
-    case 'season': return t(item.seasonId === 'pepero' ? 'anniv.pepero' : 'anniv.christmas');
+    case 'season': return t(item.seasonId === 'pepero' ? 'anniv.pepero' : item.seasonId === 'christmas' ? 'anniv.christmas' : `anniv.preset.${item.seasonId}`);
     case 'custom': return presetTitle({ presetId: item.presetId, title: item.title ?? '' }, t);
   }
 }
