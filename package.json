@@ -3,8 +3,8 @@
   "private": true,
   "packageManager": "pnpm@10.18.2",
   "scripts": {
-    "lint": "eslint apps/mobile/src packages/scene-contract/src packages/scene-contract/tests",
-    "typecheck": "tsc -p apps/mobile --noEmit && tsc -p packages/scene-contract --noEmit"
+    "lint": "eslint apps/mobile/src packages/scene-contract/src packages/scene-contract/tests apps/admin",
+    "typecheck": "tsc -p apps/mobile --noEmit && tsc -p packages/scene-contract --noEmit && corepack pnpm --filter @couple/admin typecheck"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
