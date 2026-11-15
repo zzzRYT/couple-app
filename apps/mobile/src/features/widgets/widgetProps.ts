@@ -28,7 +28,7 @@ function tileOf(item: WidgetItem): { icon: Icon; tile: string } {
     case 'days': return { icon: 'heart', tile: '#F4B79B' };
     case 'years': return { icon: 'medal', tile: '#F2A7B4' };
     case 'birthday': return { icon: 'cake', tile: '#F7D98B' };
-    case 'season': return item.key.startsWith('season:pepero') ? { icon: 'pepero', tile: '#AACBE2' } : { icon: 'tree', tile: '#A8C6A0' };
+    case 'season': return item.key.startsWith('season:pepero:') ? { icon: 'pepero', tile: '#AACBE2' } : item.key.startsWith('season:christmas:') ? { icon: 'tree', tile: '#A8C6A0' } : { icon: 'heart', tile: '#F2A7B4' };
     case 'custom': return { icon: 'star', tile: '#C9B8E8' };
   }
 }

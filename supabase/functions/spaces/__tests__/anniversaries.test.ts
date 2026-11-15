@@ -34,6 +34,8 @@ Deno.test('anniversary presets: a new space has no seeded days, presetId is vali
   assertEquals(snapshot.body.anniversaries, []);
   const input = { title: '삼겹살데이', memo: null, date: '2027-03-03', repeat: 'yearly' };
   for (const presetId of ['bad id', 'a'.repeat(33), 3, 'nope', 'married', 'goodCouple']) assertEquals((await call(h, owner, 'POST', path, { ...input, presetId })).body.error.code, 'INVALID_REQUEST');
+  const legacy = await call(h, owner, 'POST', path, { ...input, title: '로즈데이', date: '2027-05-14', presetId: 'rose' });
+  assertEquals([legacy.status, legacy.body.presetId], [201, 'rose']); // Older clients may still add a formerly optional day.
   const first = await call(h, owner, 'POST', path, { ...input, presetId: 'samgyeopsal' });
   assertEquals([first.status, first.body.presetId], [201, 'samgyeopsal']);
   assertEquals((await call(h, owner, 'POST', path, { ...input, presetId: 'samgyeopsal' })).body.id, first.body.id);

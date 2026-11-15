@@ -15,12 +15,12 @@ it('matches the offered rows of the server table and the Korean copy', () => {
   const retired = migration('20261115000100_v0_retire_married_presets.sql').match(/set offered=false where id in \(([^)]*)\)/)![1]!.match(/\w+/g)!;
   const rows = [...migration('20261111000100_v0_anniversary_preset.sql').matchAll(/^ \('(\w+)',(\d+),(\d+),(true|false),'((?:[^']|'')*)'/gm)].map(([, id, month, day, auto, title]) => ({ id: id!, month: Number(month), day: Number(day), auto: auto === 'true', ko: title!.replace(/''/g, "'") })).filter((row) => !retired.includes(row.id));
   expect(retired).toEqual(['married', 'goodCouple']);
-  expect(rows).toEqual(ANNIVERSARY_PRESETS.map(({ id, month, day, builtIn, ko: title }) => ({ id, month, day, auto: builtIn, ko: title })));
+  expect(rows.map(({ id, month, day, ko: title }) => ({ id, month, day, ko: title }))).toEqual(ANNIVERSARY_PRESETS.map(({ id, month, day, ko: title }) => ({ id, month, day, ko: title })));
   for (const p of ANNIVERSARY_PRESETS) expect((ko as Record<string, string>)[`anniv.preset.${p.id}`]).toBe(p.ko);
 });
 
 it('adds only the days that are for lovers by definition on its own', () => {
-  expect(ANNIVERSARY_PRESETS.filter((p) => p.builtIn).map((p) => p.id).sort()).toEqual(['valentine', 'white']);
+  expect(ANNIVERSARY_PRESETS.filter((p) => p.builtIn).map((p) => p.id).sort()).toEqual(['hug', 'kiss', 'rose', 'valentine', 'white']);
   expect(ANNIVERSARY_PRESETS.map((p) => p.month * 100 + p.day)).toEqual([...ANNIVERSARY_PRESETS.map((p) => p.month * 100 + p.day)].sort((a, b) => a - b));
 });
 
@@ -59,7 +59,7 @@ it('counts a preset as added by its row or by a hand-made yearly row under any o
 });
 
 
-it.each([['valentine', '2027-02-14'], ['white', '2027-03-14']] as const)('localizes the built-in %s season day', async (id, date) => {
+it.each([['valentine', '2027-02-14'], ['white', '2027-03-14'], ['rose', '2027-05-14'], ['kiss', '2027-06-14'], ['hug', '2027-12-14']] as const)('localizes the built-in %s season day', async (id, date) => {
   const view = computeAnniversaries({ startDate: '2025-01-01', timeZone: 'UTC', me: { birthday: null }, partner: null, customs: [] }, `${date}T12:00:00Z`);
   const item = view.todayItems.find((entry) => entry.seasonId === id)!;
   for (const locale of ['ko-KR', 'en-US', 'ja-JP'] as const) {

@@ -28,6 +28,7 @@ sections: 이 화면의 문구
 | `anniv.years` | {n}주년 | {n}-year anniversary | {n}周年 | 재사용 · 기존 키 milestone.label.anniv |
 | `anniv.birthday` | {name} 생일 | {name}'s birthday | {name}の誕生日 | 신규 · EN·JA 초안 |
 | `anniv.birthday.me` | 내 생일 | My birthday | 私の誕生日 | 신규 · EN·JA 초안 |
+| `anniv.playful.toggle` | 재미있는 기념일 보기 | Show playful days | 楽しい記念日を表示 | 신규 · EN·JA 초안 |
 | `anniv.pepero` | 빼빼로데이 | Pepero Day | ペペロデー | 신규 · EN·JA 초안 |
 | `anniv.christmas` | 크리스마스 | Christmas | クリスマス | 신규 · EN·JA 초안 |
 | `anniv.kind.milestone` | 함께한 날 | Our milestones | ふたりの記念日 | 신규 · EN·JA 초안 |

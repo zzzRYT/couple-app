@@ -1,26 +1,26 @@
 # Couple-day presets
 
-Couples get well-known couple days in their anniversary list. Two are built-in season days; nine more are offered on the add screen. The optional preset registry lives in `public.anniversary_preset` and is mirrored by `apps/mobile/src/lib/anniversaryPresets.ts`; the original registry also retains the two historical IDs for compatibility. Design: V0-04 and V0-05 boards of the artifact (version `1794729122-0949`).
+Couple relationship days are built-in season anniversaries. Other playful days are optional and can be shown together or added individually. The preset registry lives in `public.anniversary_preset` and `apps/mobile/src/lib/anniversaryRegistry.ts`; historical IDs remain in the database for compatibility.
 
-None of these days is a public holiday; all are informal commercial or pop-culture observances. The app shows them as anniversaries, never as holidays.
+None of these days is a public holiday.
 
 ## Classification
 
-A day is **built-in** when it is for romantic couples by definition and mainstream: it has its own encyclopedia article, every source reviewed agrees on its name and date, and it is observed beyond internet lists (several countries or national commercial scale). Only Valentine's Day and White Day pass this couple-day rule. Every other day is **optional**.
+The split uses the sources below and asks whether the day celebrates the relationship itself or primarily a product or activity. The latter remain optional even where couples often celebrate them together.
 
-| id | Date | Built-in | Region label | ko (stored title) | en | ja | Status | Sources |
-|---|---|---|---|---|---|---|---|---|
-| `valentine` | 2/14 | yes | none | 발렌타인데이 | Valentine's Day | バレンタインデー | Informal, worldwide | [1] [5] [9] |
-| `white` | 3/14 | yes | none | 화이트데이 | White Day | ホワイトデー | Informal, KR · JP · TW · CN | [1] [7] [8] |
-| `diary` | 1/14 | no | Korea | 다이어리데이 | Diary Day | ダイアリーデー | Informal (14th-day series) | [1] [3] [4] [5] |
-| `samgyeopsal` | 3/3 | no | Korea | 삼겹살데이 | Samgyeopsal Day | サムギョプサルデー | Informal food day, promoted by MAFRA | [2] [10] |
-| `rose` | 5/14 | no | Korea | 로즈데이 | Rose Day | ローズデー | Informal (14th-day series) | [1] [3] [4] [5] |
-| `kiss` | 6/14 | no | Korea | 키스데이 | Kiss Day | キスデー | Informal (14th-day series) | [3] [4] [5] |
-| `silver` | 7/14 | no | Korea | 실버데이 | Silver Day | シルバーデー | Informal (14th-day series) | [1] [4] [5] |
-| `wine` | 10/14 | no | Korea | 와인데이 | Wine Day | ワインデー | Informal (14th-day series) | [1] [4] [5] |
-| `movie` | 11/14 | no | Korea | 무비데이 | Movie Day | ムービーデー | Informal; Orange Day is a variant | [4] [5] |
-| `hug` | 12/14 | no | Korea | 허그데이 | Hug Day | ハグデー | Informal; Money/Sock Day are variants | [4] [5] |
-| `xmasEve` | 12/24 | no | none | 크리스마스 이브 | Christmas Eve | クリスマスイブ | Informal; Japan's main couples' night | [4] [11] |
+| Date | Day | Group | Reason |
+|---|---|---|---|
+| 1/14 | 다이어리데이 | playful | Exchanging diaries centers a product [1] [3]. |
+| 2/14 | 발렌타인데이 | built-in | A widely recognized day for romantic partners [1] [9]. |
+| 3/3 | 삼겹살데이 | playful | A food promotion rather than a relationship observance [2] [10]. |
+| 3/14 | 화이트데이 | built-in | A reciprocal romantic gift day [1] [7]. |
+| 5/14 | 로즈데이 | built-in | Roses express affection between partners [1] [3]. |
+| 6/14 | 키스데이 | built-in | Celebrates affection between partners [3] [4]. |
+| 7/14 | 실버데이 | playful | Silver jewelry and gifts are the focus [1] [4]. |
+| 10/14 | 와인데이 | playful | Drinking wine is the activity [1] [4]. |
+| 11/14 | 무비데이 | playful | Watching a film is the activity [4] [5]. |
+| 12/14 | 허그데이 | built-in | Celebrates affection between partners [4] [5]. |
+| 12/24 | 크리스마스 이브 | playful | A general holiday evening, also used for dates [4] [11]. |
 
 Every row repeats yearly on a fixed solar date. 빼빼로데이 (11/11) and 크리스마스 (12/25) stay the built-in season rows.
 
@@ -30,9 +30,10 @@ Married-couple days (부부의 날 5/21, いい夫婦の日 11/22) are left out 
 
 ## Behaviour
 
-- **Built-in days** (Valentine, White Day, Pepero Day and Christmas) are calculated on the client as season anniversaries, localized and treated like other season days for notifications and widgets. They do not require custom rows.
-- **Existing rows.** The cleanup migration removes untouched previously seeded Valentine and White Day rows, including tombstones. Edited or user-created rows are preserved; a retained preset row takes precedence over its corresponding built-in day in the client. Optional preset IDs remain unique per space, including soft-deleted rows.
-- **Optional days** appear as chips above the title on the add screen. A chip fills the localized title, the next date and yearly repeat; saving sends `presetId`. A day the couple already has is shown as 추가됨 and disabled. Adding the same preset again returns the existing row; adding one that was deleted revives it.
+- **Built-in days** (the relationship days above, Pepero Day and Christmas) are calculated on the client as season anniversaries, localized and treated like other season days for notifications and widgets. They do not require custom rows.
+- **Existing rows.** The cleanup migration removes untouched previously seeded Valentine and White Day rows, including tombstones. Edited or user-created rows are preserved; a retained preset row takes precedence over its corresponding built-in day in the client. Previously optional relationship-day rows were user-created, so all of them are retained. Preset IDs remain unique per space, including soft-deleted rows.
+- **Playful days** are hidden by default. The list switch displays them locally for the current person and space on this device; it does not create rows or schedule reminders, and does not change the partner’s view. They also appear as chips above the title on the add screen. A chip fills the localized title, the next date and yearly repeat; saving sends `presetId`. A day the couple already has is shown as 추가됨 and disabled. Adding the same preset again returns the existing row; adding one that was deleted revives it.
+- **Notifications and widgets.** Built-ins use the existing season preference and notification limit; switching season notifications off suppresses all of them. The playful list switch affects only the list, not notifications or widgets. Individually added playful rows follow custom notification and widget rules.
 - **Names follow the reader.** A preset row whose title is still the stored Korean title shows in the reader's language everywhere (list, home, detail, widgets, notifications). A renamed row shows as written.
 
 ## Rollout

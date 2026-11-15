@@ -179,14 +179,14 @@ it('drops the preset once the title is edited after a tap', async () => {
   expect(save.mock.calls[0]![0]).toEqual({ title: 'Wine night', memo: null, date: '2027-10-14', repeat: 'yearly' });
 });
 it('disables the days the couple already has, including a hand-made one under another language\'s name', async () => {
-  const customs = [{ ...item, id: 'k', title: 'Kiss Day', date: '2024-06-14' }, { ...item, id: 'h', title: '허그데이', date: '2026-12-14', presetId: 'hug' }];
+  const customs = [{ ...item, id: 'k', title: 'Wine Day', date: '2024-10-14' }, { ...item, id: 'h', title: '다이어리데이', date: '2026-01-14', presetId: 'diary' }];
   const screen = await renderWithI18n(<AnniversaryEdit {...base} customs={customs} save={jest.fn()} />);
-  for (const id of ['kiss', 'hug']) {
+  for (const id of ['wine', 'diary']) {
     const chip = screen.getByRole('button', { name: new RegExp(screen.t(`anniv.preset.${id}`)) });
     expect(chip.props.accessibilityState).toMatchObject({ disabled: true });
   }
   expect(screen.getAllByText(screen.t('edit.presets.added'))).toHaveLength(2);
-  expect(screen.getByRole('button', { name: new RegExp(screen.t('anniv.preset.rose')) }).props.accessibilityState).toMatchObject({ selected: false, disabled: false });
+  expect(screen.getByRole('button', { name: new RegExp(screen.t('anniv.preset.samgyeopsal')) }).props.accessibilityState).toMatchObject({ selected: false, disabled: false });
 });
 it('shows a preset row in the reader\'s language and keeps its stored title when saved unchanged', async () => {
   const save = jest.fn().mockResolvedValue(undefined);

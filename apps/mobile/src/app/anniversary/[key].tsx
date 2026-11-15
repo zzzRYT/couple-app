@@ -20,7 +20,7 @@ export default function AnniversaryDetailRoute() {
   const [deleteFailed, setDeleteFailed] = useState(false); const hideDeleteFailed = useCallback(() => setDeleteFailed(false), []);
   let decoded = key ?? ''; try { decoded = decodeURIComponent(decoded); } catch { /* invalid keys resolve to the list */ }
   const partner = snapshot?.members.find((m) => m.userId !== snapshot.me.userId);
-  const view = snapshot ? computeAnniversaries({ startDate: snapshot.space.anniversaryDate, timeZone: snapshot.space.timeZone, me: snapshot.me, partner: partner ?? null, customs: snapshot.anniversaries }, now) : null;
+  const view = snapshot ? computeAnniversaries({ startDate: snapshot.space.anniversaryDate, timeZone: snapshot.space.timeZone, me: snapshot.me, partner: partner ?? null, customs: snapshot.anniversaries, includePlayful: true }, now) : null;
   const item = view && [...view.todayItems, ...view.upcoming, ...view.past].find((entry) => entry.key === decoded);
   const custom = snapshot?.anniversaries.find((entry) => entry.id === item?.customId);
   // Under the edit sheet the item can vanish mid-flow; the sheet decides where to go, and this screen only leaves once it is on top again.
@@ -38,5 +38,5 @@ export default function AnniversaryDetailRoute() {
       setDeleteFailed(true);
     });
   } } ]);
-  return <View style={{ flex: 1 }}><AnniversaryDetail item={item} custom={custom} today={view.today} startDate={snapshot.space.anniversaryDate} timeZone={snapshot.space.timeZone} partner={name} userId={snapshot.me.userId} notify={custom ? notify : prefs.enabled && prefs.kinds[KIND_PREF[item.kind]] ? 'default' : 'off'} notifyDefault={notifyDefaultLabel(prefs, i18n.language, t)} offline={state.offline} syncedAt={state.lastSyncedAt} onBack={() => router.back()} onEdit={() => router.push({ pathname: '/anniversary-edit', params: { id: custom?.id } })} onDelete={remove} onSettings={() => router.push('/settings/notifications')} onMe={() => router.push('/settings/me')} />{deleteFailed && <View style={{ position: 'absolute', left: 20, right: 20, bottom: 110 }}><Toast text={t('edit.delete.err')} icon="warn" onHide={hideDeleteFailed} /></View>}</View>;
+  return <View style={{ flex: 1 }}><AnniversaryDetail item={item} custom={custom} today={view.today} startDate={snapshot.space.anniversaryDate} timeZone={snapshot.space.timeZone} partner={name} userId={snapshot.me.userId} notify={custom ? notify : !item.playful && prefs.enabled && prefs.kinds[KIND_PREF[item.kind]] ? 'default' : 'off'} notifyDefault={notifyDefaultLabel(prefs, i18n.language, t)} offline={state.offline} syncedAt={state.lastSyncedAt} onBack={() => router.back()} onEdit={() => router.push({ pathname: '/anniversary-edit', params: { id: custom?.id } })} onDelete={remove} onSettings={() => router.push('/settings/notifications')} onMe={() => router.push('/settings/me')} />{deleteFailed && <View style={{ position: 'absolute', left: 20, right: 20, bottom: 110 }}><Toast text={t('edit.delete.err')} icon="warn" onHide={hideDeleteFailed} /></View>}</View>;
 }
