@@ -9,12 +9,10 @@ export const ANNIVERSARY_PRESETS = [
   { id: 'samgyeopsal', month: 3, day: 3, auto: false, region: 'kr', ko: '삼겹살데이' },
   { id: 'white', month: 3, day: 14, auto: true, region: null, ko: '화이트데이' },
   { id: 'rose', month: 5, day: 14, auto: false, region: 'kr', ko: '로즈데이' },
-  { id: 'married', month: 5, day: 21, auto: false, region: 'kr', ko: '부부의 날' },
   { id: 'kiss', month: 6, day: 14, auto: false, region: 'kr', ko: '키스데이' },
   { id: 'silver', month: 7, day: 14, auto: false, region: 'kr', ko: '실버데이' },
   { id: 'wine', month: 10, day: 14, auto: false, region: 'kr', ko: '와인데이' },
   { id: 'movie', month: 11, day: 14, auto: false, region: 'kr', ko: '무비데이' },
-  { id: 'goodCouple', month: 11, day: 22, auto: false, region: 'jp', ko: '좋은 부부의 날' },
   { id: 'hug', month: 12, day: 14, auto: false, region: 'kr', ko: '허그데이' },
   { id: 'xmasEve', month: 12, day: 24, auto: false, region: null, ko: '크리스마스 이브' },
 ] as const satisfies readonly PresetRow[];
