@@ -36,7 +36,8 @@ begin
   return found;
 end $$;
 grant create on schema public to tester_function_owner;
-alter function public.is_tester() owner to tester_function_owner;
+-- The caller check uses auth.uid() under the existing privileged function owner.
+alter function public.is_tester() owner to postgres;
 alter function public.admin_list_testers() owner to tester_function_owner;
 alter function public.admin_add_tester(text,text) owner to tester_function_owner;
 alter function public.admin_remove_tester(text) owner to tester_function_owner;

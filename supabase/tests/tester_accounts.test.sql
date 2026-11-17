@@ -21,6 +21,7 @@ select ok(has_function_privilege('admin_tester_manager','public.admin_add_tester
 select ok(not has_function_privilege('authenticated','public.admin_add_tester(text,text)','execute'), 'client cannot manage');
 select ok(not has_function_privilege('anon','public.admin_list_testers()','execute'), 'anon cannot list');
 grant admin_tester_manager to postgres;
+grant usage on schema extensions to admin_tester_manager; -- pgTAP helpers in this transaction only
 set local role admin_tester_manager;
 select is(public.admin_add_tester('other@example.test','admin@example.test'), true, 'manager adds by email');
 select is((select count(*)::integer from public.admin_list_testers()), 2, 'manager lists testers');
