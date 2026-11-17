@@ -127,13 +127,26 @@ export const realGit = {
   isAncestor: (ancestor, commit) => spawnSync('git', ['merge-base', '--is-ancestor', ancestor, commit]).status === 0,
 };
 
-function main() {
+// A synchronize event can be delivered after a later body edit and still carry the old body,
+// so the declaration is read from the PR as it is now, not from the event payload.
+async function currentBody(pr) {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) return pr.body;
+  const api = process.env.GITHUB_API_URL || 'https://api.github.com';
+  const res = await fetch(`${api}/repos/${process.env.GITHUB_REPOSITORY}/pulls/${pr.number}`, {
+    headers: { authorization: `Bearer ${token}`, accept: 'application/vnd.github+json', 'user-agent': 'aroom-design-review' },
+  });
+  if (!res.ok) throw new Error(`could not read PR #${pr.number}: ${res.status}`);
+  return (await res.json()).body;
+}
+
+async function main() {
   const { pull_request: pr } = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
   const base = pr.base.sha;
   const head = pr.head.sha;
   if (!isSha(base) || !isSha(head)) throw new Error(`event base/head are not commit SHAs: ${base} ${head}`);
 
-  const result = buildResult({ pr: pr.number, base, head, ...evaluate({ body: pr.body, base, head, git: realGit }) });
+  const result = buildResult({ pr: pr.number, base, head, ...evaluate({ body: await currentBody(pr), base, head, git: realGit }) });
   const out = process.env.DESIGN_REVIEW_OUT || 'design-review/result.json';
   mkdirSync(dirname(out), { recursive: true });
   writeFileSync(out, `${JSON.stringify(result, null, 2)}\n`);
@@ -147,4 +160,4 @@ function main() {
   process.exitCode = 1;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();
