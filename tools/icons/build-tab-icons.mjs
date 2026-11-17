@@ -11,7 +11,7 @@ const out = fileURLToPath(new URL('../../apps/mobile/assets/tabs/', import.meta.
 const glyphs = {
   home: '<path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>',
   anniversaries: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="M12 18s-3-1.9-3-3.8a1.5 1.5 0 0 1 3-.6 1.5 1.5 0 0 1 3 .6c0 1.9-3 3.8-3 3.8z"/>',
-  settings: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.6M12 18.6v2.6M4.6 5.6l1.9 1.9M17.5 16.5l1.9 1.9M2.8 12h2.6M18.6 12h2.6M4.6 18.4l1.9-1.9M17.5 7.5l1.9-1.9"/>',
+  settings: '<path d="M10.3 2.8h3.4l.5 2.2a7.4 7.4 0 0 1 1.7 1l2.1-.8 1.7 3-1.6 1.6a7.5 7.5 0 0 1 0 2l1.6 1.6-1.7 3-2.1-.8a7.4 7.4 0 0 1-1.7 1l-.5 2.2h-3.4l-.5-2.2a7.4 7.4 0 0 1-1.7-1l-2.1.8-1.7-3 1.6-1.6a7.5 7.5 0 0 1 0-2L4.3 8.2l1.7-3 2.1.8a7.4 7.4 0 0 1 1.7-1z"/><circle cx="12" cy="11" r="3"/>',
 };
 const variants = { '': 2, '-selected': 2.2 };
 const POINTS = 25;
