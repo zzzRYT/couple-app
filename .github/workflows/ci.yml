@@ -8,31 +8,14 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 22.23.4
           cache: pnpm
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 2.122.0
       - uses: denoland/setup-deno@v2
         with:
-          deno-version: v2.x
-      - run: pnpm install --frozen-lockfile
-      - run: python3 -m unittest discover -s tools/design-sync -p 'test_*.py'
-      - run: node --test tools/i18n/copy-library.test.mjs
-      - run: node tools/i18n/check-design-copy.mjs
-      - run: pnpm lint
-      - run: pnpm typecheck
-      - run: pnpm --filter @couple/scene-contract test
-      - run: pnpm --filter mobile test
-      - run: pnpm --filter @couple/admin test
-      - run: pnpm --filter @couple/admin build
+          deno-version: 2.9.6
+      - run: pnpm verify
       # Functions tests need Auth and Realtime too, so the whole local stack starts (migrations and seed apply on start).
-      - run: supabase start -x studio,imgproxy,vector,logflare,supavisor
-      - run: supabase test db
-      - run: LOCAL_DATABASE_URL="$(supabase status -o json | node -e 'let s="";process.stdin.on("data",x=>s+=x).on("end",()=>process.stdout.write(JSON.parse(s).DB_URL))')" node --test tools/tests/quota-concurrency.test.mjs
-      - run: deno test -A supabase/functions
-      - run: node tools/ci/check-functions-boot.mjs
-      - run: deno run -A tools/ai/eval-fixtures.mjs > /dev/null
-      - run: node tools/ci/check-schemas.mjs
-      - run: node tools/ci/check-migrations.mjs
-      - run: node --test assets/catalog/__tests__/manifest.test.mjs tools/tests/font-glyphs.test.mjs tools/tests/account-deletion.test.mjs tools/tests/release-config.test.mjs tools/tests/supabase-remote.test.mjs tools/tests/widget-strings.test.mjs tools/tests/traceability.test.mjs tools/tests/store-readiness.test.mjs
+      - run: pnpm verify:db

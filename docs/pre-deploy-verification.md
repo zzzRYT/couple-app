@@ -4,6 +4,10 @@ PR #15(점유 리스), #16(설정·방 모드), #17(기념일 축하), #18(홈 �
 
 환경: OrbStack, supabase CLI 2.122.0(`supabase start`, edge-runtime 1.77.8), deno 2.9.6, node 24, pnpm 10.18.2.
 
+## CI 로컬 검증
+
+새 worktree에서는 `pnpm verify`를 실행해 frozen-lockfile 설치와 Docker가 필요 없는 CI 검사를 같은 순서로 돌린다. Docker/Supabase 로컬 스택까지 확인하려면 이어서 `pnpm verify:db`를 실행한다.
+
 ## 1. 결과 요약
 
 - CI와 같은 전체 스위트는 처음부터 모두 통과했다.
