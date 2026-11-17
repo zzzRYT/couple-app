@@ -13,12 +13,14 @@ grant usage on schema public, auth to tester_function_owner;
 grant select, insert, delete on public.tester_accounts to tester_function_owner;
 grant select (id, email) on auth.users to tester_function_owner;
 
-create function public.is_tester() returns boolean language sql stable security definer set search_path = '' as $$
-  select exists(select 1 from public.tester_accounts where user_id = auth.uid())
-$$;
-create function public.admin_list_testers() returns table(email text, added_at timestamptz) language sql stable security definer set search_path = '' as $$
-  select u.email::text, t.added_at from public.tester_accounts t join auth.users u on u.id = t.user_id order by t.added_at desc
-$$;
+create function public.is_tester() returns boolean language plpgsql stable security definer set search_path = '' as $$
+begin
+  return exists(select 1 from public.tester_accounts where user_id = auth.uid());
+end $$;
+create function public.admin_list_testers() returns table(email text, added_at timestamptz) language plpgsql stable security definer set search_path = '' as $$
+begin
+  return query select u.email::text, t.added_at from public.tester_accounts t join auth.users u on u.id = t.user_id order by t.added_at desc;
+end $$;
 create function public.admin_add_tester(p_email text, p_added_by text) returns boolean language plpgsql security definer set search_path = '' as $$
 declare target uuid;
 begin
