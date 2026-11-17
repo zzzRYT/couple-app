@@ -8,7 +8,7 @@ Google OAuth/OIDC의 검증된 이메일만 허용하고 `ADMIN_ALLOWLIST_EMAILS
 
 서버는 별도 DB 로그인 역할 `admin_dashboard_reader`로 `public.admin_dashboard()`만 호출한다. 이 역할에는 영구 데이터 테이블의 행이나 열에 대한 읽기·쓰기 권한이 없다. PostgreSQL의 기본 PUBLIC TEMP 권한은 유지되므로 자기 세션의 임시 객체는 만들 수 있다. 함수는 NOLOGIN 소유자의 최소 열 권한으로 고정 집계를 계산하며 `search_path`가 고정되어 있다. anon, authenticated, service_role에는 실행 권한이 없다. 마이그레이션은 기존 함수 세 개에 대한 `PUBLIC` 실행 권한을 철회한다. 이 함수들은 기존 anon/authenticated/service_role의 명시적 권한을 유지한다. 배포 전 별도 DB 역할이나 외부 SQL 클라이언트가 이 세 함수의 PUBLIC 권한에 의존하는지 확인한다. PostgreSQL 시스템 카탈로그와 기본 제공 함수는 PostgreSQL 기본 공개 권한의 영향을 받는다. 이 역할 자격은 서버에서만 보관하며 범용 SQL 인터페이스를 웹에 제공하지 않는다.
 
-집계는 현재 남은 행 기준이다. 5 미만은 반환하지 않고, 분류표에 5 미만의 셀이 하나라도 있으면 전체 분류표를 숨겨 보완 셀 추론을 줄인다. 잔존 신고와 계정 삭제 지문은 별개이며 후자에 처리 상태는 없다. 작은 집계 억제는 연속 조회에 의한 차분 추론을 완전히 막지 않는다. 운영에서는 관리자 수를 최소화하고 별도의 Vercel/WAF 요청 빈도 제한을 설정하고 실제 적용을 검증한다. 이 앱 자체에는 여러 서버 인스턴스를 아우르는 강제 속도 제한이 없다. 응답은 private/no-store이고 실패 값은 `확인 불가`다. 집계 화면에는 원시 사용자 데이터, 식별자, 내용, 로그, 토큰을 표시하거나 기록하지 않는다. 테스트 계정 화면에는 해당 이메일과 추가 시각이 표시된다. OTA 카드는 공개 Worker 버전만 읽으며 배포 성공이나 사용자 체감 건강을 의미하지 않는다.
+집계는 현재 남은 행 기준이다. 5 미만은 반환하지 않고, 분류표에 5 미만의 셀이 하나라도 있으면 전체 분류표를 숨겨 보완 셀 추론을 줄인다. 잔존 신고와 계정 삭제 지문은 별개이며 후자에 처리 상태는 없다. 작은 집계 억제는 연속 조회에 의한 차분 추론을 완전히 막지 않는다. 운영에서는 관리자 수를 최소화하고 별도의 Cloudflare WAF 요청 빈도 제한을 설정하고 실제 적용을 검증한다. 이 앱 자체에는 여러 서버 인스턴스를 아우르는 강제 속도 제한이 없다. 응답은 private/no-store이고 실패 값은 `확인 불가`다. 집계 화면에는 원시 사용자 데이터, 식별자, 내용, 로그, 토큰을 표시하거나 기록하지 않는다. 테스트 계정 화면에는 해당 이메일과 추가 시각이 표시된다. OTA 카드는 공개 Worker 버전만 읽으며 배포 성공이나 사용자 체감 건강을 의미하지 않는다.
 
 테스트 계정 관리는 별도 로그인 역할 `admin_tester_manager`와 `postgres`가 소유한 보안 정의 함수를 사용한다. 이 함수들은 계정 이메일 조회와 테스트 목록 변경에 필요한 권한으로 실행된다. 이 역할은 테이블에 직접 접근하지 못하고 테스트 계정의 이메일과 추가 시각 목록, 이메일로 추가 및 삭제하는 세 함수만 호출한다. 관리자 앱은 매 페이지와 변경 요청에서 Google 허용 목록을 재검증한다. 관리자는 이 기능으로 테스트 계정 이메일을 읽고 목록을 변경할 수 있다. 추가자 이메일은 감사 목적으로 테이블에 저장된다.
 
@@ -18,27 +18,26 @@ Google OAuth/OIDC의 검증된 이메일만 허용하고 `ADMIN_ALLOWLIST_EMAILS
 2. 로컬 DB 관리자 연결에서 `\password admin_dashboard_reader`로 테스트 전용 비밀번호를 설정한다. 프롬프트로 입력하고 비밀번호를 터미널 기록, 저장소, 문서, 채팅에 남기지 않는다. 이 역할은 로그인 가능하지만 마이그레이션에는 비밀번호가 없다.
 3. 같은 방식으로 `admin_tester_manager`의 로컬 비밀번호를 설정하고 `ADMIN_TESTER_DATABASE_URL`에 그 역할의 로컬 연결 문자열을 설정한다. 쉘에 다음 환경 변수를 설정한다. `ADMIN_DATABASE_URL`은 로컬 DB의 해당 역할 접속 문자열이다. 비밀번호에 예약 문자가 있으면 URL 인코딩한다. `NEXTAUTH_SECRET`은 로컬 전용의 충분히 긴 무작위 값이다. `ADMIN_ALLOWLIST_EMAILS`는 쉼표로 구분한다.
 4. 실제 Google 로그인을 테스트하려면 `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`을 로컬 OAuth 클라이언트에서 설정하고 `NEXTAUTH_URL=http://localhost:3000`, Google의 승인된 리디렉션 URI에 `http://localhost:3000/api/auth/callback/google`을 등록한다. `corepack pnpm --filter @couple/admin dev`로 실행한다.
-5. OAuth 클라이언트가 없을 때만 로컬 DB에 대해 `ADMIN_TEST_BYPASS=1`, `ADMIN_TEST_EMAIL`을 허용 목록의 테스트 주소로 설정할 수 있다. 개발 서버는 기본적으로 loopback에만 바인딩한다. 이 우회는 `NODE_ENV=development`이고 Vercel production이 아니며 두 DB 연결이 설정된 경우 모두 호스트가 localhost일 때만 작동한다. 운영 빌드에서는 활성화되지 않는다. Google 실제 로그인 검증을 대체하지 않는다.
+5. OAuth 클라이언트가 없을 때만 로컬 DB에 대해 `ADMIN_TEST_BYPASS=1`, `ADMIN_TEST_EMAIL`을 허용 목록의 테스트 주소로 설정할 수 있다. 개발 서버는 기본적으로 loopback에만 바인딩한다. 이 우회는 `NODE_ENV=development`이고 Cloudflare Workers 런타임이 아니며 두 DB 연결이 설정된 경우 모두 호스트가 localhost일 때만 작동한다. 운영 빌드에서는 활성화되지 않는다. Google 실제 로그인 검증을 대체하지 않는다.
 6. `corepack pnpm --filter @couple/admin test`, `corepack pnpm --filter @couple/admin typecheck`, `npx supabase test db`를 실행한다. Google 인증을 검증할 때는 허용 계정, 허용되지 않은 계정, 만료 세션 및 허용 목록 제거를 각각 확인한다.
 
 ## 운영 배포 순서 — 소유자가 수행
 
-1. 개인정보 처리방침과 공급자 계약을 검토한다. 현재 공개 정책에는 Vercel이 처리업체로 명시되지 않는다. Google 로그인에 따른 관리자 계정 정보 및 Vercel 접속 로그도 검토하고 필요한 경우 한국어·영어·일본어 정책을 갱신한 뒤 공개한다. Vercel 요금제의 이용 조건도 확인한다.
-2. 별도 관리자 Google 계정을 정하고 Google 2단계 인증을 켠다. Google Cloud에서 웹 애플리케이션 OAuth 클라이언트를 생성하고 OAuth 동의 화면과 사용자 범위를 설정한다. 승인된 원본에 선택한 Vercel HTTPS 도메인을, 승인된 리디렉션 URI에 `https://<관리자-도메인>/api/auth/callback/google`을 등록한다. 로컬 테스트용 URI는 위와 같으며 운영과 개발의 클라이언트는 분리한다. 도메인이 확정된 뒤 URI를 정확히 등록한다.
+1. 개인정보 처리방침과 공급자 계약을 검토한다. 저장소의 한국어·영어·일본어 공개 정책 소스는 Cloudflare를 앱 업데이트 배포와 웹사이트 호스팅 업체로 명시한다. Google 로그인에 따른 관리자 계정 정보와 Cloudflare 관리자 사이트 접속 로그가 이 범위에 포함되는지 검토하고 필요한 경우 정책을 갱신한다.
+2. 별도 관리자 Google 계정에 2단계 인증을 켠다. Google Cloud에서 운영용 웹 OAuth 클라이언트를 만들고 동의 화면과 사용자 범위를 설정한다. 확정한 HTTPS 원본(`https://aroom-admin.<서브도메인>.workers.dev` 또는 사용자 지정 도메인)을 승인된 원본으로, 같은 원본의 `/api/auth/callback/google`을 승인된 리디렉션 URI로 등록한다. 개발용 클라이언트는 분리한다.
 3. 소유자가 먼저 개발 DB에 모든 대기 마이그레이션을 검토하고 적용한 뒤 운영에 적용한다. 운영에는 이 마이그레이션 앞에 기존 세 마이그레이션이 대기 중이다. 운영 변경 승인 후 `node tools/supabase/remote.mjs prod db push --dry-run`으로 대상과 **모든** 대기 마이그레이션을 검토한다. 예상하지 못한 마이그레이션이 있다면 중단해 별도 검토한다. 승인된 경우에만 소유자가 `node tools/supabase/remote.mjs prod db push`를 실행한다. 관리자 마이그레이션은 비밀번호 없는 `admin_dashboard_reader` 역할을 생성한다.
 4. 운영 DB 관리자가 `admin_tester_manager`에도 별도의 무작위 비밀번호를 설정하고 별도 연결 문자열을 준비한다. 운영 DB 관리자가 안전한 관리자 연결의 `\password admin_dashboard_reader` 프롬프트에서 새 무작위 비밀번호를 설정한다. 공개 인터넷에 비밀번호를 붙여 넣거나 service-role 키를 사용하지 않는다. Supabase Connect 화면에서 운영 프로젝트의 공유 pooler 호스트와 포트를 확인하고 사용자 이름을 `admin_dashboard_reader.<프로젝트-ref>`로 바꾼다. 비밀번호를 URL 인코딩한 DB 연결 문자열을 안전한 비밀 저장 경로로 준비한다. [Supabase 연결 문서](https://supabase.com/docs/guides/database/connecting-to-postgres)는 사용자 지정 역할과 pooler 사용자 이름을 설명한다. TLS 인증서 검증이 필요하며 연결 문자열의 옵션은 앱이 무시한다.
-5. Vercel 계정/팀에서 Git 저장소를 연결해 새 Next.js 프로젝트를 만들고 Root Directory를 `apps/admin`으로 설정한다. 모노레포의 루트 lockfile 및 workspace 패키지에 접근하도록 Vercel 프로젝트 설정을 확인한다. Production 환경에만 다음 변수를 비밀 설정 화면에서 입력한다. 값은 채팅이나 저장소에 넣지 않는다.
-   - `ADMIN_TESTER_DATABASE_URL`: 별도 **운영 전용 tester manager 역할** 연결 문자열.
-   - `ADMIN_DATABASE_URL`: 4단계의 **운영 전용 reader 역할** 연결 문자열.
-   - `ADMIN_ALLOWLIST_EMAILS`: 2단계에서 승인한 Google 이메일을 쉼표로 구분한 목록.
-   - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`: 2단계 운영 OAuth 클라이언트에서 받은 값.
-   - `NEXTAUTH_URL`: 최종 관리자 사이트의 HTTPS 원본(경로와 마지막 `/` 제외).
-   - `NEXTAUTH_SECRET`: 해당 프로젝트 전용의 충분히 긴 무작위 비밀값.
-6. Preview에는 운영 DB URL과 운영 OAuth 비밀을 제공하지 않는다. 필요한 경우 별도 개발 DB, 개발 OAuth 클라이언트, 비밀 및 preview URI를 사용하고 Vercel 배포 보호를 설정한다. `ADMIN_TEST_BYPASS`를 Vercel에 설정하지 않는다. 원하면 별도 관리자 도메인과 DNS를 연결한다.
-7. 운영에서 [Vercel WAF](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting)의 고정 윈도 규칙을 `/` 경로에 적용한다. 초기값으로 IP당 10분에 10회 제한과 429 응답을 설정하고 실제 차단을 검증한다. 여러 IP를 사용하는 조회를 완전히 막지는 못한다. 요금과 팀 정책을 확인한다. 배포 후 허용 계정 로그인과 2단계 인증, 비허용 계정 거절, 허용 목록 제거 및 세션 만료, reader 역할의 원본 읽기·쓰기 거절, 오류 시 `확인 불가`, 로그/번들의 비밀 미노출을 확인한다. 기능 연동 없이 콘솔 링크만 있는 항목을 실제 상태로 간주하지 않는다.
+5. Aroom Cloudflare 계정에서 Wrangler로 로그인한 뒤 저장소 루트에서 `corepack pnpm install --frozen-lockfile`을 실행하고 `pnpm` 명령이 PATH에서 동작하도록 Corepack을 활성화한다. `corepack pnpm --filter @couple/admin deploy`는 OpenNext 빌드 후 `aroom-admin` Worker를 생성 또는 배포한다. 최초 배포 후 `apps/admin`에서 아래 각각을 `corepack pnpm exec wrangler secret put <이름>`으로 프롬프트에 입력한다. 값은 명령행 인자, 채팅, 저장소에 넣지 않는다. 비밀 설정 후 다시 배포하고 최종 주소를 확인한다.
+   - `ADMIN_TESTER_DATABASE_URL`: 별도 **운영 전용 tester manager 역할** pooler 연결 문자열.
+   - `ADMIN_DATABASE_URL`: 4단계의 **운영 전용 reader 역할** pooler 연결 문자열.
+   - `ADMIN_ALLOWLIST_EMAILS`: 승인한 Google 이메일을 쉼표로 구분한 목록.
+   - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`: 운영 OAuth 클라이언트 값.
+   - `NEXTAUTH_URL`: 2단계의 최종 HTTPS 원본(경로와 마지막 `/` 제외).
+   - `NEXTAUTH_SECRET`: 이 Worker 전용의 충분히 긴 무작위 비밀값.
+6. `ADMIN_TEST_BYPASS`는 Worker에 설정하지 않는다. 로컬 Worker 검증은 운영 비밀 없이 `corepack pnpm --filter @couple/admin preview`를 사용한다. 별도 개발 배포에는 별도의 DB, OAuth 클라이언트와 비밀을 사용한다. Node 호환 TCP로 Supabase pooler에 직접 연결하므로 Hyperdrive 리소스는 필요 없다. 요청마다 DB 연결을 닫고 기존 최소 권한 역할과 TLS 검증을 유지한다.
+7. 운영에는 Cloudflare에 프록시된 사용자 지정 도메인과 zone을 연결하고 [WAF Rate Limiting rule](https://developers.cloudflare.com/waf/rate-limiting-rules/)을 설정한다. 무료 플랜은 zone당 규칙 1개, IP별 10초 측정 및 10초 차단만 제공하며 호스트 조건을 지원하지 않으므로 `/`와 `/testers` 경로를 포함하는 규칙이 같은 zone의 다른 사이트에도 영향을 줄 수 있다. 예를 들어 IP당 10초에 10회를 초과하면 차단하고 적용을 검증한다. 카운터는 데이터센터별이고 적용이 지연될 수 있어 분산 조회를 완전히 막지 못한다. `workers.dev`에는 이 zone 규칙을 적용할 수 없으므로 사용자 지정 도메인을 사용하고 `workers.dev` 경로를 비활성화한다. 이 제한을 설정할 수 없다면 운영 공개 전에 대안을 검토한다.
+8. DB 마이그레이션을 개발, 운영 순서로 적용한 후 관리자 앱을 배포하고 마지막으로 모바일 OTA를 배포한다. 시드 이메일의 계정이 대상 DB에 없으면 시드는 아무 작업도 하지 않으므로 가입 후 관리자 화면에서 추가한다. 마이그레이션 전 앱은 확인 실패를 무시하고 테스트 모드를 숨긴다. 배포 후 허용 계정 로그인과 2단계 인증, 비허용 계정 거절, 허용 목록 제거 및 세션 만료, reader 역할의 원본 읽기·쓰기 거절, 오류 시 `확인 불가`, 로그/번들의 비밀 미노출을 확인한다. 기능 연동 없이 콘솔 링크만 있는 항목을 실제 상태로 간주하지 않는다.
 
 ## 개발 DB 현황
 
 이 작업의 Aroom-dev dry run에는 관리자 마이그레이션 외에 `20261111000100_v0_anniversary_preset.sql`도 대기 중이었다. 단독 적용 조건을 충족하지 않아 개발 DB는 변경하지 않았다. 선행 마이그레이션의 상태를 담당자가 확인한 후 다시 dry run한다.
-
-8. DB 마이그레이션을 개발, 운영 순서로 적용한 후 관리자 앱을 배포하고 마지막으로 모바일 OTA를 배포한다. 시드 이메일의 계정이 대상 DB에 없으면 시드는 아무 작업도 하지 않으므로 가입 후 관리자 화면에서 추가한다. 마이그레이션 전 앱은 확인 실패를 무시하고 테스트 모드를 숨긴다.

@@ -9,7 +9,7 @@ export function isAllowed(session, allowlist) {
 }
 // The bypass is usable only by a development server against a local database.
 export function testSession(env) {
-  if (env.NODE_ENV !== 'development' || env.VERCEL_ENV === 'production' || env.ADMIN_TEST_BYPASS !== '1') return null;
+  if (env.NODE_ENV !== 'development' || typeof globalThis.WebSocketPair !== 'undefined' || env.ADMIN_TEST_BYPASS !== '1') return null;
   try {
     const db = new URL(env.ADMIN_DATABASE_URL);
     if (!['localhost','127.0.0.1','::1','[::1]'].includes(db.hostname) || db.search) return null;
