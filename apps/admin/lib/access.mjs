@@ -13,6 +13,10 @@ export function testSession(env) {
   try {
     const db = new URL(env.ADMIN_DATABASE_URL);
     if (!['localhost','127.0.0.1','::1','[::1]'].includes(db.hostname) || db.search) return null;
+    if (env.ADMIN_TESTER_DATABASE_URL) {
+      const testerDb = new URL(env.ADMIN_TESTER_DATABASE_URL);
+      if (!['localhost','127.0.0.1','::1','[::1]'].includes(testerDb.hostname) || testerDb.search) return null;
+    }
   } catch { return null; }
   return {user:{email:env.ADMIN_TEST_EMAIL, emailVerified:true}};
 }

@@ -17,6 +17,7 @@ test('test bypass cannot be enabled in production or against a remote database',
  assert.equal(testSession({...base,NODE_ENV:'development',ADMIN_DATABASE_URL:'postgres://localhost/test?host=remote.example'}),null);
  assert.equal(testSession({...base,NODE_ENV:'test'}),null);
  assert.equal(testSession({...base,NODE_ENV:'development',ADMIN_DATABASE_URL:'postgres://remote.example/test'}),null);
+ assert.equal(testSession({...base,NODE_ENV:'development',ADMIN_TESTER_DATABASE_URL:'postgres://remote.example/test'}),null);
  assert.equal(isAllowed(testSession({...base,NODE_ENV:'development'}),list),true);
  assert.equal(testSession({...base,NODE_ENV:'development',ADMIN_TEST_BYPASS:'0'}),null);
 });
