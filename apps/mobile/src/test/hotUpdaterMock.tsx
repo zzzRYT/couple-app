@@ -2,3 +2,6 @@
 export const HotUpdater = {
   init: () => ({ checkForUpdate: async () => null, reload: async () => undefined }),
 };
+export const getBundleId = () => '00000000-0000-0000-0000-000000000000';
+export const getMinBundleId = getBundleId;
+export const getChannel = () => 'production';
