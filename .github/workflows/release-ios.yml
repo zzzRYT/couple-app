@@ -32,7 +32,7 @@ jobs:
         working-directory: .
       - uses: expo/expo-github-action@v8
         with:
-          eas-version: latest
+          eas-version: 27.10.0
           token: '${{ secrets.EXPO_TOKEN }}'
       - name: Check submit configuration
         if: inputs.submit
