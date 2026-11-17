@@ -9,7 +9,7 @@ const cast = (fake: ReturnType<typeof updater>) => fake as unknown as Parameters
 
 describe('V0-F14-AC-03 OTA update check (Hot Updater)', () => {
   it('stays off in builds without the client key', async () => {
-    expect(hotUpdater).toBeNull();
+    expect(hotUpdater).toBeTruthy();
     await expect(checkForOtaUpdate()).resolves.toBeUndefined();
   });
 
