@@ -3,6 +3,7 @@ import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, Sc
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '../theme/tokens';
+import { sharedDimensions } from '../theme/sharedDimensions';
 import { useAppColor } from '../theme/useAppColor';
 import { useType, type TypeVariant } from '../theme/typography';
 import { Icon, type IconName } from './Icon';
@@ -14,7 +15,7 @@ import { useDisplayAppearance } from '../features/settings/preferences';
 
 type AppColor = ReturnType<typeof useAppColor>;
 type Tone = 'text' | 'text2' | 'primary' | 'danger' | 'success' | 'onPrimary';
-/** components.md §2-6, Direction A: brown outline (2px), flat surfaces, no shadows, pill buttons. */
+/** components.md §2-6, Direction A: brown outline (2px), flat surfaces, no shadows; Button dimensions come from theme/sharedDimensions. */
 export const GUTTER = tokens.spacing[4];
 /** tokens.typography.wordBreak ko = keep-all: wrap Korean at word boundaries (iOS). */
 export const WORD_BREAK = { lineBreakStrategyIOS: 'hangul-word' } as const;
@@ -36,27 +37,32 @@ function buttonColors(variant: Variant, color: AppColor, dark: boolean) {
     case 'apple': return dark ? { face: '#FFFFFF', ink: '#000000', edge: '#FFFFFF' } : { face: '#000000', ink: '#FFFFFF', edge: '#000000' };
   }
 }
-/** `outline` overrides the edge colour where the control sits on the room (the outline follows the room's day/night, components.md §1.2). */
+/** The visible face (sharedDimensions.control, `compact` = md) is drawn inside a larger touch area. `outline` overrides the edge colour where the control sits on the room (the outline follows the room's day/night, components.md §1.2). */
 export function Button({ label, onPress, disabled = false, loading = false, variant = 'primary', icon, compact = false, outline, accessibilityLabel, testID }: ActionProps & { variant?: Variant; loading?: boolean; icon?: IconName; compact?: boolean; outline?: string }) {
   const color = useAppColor();
   const dark = useDisplayAppearance().scheme === 'dark';
-  const { type } = useType();
+  const { emphasis } = useType();
   const [pressed, setPressed] = useState(false);
+  const { control, touchTarget } = sharedDimensions;
+  const size = control.sizes[compact ? 'md' : 'lg'];
   const inactive = disabled || loading;
   const base = buttonColors(variant, color, dark);
   const ghost = variant === 'ghost';
+  const borderWidth = ghost ? 0 : tokens.border.outline.normal;
   const { face, ink, edge } = disabled && !ghost ? { face: color.surface2, ink: color.text2, edge: color.border } : disabled ? { ...base, ink: color.text2 } : base;
-  const style: ViewStyle = {
-    minHeight: compact ? tokens.touch.minimum : tokens.touch.toolbarHeight, minWidth: tokens.touch.minimum, paddingHorizontal: ghost ? tokens.spacing[2] : tokens.spacing[5], paddingVertical: tokens.spacing[1],
-    flexDirection: 'row', gap: tokens.spacing[1], justifyContent: 'center', alignItems: 'center', backgroundColor: face, borderRadius: tokens.radius.pill,
-    borderWidth: ghost ? 0 : tokens.border.outline.normal, borderColor: outline ?? edge, borderStyle: disabled && !ghost ? 'dashed' : 'solid',
+  const faceStyle: ViewStyle = {
+    minHeight: size.height, paddingHorizontal: control.paddingInline, paddingVertical: (size.height - control.label.lineHeight) / 2 - borderWidth,
+    flexDirection: 'row', gap: control.gap, justifyContent: 'center', alignItems: 'center', backgroundColor: face, borderRadius: control.radius,
+    borderWidth, borderColor: outline ?? edge, borderStyle: disabled && !ghost ? 'dashed' : 'solid',
     opacity: pressed ? 0.88 : 1, transform: [{ translateY: pressed ? 1 : 0 }],
   };
   return (
     <Pressable testID={testID} accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? label} accessibilityState={{ disabled: inactive, busy: loading }} disabled={inactive}
-      onPress={onPress} onPressIn={() => setPressed(true)} onPressOut={() => setPressed(false)} style={style}>
-      {loading ? <ActivityIndicator size="small" color={ink} /> : icon ? <Icon name={icon} size={20} color={ink} /> : null}
-      <Text {...WORD_BREAK} style={[type('label'), { color: ink, textAlign: 'center', flexShrink: 1 }]}>{label}</Text>
+      onPress={onPress} onPressIn={() => setPressed(true)} onPressOut={() => setPressed(false)} style={{ minHeight: touchTarget, minWidth: touchTarget, justifyContent: 'center' }}>
+      <View style={faceStyle}>
+        {loading ? <ActivityIndicator size="small" color={ink} /> : icon ? <Icon name={icon} size={size.icon} color={ink} /> : null}
+        <Text {...WORD_BREAK} style={[emphasis(control.label.size), { lineHeight: control.label.lineHeight, color: ink, textAlign: 'center', flexShrink: 1 }]}>{label}</Text>
+      </View>
     </Pressable>
   );
 }

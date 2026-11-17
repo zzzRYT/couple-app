@@ -351,47 +351,57 @@ exports[`renders each shared primitive and names its actions 1`] = `
               onStartShouldSetResponder={[Function]}
               style={
                 {
-                  "alignItems": "center",
-                  "backgroundColor": "#B24A24",
-                  "borderColor": "#4A3426",
-                  "borderRadius": 999,
-                  "borderStyle": "solid",
-                  "borderWidth": 2,
-                  "flexDirection": "row",
-                  "gap": 8,
                   "justifyContent": "center",
-                  "minHeight": 52,
+                  "minHeight": 48,
                   "minWidth": 48,
-                  "opacity": 1,
-                  "paddingHorizontal": 24,
-                  "paddingVertical": 8,
-                  "transform": [
-                    {
-                      "translateY": 0,
-                    },
-                  ],
                 }
               }
             >
-              <Text
-                lineBreakStrategyIOS="hangul-word"
+              <View
                 style={
-                  [
-                    {
-                      "fontFamily": "NotoSansKRBold",
-                      "fontSize": 16,
-                      "lineHeight": 24,
-                    },
-                    {
-                      "color": "#FFFFFF",
-                      "flexShrink": 1,
-                      "textAlign": "center",
-                    },
-                  ]
+                  {
+                    "alignItems": "center",
+                    "backgroundColor": "#B24A24",
+                    "borderColor": "#4A3426",
+                    "borderRadius": 8,
+                    "borderStyle": "solid",
+                    "borderWidth": 2,
+                    "flexDirection": "row",
+                    "gap": 8,
+                    "justifyContent": "center",
+                    "minHeight": 36,
+                    "opacity": 1,
+                    "paddingHorizontal": 12,
+                    "paddingVertical": 6,
+                    "transform": [
+                      {
+                        "translateY": 0,
+                      },
+                    ],
+                  }
                 }
               >
-                OK
-              </Text>
+                <Text
+                  lineBreakStrategyIOS="hangul-word"
+                  style={
+                    [
+                      {
+                        "fontFamily": "NotoSansKRBold",
+                        "fontSize": 14,
+                        "lineHeight": 21,
+                      },
+                      {
+                        "color": "#FFFFFF",
+                        "flexShrink": 1,
+                        "lineHeight": 20,
+                        "textAlign": "center",
+                      },
+                    ]
+                  }
+                >
+                  OK
+                </Text>
+              </View>
             </View>
           </View>
         </View>
