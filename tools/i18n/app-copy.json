@@ -1,0 +1,32 @@
+{
+  "set.test.title": {
+    "ko": "테스트 모드",
+    "en": "Test mode",
+    "ja": "テストモード"
+  },
+  "set.test.enabled": {
+    "ko": "테스트 모드 사용",
+    "en": "Enable test mode",
+    "ja": "テストモードを有効にする"
+  },
+  "set.test.premium": {
+    "ko": "프리미엄 모드 전환",
+    "en": "Premium mode override",
+    "ja": "プレミアムモード切替"
+  },
+  "set.test.premium.note": {
+    "ko": "아직 프리미엄 기능에 연결되지 않았습니다.",
+    "en": "Not connected to premium features yet.",
+    "ja": "プレミアム機能にはまだ接続されていません。"
+  },
+  "set.test.sentry": {
+    "ko": "Sentry 에러 테스트",
+    "en": "Sentry error test",
+    "ja": "Sentryエラーテスト"
+  },
+  "set.test.sentry.note": {
+    "ko": "Sentry 미연동",
+    "en": "Sentry not connected",
+    "ja": "Sentry未接続"
+  }
+}
