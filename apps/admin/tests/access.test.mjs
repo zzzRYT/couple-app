@@ -13,7 +13,9 @@ test('accepts only verified allowlisted addresses',()=>assert.equal(isAllowed({u
 test('test bypass cannot be enabled in production or against a remote database',()=>{
  const base={ADMIN_TEST_BYPASS:'1',ADMIN_TEST_EMAIL:'admin@example.invalid',ADMIN_DATABASE_URL:'postgres://localhost/test'};
  assert.equal(testSession({...base,NODE_ENV:'production'}),null);
- assert.equal(testSession({...base,NODE_ENV:'development',VERCEL_ENV:'production'}),null);
+ globalThis.WebSocketPair = class {};
+ try { assert.equal(testSession({...base,NODE_ENV:'development'}),null); }
+ finally { delete globalThis.WebSocketPair; }
  assert.equal(testSession({...base,NODE_ENV:'development',ADMIN_DATABASE_URL:'postgres://localhost/test?host=remote.example'}),null);
  assert.equal(testSession({...base,NODE_ENV:'test'}),null);
  assert.equal(testSession({...base,NODE_ENV:'development',ADMIN_DATABASE_URL:'postgres://remote.example/test'}),null);
