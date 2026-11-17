@@ -17,6 +17,7 @@ import { TERMS_URL, contactUrl, privacyUrl } from './helpLinks';
 import { AUTONYMS, usePreferences } from './preferences';
 import { TimeZoneSheet } from './TimeZoneSheet';
 import { zoneLabel } from './zoneLabel';
+import type { ReactNode } from 'react';
 
 const { outline, palette } = tokens.color.illustration;
 const pad = (value: number) => String(value).padStart(2, '0');
@@ -39,7 +40,7 @@ function ProfileCard({ name, detail, disabled, onPress }: { name: string; detail
     </Pressable>
   );
 }
-export function V0SettingsScreen({ snapshot, offline, version, apple = true, supportEmail = APP_IDENTITY.supportEmail, onLogout, onZone, navigate }: { snapshot: Snapshot; offline: boolean; version: string; apple?: boolean; supportEmail?: string | null; onLogout: () => Promise<void>; onZone: (zone: string) => Promise<void>; navigate: (route: 'me' | 'start-date' | 'notifications' | 'language' | 'appearance' | 'security' | 'connect' | 'disconnect' | 'delete-account') => void }) {
+export function V0SettingsScreen({ snapshot, offline, version, apple = true, supportEmail = APP_IDENTITY.supportEmail, testMode, onLogout, onZone, navigate }: { snapshot: Snapshot; offline: boolean; version: string; apple?: boolean; supportEmail?: string | null; testMode?: ReactNode; onLogout: () => Promise<void>; onZone: (zone: string) => Promise<void>; navigate: (route: 'me' | 'start-date' | 'notifications' | 'language' | 'appearance' | 'security' | 'connect' | 'disconnect' | 'delete-account') => void }) {
   const { t, i18n } = useTranslation(); const color = useAppColor(); const preferences = usePreferences(); const clearance = useTabBarClearance();
   const [zone, setZone] = useState(false), [confirm, setConfirm] = useState(false), [busy, setBusy] = useState(false), [failed, setFailed] = useState(false);
   const partner = snapshot.members.find((m) => m.userId !== snapshot.me.userId)?.displayName;
@@ -61,6 +62,7 @@ export function V0SettingsScreen({ snapshot, offline, version, apple = true, sup
     <AppText variant="bodySm" tone="text2">{t('set.display.note')}</AppText>
     <SectionLabel text={t('set.section.help')} /><Card>{contact && <ListRow tile="mail" label={t('set.help.contact')} last={false} onPress={() => void Linking.openURL(contact).catch(() => undefined)} />}<ListRow tile="shield" trailing="external" label={t('set.help.privacy')} last={false} onPress={() => void Linking.openURL(privacyUrl(i18n.language)).catch(() => undefined)} /><ListRow tile="document" trailing="external" label={t('set.help.terms')} last={false} onPress={() => void Linking.openURL(TERMS_URL).catch(() => undefined)} /><InfoRow tile="info" label={t('set.help.version')} value={version} /></Card>
     <SectionLabel text={t('set.section.account')} /><Card><ListRow tile="lock" label={t('set.security.title')} value={t(apple ? 'set.account.apple' : 'set.account.email')} disabled={offline} last={false} onPress={() => navigate('security')} /><ListRow tile="logout" trailing="none" label={t('set.account.logout')} last={false} onPress={openConfirm} />{snapshot.space.memberCount >= 2 && <ListRow tile="linkOff" trailing="none" label={t('set.account.disconnect')} danger disabled={offline} last={false} onPress={() => navigate('disconnect')} />}<ListRow tile="trash" trailing="none" label={t('set.account.delete')} danger disabled={offline} onPress={() => navigate('delete-account')} /></Card>
+    {testMode}
     <TimeZoneSheet visible={zone} timeZone={snapshot.space.timeZone} disabled={busy || offline} failed={failed} onClose={() => setZone(false)} onSelect={(value) => void run(() => onZone(value))} />
     <Dialog visible={confirm} title={t('set.logout.title')} onClose={() => setConfirm(false)}>{failed && <InlineError text={t('state.error.body')} />}<Button label={t('set.account.logout')} variant="danger" loading={busy} onPress={() => void run(onLogout)} /><Button label={t('common.cancel')} variant="ghost" onPress={() => setConfirm(false)} /></Dialog>
   </ScrollView>;

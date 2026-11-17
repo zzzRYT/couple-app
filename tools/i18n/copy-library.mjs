@@ -15,7 +15,13 @@ export async function loadRetiredCopy() {
 export async function loadRuntimeCopies() {
   const { merged, proposals } = await loadCopies();
   const retired = await loadRetiredCopy();
-  return { merged: Object.fromEntries(languages.map((lang) => [lang, { ...retired[lang], ...merged[lang] }])), proposals };
+  const appCopy = JSON.parse(await readFile(new URL('./app-copy.json', import.meta.url), 'utf8'));
+  for (const [key, translations] of Object.entries(appCopy)) {
+    if (key in merged.ko || key in retired.ko) throw Error(`Duplicate app copy key: ${key}`);
+    const placeholders = (value) => [...value.matchAll(/\{(\w+)\}/g)].map((match) => match[1]).sort().join(',');
+    if (languages.some((lang) => typeof translations[lang] !== 'string' || !translations[lang].trim()) || languages.some((lang) => placeholders(translations[lang]) !== placeholders(translations.ko))) throw Error(`Invalid app copy: ${key}`);
+  }
+  return { merged: Object.fromEntries(languages.map((lang) => [lang, { ...retired[lang], ...merged[lang], ...Object.fromEntries(Object.entries(appCopy).map(([key, text]) => [key, text[lang]])) }])), proposals };
 }
 export async function loadCopies(copyRoot = root) {
   const merged = Object.fromEntries(languages.map((l) => [l, {}]));
