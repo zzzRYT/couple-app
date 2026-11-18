@@ -20,7 +20,7 @@ jest.mock('../../features/auth/PasswordContext', () => ({ usePassword: () => moc
 
 const expired = 'aroom://auth-callback#error=access_denied&error_code=otp_expired';
 function wire(sessionError: { message: string } | null = null) {
-  const supabase = { auth: { resend: jest.fn().mockResolvedValue({ error: null }), resetPasswordForEmail: jest.fn().mockResolvedValue({ error: null }), setSession: jest.fn().mockResolvedValue({ error: sessionError }) } };
+  const supabase = { auth: { resend: jest.fn().mockResolvedValue({ error: null }), resetPasswordForEmail: jest.fn().mockResolvedValue({ error: null }), setSession: jest.fn().mockResolvedValue({ error: sessionError }), verifyOtp: jest.fn().mockResolvedValue({ error: sessionError }) } };
   const password = passwordPort(supabase as never, { passwordSignup: jest.fn().mockResolvedValue(undefined) } as never);
   Object.assign(mockApp, { supabase, password });
   return { supabase, password };
@@ -61,4 +61,18 @@ it('V0-F15-AC-09 a confirmation link whose session fails, with no address rememb
   await fireEvent.press(screen.getByRole('button', { name: screen.t('auth.link.confirmExp.resend') }));
   expect(router.replace).toHaveBeenCalledWith('/signup');
   expect(supabase.auth.resend).not.toHaveBeenCalled();
+});
+
+
+it('verifies a matching recovery link and rejects a different environment', async () => {
+  const { supabase } = wire();
+  mockUrl = 'https://aroom.jinjinstar.com/auth-callback?token_hash=abc&type=recovery&env=dev';
+  const screen = await renderWithI18n(<AuthCallbackRoute />);
+  expect(supabase.auth.verifyOtp).toHaveBeenCalledWith({ token_hash: 'abc', type: 'recovery' });
+  expect(mockPassword.setRecovery).toHaveBeenCalledWith(true);
+  await screen.unmount();
+  mockUrl = 'https://aroom.jinjinstar.com/auth-callback?token_hash=other&type=signup&env=prod';
+  const mismatch = await renderWithI18n(<AuthCallbackRoute />);
+  expect(await mismatch.findByText(mismatch.t('auth.link.exp.title'))).toBeTruthy();
+  expect(supabase.auth.verifyOtp).toHaveBeenCalledTimes(1);
 });

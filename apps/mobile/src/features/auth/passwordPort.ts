@@ -1,4 +1,6 @@
 import * as Linking from 'expo-linking';
+import * as Application from 'expo-application';
+import { isStoreApp } from '../../config/identity';
 import { ApiError } from '../../lib/errors';
 import type { Client } from '../../lib/client';
 import type { createSupabase } from '../../lib/supabase';
@@ -77,9 +79,21 @@ export function passwordPort(supabase: Supabase, client: Client): PasswordPort {
     async promptSeen() { await client.passwordPromptSeen(); },
   };
 }
-export type AuthLink = { kind: 'session'; accessToken: string; refreshToken: string; recovery: boolean } | { kind: 'expired' } | { kind: 'none' };
-/** Reads the link Auth redirects to after a mail link: tokens or an error in the fragment. */
-export function parseAuthLink(url: string | null): AuthLink {
+type EmailOtpType = 'signup' | 'invite' | 'magiclink' | 'recovery' | 'email_change' | 'email';
+export type AuthLink = { kind: 'otp'; tokenHash: string; type: EmailOtpType; recovery: boolean } | { kind: 'session'; accessToken: string; refreshToken: string; recovery: boolean } | { kind: 'expired' } | { kind: 'none' };
+/** Reads direct email links and legacy Auth redirects. */
+export function parseAuthLink(url: string | null, applicationId = Application.applicationId): AuthLink {
+  const query = url?.split('#')[0]?.split('?')[1];
+  if (query) {
+    const params = new URLSearchParams(query);
+    const tokenHash = params.get('token_hash');
+    if (tokenHash) {
+      const type = params.get('type');
+      const env = params.get('env');
+      if (env !== (isStoreApp(applicationId) ? 'prod' : 'dev') || !type || !['signup', 'invite', 'magiclink', 'recovery', 'email_change', 'email'].includes(type)) return { kind: 'expired' };
+      return { kind: 'otp', tokenHash, type: type as EmailOtpType, recovery: type === 'recovery' };
+    }
+  }
   const fragment = url?.split('#')[1];
   if (!fragment) return { kind: 'none' };
   const params = new URLSearchParams(fragment);

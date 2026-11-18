@@ -24,7 +24,10 @@ export default function AuthCallbackRoute() {
     if (link.kind === 'none') { setOutcome('done'); return; }
     if (link.kind === 'expired') { expire(null); return; }
     if (link.recovery) setRecovery(true);
-    void supabase.auth.setSession({ access_token: link.accessToken, refresh_token: link.refreshToken }).then(({ error }) => {
+    const request = link.kind === 'otp'
+      ? supabase.auth.verifyOtp({ token_hash: link.tokenHash, type: link.type })
+      : supabase.auth.setSession({ access_token: link.accessToken, refresh_token: link.refreshToken });
+    void request.then(({ error }) => {
       if (error) { setRecovery(false); expire(link.recovery); } else setOutcome('done');
     });
   }, [url, supabase, setRecovery]);

@@ -14,6 +14,10 @@
   Referrer-Policy: no-referrer
   Cache-Control: no-store
 
+/auth-callback*
+  Referrer-Policy: no-referrer
+  Cache-Control: no-store
+
 /robots.txt
   Content-Type: text/plain; charset=utf-8
 
