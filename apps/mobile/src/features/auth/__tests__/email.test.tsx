@@ -5,6 +5,7 @@ import { ConfirmLinkExpiredScreen, LinkExpiredScreen, NewPasswordScreen, ResetSc
 import { SignupScreen } from '../SignupScreen';
 import { expiredLink, readLastMail, rememberMail } from '../lastMail';
 import { parseAuthLink, type PasswordPort } from '../passwordPort';
+import { APP_IDENTITY } from '../../../config/identity';
 import { passwordRules, rulesMet } from '../passwordRules';
 
 function port(overrides: Partial<PasswordPort> = {}) {
@@ -289,4 +290,15 @@ it('the rules match the server on the board examples', () => {
   expect(passwordRules('', 'a@b.co')).toEqual({ length: false, mix: false, notEmail: false });
   expect(rulesMet(passwordRules('Haru1234@b.co', 'haru1234@b.co'))).toBe(false);
   void act;
+});
+
+
+it('parses direct auth links only for the matching app environment', () => {
+  const dev = APP_IDENTITY.devIosBundleId, prod = APP_IDENTITY.iosBundleId;
+  const link = 'https://aroom.jinjinstar.com/auth-callback?token_hash=abc&type=recovery&env=dev';
+  expect(parseAuthLink(link, dev)).toEqual({ kind: 'otp', tokenHash: 'abc', type: 'recovery', recovery: true });
+  expect(parseAuthLink(link, prod)).toEqual({ kind: 'expired' });
+  expect(parseAuthLink('aroom://auth-callback?token_hash=abc&type=signup&env=prod', prod)).toEqual({ kind: 'otp', tokenHash: 'abc', type: 'signup', recovery: false });
+  expect(parseAuthLink('aroom://auth-callback?token_hash=abc&type=signup&env=prod', dev)).toEqual({ kind: 'expired' });
+  expect(parseAuthLink('aroom://auth-callback?token_hash=abc&type=bad&env=dev', dev)).toEqual({ kind: 'expired' });
 });
