@@ -601,7 +601,7 @@
   },
   "V0-00-flow.dc.html": {
    "expand": "fill",
-   "h": 5500,
+   "h": 5800,
    "page": "v0-flow",
    "title": "V0-00 흐름 · 개요",
    "w": 1760,
@@ -610,7 +610,7 @@
   },
   "copy-v0-common.dc.html": {
    "expand": "fill",
-   "h": 3649,
+   "h": 3701,
    "page": "v0-flow",
    "title": "문구 · V0 공통",
    "w": 1760,
@@ -745,7 +745,7 @@
   },
   "V0-08-auth.dc.html": {
    "expand": "fill",
-   "h": 13420,
+   "h": 18790,
    "page": "v0-start",
    "title": "V0-08 로그인 · 비밀번호",
    "w": 1760,
@@ -754,7 +754,7 @@
   },
   "copy-v0-auth.dc.html": {
    "expand": "fill",
-   "h": 7560,
+   "h": 8960,
    "page": "v0-start",
    "title": "문구 · V0-08 로그인 · 비밀번호",
    "w": 1760,
@@ -822,7 +822,7 @@
    "title": "V0-12 스플래시 (아루미)",
    "w": 1760,
    "x": 0,
-   "y": 21503
+   "y": 26873
   },
   "C08-wordmark.dc.html": {
    "expand": "fill",

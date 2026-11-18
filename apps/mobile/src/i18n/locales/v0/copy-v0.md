@@ -1,6 +1,6 @@
 # V0 copy (ko / en / ja) — all V0 copy keys
 
-Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1794729122-0949`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
+Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1795005659-073e`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
 
 **Brand names**: the boards draw the app as 모피루 / Mopiru / モピル and the mascot as 모피 / Mopi / モピ. The owner has since decided (spec D-08, 2026-11-02): app **아룸 / Aroom / アルーム**, mascot **아루미 / Aroomi / アルーミ**. The table below keeps the board text verbatim; in the app only `app.name` and `mascot.name` hold the names, every other value references them with i18next nesting, and the Korean particle after 아룸 becomes 을/이/은/과/으로 (e.g. `widget.none.title` → `$t(app.name)을 시작해요`). See `../H02-v0-shell-home.md` §6.
 
@@ -442,6 +442,22 @@ sections: 이 화면의 문구
 | `auth.save.err.body` | 잠시 후 다시 시도해 주세요. | Please try again in a moment. | しばらくしてからもう一度お試しください。 | 신규 · 오너 승인 2026-11-10 (ND19) · EN·JA 초안 |
 | `auth.send.err.title` | 메일을 보내지 못했어요 | Couldn't send the email | メールを送れませんでした | 신규 · 오너 승인 2026-11-10 (ND19) · EN·JA 초안 |
 | `auth.send.err.body` | 잠시 후 다시 시도해 주세요. | Please try again in a moment. | しばらくしてからもう一度お試しください。 | 신규 · 오너 승인 2026-11-10 (ND19) · EN·JA 초안 |
+| `auth.signup.code.title` | 메일로 보낸 6자리 코드를 입력해 주세요 | Enter the 6-digit code we emailed you | メールで送った6桁のコードを入力してください | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.signup.code.body` | {email}로 6자리 코드를 보냈어요. 코드를 입력하면 가입이 끝나요. | We sent a 6-digit code to {email}. Enter it to finish signing up. | {email}に6桁のコードを送りました。入力すると登録が完了します。 | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.signup.code.expiry` | 코드는 10분 동안만 쓸 수 있어요. | The code is valid for 10 minutes. | コードの有効期限は10分です。 | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.signup.code.label` | 인증 코드 | Verification code | 認証コード | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.signup.code.confirm` | 확인 | Verify | 確認する | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.signup.code.sending` | 코드를 보내는 중… | Sending code… | コードを送信中… | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.signup.code.resend` | 코드 다시 받기 | Resend code | コードを再送する | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.signup.code.resendIn` | {s}초 뒤에 다시 받을 수 있어요 | You can resend in {s}s | {s}秒後に再送できます | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.signup.code.resent` | 새 코드를 보냈어요. | We sent a new code. | 新しいコードを送りました。 | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.signup.code.wrong` | 코드가 맞지 않아요. 다시 확인해 주세요. | That code isn't right. Check it and try again. | コードが違います。もう一度確認してください。 | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.signup.code.expired` | 10분이 지나 코드가 만료됐어요. 새 코드를 받아 주세요. | This code expired after 10 minutes. Request a new one. | 10分が過ぎたため、コードの有効期限が切れました。新しいコードを受け取ってください。 | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.signup.code.rate` | 시도가 너무 많아요. {m}분 뒤에 다시 해 주세요. | Too many attempts. Try again in {m} minutes. | 試行回数が多すぎます。{m}分後にもう一度お試しください。 | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.signup.code.done.title` | 이메일을 확인했어요 | Your email is confirmed | メールアドレスを確認しました | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.signup.code.done.body` | 가입이 끝났어요. 이제 시작해 볼까요? | You're signed up. Ready to get started? | 登録が完了しました。さっそく始めましょう。 | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.setpw.required.title` | 비밀번호를 만들어 주세요 | Create a password | パスワードを作成してください | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
+| `auth.setpw.required.body` | 다른 기기에서 로그인하거나 계정을 되찾을 때 이메일과 이 비밀번호를 써요. Apple로 가입해도 꼭 만들어 주세요. Apple 계정 암호와는 따로예요. | You'll use your email and this password to sign in on other devices or recover your account, so it's required even when you sign up with Apple. It's separate from your Apple Account password. | 別の端末でのログインやアカウントの復旧には、メールアドレスとこのパスワードを使います。Appleで登録した場合も必ず作成してください。Appleアカウントのパスワードとは別のものです。 | 신규 · 오너 승인 2026-11-18 · EN·JA 초안 |
 
 ## V0-09 로그인·보안 (`copy-v0-security.dc.html`)
 sections: 이 화면의 문구
