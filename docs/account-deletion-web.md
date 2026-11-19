@@ -6,7 +6,7 @@ Policy behind the text: `specs/001-couple-prompt-todo/spec.md` Decided 41-51 (ow
 
 ## Page content
 
-The HTML in the three languages is the source. Each page has the same four parts: deleting in the app (Settings → Account → Delete account, "I understand", sign in again with Apple), what is deleted right away (auth account, profile, pending invite codes, and the space with its start date and custom anniversaries, with no retention period), what remains (a one-time nameless notice for the partner, and operational records without personal information), and what to do without the app (write to the public support email; the operator confirms by replying to the sign-up address). Room, photo, decoration, prompt and AI consent wording returns only with V1.
+The HTML in the three languages is the source. Each page has the same four parts: deleting in the app (Settings → Account → Delete account, "I understand", sign in again with Apple), what is deleted right away (auth account, profile, pending invite codes, and the space with its start date and custom anniversaries, with no retention period), what remains (a one-time nameless notice for the partner, and operational records without personal information), and what to do without the app (write to the public support email; the operator confirms by replying to the sign-up address). Any future wording for planet data, photos and AI consent needs a fresh decision and review under the [V1 policy](../specs/003-ai-couple-planet-v1/policy.md).
 
 ## Out-of-app request procedure
 

@@ -1,3 +1,5 @@
+> **과거 V1 기록 (2026-11-19 대체)**: 이 문서의 방·장면·생성·사진·편집 범위와 구현 가정은 [AI Couple Planet V1 오너 결정](../003-ai-couple-planet-v1/policy.md)으로 대체되었다. V0 정책은 V0 명세를 따른다. 과거 내용은 이력으로 보존하며 새 V1 구현 지시가 아니다.
+
 ---
 description: "프롬프트로 꾸미는 커플 D-day와 우리 방 — 구현 태스크 목록 (Expo/React Native + Supabase)"
 ---

@@ -1,3 +1,5 @@
+> **과거 V1 기록 (2026-11-19 대체)**: 이 문서의 방·장면·생성·사진·편집 범위와 구현 가정은 [AI Couple Planet V1 오너 결정](../../003-ai-couple-planet-v1/policy.md)으로 대체되었다. V0 정책은 V0 명세를 따른다. 과거 내용은 이력으로 보존하며 새 V1 구현 지시가 아니다.
+
 # 서비스 계약 제안 (V1)
 
 모든 API는 TLS 및 인증을 요구한다. 앱은 Supabase의 공개 anon key만 사용할 수 있으며 DB의 모든 직접 접근은 RLS로 제한한다. Anthropic·service-role 자격 증명은 앱에 전달하지 않는다. URL은 예시 논리 라우트이며 구현 단계에서 Supabase Edge Function 이름으로 매핑한다.
