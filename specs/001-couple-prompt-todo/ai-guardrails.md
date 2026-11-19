@@ -1,3 +1,5 @@
+> **과거 V1 기록 (2026-11-19 대체)**: 이 문서의 방·장면·생성·사진·편집 범위와 구현 가정은 [AI Couple Planet V1 오너 결정](../003-ai-couple-planet-v1/policy.md)으로 대체되었다. V0 정책은 V0 명세를 따른다. 과거 내용은 이력으로 보존하며 새 V1 구현 지시가 아니다.
+
 # AI 생성 가드레일 (생성 오브젝트 · 신고 · 운영)
 
 **작성일**: 2026-10-27 · **상태**: 제안(소유자의 4차 답변을 해석한 **가정**, `spec.md` Decided 27~32) · **적용 범위**: P2 기능 US8(새 배경·말풍선 장식 생성)과 US9(신고) · **관련**: `spec.md` FR-060~FR-068, `plan.md` "생성 오브젝트", `data-model.md`(`GeneratedObject`·`GenerationAttempt`·`AppConfig`·`GenerationBlock`·`Report`), `contracts/api.md`, `contracts/generated-object.schema.json`, `research.md` 9장, `design/reference-library/`

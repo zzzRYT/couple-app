@@ -1,3 +1,5 @@
+> **과거 V1 기록 (2026-11-19 대체)**: 이 문서의 방·장면·생성·사진·편집 범위와 구현 가정은 [AI Couple Planet V1 오너 결정](../003-ai-couple-planet-v1/policy.md)으로 대체되었다. V0 정책은 V0 명세를 따른다. 과거 내용은 이력으로 보존하며 새 V1 구현 지시가 아니다.
+
 # 일관성 분석 보고서 (spec · plan · data-model · contracts · quickstart · design · tasks)
 
 **날짜**: 2026-10-26(2026-10-27 재점검 두 차례 추가: 복구 규칙, 그리고 생성 장식·신고·복구 기능 제거·방 소품) · **범위**: `spec.md`, `plan.md`, `data-model.md`, `contracts/*`, `quickstart.md`, `research.md`, `design-brief.md`, `design/` 문서·번역 키 표, 새 `tasks.md` · **방법**: `speckit-analyze`의 탐지 항목(중복·모호·누락·헌법·커버리지·불일치)을 읽기 전용으로 돌린 뒤, **분명히 틀린 문서의 작은 오류는 같은 변경에서 고쳤다**(아래 "고침"). 새 결정은 만들지 않았다.

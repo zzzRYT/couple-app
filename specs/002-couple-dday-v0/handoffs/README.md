@@ -40,7 +40,7 @@ A slice is accepted only when all of these hold; then the next handoff is dispat
 
 ## Version naming
 
-Owner decision (2026-11-02): this D+Day release is **V0**; **V1** is the later version that adds AI room decorating (room, prompt). Some boards and the board copy were drawn earlier and call this release "V1" (e.g. the page `Later · V1 이후 (기록)`); the design extracts here already say V0 in their own text and in quoted board text, except page names. Hidden room/prompt/cover code and data are kept for V1.
+Owner decision (2026-11-02): this D+Day release is **V0**. The former V1 AI room-decorating direction was superseded by the [AI Couple Planet decision](../../003-ai-couple-planet-v1/policy.md) on 2026-11-19. Some boards and the board copy were drawn earlier and call this release "V1" (e.g. the page `Later · V1 이후 (기록)`); the design extracts here already say V0 in their own text and in quoted board text, except page names. Hidden room/prompt/cover code and data remain historical implementation; their reuse in V1 is undecided.
 
 ## Decided names
 

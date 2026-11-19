@@ -1,3 +1,5 @@
+> **과거 V1 기록 (2026-11-19 대체)**: 이 문서의 방·장면·생성·사진·편집 범위와 구현 가정은 [AI Couple Planet V1 오너 결정](../003-ai-couple-planet-v1/policy.md)으로 대체되었다. V0 정책은 V0 명세를 따른다. 과거 내용은 이력으로 보존하며 새 V1 구현 지시가 아니다.
+
 # 데이터 모델
 
 이 문서는 구현 전 제안이다. 모든 공유 행은 `space_id`로 범위를 제한하고 RLS 정책을 적용한다. 외래 키/고유 조건/삭제 정책은 서버 DB에서도 강제한다. API 상세는 [contracts/api.md](./contracts/api.md), 장면 문서는 [contracts/room-scene.schema.json](./contracts/room-scene.schema.json), 낮/밤 테마 문서는 [contracts/room-theme.schema.json](./contracts/room-theme.schema.json), 점유권 계약은 [contracts/room-prompt-session.schema.json](./contracts/room-prompt-session.schema.json)을 따른다.
