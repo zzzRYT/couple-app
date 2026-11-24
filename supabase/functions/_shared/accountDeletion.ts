@@ -1,12 +1,12 @@
 // The account deletion state machine after the accepting transaction (spec FR-073, Decided 45 and 47). Each step is
 // idempotent and recorded in account_deletion.state, so a crash or a provider outage resumes where it stopped.
 // No Deno globals or runtime imports: the same module runs in Deno and in Node tests (tools/tests).
-import type { Db } from '../_shared/db.ts';
-import type { SpaceStorage } from '../_shared/spaceStorage.ts';
-import type { AppleClient, AppleTokens } from '../_shared/providers/apple.ts';
-import type { KakaoClient } from '../_shared/providers/kakao.ts';
-import type { CredentialBox } from '../_shared/credentialBox.ts';
-import type { Provider } from '../_shared/reauth.ts';
+import type { Db } from './db.ts';
+import type { SpaceStorage } from './spaceStorage.ts';
+import type { AppleClient, AppleTokens } from './providers/apple.ts';
+import type { KakaoClient } from './providers/kakao.ts';
+import type { CredentialBox } from './credentialBox.ts';
+import type { Provider } from './reauth.ts';
 
 export type DeletionState = 'requested' | 'space_ended' | 'provider_revoked' | 'auth_deleted' | 'done';
 type Claimed = { state: DeletionState; provider: Provider; origin: 'app' | 'operator'; attempts: number; credential: string | null };

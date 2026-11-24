@@ -47,7 +47,7 @@ export async function purgeDueSpaces(db: Db, storage: SpaceStorage, at: Date): P
 
 /**
  * Scheduled job (pg_cron or a Supabase schedule) authenticated with the service-role key; safe to re-run. The schedule itself is not set up yet.
- * `resumeDeletions` continues account deletions that stopped part-way (account/runner.ts).
+ * `resumeDeletions` continues account deletions that stopped part-way (_shared/accountDeletion.ts).
  */
 export function lifecycleSweepHandler(db: Db, serviceKey: string, storage: SpaceStorage, now: () => Date = () => new Date(), resumeDeletions?: (at: Date) => Promise<{ resumed: number; pending: number }>) {
   return async (request: Request): Promise<Response> => {
@@ -65,8 +65,8 @@ export function lifecycleSweepHandler(db: Db, serviceKey: string, storage: Space
 if (import.meta.main) {
   const client = serviceClient();
   // Imported lazily so the account deletion modules load only in the deployed entry point, not when tests import the handler.
-  const { defaultDeletionPorts } = await import('../account/ports.ts');
-  const { resumeAccountDeletions } = await import('../account/runner.ts');
+  const { defaultDeletionPorts } = await import('../_shared/accountDeletionPorts.ts');
+  const { resumeAccountDeletions } = await import('../_shared/accountDeletion.ts');
   const { ports } = await defaultDeletionPorts();
   Deno.serve(lifecycleSweepHandler(rpcDb(client), Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? crypto.randomUUID(), bucketStorage(client), undefined,
     (at) => resumeAccountDeletions(ports, at)));

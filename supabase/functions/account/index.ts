@@ -3,8 +3,8 @@ import { createHandler, defaultDeps, json, route, str, uuidParam, type Context, 
 import { safeLogFields } from '../_shared/logging.ts';
 import { AppleExchangeError, ProviderNotConfiguredError } from '../_shared/providers/apple.ts';
 import { bearerToken, jwtClaims, REAUTH_METHODS, reauthIsFresh, type Provider, type ReauthMethod } from '../_shared/reauth.ts';
-import { runAccountDeletion, type DeletionPorts } from './runner.ts';
-import { defaultDeletionPorts } from './ports.ts';
+import { runAccountDeletion, type DeletionPorts } from '../_shared/accountDeletion.ts';
+import { defaultDeletionPorts } from '../_shared/accountDeletionPorts.ts';
 
 /** A deletion keeps its sealed Apple token only long enough to retry a revoke (spec: at most 24 hours). */
 const CREDENTIAL_TTL_SECONDS = 24 * 60 * 60;
