@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { runAccountDeletion, resumeAccountDeletions, errorCode, ALERT_ATTEMPTS } from '../../supabase/functions/account/runner.ts';
-import { jwtClaims, reauthIsFresh, lastSignInAt } from '../../supabase/functions/account/reauth.ts';
+import { jwtClaims, reauthIsFresh, lastSignInAt } from '../../supabase/functions/_shared/reauth.ts';
 import { appleClient, appleConfigFromEnv, clientSecret, AppleExchangeError, ProviderNotConfiguredError } from '../../supabase/functions/_shared/providers/apple.ts';
 import { kakaoClientFromEnv } from '../../supabase/functions/_shared/providers/kakao.ts';
 import { credentialBox } from '../../supabase/functions/_shared/credentialBox.ts';

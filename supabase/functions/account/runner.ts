@@ -6,7 +6,7 @@ import type { SpaceStorage } from '../_shared/spaceStorage.ts';
 import type { AppleClient, AppleTokens } from '../_shared/providers/apple.ts';
 import type { KakaoClient } from '../_shared/providers/kakao.ts';
 import type { CredentialBox } from '../_shared/credentialBox.ts';
-import type { Provider } from './reauth.ts';
+import type { Provider } from '../_shared/reauth.ts';
 
 export type DeletionState = 'requested' | 'space_ended' | 'provider_revoked' | 'auth_deleted' | 'done';
 type Claimed = { state: DeletionState; provider: Provider; origin: 'app' | 'operator'; attempts: number; credential: string | null };

@@ -5,7 +5,7 @@ import { kakaoClientFromEnv } from '../_shared/providers/kakao.ts';
 import { credentialBox } from '../_shared/credentialBox.ts';
 import { safeLogFields } from '../_shared/logging.ts';
 import { bucketStorage } from '../_shared/spaceStorage.ts';
-import { PROVIDERS, type Provider } from './reauth.ts';
+import { PROVIDERS, type Provider } from '../_shared/reauth.ts';
 import type { AuthAdmin, DeletionPorts } from './runner.ts';
 
 /** Supabase Auth admin calls for the runner. Identity field names are from supabase-js v2 and not yet checked against a Kakao identity. */
