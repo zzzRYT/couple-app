@@ -1,7 +1,6 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import reactNative from 'eslint-plugin-react-native';
-import i18next from 'eslint-plugin-i18next';
 
 export default tseslint.config(
   { ignores: ['**/node_modules/**', '**/dist/**', '**/.next/**', '**/.open-next/**', '**/.wrangler/**', '**/next-env.d.ts', 'design/**', 'specs/**'] },
@@ -15,10 +14,7 @@ export default tseslint.config(
   {
     files: ['apps/mobile/src/features/**/*.{ts,tsx}', 'apps/mobile/src/ui/**/*.{ts,tsx}'],
     ignores: ['**/__tests__/**'],
-    plugins: { i18next },
     rules: {
-      'i18next/no-literal-string': ['error', { markupOnly: false }],
-      // eslint-plugin-i18next 6.1.5 reports nothing under this flat config, so FR-019 is also enforced by syntax selectors.
       'no-restricted-syntax': ['error',
         { selector: 'JSXText[value=/[A-Za-z가-힣ぁ-ゖァ-ヺ一-鿿]/]', message: 'Display text must come from t() keys (FR-019).' },
         { selector: 'JSXElement > JSXExpressionContainer > Literal[value=/[A-Za-z가-힣ぁ-ゖァ-ヺ一-鿿]/]', message: 'Display text must come from t() keys (FR-019).' },

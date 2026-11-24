@@ -14,7 +14,6 @@
     "@types/node": "^26.6.5",
     "csv-parse": "^7.0.3",
     "eslint": "^9.39.5",
-    "eslint-plugin-i18next": "^6.1.5",
     "eslint-plugin-react-native": "^5.0.0",
     "fontkit": "^2.0.4",
     "pg": "^8.23.1",
