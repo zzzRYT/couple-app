@@ -108,7 +108,7 @@ supabase/
 
 | 영역 | 확인한 코드 | V0 처리 |
 |---|---|---|
-| 인증 | `src/features/auth/LoginScreen.tsx`, `AppleButton.tsx`, `Welcome.tsx`, `src/lib/auth.ts`, `src/app/(auth)/{index,welcome,login,email-code}.tsx`, dev quick login `features/auth/devQuickLogin/` | Apple만 보이게 `V0-start-intro`로 재구성. 이메일 경로는 `development` 변형에서만(`EXPO_PUBLIC_DEV_EMAIL_LOGIN`, `app.config.ts:6-13` 가드 유지). |
+| 인증 | `src/features/auth/LoginScreen.tsx`, `AppleButton.tsx`, `Welcome.tsx`, `src/lib/auth.ts`, `src/app/(auth)/{index,welcome,login,email-code}.tsx` | Apple만 보이게 `V0-start-intro`로 재구성. 이메일 경로는 `development` 변형에서만(`EXPO_PUBLIC_DEV_EMAIL_LOGIN`, `app.config.ts:6-13` 가드 유지). |
 | 공간 만들기 | `features/onboarding/CreateSpaceScreen.tsx`(60줄, 날짜만), `app/(onboarding)/create-space.tsx`(기기 시간대 = `getCalendars()[0].timeZone`), `client.createSpace` | 날짜 화면을 V0 디자인으로, 그 뒤 새 `profile` 단계. 공간 생성은 프로필 단계 "다음"에서(뒤로 가기 안전). |
 | 초대 | `features/onboarding/{InviteScreen,JoinScreen,SpaceChoiceScreen}.tsx`, `supabase/functions/invitations/index.ts` | 그대로 재사용, V0 문구·레이아웃만. PR 26의 "새 초대 유지" 로직(`InviteScreen`, `SpaceContext`) 유지. |
 | 앱 게이트 | `src/lib/appGate.ts`(booting/signedOut/sessionExpired/needsOnboardingChoice/ended/active), `src/app/_layout.tsx` | 새 상태 `needsProfile`(활성 공간이 있고 내 `displayName`이 null)와 `connectedOnce` 흐름 추가. |
