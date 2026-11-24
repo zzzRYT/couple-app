@@ -4,7 +4,7 @@
 
 ## 현재 상태
 
-제품 명세와 기술 설계를 마쳤습니다. 다음 단계는 Claude Design을 통한 시각 디자인이며, 이후 앱을 구현합니다. 저장소에는 아직 애플리케이션 코드가 없습니다.
+V0(커플 D+Day) 앱 코드가 이 저장소에 있습니다. 모바일 앱은 `apps/mobile`(Expo), 관리자 화면은 `apps/admin`, 백엔드는 `supabase/`(마이그레이션과 Edge Functions)에 있습니다. 검증 명령과 규칙은 [AGENTS.md](AGENTS.md)에 있습니다.
 
 ## 문서 안내
 
