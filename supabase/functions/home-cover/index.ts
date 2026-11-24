@@ -58,7 +58,7 @@ export function homeCoverHandler(deps: Deps, storage: CoverStorage, now: () => D
       if (!Number.isInteger(body.byteSize) || Number(body.byteSize) <= 0 || Number(body.byteSize) > MAX_BYTES) throw new AppError('COVER_TOO_LARGE');
       const uploadId = crypto.randomUUID();
       const expiresAt = new Date(now().getTime() + 5 * 60_000).toISOString();
-      const ticket = await deps.db.rpc<{ id: string; path: string }>('create_home_cover_upload', { target: spaceId, upload: uploadId, actor: userId, mime: body.contentType, size_bytes: body.byteSize, expires: expiresAt });
+      await deps.db.rpc('create_home_cover_upload', { target: spaceId, upload: uploadId, actor: userId, mime: body.contentType, size_bytes: body.byteSize, expires: expiresAt });
       const uploadUrl = await signedUploadUrl(signedConfig.secret, signedConfig.origin, { spaceId, userId, uploadId, expiresAt });
       return json({ uploadId, uploadUrl, expiresAt }, 201);
     }, { idempotent: false }),
