@@ -179,6 +179,7 @@
         "npm:@expo/eas-json@26",
         "npm:@types/node@^26.6.5",
         "npm:csv-parse@^7.0.3",
+        "npm:deno@2.9.6",
         "npm:eslint-plugin-react-native@5",
         "npm:eslint@^9.39.5",
         "npm:fontkit@^2.0.4",
