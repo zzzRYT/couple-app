@@ -22,5 +22,7 @@ Every row is enforced by a deterministic check that fails the build. A rule with
 | Each migration header states a rollback or deletion policy | `tools/ci/check-migrations.mjs` | `pnpm verify` |
 | Each V0 scenario ID in the spec appears in a test name | `tools/tests/traceability.test.mjs` | `pnpm verify` |
 | Every Edge Function boots in the Edge Runtime | `tools/ci/check-functions-boot.mjs` | `pnpm verify:db` |
+| Every plpgsql function in `public` resolves the functions and columns it uses (no unknown function, no ambiguous column) | `supabase/tests/plpgsql_check.test.sql` | `pnpm verify:db` |
+| A `public` function is executable by PUBLIC, `anon` or `authenticated` only when it is listed in the allowlist | `supabase/tests/function_grants.test.sql` | `pnpm verify:db` |
 | A PR that changes UI declares it and attaches current evidence | `.github/scripts/design-review-check.mjs` | `design-review` workflow |
 | No secrets in commits | gitleaks | `secret-scan` workflow |
