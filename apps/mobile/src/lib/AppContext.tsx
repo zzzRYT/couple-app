@@ -7,8 +7,8 @@ import { createClient, type Client } from './client';
 import { createSupabase, functionsCaller } from './supabase';
 import { supabaseAuth } from './auth';
 import { supabaseRealtime, type RealtimePort } from './realtime';
-import type { AuthPort } from '../features/auth/authPort';
-import { passwordPort, type PasswordPort } from '../features/auth/passwordPort';
+import type { AuthPort } from './authPort';
+import { passwordPort, type PasswordPort } from './passwordPort';
 type AppValue = { client: Client; auth: AuthPort; password: PasswordPort; realtime: RealtimePort; supabase: ReturnType<typeof createSupabase>; session: Session | null; sessionLoaded: boolean; sessionExpired: boolean; clearSessionExpired: () => void; userId: string | null };
 const AppContext = createContext<AppValue | null>(null);
 /** Public values only: the Supabase URL and publishable key come from EXPO_PUBLIC_* build variables, never from source; the native bundle id picks which. */

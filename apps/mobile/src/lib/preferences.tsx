@@ -3,7 +3,7 @@ import { AccessibilityInfo, AppState, Platform, useColorScheme } from 'react-nat
 import * as SecureStore from 'expo-secure-store';
 import { getLocales } from 'expo-localization';
 import type { i18n } from 'i18next';
-import type { Locale } from '../../i18n';
+import type { Locale } from '../i18n';
 
 export type DisplayMode = 'system' | 'light' | 'dark';
 /** Each language in its own name (V0-set-lang): the same in every app language, so they are not copy keys. */

@@ -16,7 +16,7 @@ import { useApp } from '../lib/AppContext';
 import { useSpace } from '../features/space/SpaceContext';
 import { PasswordProvider, usePassword } from '../features/auth/PasswordContext';
 import { peekPendingInvite } from '../lib/inviteLink';
-import { PreferencesProvider, useDisplayAppearance } from '../features/settings/preferences';
+import { PreferencesProvider, useDisplayAppearance } from '../lib/preferences';
 import { V0Error } from '../features/home/states';
 import { useNotificationSync } from '../features/notifications/useNotificationSync';
 import { installNativeWidgets } from '../features/widgets/nativeWidgets';

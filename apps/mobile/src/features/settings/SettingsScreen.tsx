@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { TimeZoneSheet } from './TimeZoneSheet';
 import { ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { usePreferences, type DisplayMode } from './preferences';
+import { usePreferences, type DisplayMode } from '../../lib/preferences';
 import type { Locale } from '../../i18n';
 import { useAppColor } from '../../theme/useAppColor';
 import { tokens } from '../../theme/tokens';

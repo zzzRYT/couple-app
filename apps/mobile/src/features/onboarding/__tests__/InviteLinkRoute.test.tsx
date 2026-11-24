@@ -1,12 +1,12 @@
 import { render, waitFor } from '@testing-library/react-native';
 import { InviteLinkRoute } from '../InviteLinkRoute';
-import { savePendingInvite } from '../inviteLink';
+import { savePendingInvite } from '../../../lib/inviteLink';
 import { router, useLocalSearchParams } from 'expo-router';
-import { track } from '../analytics';
+import { track } from '../../../lib/analytics';
 jest.mock('expo-router', () => ({ router: { replace: jest.fn() }, useLocalSearchParams: jest.fn() }));
-jest.mock('../../features/space/SpaceContext', () => ({ useSpace: () => ({ entry: 'none' }) }));
-jest.mock('../analytics', () => ({ track: jest.fn() }));
-jest.mock('../inviteLink', () => ({ ...jest.requireActual('../inviteLink'), savePendingInvite: jest.fn().mockResolvedValue(undefined) }));
+jest.mock('../../space/SpaceContext', () => ({ useSpace: () => ({ entry: 'none' }) }));
+jest.mock('../../../lib/analytics', () => ({ track: jest.fn() }));
+jest.mock('../../../lib/inviteLink', () => ({ ...jest.requireActual('../../../lib/inviteLink'), savePendingInvite: jest.fn().mockResolvedValue(undefined) }));
 beforeEach(() => jest.clearAllMocks());
 it('counts an opened invite link without its code', async () => {
   jest.mocked(useLocalSearchParams).mockReturnValue({ code: 'TEST-CODE' });

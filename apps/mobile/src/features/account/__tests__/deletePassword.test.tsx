@@ -2,7 +2,8 @@ import { fireEvent, waitFor } from '@testing-library/react-native';
 import { renderWithI18n } from '../../../test/render';
 import { ApiError } from '../../../lib/errors';
 import { DeleteAccountScreen, type DeleteCredentials } from '../DeleteAccountScreen';
-import { submitDeletion, type ReauthPort, type SubmitResult } from '../deleteAccount';
+import { submitDeletion, type SubmitResult } from '../deleteAccount';
+import type { ReauthPort } from '../../../lib/reauth';
 
 const options = { apple: 'native' as const, kakao: false, devEmail: false };
 const relay = 'x7k2m9qd4t@privaterelay.appleid.com';

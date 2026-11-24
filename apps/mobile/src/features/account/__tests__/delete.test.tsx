@@ -9,8 +9,9 @@ import { routes } from '../../../lib/routes';
 import { SettingsScreen } from '../../settings/SettingsScreen';
 import { LoginScreen } from '../../auth/LoginScreen';
 import { DeleteAccountScreen, reauthChoices } from '../DeleteAccountScreen';
-import { clearDeviceAfterDeletion, farewell, submitDeletion, type ReauthPort, type SubmitResult } from '../deleteAccount';
-import type { AuthPort } from '../../auth/authPort';
+import { clearDeviceAfterDeletion, farewell, submitDeletion, type SubmitResult } from '../deleteAccount';
+import type { ReauthPort } from '../../../lib/reauth';
+import type { AuthPort } from '../../../lib/authPort';
 
 const LOCALES = ['ko-KR', 'en-US', 'ja-JP'] as const;
 const resource = (locale: string) => JSON.parse(readFileSync(resolve(__dirname, '../../../i18n/locales', `${locale}.json`), 'utf8')) as Record<string, string>;

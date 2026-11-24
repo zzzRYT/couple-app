@@ -1,5 +1,5 @@
 import { tokens } from './tokens';
-import { useDisplayAppearance } from '../features/settings/preferences';
+import { useDisplayAppearance } from '../lib/preferences';
 
 export function useAppColor() {
   const { scheme, highContrast } = useDisplayAppearance();

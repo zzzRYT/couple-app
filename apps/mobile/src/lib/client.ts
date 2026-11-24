@@ -1,6 +1,6 @@
 import type { Api } from './api';
 import { routes } from './routes';
-import type { Reauth } from '../features/account/deleteAccount';
+import type { Reauth } from './reauth';
 export type Locale = 'ko-KR' | 'en-US' | 'ja-JP';
 export type SceneDocument = { schemaVersion: 1; canvasProfile: 'room-portrait-v1'; objects: SceneObject[]; texts: SceneText[] };
 export type SceneObject = { assetId: string; x: number; y: number; width: number; height: number; rotationDeg: number; zIndex: number; opacity: number; flipX?: boolean };

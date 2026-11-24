@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppText, Button, Screen, TextField } from '../../ui/components';
-import type { AuthPort } from './authPort';
+import type { AuthPort } from '../../lib/authPort';
 
 const RESEND_SECONDS = 60;
 type Problem = null | 'wrong' | 'expired' | 'error' | { rateLimitedMinutes: number };

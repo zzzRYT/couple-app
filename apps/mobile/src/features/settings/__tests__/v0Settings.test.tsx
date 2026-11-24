@@ -7,7 +7,7 @@ import { TERMS_URL } from '../helpLinks';
 import type { Locale } from '../../../i18n';
 import { V0SettingsScreen } from '../V0SettingsScreen';
 const mockPreferences: { locale: Locale | null; displayMode: 'system' } = { locale: null, displayMode: 'system' };
-jest.mock('../preferences', () => ({ ...jest.requireActual('../preferences'), usePreferences: () => mockPreferences }));
+jest.mock('../../../lib/preferences', () => ({ ...jest.requireActual('../../../lib/preferences'), usePreferences: () => mockPreferences }));
 beforeEach(() => { mockPreferences.locale = null; });
 const withBirthday = () => { const snapshot = snapshotFixture(); snapshot.me.birthday = { month: 3, day: 14, year: null }; return snapshot; };
 it('V0-F12-AC-01 exposes V0 rows and hides room, cover and consent', async () => {

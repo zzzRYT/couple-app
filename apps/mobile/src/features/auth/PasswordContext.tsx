@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useApp } from '../../lib/AppContext';
-import type { PasswordState } from './passwordPort';
+import type { PasswordState } from '../../lib/passwordPort';
 
 type Value = {
   /** `undefined` while loading, `null` when it could not be read. */

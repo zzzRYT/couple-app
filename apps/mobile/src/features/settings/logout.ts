@@ -1,4 +1,4 @@
-import type { AuthPort, Provider } from '../auth/authPort';
+import type { AuthPort, Provider } from '../../lib/authPort';
 import type { Snapshot } from '../../lib/client';
 import { clearMilestoneStorage } from '../milestone/useMilestone';
 import { cancelV0Notifications } from '../notifications/scheduler';

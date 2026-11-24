@@ -1,7 +1,7 @@
 import { fireEvent } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { renderWithI18n } from '../../test/render';
-import { passwordPort, type PasswordPort } from '../../features/auth/passwordPort';
+import { passwordPort, type PasswordPort } from '../../lib/passwordPort';
 import AuthCallbackRoute from '../auth-callback';
 
 const mockSecure = new Map<string, string>();

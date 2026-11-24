@@ -2,8 +2,17 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Crypto from 'expo-crypto';
 import type { createSupabase } from './supabase';
 import { supabaseAuth } from './auth';
-import type { ReauthPort } from '../features/account/deleteAccount';
+import type { Provider } from './authPort';
 type Supabase = ReturnType<typeof createSupabase>;
+export type Reauth = { provider: Provider | 'password'; authorizationCode?: string };
+export type ReauthResult = { kind: 'ok'; reauth: Reauth } | { kind: 'cancelled' } | { kind: 'error' };
+/** Re-authentication with the account's provider; the email path exists only in development builds. */
+export type ReauthPort = {
+  apple(): Promise<ReauthResult>;
+  kakao(): Promise<ReauthResult>;
+  sendEmailCode(): Promise<boolean>;
+  verifyEmailCode(code: string): Promise<ReauthResult>;
+};
 
 /**
  * Signs in again with the account's own provider right before account deletion, refreshing the session the server checks

@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { AppText, Card, RadioRow, Screen } from '../../ui/components';
-import { AUTONYMS, usePreferences } from '../../features/settings/preferences';
+import { AUTONYMS, usePreferences } from '../../lib/preferences';
 import type { Locale } from '../../i18n';
 export default function LanguageRoute() {
   const { t } = useTranslation(); const prefs = usePreferences();

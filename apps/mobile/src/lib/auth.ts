@@ -2,7 +2,7 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Crypto from 'expo-crypto';
 import * as Linking from 'expo-linking';
 import type { createSupabase } from './supabase';
-import type { AuthPort } from '../features/auth/authPort';
+import type { AuthPort } from './authPort';
 type Supabase = ReturnType<typeof createSupabase>;
 /** How long the id token exchange may take after the Apple sheet answers before the sign-in screen shows its error. */
 export const APPLE_EXCHANGE_TIMEOUT_MS = 20_000;

@@ -3,8 +3,8 @@ import { renderWithI18n } from '../../../test/render';
 import { EmailLoginScreen } from '../EmailLoginScreen';
 import { ConfirmLinkExpiredScreen, LinkExpiredScreen, NewPasswordScreen, ResetScreen } from '../ResetScreens';
 import { SignupScreen } from '../SignupScreen';
-import { expiredLink, readLastMail, rememberMail } from '../lastMail';
-import { parseAuthLink, type PasswordPort } from '../passwordPort';
+import { expiredLink, readLastMail, rememberMail } from '../../../lib/lastMail';
+import { parseAuthLink, type PasswordPort } from '../../../lib/passwordPort';
 import { APP_IDENTITY } from '../../../config/identity';
 import { passwordRules, rulesMet } from '../passwordRules';
 

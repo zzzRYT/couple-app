@@ -3,7 +3,7 @@ import { Pressable, Text } from 'react-native';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { createI18n } from '../../../i18n';
 import { I18nextProvider } from 'react-i18next';
-import { PreferencesProvider, usePreferences } from '../preferences';
+import { PreferencesProvider, usePreferences } from '../../../lib/preferences';
 import { useAppColor } from '../../../theme/useAppColor';
 
 function Probe() {

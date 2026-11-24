@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { AppText, Banner, Button, Screen, TextField } from '../../ui/components';
 import { CycleLoader } from '../../ui/CycleLoader';
 import { AppleButton } from './AppleButton';
-import { EMAIL_PATTERN } from './authPort';
-import type { PasswordPort } from './passwordPort';
+import { EMAIL_PATTERN } from '../../lib/authPort';
+import type { PasswordPort } from '../../lib/passwordPort';
 import { passwordRules, rulesMet } from './passwordRules';
 import { CheckRow, ContactButton, MailResend, PasswordField, RuleList } from './passwordUi';
 
