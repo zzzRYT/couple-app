@@ -1,9 +1,9 @@
 import * as Linking from 'expo-linking';
 import * as Application from 'expo-application';
-import { isStoreApp } from '../../config/identity';
-import { ApiError } from '../../lib/errors';
-import type { Client } from '../../lib/client';
-import type { createSupabase } from '../../lib/supabase';
+import { isStoreApp } from '../config/identity';
+import { ApiError } from './errors';
+import type { Client } from './client';
+import type { createSupabase } from './supabase';
 import { rememberMail } from './lastMail';
 type Supabase = ReturnType<typeof createSupabase>;
 

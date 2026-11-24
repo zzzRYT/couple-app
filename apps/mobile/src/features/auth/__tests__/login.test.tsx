@@ -2,7 +2,7 @@ import { act, fireEvent } from '@testing-library/react-native';
 import { renderWithI18n } from '../../../test/render';
 import { LoginScreen } from '../LoginScreen';
 import { EmailCodeScreen } from '../EmailCodeScreen';
-import type { AuthPort } from '../authPort';
+import type { AuthPort } from '../../../lib/authPort';
 import type { AuthOptions } from '../../../config/auth';
 function port(overrides: Partial<AuthPort> = {}): AuthPort {
   return { apple: jest.fn().mockResolvedValue('ok'), oauth: jest.fn().mockResolvedValue('ok'), sendCode: jest.fn().mockResolvedValue('ok'), verifyCode: jest.fn().mockResolvedValue('ok'), signOut: jest.fn().mockResolvedValue(undefined), ...overrides };

@@ -2,8 +2,8 @@
 // The Deno integration tests in supabase/functions/account/__tests__ cover the same flow against a local stack.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { runAccountDeletion, resumeAccountDeletions, errorCode, ALERT_ATTEMPTS } from '../../supabase/functions/account/runner.ts';
-import { jwtClaims, reauthIsFresh, lastSignInAt } from '../../supabase/functions/account/reauth.ts';
+import { runAccountDeletion, resumeAccountDeletions, errorCode, ALERT_ATTEMPTS } from '../../supabase/functions/_shared/accountDeletion.ts';
+import { jwtClaims, reauthIsFresh, lastSignInAt } from '../../supabase/functions/_shared/reauth.ts';
 import { appleClient, appleConfigFromEnv, clientSecret, AppleExchangeError, ProviderNotConfiguredError } from '../../supabase/functions/_shared/providers/apple.ts';
 import { kakaoClientFromEnv } from '../../supabase/functions/_shared/providers/kakao.ts';
 import { credentialBox } from '../../supabase/functions/_shared/credentialBox.ts';

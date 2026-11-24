@@ -1,12 +1,12 @@
 import type { SupabaseClient } from 'npm:@supabase/supabase-js@2';
-import { rpcDb, serviceClient } from '../_shared/db.ts';
-import { appleClient, appleConfigFromEnv } from '../_shared/providers/apple.ts';
-import { kakaoClientFromEnv } from '../_shared/providers/kakao.ts';
-import { credentialBox } from '../_shared/credentialBox.ts';
-import { safeLogFields } from '../_shared/logging.ts';
-import { bucketStorage } from '../_shared/spaceStorage.ts';
+import { rpcDb, serviceClient } from './db.ts';
+import { appleClient, appleConfigFromEnv } from './providers/apple.ts';
+import { kakaoClientFromEnv } from './providers/kakao.ts';
+import { credentialBox } from './credentialBox.ts';
+import { safeLogFields } from './logging.ts';
+import { bucketStorage } from './spaceStorage.ts';
 import { PROVIDERS, type Provider } from './reauth.ts';
-import type { AuthAdmin, DeletionPorts } from './runner.ts';
+import type { AuthAdmin, DeletionPorts } from './accountDeletion.ts';
 
 /** Supabase Auth admin calls for the runner. Identity field names are from supabase-js v2 and not yet checked against a Kakao identity. */
 export function authAdmin(client: SupabaseClient): AuthAdmin {

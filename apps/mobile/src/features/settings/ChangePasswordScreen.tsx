@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AppText, Banner, Button, Screen } from '../../ui/components';
 import { tokens } from '../../theme/tokens';
 import { useAppColor } from '../../theme/useAppColor';
-import type { PasswordPort, SetResult } from '../auth/passwordPort';
+import type { PasswordPort, SetResult } from '../../lib/passwordPort';
 import { passwordRules, rulesMet } from '../auth/passwordRules';
 import { PasswordField, RuleList } from '../auth/passwordUi';
 

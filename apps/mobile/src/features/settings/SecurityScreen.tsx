@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { AppText, Banner, Card, InfoRow, ListRow, Screen, SectionLabel, Toast } from '../../ui/components';
 import { LoginAddress } from '../auth/passwordUi';
-import type { PasswordState } from '../auth/passwordPort';
+import type { PasswordState } from '../../lib/passwordPort';
 
 export type SecurityAction = 'create' | 'change' | 'forgot';
 /** V0-sec-apple-nopw, V0-sec-apple-pw and V0-sec-email: the same screen for what the account holds. */

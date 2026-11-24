@@ -1,6 +1,6 @@
 import { Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useDisplayAppearance } from '../features/settings/preferences';
+import { useDisplayAppearance } from '../lib/preferences';
 
 /** design/wordmark: 아룸 for Korean, Aroom for every other language, drawn 28pt tall. */
 const WORDMARKS = {

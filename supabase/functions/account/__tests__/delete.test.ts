@@ -7,7 +7,7 @@ import { HOME_COVER_BUCKET } from '../../lifecycle-sweep/index.ts';
 import { spacesHandler } from '../../spaces/index.ts';
 import { invitationsHandler } from '../../invitations/index.ts';
 import { accountHandler } from '../index.ts';
-import { defaultDeletionPorts } from '../ports.ts';
+import { defaultDeletionPorts } from '../../_shared/accountDeletionPorts.ts';
 
 async function handler(now?: () => Date) {
   const env = await localEnv();

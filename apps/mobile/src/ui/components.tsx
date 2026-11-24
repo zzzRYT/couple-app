@@ -11,7 +11,7 @@ import { useReducedMotion } from './motion';
 import { useLargeText } from './textScale';
 import { FlowBackAction } from './FlowBack';
 import { SheetModal } from './SheetModal';
-import { useDisplayAppearance } from '../features/settings/preferences';
+import { useDisplayAppearance } from '../lib/preferences';
 
 type AppColor = ReturnType<typeof useAppColor>;
 type Tone = 'text' | 'text2' | 'primary' | 'danger' | 'success' | 'onPrimary';

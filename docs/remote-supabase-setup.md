@@ -21,7 +21,7 @@ node tools/supabase/remote.mjs prod functions deploy account   # prod는 ref를 
 - 스크립트는 대상의 토큰 파일에서 `SUPABASE_ACCESS_TOKEN`만 읽고, 모든 명령에 `--remote=<ref>`를 붙인다. `supabase link`로 저장된 프로젝트(`supabase/.temp`)는 대상을 정하지 않는다. 비대화형으로 prod를 실행할 때만 `AROOM_CONFIRM_PROD=mhyctlxweuwznenrdsrl`을 준다.
 - 토큰은 프로젝트 하나로 범위를 좁힌 Supabase 액세스 토큰이다(Account → Access Tokens → Generate new token → Resource access: Project). dev 토큰은 Aroom-dev만, prod 토큰은 Aroom-prod만 볼 수 있어서 짝이 틀리면 권한 오류로 끝나고 아무것도 바뀌지 않는다. dev 토큰 `Aroom-dev-access-token`은 조직 설정·멤버·애드온·브랜치 권한 없이 만들었다.
 - 파일 형식은 `SUPABASE_ACCESS_TOKEN=sbp_…` 한 줄이고 권한은 `600`이다. CLI 3은 토큰으로 임시 로그인 역할을 만들어 DB에 붙으므로 DB 비밀번호는 필요 없다.
-- Supabase CLI 3부터 `db push`·`db query`는 로컬이 기본이다. 대상 없이 `npx supabase db push`를 실행하면 원격에 닿지 않는다.
+- Supabase CLI 3부터 `db push`·`db query`는 로컬이 기본이다. 대상 없이 CLI로 바로 `db push`를 실행하면 원격에 닿지 않는다.
 
 ## 2. 스키마와 시드
 
@@ -51,7 +51,7 @@ node tools/supabase/remote.mjs dev secrets set INVITE_CODE_PEPPER="$(openssl ran
 ## 4. 함수 배포
 
 ```bash
-node tools/supabase/remote.mjs dev functions deploy   # 13개 함수 (supabase/config.toml의 import_map·verify_jwt 설정을 함께 씀)
+node tools/supabase/remote.mjs dev functions deploy   # 모든 함수 (supabase/config.toml의 import_map·verify_jwt 설정을 함께 씀)
 ```
 
 **출시 전 미해결: `home-cover`의 wasm 런타임 다운로드.** `home-cover`가 쓰는 `https://deno.land/x/imagescript@1.3.0/mod.ts`는 콜드 스타트마다 모듈 평가 중에 코덱 wasm 파일을 `deno.land`에서 `fetch`로 받는다. `deno.lock`은 `.js` 모듈만 고정하고 이 wasm 바이트는 고정하지도 무결성을 검사하지도 않는다. 그래서 `deno.land`가 느리거나 내려가면 `home-cover` 전체(업로드 URL·조회·확정)가 부팅하지 못하고, 실행되는 코드가 검증 없이 바뀔 수 있다. 해결 방법은 둘 중 하나이고 둘 다 새 벤더링 산출물이 생기므로 소유자 승인 뒤에 한다: (1) wasm 파일을 함수 옆에 벤더링하고 `file:` URL로 불러오기, (2) wasm을 패키지 안에 묶어 둔 다른 코덱으로 바꾸기.

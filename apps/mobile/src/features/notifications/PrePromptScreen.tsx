@@ -5,7 +5,7 @@ import { mascotPoses } from '../../scene/catalog';
 import { tokens } from '../../theme/tokens';
 import { useAppColor } from '../../theme/useAppColor';
 import { AppText, Button, Screen } from '../../ui/components';
-import { useDisplayAppearance } from '../settings/preferences';
+import { useDisplayAppearance } from '../../lib/preferences';
 import { requestNotificationPermission } from './permissions';
 import { updateNotifyPrefs } from './preferences';
 

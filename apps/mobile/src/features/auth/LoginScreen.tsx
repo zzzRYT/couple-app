@@ -12,7 +12,7 @@ import { AppleButton } from './AppleButton';
 import { DevQuickLogin } from './devQuickLogin';
 import type { createSupabase } from '../../lib/supabase';
 import { ProviderButton } from './ProviderButton';
-import { EMAIL_PATTERN, type AuthPort, type Provider } from './authPort';
+import { EMAIL_PATTERN, type AuthPort, type Provider } from '../../lib/authPort';
 import { mascotPoses } from '../../scene/catalog';
 
 type OAuthProvider = 'kakao' | 'apple';

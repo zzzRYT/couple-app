@@ -9,10 +9,11 @@ import { useAppColor } from '../../theme/useAppColor';
 import { authOptions as defaultOptions, type AuthOptions } from '../../config/auth';
 import { AppleButton } from '../auth/AppleButton';
 import { ProviderButton } from '../auth/ProviderButton';
-import type { Provider } from '../auth/authPort';
-import type { PasswordPort } from '../auth/passwordPort';
+import type { Provider } from '../../lib/authPort';
+import type { PasswordPort } from '../../lib/passwordPort';
 import { CheckRow, ContactButton, PasswordField } from '../auth/passwordUi';
-import type { Reauth, ReauthPort, ReauthResult, SubmitResult } from './deleteAccount';
+import type { SubmitResult } from './deleteAccount';
+import type { Reauth, ReauthPort, ReauthResult } from '../../lib/reauth';
 
 type Phase = 'explain' | 'reauth' | 'password' | 'forgot' | 'appleMore' | 'progress';
 /** What the V0-09 sheets need. `apple` is an account with an Apple identity, whatever else it holds. */

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ComponentRef, type ReactNode } from '
 import { Pressable, ScrollView, Text, View, type ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useDisplayAppearance } from '../features/settings/preferences';
+import { useDisplayAppearance } from '../lib/preferences';
 import { useAppColor } from '../theme/useAppColor';
 import { useType } from '../theme/typography';
 import { tokens } from '../theme/tokens';

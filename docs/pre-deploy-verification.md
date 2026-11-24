@@ -147,11 +147,11 @@ PR #15(점유 리스), #16(설정·방 모드), #17(기념일 축하), #18(홈 �
    6. `20261102000700_milestones.sql` (#17)
    7. `20261102000900_account_deletion.sql` (#19)
    원격이 처음이라면 `20261101000100_base_schema.sql`부터 18개 전부가 적용되고, 그 뒤 카탈로그 시드를 1회 넣는다.
-2. 비밀(`npx supabase secrets set …`, 값은 어디에도 붙이지 않는다):
+2. 비밀(`node tools/supabase/remote.mjs prod secrets set …`, 값은 어디에도 붙이지 않는다):
    - 필수: `INVITE_CODE_PEPPER`, `ANTHROPIC_API_KEY`(없으면 생성 기능은 꺼진 상태로 동작).
    - **아직 없음**: `APPLE_TEAM_ID`, `APPLE_KEY_ID`, `APPLE_PRIVATE_KEY`, `APPLE_CLIENT_ID`. 없으면 Apple 계정 삭제가 503 `PROVIDER_NOT_CONFIGURED`로 거부되고 아무것도 지워지지 않는다(이번에 확인). Apple 로그인만 여는 계획이라 출시 전 필수다.
    - 선택: `ACCOUNT_CREDENTIAL_KEY`(없으면 service-role 키에서 파생), `AI_ESCALATE_TO_SONNET`. 카카오(`KAKAO_UNLINK_ENABLED`, `KAKAO_ADMIN_KEY`)는 보류 중이라 넣지 않는다.
-3. `npx supabase functions deploy` — 마이그레이션 뒤에 12개 모두: `account`, `ai-consent`, `decoration-previews`, `home-cover`, `invitations`, `lifecycle-sweep`, `milestones`, `profile`, `prompt-session`, `reports`, `room`, `spaces`. 이번 수정이 들어간 `home-cover`·`lifecycle-sweep`·`account`가 빠지면 안 된다.
+3. `node tools/supabase/remote.mjs prod functions deploy` — 마이그레이션 뒤에 실행한다. 함수 이름 없이 실행하면 `supabase/functions`의 모든 함수가 배포된다.
 4. 배포 직후 확인: `POST …/functions/v1/lifecycle-sweep`(service-role 키)를 한 번 불러 200과 `purged`·`failed`를 본다. `GET …/functions/v1/home-cover/spaces/<임의 UUID>/home-cover`가 5xx가 아니라 401인지 본다 (`home-cover/x`처럼 없는 경로는 인증 전에 404다).
 5. 예약: `expire_stale_sessions()`는 1분마다(`docs/remote-supabase-setup.md` 4장). `lifecycle-sweep` 하루 1회 예약은 소유자 결정대로 출시 전까지 보류(Vault 키 + pg_cron 방식).
 6. 앱: `expo-image-manipulator`가 들어가서 새 개발 빌드가 필요하다(`eas build --profile development --platform ios`).

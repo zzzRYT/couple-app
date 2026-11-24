@@ -1,1 +1,1 @@
-export { InviteLinkRoute as default } from '../../lib/InviteLinkRoute';
+export { InviteLinkRoute as default } from '../../features/onboarding/InviteLinkRoute';

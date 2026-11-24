@@ -10,6 +10,7 @@ apps/mobile/ios/
 apps/mobile/android/
 dist/
 coverage/
+__pycache__/
 
 .next/
 *.tsbuildinfo

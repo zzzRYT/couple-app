@@ -179,12 +179,11 @@
         "npm:@expo/eas-json@26",
         "npm:@types/node@^26.6.5",
         "npm:csv-parse@^7.0.3",
-        "npm:eslint-plugin-i18next@^6.1.5",
+        "npm:deno@2.9.6",
         "npm:eslint-plugin-react-native@5",
         "npm:eslint@^9.39.5",
         "npm:fontkit@^2.0.4",
         "npm:pg@^8.23.1",
-        "npm:prettier@^3.9.10",
         "npm:sharp@~0.35.5",
         "npm:typescript-eslint@^8.72.1",
         "npm:typescript@~5.9.3"

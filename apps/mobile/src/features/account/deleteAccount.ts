@@ -1,16 +1,6 @@
 import { useSyncExternalStore } from 'react';
-import type { Provider } from '../auth/authPort';
 import { ApiError } from '../../lib/errors';
 
-export type Reauth = { provider: Provider | 'password'; authorizationCode?: string };
-export type ReauthResult = { kind: 'ok'; reauth: Reauth } | { kind: 'cancelled' } | { kind: 'error' };
-/** Re-authentication with the account's provider (lib/reauth.ts); the email path exists only in development builds. */
-export type ReauthPort = {
-  apple(): Promise<ReauthResult>;
-  kakao(): Promise<ReauthResult>;
-  sendEmailCode(): Promise<boolean>;
-  verifyEmailCode(code: string): Promise<ReauthResult>;
-};
 /**
  * accepted: the server took the request (202, or 409 ACCOUNT_DELETING). signedOut: the session no longer works (401), so
  * sign out without claiming success. appleRequired: the password was right but the server holds no Apple token to revoke.

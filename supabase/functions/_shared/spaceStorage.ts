@@ -1,6 +1,6 @@
 import type { SupabaseClient } from 'npm:@supabase/supabase-js@2';
 
-// Shared by lifecycle-sweep and account/ports.ts. It lives here, not in lifecycle-sweep/index.ts, because that entry point
+// Shared by lifecycle-sweep and accountDeletionPorts.ts. It lives here, not in lifecycle-sweep/index.ts, because that entry point
 // imports the account wiring with top-level await: an import back into it never finishes evaluating in the Edge Runtime.
 
 /** Removes the Storage objects that belong to a space; it must finish before the space's rows are deleted. */

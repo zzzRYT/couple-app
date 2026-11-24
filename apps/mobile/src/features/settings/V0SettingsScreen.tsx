@@ -14,7 +14,7 @@ import { formattedMonthDay, formattedYearMonthDay } from '../anniversaries/forma
 import { earlyLabel, formatNotifyTime } from '../notifications/labels';
 import { useNotifySettings } from '../notifications/useNotifyPrefs';
 import { TERMS_URL, contactUrl, privacyUrl } from './helpLinks';
-import { AUTONYMS, usePreferences } from './preferences';
+import { AUTONYMS, usePreferences } from '../../lib/preferences';
 import { TimeZoneSheet } from './TimeZoneSheet';
 import { zoneLabel } from './zoneLabel';
 import type { ReactNode } from 'react';

@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
-import { parseInvite, savePendingInvite } from './inviteLink';
-import { useSpace } from '../features/space/SpaceContext';
-import { track } from './analytics';
+import { parseInvite, savePendingInvite } from '../../lib/inviteLink';
+import { useSpace } from '../space/SpaceContext';
+import { track } from '../../lib/analytics';
 /** Both platform links and the development scheme enter through this route. */
 export function InviteLinkRoute() {
   const { entry } = useSpace();

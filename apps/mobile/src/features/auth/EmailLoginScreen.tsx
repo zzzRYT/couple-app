@@ -7,8 +7,8 @@ import { tokens } from '../../theme/tokens';
 import { useAppColor } from '../../theme/useAppColor';
 import { useType } from '../../theme/typography';
 import { AppleButton } from './AppleButton';
-import { EMAIL_PATTERN } from './authPort';
-import type { PasswordPort } from './passwordPort';
+import { EMAIL_PATTERN } from '../../lib/authPort';
+import type { PasswordPort } from '../../lib/passwordPort';
 import { PasswordField } from './passwordUi';
 
 /**

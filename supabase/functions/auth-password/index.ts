@@ -2,7 +2,7 @@ import { AppError, errorResponse, toResponse } from '../_shared/errors.ts';
 import { createHandler, defaultDeps, json, route, str, type Context, type Deps } from '../_shared/http.ts';
 import { safeLogFields } from '../_shared/logging.ts';
 import { serviceClient } from '../_shared/db.ts';
-import { bearerToken, jwtClaims, provedWithoutPassword } from '../account/reauth.ts';
+import { bearerToken, jwtClaims, provedWithoutPassword } from '../_shared/reauth.ts';
 import { authProvider, type PasswordProvider, type Tokens } from './provider.ts';
 import { attemptKey, normalizedEmail, passwordIsAllowed } from './rules.ts';
 

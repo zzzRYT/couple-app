@@ -5,8 +5,8 @@ import { AppText, Banner, Button, Card, Screen, TextField } from '../../ui/compo
 import { CycleLoader } from '../../ui/CycleLoader';
 import { tokens } from '../../theme/tokens';
 import { AppleButton } from './AppleButton';
-import { EMAIL_PATTERN } from './authPort';
-import type { PasswordPort, SetResult } from './passwordPort';
+import { EMAIL_PATTERN } from '../../lib/authPort';
+import type { PasswordPort, SetResult } from '../../lib/passwordPort';
 import { passwordRules, rulesMet } from './passwordRules';
 import { ContactButton, MailResend, PasswordField, RuleList } from './passwordUi';
 

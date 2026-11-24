@@ -22,7 +22,7 @@ Deno.test('deletes unapplied prompt data after 24 hours and applied messages aft
   await r.confirm(r.a, sid2, applied.body.previewId);
   const before = await messages(r.spaceId);
   const start = Date.now();
-  const run = (offset: number) => lifecycleSweepHandler(rpcDbFrom(), env.serviceKey, noStorage, () => new Date(start + offset))(new Request('http://local/lifecycle-sweep', { method: 'POST', headers: { Authorization: `Bearer ${env.serviceKey}` } }));
+  const run = (offset: number) => lifecycleSweepHandler(db, env.serviceKey, noStorage, () => new Date(start + offset))(new Request('http://local/lifecycle-sweep', { method: 'POST', headers: { Authorization: `Bearer ${env.serviceKey}` } }));
   assertEquals((await run(23 * HOUR)).status, 200);
   assertEquals(await messages(r.spaceId), before, 'nothing is deleted before 24 hours');
   await run(24 * HOUR + 60_000);
@@ -39,12 +39,7 @@ Deno.test('deletes unapplied prompt data after 24 hours and applied messages aft
 });
 Deno.test('refuses callers without the service key', async () => {
   const env = await localEnv();
-  const res = await lifecycleSweepHandler(rpcDbFrom(), env.serviceKey, noStorage)(new Request('http://local/lifecycle-sweep', { method: 'POST', headers: { Authorization: 'Bearer nope' } }));
+  const res = await lifecycleSweepHandler(db, env.serviceKey, noStorage)(new Request('http://local/lifecycle-sweep', { method: 'POST', headers: { Authorization: 'Bearer nope' } }));
   assertEquals(res.status, 401);
 });
-let cachedDb: ReturnType<typeof rpcDb> | undefined;
-function rpcDbFrom() {
-  if (!cachedDb) throw new Error('db not ready');
-  return cachedDb;
-}
-cachedDb = rpcDb(await service());
+const db = rpcDb(await service());
