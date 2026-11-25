@@ -10,8 +10,8 @@ function port(overrides: Partial<AuthPort> = {}): AuthPort {
 const product: AuthOptions = { apple: 'native', kakao: false, devEmail: false };
 const devBuild: AuthOptions = { ...product, devEmail: true };
 
-it('V0-F01-AC-01 offers Sign in with Apple first and email second in product builds, with the intro and terms note: no code login, Kakao hidden behind its flag', async () => {
-  const screen = await renderWithI18n(<LoginScreen auth={port()} lastUsed="apple" options={product} onDone={jest.fn()} onEmail={jest.fn()} onEmailLogin={jest.fn()} />);
+it('V0-F01-AC-01 offers Sign in with Apple first and, in development builds only, email second, with the intro and terms note: no code login, Kakao hidden behind its flag', async () => {
+  const screen = await renderWithI18n(<LoginScreen auth={port()} lastUsed="apple" options={devBuild} onDone={jest.fn()} onEmail={jest.fn()} onEmailLogin={jest.fn()} />);
   expect(screen.getByText(screen.t('start.intro.title'))).toBeTruthy();
   expect(screen.getByText(screen.t('start.intro.terms'))).toBeTruthy();
   expect(screen.getByText(screen.t('onb.age'))).toBeTruthy();
@@ -24,12 +24,19 @@ it('V0-F01-AC-01 offers Sign in with Apple first and email second in product bui
   expect(screen.queryByText(screen.t('login.brandNote'))).toBeNull();
 });
 
+it('product builds show no email entry point on the login screen', async () => {
+  const screen = await renderWithI18n(<LoginScreen auth={port()} options={product} onDone={jest.fn()} onEmail={jest.fn()} onEmailLogin={jest.fn()} />);
+  expect(screen.getByRole('button', { name: screen.t('login.apple') })).toBeTruthy();
+  expect(screen.queryByRole('button', { name: screen.t('auth.email.entry') })).toBeNull();
+  expect(screen.queryByRole('button', { name: screen.t('login.email') })).toBeNull();
+});
+
 it('V0-F01-AC-02 opens the Apple sheet over the intro with no page of its own, shows progress there once the sheet answers, then cancelled with retry and error', async () => {
   let resolve: (value: 'cancelled') => void = () => {};
   let sheetAnswered = () => {};
   const apple = jest.fn().mockImplementationOnce((onAuthorized: () => void) => { sheetAnswered = onAuthorized; return new Promise((r) => { resolve = r; }); }).mockResolvedValueOnce('error');
   const auth = port({ apple });
-  const screen = await renderWithI18n(<LoginScreen auth={auth} options={product} onDone={jest.fn()} onEmail={jest.fn()} onEmailLogin={jest.fn()} />);
+  const screen = await renderWithI18n(<LoginScreen auth={auth} options={devBuild} onDone={jest.fn()} onEmail={jest.fn()} onEmailLogin={jest.fn()} />);
   await fireEvent.press(screen.getByRole('button', { name: screen.t('login.apple') }));
   // V0-start-intro-apple: the system sheet covers the intro, which stays as it is underneath.
   expect(screen.getByText(screen.t('start.intro.title'))).toBeTruthy();

@@ -10,6 +10,8 @@ jest.mock('expo-secure-store', () => ({
   setItemAsync: jest.fn(async (key: string, value: string) => { mockSecure.set(key, value); }),
   deleteItemAsync: jest.fn(async (key: string) => { mockSecure.delete(key); }),
 }));
+let mockDevEmail = true;
+jest.mock('../../config/auth', () => ({ authOptions: { get devEmail() { return mockDevEmail; } } }));
 let mockUrl: string | null = null;
 jest.mock('expo-linking', () => ({ useLinkingURL: () => mockUrl, createURL: (path: string) => `aroom://${path}` }));
 jest.mock('expo-router', () => ({ Redirect: () => null, router: { replace: jest.fn() } }));
@@ -25,7 +27,16 @@ function wire(sessionError: { message: string } | null = null) {
   Object.assign(mockApp, { supabase, password });
   return { supabase, password };
 }
-beforeEach(() => { mockSecure.clear(); jest.clearAllMocks(); });
+beforeEach(() => { mockSecure.clear(); jest.clearAllMocks(); mockDevEmail = true; });
+
+it('product builds leave at once and never open a mail link session', async () => {
+  const { supabase } = wire();
+  mockDevEmail = false;
+  mockUrl = 'aroom://auth-callback#access_token=a&refresh_token=b&type=recovery';
+  const screen = await renderWithI18n(<AuthCallbackRoute />);
+  expect(supabase.auth.setSession).not.toHaveBeenCalled();
+  expect(screen.queryByText(screen.t('auth.link.exp.title'))).toBeNull();
+});
 
 it('V0-F15-AC-09 an expired link after a sign-up mail is the confirmation variant and resends to that address', async () => {
   const { supabase, password } = wire();
