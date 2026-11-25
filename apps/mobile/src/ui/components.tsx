@@ -191,7 +191,7 @@ export function Dialog({ visible, title, body, icon, children, onClose }: { visi
   const reduced = useReducedMotion();
   return (
     <Modal visible={visible} transparent animationType={reduced ? 'none' : 'fade'} onRequestClose={onClose} statusBarTranslucent>
-      <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: tokens.spacing[3], paddingVertical: GUTTER, backgroundColor: 'rgba(43,35,32,0.5)' }}>
+      <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: tokens.spacing[3], paddingVertical: GUTTER, backgroundColor: color.scrim }}>
         <ScrollView accessibilityViewIsModal style={{ flexGrow: 0 }} contentContainerStyle={{ padding: tokens.spacing[5], gap: tokens.spacing[2], backgroundColor: color.surface, borderRadius: tokens.radius.sheet, borderWidth: tokens.border.outline.normal, borderColor: color.line }}>
           {icon && <View style={{ width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center', backgroundColor: color.surface2, borderWidth: tokens.border.outline.normal, borderColor: color.line }}><Icon name={icon} size={26} color={color.text} /></View>}
           <Text {...WORD_BREAK} accessibilityRole="header" style={[emphasis(19), { color: color.text }]}>{title}</Text>

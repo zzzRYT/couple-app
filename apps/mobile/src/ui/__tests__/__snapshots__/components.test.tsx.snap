@@ -265,7 +265,7 @@ exports[`renders each shared primitive and names its actions 1`] = `
     <View
       style={
         {
-          "backgroundColor": "rgba(43,35,32,0.5)",
+          "backgroundColor": "#2B232080",
           "flex": 1,
           "justifyContent": "center",
           "paddingHorizontal": 16,
@@ -427,7 +427,7 @@ exports[`renders each shared primitive and names its actions 1`] = `
             "top": 0,
           },
           {
-            "backgroundColor": "rgba(43,35,32,0.5)",
+            "backgroundColor": "#2B232080",
           },
           {
             "opacity": 0,

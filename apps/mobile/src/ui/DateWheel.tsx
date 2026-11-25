@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, type ComponentRef, type ReactNode } from '
 import { Pressable, ScrollView, Text, View, type ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useDisplayAppearance } from '../lib/preferences';
 import { useAppColor } from '../theme/useAppColor';
 import { useType } from '../theme/typography';
 import { tokens } from '../theme/tokens';
@@ -98,12 +97,12 @@ function BandColumn({ field, values, value, label, onChange }: { field: Field; v
  * selection band, then `children` such as the live day-count chip. Days follow the chosen month. The scrim closes without committing.
  */
 export function DateWheelSheet({ visible, value, onChange, onDone, onClose, minYear, maxYear, children }: { visible: boolean; value: DateParts; onChange: (update: (current: DateParts) => DateParts) => void; onDone: () => void; onClose: () => void; minYear: number; maxYear: number; children?: ReactNode }) {
-  const { t, i18n } = useTranslation(); const { emphasis } = useType(); const color = useAppColor(); const { scheme } = useDisplayAppearance(); const insets = useSafeAreaInsets();
+  const { t, i18n } = useTranslation(); const { emphasis } = useType(); const color = useAppColor(); const insets = useSafeAreaInsets();
   const range = (start: number, end: number) => Array.from({ length: end - start + 1 }, (_, index) => start + index);
   const values: Record<Field, number[]> = { year: range(minYear, maxYear), month: range(1, 12), day: range(1, daysIn(value.year, value.month)) };
   const pick = (field: Field, next: number) => onChange((current) => { const picked = { ...current, [field]: next }; return { ...picked, day: Math.min(picked.day, daysIn(picked.year, picked.month)) }; });
   // Drawn 330 tall, 380 with the chip.
-  return <SheetModal visible={visible} onClose={onClose} dismissLabel={t('common.cancel')} scrim={scheme === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.35)'}><View accessibilityViewIsModal style={{ minHeight: (children ? 380 : 330) + Math.max(0, insets.bottom - 34), backgroundColor: color.surface, borderTopWidth: 2, borderColor: color.line, borderTopLeftRadius: 28, borderTopRightRadius: 30, paddingTop: 10, paddingHorizontal: 20, paddingBottom: Math.max(insets.bottom, 34), gap: 14 }}>
+  return <SheetModal visible={visible} onClose={onClose} dismissLabel={t('common.cancel')}><View accessibilityViewIsModal style={{ minHeight: (children ? 380 : 330) + Math.max(0, insets.bottom - 34), backgroundColor: color.surface, borderTopWidth: 2, borderColor: color.line, borderTopLeftRadius: 28, borderTopRightRadius: 30, paddingTop: 10, paddingHorizontal: 20, paddingBottom: Math.max(insets.bottom, 34), gap: 14 }}>
     <View style={{ width: 40, height: 5, borderRadius: 3, backgroundColor: color.border, opacity: 0.6, alignSelf: 'center' }} />
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}><AppText style={emphasis(18)}>{t('space.date.pick')}</AppText><Pressable accessibilityRole="button" onPress={onDone} style={{ minHeight: 48, justifyContent: 'center' }}><AppText tone="primary" style={emphasis(16)}>{t('common.done')}</AppText></Pressable></View>
     <View accessibilityLabel={t('space.date.pick')} style={{ height: BAND_ROW * 5, flexDirection: 'row', paddingHorizontal: 8 }}><View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, top: BAND_ROW * 2, height: BAND_ROW, backgroundColor: color.surface2, borderColor: color.border, borderWidth: 1.5, borderRadius: 12 }} />{fieldOrder(i18n.language).map((field) => <BandColumn key={field} field={field} values={values[field]} value={value[field]} label={t(unitKey[field])} onChange={(next) => pick(field, next)} />)}</View>

@@ -49,7 +49,8 @@ export const tokens = {
           "info": "#2D5E86",
           "infoBg": "#E1EDF5",
           "focus": "#2D5E86",
-          "bw": 2
+          "bw": 2,
+          "scrim": "#2B232080"
         },
         "highContrast": {
           "bg": "#FFFAF2",
@@ -72,7 +73,8 @@ export const tokens = {
           "info": "#1D4A6E",
           "infoBg": "#E1EDF5",
           "focus": "#1D4A6E",
-          "bw": 3
+          "bw": 3,
+          "scrim": "#1F140D99"
         }
       },
       "dark": {
@@ -97,7 +99,8 @@ export const tokens = {
           "info": "#9CC6E4",
           "infoBg": "#25364A",
           "focus": "#9CC6E4",
-          "bw": 2
+          "bw": 2,
+          "scrim": "#000000B3"
         },
         "highContrast": {
           "bg": "#1A1411",
@@ -120,7 +123,8 @@ export const tokens = {
           "info": "#B9DBF2",
           "infoBg": "#25364A",
           "focus": "#B9DBF2",
-          "bw": 3
+          "bw": 3,
+          "scrim": "#000000CC"
         }
       }
     },
