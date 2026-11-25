@@ -13,7 +13,7 @@ export default function EventEditRoute() {
   if (!snapshot || (id && !initial.current)) return null;
   const partnerMember = snapshot.members.find((member) => member.userId !== snapshot.me.userId);
   const spaceId = snapshot.space.spaceId;
-  return <EventEdit initial={initial.current} date={date ?? todayIn(now, snapshot.space.timeZone)} me={snapshot.me.userId} meName={snapshot.me.displayName ?? t('cal.by.me')} partner={partnerMember ? partnerMember.displayName ?? t('home.pending.partner') : null} timeZone={snapshot.space.timeZone} offline={state.offline}
+  return <EventEdit initial={initial.current} date={date ?? todayIn(now, snapshot.space.timeZone)} me={snapshot.me.userId} meName={snapshot.me.displayName ?? t('cal.by.me')} partner={partnerMember ? partnerMember.displayName ?? t('home.pending.partner') : null} partnerId={partnerMember?.userId ?? null} timeZone={snapshot.space.timeZone} offline={state.offline}
     onClose={() => router.back()} onGone={() => { router.dismissTo('/(tabs)/calendar'); void refresh(); }} onSaved={(toast, day) => router.replace({ pathname: '/(tabs)/calendar', params: { toast, date: day } })}
     save={async (fields, version, key) => { if (id && version) await client.updateEvent(spaceId, id, fields, version, key); else await client.createEvent(spaceId, fields, key); await refresh(); }}
     remove={async (version, key) => { if (id) { await client.deleteEvent(spaceId, id, version, key); await refresh(); } }}

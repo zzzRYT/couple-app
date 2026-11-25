@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { fireEvent, waitFor } from '@testing-library/react-native';
+import { fireEvent, waitFor, within } from '@testing-library/react-native';
 import { ApiError } from '../../../lib/errors';
 import { eventFixture, ME, PARTNER } from '../../../test/fixtures';
 import { renderWithI18n } from '../../../test/render';
@@ -9,9 +9,9 @@ import { EventEdit } from '../EventEdit';
 
 jest.mock('../../notifications/permissions', () => ({ notificationPermission: jest.fn(async () => 'granted'), requestNotificationPermission: jest.fn(async () => true) }));
 const events = [
-  eventFixture({ id: 'dinner', title: '저녁 데이트', time: '19:00', endTime: '21:00', createdBy: ME }),
-  eventFixture({ id: 'ikea', title: '이케아 장보기', createdBy: PARTNER, updatedBy: ME }),
-  eventFixture({ id: 'gym', title: '헬스장 등록', time: '08:00', createdBy: PARTNER, updatedBy: PARTNER }),
+  eventFixture({ id: 'dinner', title: '저녁 데이트', time: '19:00', endTime: '21:00', ownerId: null, createdBy: ME }),
+  eventFixture({ id: 'ikea', title: '이케아 장보기', ownerId: null, createdBy: PARTNER, updatedBy: ME }),
+  eventFixture({ id: 'gym', title: '헬스장 등록', time: '08:00', ownerId: PARTNER, createdBy: PARTNER, updatedBy: PARTNER }),
 ];
 const screenProps = { events, me: ME, meName: '나리', partner: '도담', today: '2026-11-25', offline: false, onAdd: jest.fn(), onEvent: jest.fn() };
 
@@ -19,7 +19,7 @@ describe('CalendarScreen', () => {
   it('V0-F19-AC-01 V0-F03-AC-05 shows the month, today with its events, and moves between months', async () => {
     const screen = await renderWithI18n(<CalendarScreen {...screenProps} />);
     expect(screen.getByText('2026년 11월')).toBeTruthy();
-    expect(screen.getByLabelText(screen.t('cal.a11y.day.by', { date: '11월 25일 수요일', n: 3, names: '나 1, 도담 2' })).props.accessibilityState).toEqual({ selected: true });
+    expect(screen.getByLabelText(screen.t('cal.a11y.day.by', { date: '11월 25일 수요일', n: 3, names: '함께 2, 도담 1' })).props.accessibilityState).toEqual({ selected: true });
     expect(screen.getByLabelText(screen.t('cal.a11y.day', { date: '11월 24일 화요일', n: 0 }))).toBeTruthy();
     await fireEvent.press(screen.getByLabelText(screen.t('cal.next')));
     expect(screen.getByText('2026년 12월')).toBeTruthy();
@@ -27,30 +27,38 @@ describe('CalendarScreen', () => {
     await fireEvent.press(screen.getByText(screen.t('cal.today')));
     expect(screen.getByText('2026년 11월')).toBeTruthy();
   });
-  it('V0-F19-AC-01 filters the grid and the day list to one writer', async () => {
+  it('V0-F19-AC-01 filters the grid and the day list to one owner, whoever added the event', async () => {
     const screen = await renderWithI18n(<CalendarScreen {...screenProps} />);
     expect(screen.getByRole('button', { name: screen.t('cal.filter.all') }).props.accessibilityState).toEqual({ selected: true });
     await fireEvent.press(screen.getByRole('button', { name: '도담' }));
     expect(screen.getByRole('button', { name: '도담' }).props.accessibilityState).toEqual({ selected: true });
-    expect(screen.getByLabelText(screen.t('cal.a11y.day.by', { date: '11월 25일 수요일', n: 2, names: '도담 2' }))).toBeTruthy();
-    expect(screen.queryByText('저녁 데이트')).toBeNull();
+    expect(screen.getByLabelText(screen.t('cal.a11y.day.by', { date: '11월 25일 수요일', n: 1, names: '도담 1' }))).toBeTruthy();
+    expect(screen.queryByText('이케아 장보기')).toBeNull();
     expect(screen.getByText('헬스장 등록')).toBeTruthy();
-    await fireEvent.press(screen.getByRole('button', { name: screen.t('cal.by.me') }));
-    expect(screen.getByLabelText(screen.t('cal.a11y.day.by', { date: '11월 25일 수요일', n: 1, names: '나 1' }))).toBeTruthy();
+    await fireEvent.press(screen.getByRole('button', { name: screen.t('cal.owner.together') }));
+    expect(screen.getByLabelText(screen.t('cal.a11y.day.by', { date: '11월 25일 수요일', n: 2, names: '함께 2' }))).toBeTruthy();
+    expect(screen.getByText('이케아 장보기')).toBeTruthy();
     expect(screen.queryByText('헬스장 등록')).toBeNull();
-    await fireEvent.press(screen.getByTestId('day-2026-11-24'));
+    await fireEvent.press(screen.getByRole('button', { name: screen.t('cal.by.me') }));
+    expect(screen.getByLabelText(screen.t('cal.a11y.day', { date: '11월 25일 수요일', n: 0 }))).toBeTruthy();
     expect(screen.getByText(screen.t('cal.empty.me'))).toBeTruthy();
+    await fireEvent.press(screen.getByRole('button', { name: screen.t('cal.owner.together') }));
+    await fireEvent.press(screen.getByTestId('day-2026-11-24'));
+    expect(screen.getByText(screen.t('cal.empty.together'))).toBeTruthy();
   });
-  it('V0-F19-AC-02 V0-F19-AC-04 lists the chosen day all-day first, then by time, each with who added and who last edited it', async () => {
+  it('V0-F19-AC-02 V0-F19-AC-04 lists the chosen day all-day first, then by time, each with whose plan it is next to who added and who last edited it', async () => {
     const onEvent = jest.fn();
     const screen = await renderWithI18n(<CalendarScreen {...screenProps} onEvent={onEvent} />);
     const rows = screen.getAllByLabelText(/, (도담님이|내가) 추가/).map((row) => row.props.accessibilityLabel);
     expect(rows).toEqual([
-      screen.t('cal.a11y.event', { time: screen.t('cal.allDay'), title: '이케아 장보기', name: `${screen.t('cal.added', { name: '도담' })}, ${screen.t('cal.edited.me')}` }),
-      screen.t('cal.a11y.event', { time: '오전 8:00', title: '헬스장 등록', name: screen.t('cal.added', { name: '도담' }) }),
-      screen.t('cal.a11y.event', { time: '오후 7:00 – 오후 9:00', title: '저녁 데이트', name: screen.t('cal.added.me') }),
+      screen.t('cal.a11y.event', { time: screen.t('cal.allDay'), title: '이케아 장보기', owner: screen.t('cal.owner.together.long'), name: `${screen.t('cal.added', { name: '도담' })}, ${screen.t('cal.edited.me')}` }),
+      screen.t('cal.a11y.event', { time: '오전 8:00', title: '헬스장 등록', owner: screen.t('cal.owner.partner', { name: '도담' }), name: screen.t('cal.added', { name: '도담' }) }),
+      screen.t('cal.a11y.event', { time: '오후 7:00 – 오후 9:00', title: '저녁 데이트', owner: screen.t('cal.owner.together.long'), name: screen.t('cal.added.me') }),
     ]);
-    expect(screen.getByText(`${screen.t('cal.allDay')} · 도담님이 추가 · 내가 수정`)).toBeTruthy();
+    const ikea = within(screen.getByLabelText(rows[0]!));
+    expect(ikea.getByText(screen.t('cal.owner.together'))).toBeTruthy();
+    expect(ikea.getByText(`${screen.t('cal.allDay')} · 도담님이 추가 · 내가 수정`)).toBeTruthy();
+    expect(within(screen.getByLabelText(rows[1]!)).getByText('도담')).toBeTruthy();
     await fireEvent.press(screen.getByText('헬스장 등록'));
     expect(onEvent).toHaveBeenCalledWith(events[2]);
   });
@@ -65,7 +73,7 @@ describe('CalendarScreen', () => {
   });
 });
 
-const sheetProps = { date: '2026-11-25', me: ME, meName: '나리', partner: '도담', timeZone: 'Asia/Seoul', offline: false, remove: jest.fn(), reload: jest.fn(), onClose: jest.fn(), onGone: jest.fn(), onSaved: jest.fn() };
+const sheetProps = { date: '2026-11-25', me: ME, meName: '나리', partner: '도담', partnerId: PARTNER, timeZone: 'Asia/Seoul', offline: false, remove: jest.fn(), reload: jest.fn(), onClose: jest.fn(), onGone: jest.fn(), onSaved: jest.fn() };
 const saveButton = (screen: Awaited<ReturnType<typeof renderWithI18n>>) => screen.getByRole('button', { name: screen.t('common.save') });
 describe('EventEdit', () => {
   it('V0-F19-AC-03 keeps save off without a title or with an end before the start, and sends a timed event', async () => {
@@ -79,7 +87,7 @@ describe('EventEdit', () => {
     await fireEvent.changeText(screen.getByLabelText(screen.t('edit.field.title')), ' 저녁 데이트 ');
     await fireEvent.press(saveButton(screen));
     await waitFor(() => expect(onSaved).toHaveBeenCalledWith('saved', '2026-11-25'));
-    expect((save.mock.calls[0] as unknown[]).slice(0, 2)).toEqual([{ title: '저녁 데이트', date: '2026-11-25', time: '19:00', endTime: null, alert: 'none' }, undefined]);
+    expect((save.mock.calls[0] as unknown[]).slice(0, 2)).toEqual([{ title: '저녁 데이트', date: '2026-11-25', time: '19:00', endTime: null, alert: 'none', ownerId: null }, undefined]);
     const late = await renderWithI18n(<EventEdit {...sheetProps} initial={eventFixture({ time: '19:00', endTime: '18:00' })} save={save} />);
     expect(late.getByText(late.t('cal.err.end'))).toBeTruthy();
     expect(saveButton(late).props.accessibilityState.disabled).toBe(true);
@@ -90,11 +98,38 @@ describe('EventEdit', () => {
     await fireEvent.press(screen.getByRole('switch', { name: screen.t('cal.allDay') }));
     expect(screen.queryByText(screen.t('cal.field.start'))).toBeNull();
     await fireEvent.press(screen.getByLabelText(`${screen.t('edit.field.notify')}, ${screen.t('cal.alert.none')}`));
-    expect(screen.getAllByRole('radio').map((row) => row.props.accessibilityLabel)).toEqual([screen.t('cal.alert.none'), screen.t('cal.alert.allDay.at'), screen.t('cal.alert.allDay.1d')]);
+    expect(screen.getAllByRole('radio').map((row) => row.props.accessibilityLabel)).toEqual([screen.t('cal.owner.together'), screen.t('cal.by.me'), '도담', screen.t('cal.alert.none'), screen.t('cal.alert.allDay.at'), screen.t('cal.alert.allDay.1d')]);
     await fireEvent.press(screen.getByRole('radio', { name: screen.t('cal.alert.allDay.1d') }));
     await fireEvent.press(saveButton(screen));
     await waitFor(() => expect(save).toHaveBeenCalled());
-    expect((save.mock.calls[0] as unknown[]).slice(0, 2)).toEqual([{ title: '저녁 데이트', date: '2026-11-25', time: null, endTime: null, alert: '1d' }, 1]);
+    expect((save.mock.calls[0] as unknown[]).slice(0, 2)).toEqual([{ title: '저녁 데이트', date: '2026-11-25', time: null, endTime: null, alert: '1d', ownerId: null }, 1]);
+  });
+  it('V0-F19-AC-03 asks whose plan it is right under the title, starts at 함께, and sends the owner picked', async () => {
+    const save = jest.fn(async () => undefined);
+    const screen = await renderWithI18n(<EventEdit {...sheetProps} save={save} />);
+    expect(screen.getByLabelText(screen.t('cal.owner')).props.accessibilityRole).toBe('radiogroup');
+    expect(screen.getAllByRole('radio').map((radio) => [radio.props.accessibilityLabel, radio.props.accessibilityState.selected])).toEqual([[screen.t('cal.owner.together'), true], [screen.t('cal.by.me'), false], ['도담', false]]);
+    await fireEvent.changeText(screen.getByLabelText(screen.t('edit.field.title')), '헬스장 등록');
+    await fireEvent.press(screen.getByRole('radio', { name: '도담' }));
+    expect(screen.getByRole('radio', { name: '도담' }).props.accessibilityState.selected).toBe(true);
+    await fireEvent.press(saveButton(screen));
+    await waitFor(() => expect(save).toHaveBeenCalled());
+    expect((save.mock.calls[0] as unknown[])[0]).toMatchObject({ title: '헬스장 등록', ownerId: PARTNER });
+    const unpaired = await renderWithI18n(<EventEdit {...sheetProps} partner={null} partnerId={null} save={jest.fn()} />);
+    expect(unpaired.getAllByRole('radio').map((radio) => radio.props.accessibilityLabel)).toEqual([unpaired.t('cal.owner.together'), unpaired.t('cal.by.me')]);
+  });
+  it('V0-F19-AC-04 changing whose plan it is keeps who added it and counts as an unsaved change', async () => {
+    const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined); const save = jest.fn(async () => undefined);
+    const screen = await renderWithI18n(<EventEdit {...sheetProps} initial={eventFixture({ ownerId: PARTNER, createdBy: PARTNER, updatedBy: PARTNER, version: 2 })} save={save} />);
+    expect(screen.getByRole('radio', { name: '도담' }).props.accessibilityState.selected).toBe(true);
+    await fireEvent.press(screen.getByRole('radio', { name: screen.t('cal.by.me') }));
+    expect(screen.getByText(screen.t('cal.detail.added', { name: '도담', date: '11월 20일' }))).toBeTruthy();
+    await fireEvent.press(screen.getByText(screen.t('common.cancel')));
+    expect(alert.mock.calls[0]![0]).toBe(screen.t('edit.discard.title'));
+    await fireEvent.press(saveButton(screen));
+    await waitFor(() => expect(save).toHaveBeenCalled());
+    expect((save.mock.calls[0] as unknown[]).slice(0, 2)).toEqual([expect.objectContaining({ ownerId: ME }), 2]);
+    alert.mockRestore();
   });
   it('V0-F19-AC-05 asks for permission when an alert is chosen and says when this phone will stay silent', async () => {
     (notificationPermission as jest.Mock).mockResolvedValue('undetermined'); (requestNotificationPermission as jest.Mock).mockResolvedValue(false);

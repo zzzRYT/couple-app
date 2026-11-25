@@ -14,8 +14,8 @@ export type CustomAnniversary = { id: string; title: string; memo: string | null
 export type AnniversaryFields = Pick<CustomAnniversary, 'title' | 'memo' | 'date' | 'repeat'>;
 /** Wall-clock times in the space time zone; no `time` means all-day, which allows only the `none`, `at` and `1d` alerts. */
 export type EventAlert = 'none' | 'at' | '5m' | '15m' | '30m' | '1h' | '1d';
-export type CalendarEvent = { id: string; title: string; date: string; time: string | null; endTime: string | null; alert: EventAlert; createdBy: string | null; createdAt: string; updatedBy: string | null; updatedAt: string; version: number };
-export type EventFields = Pick<CalendarEvent, 'title' | 'date' | 'time' | 'endTime' | 'alert'>;
+export type CalendarEvent = { id: string; title: string; date: string; time: string | null; endTime: string | null; alert: EventAlert; /** Whose plan it is; null = 함께. */ ownerId: string | null; createdBy: string | null; createdAt: string; updatedBy: string | null; updatedAt: string; version: number };
+export type EventFields = Pick<CalendarEvent, 'title' | 'date' | 'time' | 'endTime' | 'alert' | 'ownerId'>;
 export type Snapshot = {
   space: { spaceId: string; status: 'active'; anniversaryDate: string; timeZone: string; memberCount: number; updatedAt: string; invitation: { status: string; expiresAt: string } | null; anniversaryChangedBy: string | null; anniversaryChangedAt: string | null };
   features: { generation: boolean; generatedRender: boolean }; versionNumber: number; sceneDocument: SceneDocument; roomPresentation: RoomPresentation; roomThemeDocument: RoomThemeDocument;

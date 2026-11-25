@@ -2,13 +2,15 @@ import type { CalendarEvent, EventAlert } from '../../lib/client';
 
 /** One of the two partners, seen from this phone. */
 export type Person = 'me' | 'partner';
-/** Which writer's events the month shows; screen state only. */
-export type Filter = 'all' | Person;
-export const PEOPLE: readonly Person[] = ['me', 'partner'];
-/** Each person's color token: their face, row bar and writer text. */
-export const PERSON_COLOR = { me: 'primary', partner: 'info' } as const satisfies Record<Person, 'primary' | 'info'>;
-/** One square of the month grid; `null` is a blank before the 1st so the 1st sits under its weekday (Sunday first). `authors` counts the day's events per writer, me first. */
-export type DayCell = { date: string; day: number; today: boolean; authors: { person: Person; n: number }[] } | null;
+/** Whose plan an event is: both of us (`ownerId` null) or one partner. Separate from who added it. */
+export type Owner = 'together' | Person;
+/** Whose events the month shows; screen state only. */
+export type Filter = 'all' | Owner;
+export const OWNERS: readonly Owner[] = ['together', 'me', 'partner'];
+/** Each owner's color token: their face, row bar and chip. A person's writer text uses the same color. */
+export const OWNER_COLOR = { together: 'together', me: 'primary', partner: 'info' } as const satisfies Record<Owner, 'together' | 'primary' | 'info'>;
+/** One square of the month grid; `null` is a blank before the 1st so the 1st sits under its weekday (Sunday first). `owners` counts the day's events per owner, together first, then me. */
+export type DayCell = { date: string; day: number; today: boolean; owners: { owner: Owner; n: number }[] } | null;
 export const TIMED_ALERTS: readonly EventAlert[] = ['none', 'at', '5m', '15m', '30m', '1h', '1d'];
 export const ALL_DAY_ALERTS: readonly EventAlert[] = ['none', 'at', '1d'];
 
@@ -22,13 +24,14 @@ export function shiftMonth(month: string, delta: number): string {
 /** Unknown writers (an account deleted since) are not me. */
 const personOf = (userId: string | null, me: string): Person => userId === me ? 'me' : 'partner';
 export const authorOf = (event: CalendarEvent, me: string): Person => personOf(event.createdBy, me);
+export const ownerOf = (event: Pick<CalendarEvent, 'ownerId'>, me: string): Owner => event.ownerId === null ? 'together' : personOf(event.ownerId, me);
 /** Who last changed the event, only when that is not the person who added it. */
 export function editorOf(event: CalendarEvent, me: string): Person | null {
   const editor = event.updatedBy === null ? null : personOf(event.updatedBy, me);
   return editor === authorOf(event, me) ? null : editor;
 }
 export const filterEvents = (events: readonly CalendarEvent[], me: string, filter: Filter): readonly CalendarEvent[] =>
-  filter === 'all' ? events : events.filter((event) => authorOf(event, me) === filter);
+  filter === 'all' ? events : events.filter((event) => ownerOf(event, me) === filter);
 /** All-day first, then by start time, then by id so both phones show the same order. */
 export function compareEvents(a: CalendarEvent, b: CalendarEvent): number {
   return (a.time === null ? 0 : 1) - (b.time === null ? 0 : 1) || (a.time ?? '').localeCompare(b.time ?? '') || a.id.localeCompare(b.id);
@@ -41,7 +44,7 @@ export function eventsByDate(events: readonly CalendarEvent[]): Map<string, Cale
   }
   return byDate;
 }
-/** The grid of `month` (`YYYY-MM`) with today marked and each day's writers. `today` is a date in the space time zone. */
+/** The grid of `month` (`YYYY-MM`) with today marked and each day's owners. `today` is a date in the space time zone. */
 export function monthGrid(month: string, today: string, byDate: ReadonlyMap<string, readonly CalendarEvent[]>, me: string): DayCell[] {
   const year = Number(month.slice(0, 4)), index = Number(month.slice(5, 7)) - 1;
   const blanks = new Date(Date.UTC(year, index, 1)).getUTCDay();
@@ -50,9 +53,8 @@ export function monthGrid(month: string, today: string, byDate: ReadonlyMap<stri
     ...Array.from({ length: blanks }, () => null),
     ...Array.from({ length: days }, (_, offset) => {
       const date = `${month}-${pad(offset + 1)}`;
-      const writers = (byDate.get(date) ?? []).map((event) => authorOf(event, me));
-      const authors = PEOPLE.map((person) => ({ person, n: writers.filter((writer) => writer === person).length })).filter(({ n }) => n > 0);
-      return { date, day: offset + 1, today: date === today, authors };
+      const owners = (byDate.get(date) ?? []).map((event) => ownerOf(event, me));
+      return { date, day: offset + 1, today: date === today, owners: OWNERS.map((owner) => ({ owner, n: owners.filter((each) => each === owner).length })).filter(({ n }) => n > 0) };
     }),
   ];
 }

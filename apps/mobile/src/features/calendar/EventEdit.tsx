@@ -19,19 +19,19 @@ import { formatNotifyTime } from '../notifications/labels';
 import { notificationPermission, requestNotificationPermission } from '../notifications/permissions';
 import { NotificationTimeSheet } from '../settings/NotificationTimeSheet';
 import { Avatar } from './Avatar';
-import { ALL_DAY_ALERTS, PERSON_COLOR, TIMED_ALERTS, alertFor, authorOf, editorOf } from './model';
+import { ALL_DAY_ALERTS, OWNERS, OWNER_COLOR, TIMED_ALERTS, alertFor, authorOf, editorOf, ownerOf, type Owner } from './model';
 
-/** `time` stays in the form while 종일 is on, so turning it off again brings the start back. */
-type Form = { title: string; date: string; allDay: boolean; time: string; endTime: string | null; alert: EventAlert };
+/** `time` stays in the form while 종일 is on, so turning it off again brings the start back. `ownerId` is kept as sent, so an edit leaves it alone unless the owner is picked again. */
+type Form = { title: string; date: string; allDay: boolean; time: string; endTime: string | null; alert: EventAlert; ownerId: string | null };
 type Picker = 'date' | 'start' | 'end' | 'alert' | null;
 const DEFAULT_TIME = '19:00';
 const hourAfter = (time: string) => `${String(Math.min(Number(time.slice(0, 2)) + 1, 23)).padStart(2, '0')}:${time.slice(3, 5)}`;
-const formOf = (item: CalendarEvent | undefined, date: string): Form => ({ title: item?.title ?? '', date: item?.date ?? date, allDay: item ? item.time === null : false, time: item?.time ?? DEFAULT_TIME, endTime: item?.endTime ?? null, alert: item?.alert ?? 'none' });
-const fieldsOf = (form: Form): EventFields => ({ title: form.title.trim(), date: form.date, time: form.allDay ? null : form.time, endTime: form.allDay ? null : form.endTime, alert: form.alert });
+const formOf = (item: CalendarEvent | undefined, date: string): Form => ({ title: item?.title ?? '', date: item?.date ?? date, allDay: item ? item.time === null : false, time: item?.time ?? DEFAULT_TIME, endTime: item?.endTime ?? null, alert: item?.alert ?? 'none', ownerId: item?.ownerId ?? null });
+const fieldsOf = (form: Form): EventFields => ({ title: form.title.trim(), date: form.date, time: form.allDay ? null : form.time, endTime: form.allDay ? null : form.endTime, alert: form.alert, ownerId: form.ownerId });
 
-/** V0-13 일정 추가/편집. Both partners may edit or delete any event; the writer card keeps the original author and names the last other editor. */
-export function EventEdit({ initial, date, me, meName, partner, timeZone, offline, save, remove, reload, onClose, onGone, onSaved }: {
-  initial?: CalendarEvent; date: string; me: string; meName: string; partner: string | null; timeZone: string; offline: boolean;
+/** V0-13 일정 추가/편집. Both partners may edit or delete any event and change whose plan it is (new events start as 함께); the writer card keeps the original author and names the last other editor. */
+export function EventEdit({ initial, date, me, meName, partner, partnerId, timeZone, offline, save, remove, reload, onClose, onGone, onSaved }: {
+  initial?: CalendarEvent; date: string; me: string; meName: string; partner: string | null; partnerId: string | null; timeZone: string; offline: boolean;
   save: (fields: EventFields, version: number | undefined, key: string) => Promise<void>; remove: (version: number, key: string) => Promise<void>;
   reload: () => Promise<CalendarEvent | undefined>; onClose: () => void; onGone: () => void; onSaved: (toast: 'saved' | 'deleted', date: string) => void;
 }) {
@@ -81,19 +81,31 @@ export function EventEdit({ initial, date, me, meName, partner, timeZone, offlin
   const heading = t(initial ? 'cal.edit.title' : 'cal.new.title');
   const monthDay = (at: string) => formattedMonthDay(todayIn(at, timeZone), i18n.language);
   const author = initial && authorOf(initial, me), editor = initial && editorOf(initial, me);
+  const owner = ownerOf(form, me);
+  const owners: Record<Owner, { id: string | null; label: string; name: string }> = { together: { id: null, label: t('cal.owner.together'), name: '' }, me: { id: me, label: t('cal.by.me'), name: meName }, partner: { id: partnerId, label: name, name } };
   const note = (text: string, tone: 'text2' | 'danger' = 'text2') => <AppText tone={tone} variant="bodySm">{text}</AppText>;
   return <View style={{ flex: 1, backgroundColor: color.bg, paddingTop: insets.top }}>
     <View style={{ minHeight: 48, paddingHorizontal: 20 }}>{large ? <><View style={{ minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>{cancel}{saveButton}</View><AppText style={[emphasis(17), { paddingBottom: 8 }]}>{heading}</AppText></> : <View style={{ minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>{cancel}<AppText accessibilityRole="header" style={emphasis(17)}>{heading}</AppText>{saveButton}</View>}</View>
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 40, gap: 14 }}>
-      {initial && author && <View accessible style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, paddingHorizontal: 14, backgroundColor: color.surface, borderWidth: tokens.border.outline.normal, borderColor: color[PERSON_COLOR[author]], borderRadius: tokens.radius.card }}>
-        <Avatar person={author} name={author === 'me' ? meName : name} size={40} />
+      {initial && author && <View accessible style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, paddingHorizontal: 14, backgroundColor: color.surface, borderWidth: tokens.border.outline.normal, borderColor: color[OWNER_COLOR[author]], borderRadius: tokens.radius.card }}>
+        <Avatar owner={author} name={author === 'me' ? meName : name} size={40} />
         <View style={{ flex: 1, gap: 2 }}>
-          <AppText style={[emphasis(15), { color: color[PERSON_COLOR[author]] }]}>{author === 'me' ? t('cal.detail.added.me', { date: monthDay(initial.createdAt) }) : t('cal.detail.added', { name, date: monthDay(initial.createdAt) })}</AppText>
+          <AppText style={[emphasis(15), { color: color[OWNER_COLOR[author]] }]}>{author === 'me' ? t('cal.detail.added.me', { date: monthDay(initial.createdAt) }) : t('cal.detail.added', { name, date: monthDay(initial.createdAt) })}</AppText>
           {editor && <AppText tone="text2" style={{ fontSize: 13, lineHeight: 19 }}>{editor === 'me' ? t('cal.detail.edited.me', { date: monthDay(initial.updatedAt) }) : t('cal.detail.edited', { name, date: monthDay(initial.updatedAt) })}</AppText>}
         </View>
       </View>}
       <View style={{ gap: 6 }}><View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}><AppText style={emphasis(14)}>{t('edit.field.title')}</AppText><AppText tone={titleLength > 20 || (titleTouched && !form.title.trim()) ? 'danger' : 'text2'} style={{ fontSize: 13, lineHeight: 20 }}>{t('edit.counter', { n: titleLength, max: 20 })}</AppText></View>
         <TextField hideLabel label={t('edit.field.title')} placeholder={t('cal.field.title.ph')} value={form.title} onChangeText={(title) => setForm({ ...form, title })} onBlur={() => setTitleTouched(true)} error={titleLength > 20 ? t('edit.err.title.long') : titleTouched && !form.title.trim() ? t('edit.err.title.empty') : undefined} /></View>
+      <View style={{ gap: 6 }}>
+        <AppText style={emphasis(14)}>{t('cal.owner')}</AppText>
+        <View accessibilityRole="radiogroup" accessibilityLabel={t('cal.owner')} style={{ flexDirection: 'row', gap: 4, padding: 4, borderRadius: tokens.radius.input, backgroundColor: color.surface2 }}>
+          {OWNERS.filter((each) => each !== 'partner' || partnerId !== null).map((each) => <Pressable key={each} accessibilityRole="radio" accessibilityLabel={owners[each].label} accessibilityState={{ selected: owner === each }} onPress={() => setForm({ ...form, ownerId: owners[each].id })}
+            style={{ flex: 1, minHeight: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingHorizontal: 8, borderRadius: tokens.radius.input - 4, borderWidth: tokens.border.outline.normal, borderColor: owner === each ? color[OWNER_COLOR[each]] : 'transparent', backgroundColor: owner === each ? color.surface : 'transparent' }}>
+            <Avatar owner={each} name={owners[each].name} size={20} />
+            <AppText numberOfLines={1} style={owner === each ? emphasis(14) : { fontSize: 14, lineHeight: 20 }}>{owners[each].label}</AppText>
+          </Pressable>)}
+        </View>
+      </View>
       <View style={{ backgroundColor: color.surface, borderWidth: tokens.border.outline.normal, borderColor: color.divider, borderRadius: tokens.radius.card, paddingHorizontal: 14 }}>
         <SwitchRow label={t('cal.allDay')} value={form.allDay} onValueChange={setAllDay} last={false} />
         <ListRow label={t('edit.field.date')} value={formattedDate(form.date, i18n.language, true)} onPress={() => { setDraftDate(fromIsoDate(form.date)); setPicker('date'); }} last={false} />

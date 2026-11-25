@@ -15,4 +15,4 @@ export function snapshotFixture(overrides: { memberCount?: number; objects?: Sna
     me: { userId: ME, displayName: '하루', birthday: null }, anniversaries: [], events: [],
   };
 }
-export const eventFixture = (overrides: Partial<CalendarEvent> = {}): CalendarEvent => ({ id: 'e', title: '저녁 데이트', date: '2026-11-25', time: null, endTime: null, alert: 'none', createdBy: ME, createdAt: '2026-11-20T03:00:00Z', updatedBy: ME, updatedAt: '2026-11-20T03:00:00Z', version: 1, ...overrides });
+export const eventFixture = (overrides: Partial<CalendarEvent> = {}): CalendarEvent => ({ id: 'e', title: '저녁 데이트', date: '2026-11-25', time: null, endTime: null, alert: 'none', ownerId: null, createdBy: ME, createdAt: '2026-11-20T03:00:00Z', updatedBy: ME, updatedAt: '2026-11-20T03:00:00Z', version: 1, ...overrides });
