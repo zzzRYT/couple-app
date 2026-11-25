@@ -17,7 +17,7 @@ node .claude/skills/verify-aroom/aroom.mjs <doctor|build|launch|session|partner|
 2. `node .claude/skills/verify-aroom/aroom.mjs launch --fresh` creates this checkout's simulator `aroom-verify-<hash>` (iPhone 17 Pro, iOS 26.5, Korean), boots it, installs the build with empty app data and an empty keychain (the session lives in the keychain and survives an uninstall), and starts the app. Ready when it prints `Launched com.jinjinstar.aroom.dev`. The app is then on its first screen, signed out.
 3. `node .claude/skills/verify-aroom/aroom.mjs session [--space YYYY-MM-DD]` creates a test user `verify-aroom-…@example.com` on Aroom-dev (with a space when `--space` is given), opens the sign-in link and confirms the system "열기" prompt. Ready when the app leaves the sign-in screen.
 
-For a feature that needs both partners, `node .claude/skills/verify-aroom/aroom.mjs partner [--name 하루] [--event "title|YYYY-MM-DD|HH:MM|alert"]` adds a second test user who joins the last session's space through the invitation and profile endpoints and can write calendar events as that partner. `drive` keeps running as the session user, and `cleanup` deletes both.
+For a feature that needs both partners, `node .claude/skills/verify-aroom/aroom.mjs partner [--name 하루] [--event "title|YYYY-MM-DD|HH:MM|alert|owner"]` adds a second test user who joins the last session's space through the invitation and profile endpoints and can write calendar events as that partner; the owner is together (default), me (the session user) or partner. `drive` keeps running as the session user, and `cleanup` deletes both.
 
 Each checkout gets its own simulator and state folder (`$TMPDIR/aroom-verify-<hash>`), so two worktrees can verify side by side. Never drive a simulator this CLI did not create.
 

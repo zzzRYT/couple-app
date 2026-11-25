@@ -223,9 +223,12 @@ async function partner(args) {
   const profile = await api('PUT', '/functions/v1/profile/profile/member', publishable, tokens.access_token, { displayName: name, birthday: null });
   if (profile.status !== 200) throw new Error(`partner profile: ${profile.status} ${JSON.stringify(profile.json)}`);
   for (const event of events) {
-    const [title, date, time, alert] = (event ?? '').split('|');
-    if (!title || !/^\d{4}-\d{2}-\d{2}$/.test(date ?? '')) throw new Error('--event needs "title|YYYY-MM-DD|HH:MM or empty|alert"');
-    const made = await api('POST', `/functions/v1/spaces/spaces/${owner.spaceId}/events`, publishable, tokens.access_token, { title, date, time: time || null, endTime: null, alert: alert || 'none' });
+    const [title, date, time, alert, whose = 'together'] = (event ?? '').split('|');
+    if (!title || !/^\d{4}-\d{2}-\d{2}$/.test(date ?? '')) throw new Error('--event needs "title|YYYY-MM-DD|HH:MM or empty|alert|together, me or partner"');
+    // Whose plan, seen from the session user: me is the session user, partner is this joined user.
+    const ownerId = { together: null, me: owner.id, partner: user.id }[whose];
+    if (ownerId === undefined) throw new Error(`--event owner must be together, me or partner, not ${whose}`);
+    const made = await api('POST', `/functions/v1/spaces/spaces/${owner.spaceId}/events`, publishable, tokens.access_token, { title, date, time: time || null, endTime: null, alert: alert || 'none', ownerId });
     if (made.status !== 201) throw new Error(`partner event: ${made.status} ${JSON.stringify(made.json)}`);
     console.log(`Partner event "${title}" on ${date}`);
   }
@@ -300,7 +303,7 @@ const USAGE = `usage: aroom.mjs <command>
   launch [--fresh]           create/boot the verification simulator, install and start the app (--fresh: empty app data)
   session [--space DATE] [--no-open]
                              new test user on Aroom-dev (optionally with a space), signed in through the auth-callback link
-  partner [--name NAME] [--event "title|YYYY-MM-DD|HH:MM|alert"]...
+  partner [--name NAME] [--event "title|YYYY-MM-DD|HH:MM|alert|together|me|partner"]...
                              second test user joins the last session's space (invitation + profile), optionally writing events
   drive <flow>               run flows/<flow>.yaml with Maestro as the last session user (MAESTRO_EMAIL, MAESTRO_PASSWORD)
   shot <feature>/<name>      screenshot to design/evidence/verify-aroom/<feature>/<name>.png
