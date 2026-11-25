@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { AppState } from 'react-native';
 import { I18nextProvider } from 'react-i18next';
 import * as Notifications from 'expo-notifications';
-import { snapshotFixture } from '../../../test/fixtures';
+import { eventFixture, snapshotFixture } from '../../../test/fixtures';
 import { i18nFor, renderWithI18n } from '../../../test/render';
 import { leaveSpace } from '../../lifecycle/leave';
 import { logout } from '../../settings/logout';
@@ -94,19 +94,45 @@ describe('resyncNotifications', () => {
   const t = async () => { const i18n = await i18nFor(); return (key: string, vars?: Record<string, unknown>) => i18n.t(key, vars); };
   it('V0-F10-AC-02 schedules the plan when on and allowed', async () => {
     await updateNotifyPrefs('me', { enabled: true });
-    await resyncNotifications('me', input, await t(), NOW);
-    expect(ids()).toEqual(planNotifications(input, { ...DEFAULT_NOTIFY_PREFS, enabled: true }, await t(), NOW).map((entry) => entry.id).sort());
+    await resyncNotifications('me', input, [], await t(), NOW);
+    expect(ids()).toEqual(planNotifications(input, { ...DEFAULT_NOTIFY_PREFS, enabled: true }, await t(), NOW, 60).map((entry) => entry.id).sort());
   });
   it('V0-F10-AC-05 schedules nothing while the device denies permission', async () => {
     await updateNotifyPrefs('me', { enabled: true });
     mockPermission = { granted: false, status: 'denied' };
-    await resyncNotifications('me', input, await t(), NOW);
+    await resyncNotifications('me', input, [], await t(), NOW);
     expect(mockSchedule).toEqual([]);
+  });
+  it('V0-F19-AC-05 schedules calendar alerts, then moves or cancels them when the event changes or goes', async () => {
+    await updateNotifyPrefs('me', { enabled: true });
+    const dinner = eventFixture({ id: 'dinner', date: '2026-11-25', time: '19:00', alert: '30m' });
+    await resyncNotifications('me', input, [dinner], await t(), NOW);
+    expect(ids()).toContain('v0:event:dinner:2026-11-25:19:00:30m');
+    await resyncNotifications('me', input, [{ ...dinner, time: '20:00' }], await t(), NOW);
+    expect(ids().filter((id) => id.startsWith('v0:event'))).toEqual(['v0:event:dinner:2026-11-25:20:00:30m']);
+    await resyncNotifications('me', input, [], await t(), NOW);
+    expect(ids().filter((id) => id.startsWith('v0:event'))).toEqual([]);
+  });
+  it('V0-F19-AC-05 keeps calendar alerts when the anniversary switch is off, but not without permission', async () => {
+    await updateNotifyPrefs('me', { enabled: false });
+    mockSchedule = [stored(item('v0:custom:a'))];
+    await resyncNotifications('me', input, [eventFixture({ id: 'dinner', alert: 'at' })], await t(), NOW);
+    expect(ids()).toEqual(['v0:event:dinner:2026-11-25:day:at']);
+    mockPermission = { granted: false, status: 'denied' };
+    await resyncNotifications('me', input, [eventFixture({ id: 'dinner', alert: 'at' })], await t(), NOW);
+    expect(mockSchedule).toEqual([]);
+  });
+  it('keeps the nearest 60 across reminders and calendar alerts', async () => {
+    await updateNotifyPrefs('me', { enabled: true });
+    const events = Array.from({ length: 70 }, (_, index) => eventFixture({ id: `e${String(index).padStart(2, '0')}`, date: '2026-11-06', time: '10:00', alert: 'at' }));
+    await resyncNotifications('me', input, events, await t(), NOW);
+    expect(mockSchedule).toHaveLength(60);
+    expect(ids().every((id) => id.startsWith('v0:event'))).toBe(true);
   });
   it('cancels everything when the master switch is off', async () => {
     mockSchedule = [stored(item('v0:a'))];
     await updateNotifyPrefs('me', { enabled: false });
-    await resyncNotifications('me', input, await t(), NOW);
+    await resyncNotifications('me', input, [], await t(), NOW);
     expect(mockSchedule).toEqual([]);
   });
 });
@@ -154,6 +180,17 @@ describe('useNotificationSync', () => {
     await act(async () => { spy.mock.calls.at(-1)![1]('active'); });
     await settled();
     expect(scheduledCalls()).toBe(before + 3);
+    await screen.unmount();
+  });
+  it('V0-F19-AC-05 resyncs when an event alert changes', async () => {
+    const screen = await mount();
+    await settled();
+    const before = scheduledCalls();
+    const withEvent = snapshotFixture(); withEvent.events = [eventFixture({ id: 'dinner', alert: 'at' })]; mockSpace.state = { snapshot: withEvent };
+    await screen.rerender({});
+    await settled();
+    expect(scheduledCalls()).toBe(before + 1);
+    expect(ids()).toContain('v0:event:dinner:2026-11-25:day:at');
     await screen.unmount();
   });
   it('V0-EC-11 rewrites reminders in the new language', async () => {

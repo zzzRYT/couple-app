@@ -229,13 +229,13 @@ export function RowTile({ icon, danger = false }: { icon: IconName; danger?: boo
  * Settings-style row: leading icon or tile, title, value, then a chevron, an external-link mark (opens outside the app) or
  * nothing (an action that happens right here, like 로그아웃). At least 56pt tall.
  */
-export function ListRow({ label, onPress, icon, tile, value, valueTone = 'text2', labelTone = 'text', trailing = 'chevron', danger = false, disabled = false, last = true, accessibilityLabel, testID }: ActionProps & { icon?: IconName; tile?: IconName; value?: string; valueTone?: 'text2' | 'primary'; labelTone?: 'text' | 'primary'; trailing?: 'chevron' | 'external' | 'none'; danger?: boolean; last?: boolean }) {
+export function ListRow({ label, onPress, icon, tile, value, valueTone = 'text2', labelTone = 'text', trailing = 'chevron', danger = false, disabled = false, last = true, accessibilityLabel, testID }: ActionProps & { icon?: IconName; tile?: IconName; value?: string; valueTone?: 'text2' | 'primary' | 'danger'; labelTone?: 'text' | 'primary'; trailing?: 'chevron' | 'external' | 'none'; danger?: boolean; last?: boolean }) {
   const color = useAppColor();
   const { type, emphasis } = useType();
   const ink = danger ? color.danger : labelTone === 'primary' ? color.primary : color.text;
   const labelFace = danger ? emphasis(16) : type('body');
   // An action value (V0-10 "연결하기") is drawn like a link: primary and bold, with a primary chevron.
-  const valueInk = valueTone === 'primary' ? color.primary : color.text2;
+  const valueInk = valueTone === 'primary' ? color.primary : valueTone === 'danger' ? color.danger : color.text2;
   const valueFace = valueTone === 'primary' ? emphasis(14) : type('bodySm');
   const stacked = useLargeText() && !!value;
   return (
