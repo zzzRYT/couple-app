@@ -325,7 +325,7 @@ function NavTextButton({ label, onPress, disabled = false, loading = false }: Na
   );
 }
 /**
- * Screen scaffold: safe areas, 20pt gutter, optional back/close bar, scrolling body and a footer pinned above the home indicator.
+ * Screen scaffold: safe areas, 20pt gutter, optional back/close bar, scrolling body and a footer above the home indicator that scrolls with the body when both don't fit.
  * `title` and `trailing` draw the V0 nav bar of pushed screens: back, a centered 17pt bold title and an optional text action.
  */
 export function Screen({ children, footer, onBack, onClose, title, trailing, scroll = true, center = false, bottomInset = true, testID }: {
@@ -349,13 +349,16 @@ export function Screen({ children, footer, onBack, onClose, title, trailing, scr
       {close}
     </View>
     : null;
+  const foot = footer && <View style={{ paddingHorizontal: GUTTER, paddingTop: tokens.spacing[2], paddingBottom: bottomInset ? Math.max(insets.bottom, GUTTER) : GUTTER, gap: tokens.spacing[1] }}>{footer}</View>;
   const body = { flexGrow: 1, paddingHorizontal: GUTTER, paddingTop: bar ? tokens.spacing[1] : tokens.spacing[3], paddingBottom: tokens.spacing[5], gap: tokens.spacing[3], justifyContent: center ? 'center' as const : 'flex-start' as const };
   return (
     <KeyboardAvoidingView testID={testID} behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1, backgroundColor: color.bg, paddingTop: insets.top }}>
       <FlowBackAction onBack={onBack} />
       {bar}
-      {scroll ? <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }} contentContainerStyle={body}>{children}</ScrollView> : <View style={[{ flex: 1 }, body]}>{children}</View>}
-      {footer && <View style={{ paddingHorizontal: GUTTER, paddingTop: tokens.spacing[2], paddingBottom: bottomInset ? Math.max(insets.bottom, GUTTER) : GUTTER, gap: tokens.spacing[1] }}>{footer}</View>}
+      {scroll
+        // The footer ends the scroll content: the growing body keeps it at the bottom while both fit, and it scrolls after the body when they don't (S21).
+        ? <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}><View style={body}>{children}</View>{foot}</ScrollView>
+        : <><View style={[{ flex: 1 }, body]}>{children}</View>{foot}</>}
     </KeyboardAvoidingView>
   );
 }
