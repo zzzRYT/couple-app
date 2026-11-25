@@ -25,7 +25,7 @@ function Legal() {
     </View>
   );
 }
-/** V0-start-intro: Sign in with Apple first, then email and password (V0-08); the email OTP flow exists only in development builds. */
+/** V0-start-intro: Sign in with Apple first, then email and password (V0-08) in development builds only; the email OTP flow is development-only too. */
 export function LoginScreen({ auth, lastUsed, onDone, onEmail, onEmailLogin, onBack, notice, options = defaultOptions }: { auth: AuthPort; lastUsed?: Provider; onDone: () => void; onEmail: (email: string) => void; onEmailLogin?: () => void; onBack?: () => void; notice?: string; options?: AuthOptions }) {
   const color = useAppColor();
   const { t } = useTranslation();
@@ -79,7 +79,7 @@ export function LoginScreen({ auth, lastUsed, onDone, onEmail, onEmailLogin, onB
         </View>}
         {options.apple === 'web' && <ProviderButton provider="apple" highlighted={lastUsed === 'apple'} onPress={() => void signIn('apple')} />}
         {options.kakao && <ProviderButton provider="kakao" highlighted={lastUsed === 'kakao'} onPress={() => void signIn('kakao')} />}
-        {onEmailLogin && <Button label={t('auth.email.entry')} variant="secondary" disabled={finishing} onPress={onEmailLogin} />}
+        {options.devEmail && onEmailLogin && <Button label={t('auth.email.entry')} variant="secondary" disabled={finishing} onPress={onEmailLogin} />}
         {/* Development builds only (EXPO_PUBLIC_DEV_EMAIL_LOGIN); never part of the product sign-in. */}
         {options.devEmail && <Button label={t('login.email')} variant="secondary" icon="mail" disabled={finishing} onPress={() => setState({ kind: 'email', invalid: false, sending: false, failed: false })} />}
       </View>

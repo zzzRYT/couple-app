@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useApp } from '../../lib/AppContext';
 import type { PasswordState } from '../../lib/passwordPort';
+import { authOptions } from '../../config/auth';
 
 type Value = {
   /** `undefined` while loading, `null` when it could not be read. */
@@ -37,7 +38,7 @@ export function PasswordProvider({ children }: { children: ReactNode }) {
   const apple = isAppleAccount(session?.user.app_metadata);
   const value = useMemo<Value>(() => ({
     state, recovery, setRecovery, pendingReset, setPendingReset, apple, reload,
-    shouldPrompt: state === undefined ? undefined : !!state && apple && !state.hasPassword && !state.promptSeen && !!state.email,
+    shouldPrompt: state === undefined ? undefined : authOptions.devEmail && !!state && apple && !state.hasPassword && !state.promptSeen && !!state.email,
     async markPromptSeen() {
       setState((current) => current && { ...current, promptSeen: true });
       await password.promptSeen().catch(() => undefined);

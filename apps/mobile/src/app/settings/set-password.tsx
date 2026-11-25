@@ -1,5 +1,6 @@
 import * as Clipboard from 'expo-clipboard';
-import { router } from 'expo-router';
+import { authOptions } from '../../config/auth';
+import { Redirect, router } from 'expo-router';
 import { usePassword } from '../../features/auth/PasswordContext';
 import { SetPasswordFlow } from '../../features/auth/SetPasswordFlow';
 import { useApp } from '../../lib/AppContext';
@@ -7,5 +8,6 @@ import { useApp } from '../../lib/AppContext';
 export default function SetPasswordRoute() {
   const { password } = useApp();
   const { state, reload, markPromptSeen } = usePassword();
+  if (!authOptions.devEmail) return <Redirect href="/settings/security" />;
   return <SetPasswordFlow start="form" password={password} email={state?.email ?? ''} copy={Clipboard.setStringAsync} onBack={() => router.back()} onLater={() => router.back()} onDone={() => { void markPromptSeen().then(reload); router.back(); }} />;
 }

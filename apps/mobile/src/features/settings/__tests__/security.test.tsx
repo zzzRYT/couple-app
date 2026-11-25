@@ -8,6 +8,7 @@ import { SecurityScreen } from '../SecurityScreen';
 
 const mockParams: { saved?: string; forgot?: string } = {};
 jest.mock('expo-router', () => ({ router: { push: jest.fn(), back: jest.fn(), dismissTo: jest.fn() }, useFocusEffect: jest.fn(), useLocalSearchParams: () => mockParams }));
+jest.mock('../../../config/auth', () => ({ authOptions: { apple: 'native', kakao: false, devEmail: true } }));
 jest.mock('expo-clipboard', () => ({ setStringAsync: jest.fn() }));
 jest.mock('../../auth/PasswordContext', () => ({ usePassword: () => ({ state: { hasPassword: true, promptSeen: true, email: 'x7k2m9qd4t@privaterelay.appleid.com' }, apple: true, reload: jest.fn() }) }));
 jest.mock('../../../lib/AppContext', () => ({ useApp: () => ({ supabase: {}, client: {}, password: { set: jest.fn() } }) }));
@@ -17,6 +18,19 @@ beforeEach(() => { delete mockParams.saved; delete mockParams.forgot; });
 const relay = 'x7k2m9qd4t@privaterelay.appleid.com';
 const open = (state: { hasPassword: boolean; email: string | null } | null, apple: boolean, onAction = jest.fn()) =>
   renderWithI18n(<SecurityScreen state={state && { ...state, promptSeen: true }} apple={apple} copy={jest.fn()} onAction={onAction} onBack={jest.fn()} />);
+
+it('product builds show the sign-in method and no password rows, for an Apple account with or without a password', async () => {
+  const product = { apple: 'native' as const, kakao: false, devEmail: false };
+  for (const hasPassword of [false, true]) {
+    const screen = await renderWithI18n(<SecurityScreen state={{ hasPassword, promptSeen: true, email: relay }} apple options={product} copy={jest.fn()} onAction={jest.fn()} onBack={jest.fn()} />);
+    expect(screen.getByText(screen.t('set.security.method.apple'))).toBeTruthy();
+    expect(screen.queryByText(screen.t('set.security.method.email'))).toBeNull();
+    expect(screen.queryByText(screen.t('set.security.pwSection'))).toBeNull();
+    expect(screen.queryByText(screen.t('set.security.pwChange'))).toBeNull();
+    expect(screen.queryByRole('button', { name: screen.t('auth.setpw.cta') })).toBeNull();
+    await screen.unmount();
+  }
+});
 
 it('V0-F17-AC-01 V0-sec-apple-nopw: not set, with the way to make one', async () => {
   const onAction = jest.fn();

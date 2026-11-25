@@ -1,4 +1,5 @@
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
+import { authOptions } from '../../config/auth';
 import { usePassword } from '../../features/auth/PasswordContext';
 import { ChangePasswordScreen } from '../../features/settings/ChangePasswordScreen';
 import { useApp } from '../../lib/AppContext';
@@ -7,6 +8,7 @@ export default function ChangePasswordRoute() {
   const { password } = useApp();
   const { state, apple } = usePassword();
   const backToSecurity = (param: 'saved' | 'forgot') => router.dismissTo({ pathname: '/settings/security', params: { [param]: String(Date.now()) } });
+  if (!authOptions.devEmail) return <Redirect href="/settings/security" />;
   return <ChangePasswordScreen password={password} email={state?.email ?? ''} apple={apple} onBack={() => router.back()} onSaved={() => backToSecurity('saved')}
     onForgot={() => { if (apple) backToSecurity('forgot'); else router.push({ pathname: '/settings/reset-password', params: { email: state?.email ?? '' } }); }} />;
 }

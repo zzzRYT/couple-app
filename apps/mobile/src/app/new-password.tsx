@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Redirect } from 'expo-router';
+import { authOptions } from '../config/auth';
 import { usePassword } from '../features/auth/PasswordContext';
 import { LinkExpiredScreen, NewPasswordScreen } from '../features/auth/ResetScreens';
 import { useApp } from '../lib/AppContext';
@@ -10,6 +12,7 @@ export default function NewPasswordRoute() {
   const [expired, setExpired] = useState(false);
   const email = session?.user.email ?? '';
   const leave = () => { setRecovery(false); void auth.signOut(); };
+  if (!authOptions.devEmail) return <Redirect href="/login" />;
   if (expired) return <LinkExpiredScreen onResend={() => { setPendingReset(email); leave(); }} onBack={leave} />;
   return <NewPasswordScreen password={password} email={email} onExpired={() => setExpired(true)} onBack={leave} onSaved={() => { setRecovery(false); void reload(); }} />;
 }

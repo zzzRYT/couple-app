@@ -9,9 +9,14 @@ import { expiredLink, readLastMail, type ExpiredLink } from '../lib/lastMail';
 import { usePassword } from '../features/auth/PasswordContext';
 import { ConfirmLinkExpiredScreen, LinkExpiredScreen } from '../features/auth/ResetScreens';
 import { useApp } from '../lib/AppContext';
+import { authOptions } from '../config/auth';
 
-/** Where confirmation and reset mail links return. V0-auth-link-exp when the link no longer works, in the confirmation or the reset variant. */
+/** Where confirmation and reset mail links return. V0-auth-link-exp when the link no longer works, in the confirmation or the reset variant. Production builds have no mail links, so they leave at once. */
 export default function AuthCallbackRoute() {
+  return authOptions.devEmail ? <MailLinkCallback /> : <Redirect href="/" />;
+}
+
+function MailLinkCallback() {
   const { t } = useTranslation();
   const { supabase, password } = useApp();
   const { setRecovery } = usePassword();
