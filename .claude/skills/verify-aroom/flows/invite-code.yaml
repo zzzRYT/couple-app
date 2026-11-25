@@ -1,0 +1,9 @@
+appId: com.jinjinstar.aroom.dev
+---
+# Starts on home of a space with no partner yet (after home-dday).
+- extendedWaitUntil:
+    visible: "상대가 코드를 넣으면 연결돼요"
+    timeout: 20000
+- assertVisible: "초대 코드 .*, 글자 하나씩 읽어요"
+- tapOn: "코드 복사"
+- assertVisible: "복사했어요"

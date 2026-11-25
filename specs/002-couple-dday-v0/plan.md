@@ -16,7 +16,7 @@
 
 **Storage**: Supabase Postgres(공간·프로필·직접 추가 기념일·축하 기록), 기기 로컬(알림 설정, 축하 닫기 기록, 마지막 V0 데이터), App Group 공유 컨테이너(위젯 스냅샷).
 
-**Testing**: Jest + jest-expo + `@testing-library/react-native`(앱), `deno test`(Edge Functions, 로컬 스택 대상), pgTAP `supabase test db`(SQL·RLS), XCUITest(시뮬레이터 두 대 연결 흐름, 기존 `firstmate/data/cpl-pairtest/PairUITest.swift` 패턴), 기기 수동 체크리스트(위젯·알림·TestFlight). Maestro는 쓰지 않는다.
+**Testing**: Jest + jest-expo + `@testing-library/react-native`(앱), `deno test`(Edge Functions, 로컬 스택 대상), pgTAP `supabase test db`(SQL·RLS), Maestro(시뮬레이터 UI 구동, `.claude/skills/verify-aroom`), 기기 수동 체크리스트(위젯·알림·TestFlight). 처음 계획한 XCUITest 대신 Maestro를 쓴다(2026-11-24): 흐름을 컴파일 없이 YAML로 고치고, 시스템 "열기" 확인을 처리하고, 저장소에 Xcode 테스트 프로젝트를 두지 않아도 된다.
 
 **Target Platform**: iOS 17+ iPhone(SDK 58 최소 16.4), TestFlight 내부 테스트. Android는 범위 밖(빌드는 깨지지 않게만 유지).
 

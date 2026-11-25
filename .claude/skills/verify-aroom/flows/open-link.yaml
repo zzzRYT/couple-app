@@ -1,0 +1,10 @@
+appId: com.jinjinstar.aroom.dev
+---
+# The first `simctl openurl` per install asks the system to confirm; later links open directly.
+- extendedWaitUntil:
+    visible: "열기|Open"
+    timeout: 5000
+    optional: true
+- tapOn:
+    text: "열기|Open"
+    optional: true
