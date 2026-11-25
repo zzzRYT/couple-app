@@ -17,7 +17,7 @@ function fakeServer() {
 it('updates the inviter after the partner accepts on another device', async () => {
   const server = fakeServer();
   const client = server.clientFor();
-  const inviter = await renderHook(() => useSpaceSnapshot({ client, realtime: server.realtime }));
+  const inviter = await renderHook(() => useSpaceSnapshot({ client, realtime: server.realtime, userId: 'me' }));
   await waitFor(() => expect(inviter.result.current.state.snapshot?.space.memberCount).toBe(1));
   expect(inviter.result.current.entry).toBe('active');
   await act(async () => { server.accept(); });
@@ -26,9 +26,9 @@ it('updates the inviter after the partner accepts on another device', async () =
 
 it('routes to the ended notice or to space creation when there is no active space', async () => {
   const realtime = memoryRealtime();
-  const ended = await renderHook(() => useSpaceSnapshot({ client: { mySpace: async () => ({ active: null, ended: { kind: 'ended', by: 'partner', at: '2026-10-27T00:00:00Z' } }), snapshot: jest.fn() }, realtime }));
+  const ended = await renderHook(() => useSpaceSnapshot({ client: { mySpace: async () => ({ active: null, ended: { kind: 'ended', by: 'partner', at: '2026-10-27T00:00:00Z' } }), snapshot: jest.fn() }, realtime, userId: 'me' }));
   await waitFor(() => expect(ended.result.current.entry).toBe('ended'));
-  const none = await renderHook(() => useSpaceSnapshot({ client: { mySpace: async () => ({ active: null, ended: null }), snapshot: jest.fn() }, realtime }));
+  const none = await renderHook(() => useSpaceSnapshot({ client: { mySpace: async () => ({ active: null, ended: null }), snapshot: jest.fn() }, realtime, userId: 'me' }));
   await waitFor(() => expect(none.result.current.entry).toBe('none'));
 });
 
@@ -38,7 +38,7 @@ it('refetches on foreground and keeps the last snapshot read-only when offline',
   const snapshot = jest.fn().mockResolvedValueOnce(snapshotFixture()).mockRejectedValueOnce(new TypeError('Network request failed'));
   const client = { mySpace: async () => ({ active: { spaceId: 'space-1' }, ended: null }), snapshot };
   const realtime = memoryRealtime();
-  const hook = await renderHook(() => useSpaceSnapshot({ client, realtime }));
+  const hook = await renderHook(() => useSpaceSnapshot({ client, realtime, userId: 'me' }));
   await waitFor(() => expect(hook.result.current.state.status).toBe('ready'));
   await act(async () => { for (const listener of listeners) listener('active'); });
   await waitFor(() => expect(hook.result.current.state.offline).toBe(true));
@@ -49,7 +49,7 @@ it('refetches on foreground and keeps the last snapshot read-only when offline',
 it('catches up once when the shared channel rejoins and ignores older snapshots', async () => {
   const realtime = memoryRealtime();
   const snapshot = jest.fn().mockResolvedValueOnce({ ...snapshotFixture(), versionNumber: 4 }).mockResolvedValueOnce({ ...snapshotFixture(), versionNumber: 3 });
-  const hook = await renderHook(() => useSpaceSnapshot({ client: { mySpace: async () => ({ active: { spaceId: 'space-1' }, ended: null }), snapshot }, realtime }));
+  const hook = await renderHook(() => useSpaceSnapshot({ client: { mySpace: async () => ({ active: { spaceId: 'space-1' }, ended: null }), snapshot }, realtime, userId: 'me' }));
   await waitFor(() => expect(hook.result.current.state.snapshot?.versionNumber).toBe(4));
   await act(async () => { realtime.status('space-1', 'SUBSCRIBED'); });
   await waitFor(() => expect(snapshot).toHaveBeenCalledTimes(2));
@@ -58,7 +58,7 @@ it('catches up once when the shared channel rejoins and ignores older snapshots'
 
 it('reset drops the cached snapshot and entry so another account starts clean', async () => {
   const server = fakeServer();
-  const hook = await renderHook(() => useSpaceSnapshot({ client: server.clientFor(), realtime: server.realtime }));
+  const hook = await renderHook(() => useSpaceSnapshot({ client: server.clientFor(), realtime: server.realtime, userId: 'me' }));
   await waitFor(() => expect(hook.result.current.state.snapshot).not.toBeNull());
   await act(async () => { hook.result.current.reset(); });
   expect(hook.result.current.entry).toBe('loading');
@@ -70,7 +70,7 @@ it('keeps an expired lease visible from the realtime hint so the partner can con
   const realtime = memoryRealtime();
   const session = { sessionId: 's1', ownerUserId: 'u2', expiresAt: '2026-10-27T03:03:00Z', status: 'occupied' as const, idleSeconds: 180, warnSeconds: 30 };
   const snapshot = jest.fn().mockResolvedValue({ ...snapshotFixture(), promptSession: session });
-  const hook = await renderHook(() => useSpaceSnapshot({ client: { mySpace: async () => ({ active: { spaceId: 'space-1' }, ended: null }), snapshot }, realtime }));
+  const hook = await renderHook(() => useSpaceSnapshot({ client: { mySpace: async () => ({ active: { spaceId: 'space-1' }, ended: null }), snapshot }, realtime, userId: 'me' }));
   await waitFor(() => expect(hook.result.current.state.snapshot?.promptSession?.status).toBe('occupied'));
   snapshot.mockResolvedValue({ ...snapshotFixture(), promptSession: { ...session, status: 'expired' } });
   await act(async () => { realtime.emit('space-1', { event: 'session', payload: { sessionId: 's1', status: 'expired', ownerUserId: 'u2', expiresAt: '2026-10-27T03:03:00Z' } }); });

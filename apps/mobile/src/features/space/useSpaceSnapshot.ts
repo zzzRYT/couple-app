@@ -14,6 +14,8 @@ export function useSpaceSnapshot({ client, realtime, userId }: Deps) {
   clientRef.current = client;
   const seedRef = useRef<(snapshot: Snapshot, savedAt: string) => void>(() => {});
   const resolveEntry = useCallback(async () => {
+    // Signed out there is no space to ask for; a failed call would leave 'error' to flash once the next sign-in lands.
+    if (!userId) return;
     try {
       const mine = await clientRef.current.mySpace();
       setEnded(mine.ended);
