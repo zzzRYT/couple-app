@@ -9,8 +9,6 @@ import { useAppColor } from '../../theme/useAppColor';
 import { useType } from '../../theme/typography';
 import { authOptions as defaultOptions, type AuthOptions } from '../../config/auth';
 import { AppleButton } from './AppleButton';
-import { DevQuickLogin } from './devQuickLogin';
-import type { createSupabase } from '../../lib/supabase';
 import { ProviderButton } from './ProviderButton';
 import { EMAIL_PATTERN, type AuthPort, type Provider } from '../../lib/authPort';
 import { mascotPoses } from '../../scene/catalog';
@@ -28,7 +26,7 @@ function Legal() {
   );
 }
 /** V0-start-intro: Sign in with Apple first, then email and password (V0-08); the email OTP flow exists only in development builds. */
-export function LoginScreen({ auth, lastUsed, onDone, onEmail, onEmailLogin, onBack, notice, quickLoginClient, options = defaultOptions }: { auth: AuthPort; lastUsed?: Provider; onDone: () => void; onEmail: (email: string) => void; onEmailLogin?: () => void; onBack?: () => void; notice?: string; quickLoginClient?: ReturnType<typeof createSupabase>; options?: AuthOptions }) {
+export function LoginScreen({ auth, lastUsed, onDone, onEmail, onEmailLogin, onBack, notice, options = defaultOptions }: { auth: AuthPort; lastUsed?: Provider; onDone: () => void; onEmail: (email: string) => void; onEmailLogin?: () => void; onBack?: () => void; notice?: string; options?: AuthOptions }) {
   const color = useAppColor();
   const { t } = useTranslation();
   const { emphasis } = useType();
@@ -85,7 +83,6 @@ export function LoginScreen({ auth, lastUsed, onDone, onEmail, onEmailLogin, onB
         {/* Development builds only (EXPO_PUBLIC_DEV_EMAIL_LOGIN); never part of the product sign-in. */}
         {options.devEmail && <Button label={t('login.email')} variant="secondary" icon="mail" disabled={finishing} onPress={() => setState({ kind: 'email', invalid: false, sending: false, failed: false })} />}
       </View>
-      {quickLoginClient && <DevQuickLogin client={quickLoginClient} onDone={onDone} />}
       <Legal />
     </>}>
       <View style={{ alignItems: 'center', gap: 2, paddingTop: tokens.spacing[2] }}>

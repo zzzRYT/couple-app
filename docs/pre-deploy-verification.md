@@ -53,7 +53,7 @@ PR #15(점유 리스), #16(설정·방 모드), #17(기념일 축하), #18(홈 �
 
 ## 4. 시나리오별 결과 (HTTP, `supabase functions serve` 경유)
 
-스크립트는 저장소 밖(firstmate `data/cpl-predeploy/scenarios/run.ts`)에 두었다. 앱이 쓰는 경로 그대로 HTTP로 부르고, 확인은 서비스 키 조회·`psql`로 했다. 날짜가 걸린 기념일 시나리오는 로컬 DB의 `public.app_now()`를 고정 시각으로 바꿔 돌린 뒤 `now()`로 되돌렸다. "단위/pgTAP"은 이번 실행에서 같은 로컬 스택으로 통과한 테스트를 뜻한다.
+스크립트는 처음에 저장소 밖에 두었다가 `.claude/skills/verify-aroom/http/run.ts`로 옮겼다. 앱이 쓰는 경로 그대로 HTTP로 부르고, 확인은 서비스 키 조회·`psql`로 했다. 날짜가 걸린 기념일 시나리오는 로컬 DB의 `public.app_now()`를 고정 시각으로 바꿔 돌린 뒤 `now()`로 되돌렸다. "단위/pgTAP"은 이번 실행에서 같은 로컬 스택으로 통과한 테스트를 뜻한다.
 
 ### 계정 삭제 (#19)
 

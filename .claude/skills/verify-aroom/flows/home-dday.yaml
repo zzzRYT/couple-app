@@ -1,0 +1,21 @@
+appId: com.jinjinstar.aroom.dev
+---
+# Starts on the profile screen a fresh `session --space` lands on; a new space shows its invite code first.
+- extendedWaitUntil:
+    visible: "나를 알려 주세요"
+    timeout: 20000
+- tapOn: "상대에게 보일 이름"
+- inputText: "검증"
+# hideKeyboard can send the return key, which already submits the name; the button tap is a fallback.
+- hideKeyboard
+- tapOn:
+    text: "다음"
+    optional: true
+- extendedWaitUntil:
+    visible: "상대를 초대해 주세요"
+    timeout: 20000
+- tapOn: "홈에서 기다릴게요"
+# The big D+N is drawn in the hand-lettered font; its accessibility label carries the count and the start date.
+- extendedWaitUntil:
+    visible: "함께한 지 [0-9]+일째, 2025년 1월 1일부터"
+    timeout: 20000

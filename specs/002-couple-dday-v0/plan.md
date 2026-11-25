@@ -16,7 +16,7 @@
 
 **Storage**: Supabase Postgres(공간·프로필·직접 추가 기념일·축하 기록), 기기 로컬(알림 설정, 축하 닫기 기록, 마지막 V0 데이터), App Group 공유 컨테이너(위젯 스냅샷).
 
-**Testing**: Jest + jest-expo + `@testing-library/react-native`(앱), `deno test`(Edge Functions, 로컬 스택 대상), pgTAP `supabase test db`(SQL·RLS), XCUITest(시뮬레이터 두 대 연결 흐름, 기존 `firstmate/data/cpl-pairtest/PairUITest.swift` 패턴), 기기 수동 체크리스트(위젯·알림·TestFlight). Maestro는 쓰지 않는다.
+**Testing**: Jest + jest-expo + `@testing-library/react-native`(앱), `deno test`(Edge Functions, 로컬 스택 대상), pgTAP `supabase test db`(SQL·RLS), Maestro(시뮬레이터 UI 구동, `.claude/skills/verify-aroom`), 기기 수동 체크리스트(위젯·알림·TestFlight). 처음 계획한 XCUITest 대신 Maestro를 쓴다(2026-11-24): 흐름을 컴파일 없이 YAML로 고치고, 시스템 "열기" 확인을 처리하고, 저장소에 Xcode 테스트 프로젝트를 두지 않아도 된다.
 
 **Target Platform**: iOS 17+ iPhone(SDK 58 최소 16.4), TestFlight 내부 테스트. Android는 범위 밖(빌드는 깨지지 않게만 유지).
 
@@ -108,7 +108,7 @@ supabase/
 
 | 영역 | 확인한 코드 | V0 처리 |
 |---|---|---|
-| 인증 | `src/features/auth/LoginScreen.tsx`, `AppleButton.tsx`, `Welcome.tsx`, `src/lib/auth.ts`, `src/app/(auth)/{index,welcome,login,email-code}.tsx`, dev quick login `features/auth/devQuickLogin/` | Apple만 보이게 `V0-start-intro`로 재구성. 이메일 경로는 `development` 변형에서만(`EXPO_PUBLIC_DEV_EMAIL_LOGIN`, `app.config.ts:6-13` 가드 유지). |
+| 인증 | `src/features/auth/LoginScreen.tsx`, `AppleButton.tsx`, `Welcome.tsx`, `src/lib/auth.ts`, `src/app/(auth)/{index,welcome,login,email-code}.tsx` | Apple만 보이게 `V0-start-intro`로 재구성. 이메일 경로는 `development` 변형에서만(`EXPO_PUBLIC_DEV_EMAIL_LOGIN`, `app.config.ts:6-13` 가드 유지). |
 | 공간 만들기 | `features/onboarding/CreateSpaceScreen.tsx`(60줄, 날짜만), `app/(onboarding)/create-space.tsx`(기기 시간대 = `getCalendars()[0].timeZone`), `client.createSpace` | 날짜 화면을 V0 디자인으로, 그 뒤 새 `profile` 단계. 공간 생성은 프로필 단계 "다음"에서(뒤로 가기 안전). |
 | 초대 | `features/onboarding/{InviteScreen,JoinScreen,SpaceChoiceScreen}.tsx`, `supabase/functions/invitations/index.ts` | 그대로 재사용, V0 문구·레이아웃만. PR 26의 "새 초대 유지" 로직(`InviteScreen`, `SpaceContext`) 유지. |
 | 앱 게이트 | `src/lib/appGate.ts`(booting/signedOut/sessionExpired/needsOnboardingChoice/ended/active), `src/app/_layout.tsx` | 새 상태 `needsProfile`(활성 공간이 있고 내 `displayName`이 null)와 `connectedOnce` 흐름 추가. |

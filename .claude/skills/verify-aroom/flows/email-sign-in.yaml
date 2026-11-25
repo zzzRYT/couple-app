@@ -1,0 +1,25 @@
+appId: com.jinjinstar.aroom.dev
+---
+# Starts signed out on the first screen; signs in as the last `session` user with ${MAESTRO_EMAIL} and ${MAESTRO_PASSWORD}.
+- extendedWaitUntil:
+    visible: "우리 둘의 날을 세어요"
+    timeout: 20000
+- tapOn: "이메일로 로그인"
+- tapOn: "name@example.com"
+- inputText: ${MAESTRO_EMAIL}
+# The field labels are separate texts; tap the input under each label.
+- tapOn:
+    below: "비밀번호"
+- inputText: ${MAESTRO_PASSWORD}
+# hideKeyboard sends the password field's "go" key, which already submits; the button tap is a fallback.
+- hideKeyboard
+- tapOn:
+    text: "로그인"
+    optional: true
+# iOS offers to save the password after a successful sign-in.
+- tapOn:
+    text: "지금 안 함|Not Now"
+    optional: true
+- extendedWaitUntil:
+    visible: "함께한 지 [0-9]+일째, .*부터"
+    timeout: 30000

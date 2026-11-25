@@ -10,10 +10,6 @@ if (!dev && process.env.EXPO_PUBLIC_DEV_EMAIL_LOGIN === 'true') {
   throw new Error('EXPO_PUBLIC_DEV_EMAIL_LOGIN must not be set for production builds');
 }
 
-if (variant !== 'development' && process.env.EXPO_PUBLIC_DEV_QUICK_LOGIN === 'true') {
-  throw new Error('EXPO_PUBLIC_DEV_QUICK_LOGIN must not be set for preview or production builds');
-}
-
 // Hot Updater's native default channel (docs/ota.md): an OTA bundle reaches only builds on its channel and fingerprint.
 // HOT_UPDATER_CHANNEL points a local Release build at a test channel; store builds always use their variant's channel.
 const otaChannel = process.env.HOT_UPDATER_CHANNEL || variant;

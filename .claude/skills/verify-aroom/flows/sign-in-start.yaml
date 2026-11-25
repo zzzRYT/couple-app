@@ -1,0 +1,8 @@
+appId: com.jinjinstar.aroom.dev
+---
+- extendedWaitUntil:
+    visible: "우리 둘의 날을 세어요"
+    timeout: 20000
+- assertVisible: "Apple로 계속하기"
+- assertVisible: "이메일로 로그인"
+- assertNotVisible: "DEV · 테스트 계정으로 바로 입장"

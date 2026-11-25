@@ -154,8 +154,6 @@ test('V0-F14-AC-06 no build profile above development can carry a test login', a
     }
   };
   await assert.rejects(load('production', 'EXPO_PUBLIC_DEV_EMAIL_LOGIN', 'prod-email'), /must not be set for production/);
-  await assert.rejects(load('production', 'EXPO_PUBLIC_DEV_QUICK_LOGIN', 'prod-quick'), /must not be set for preview or production/);
-  await assert.rejects(load('preview', 'EXPO_PUBLIC_DEV_QUICK_LOGIN', 'preview-quick'), /must not be set for preview or production/);
 });
 
 test('production builds the store identity, iPhone only and portrait', async () => {
