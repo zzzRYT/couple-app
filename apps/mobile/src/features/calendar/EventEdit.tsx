@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, Pressable, ScrollView, View } from 'react-native';
+import { Alert, Keyboard, Pressable, ScrollView, View } from 'react-native';
 import { randomUUID } from 'expo-crypto';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -73,6 +73,8 @@ export function EventEdit({ initial, date, me, meName, partner, partnerId, timeZ
   };
   const deleteItem = () => Alert.alert(t('cal.delete.title'), partner ? t('edit.delete.body', { name: partner }) : t('edit.delete.body.unpaired'), [{ text: t('common.cancel'), style: 'cancel' }, { text: t('common.delete'), style: 'destructive', onPress: () => { if (!version) return; void remove(version, randomUUID()).then(() => onSaved('deleted', form.date)).catch(errorFlow('delete')); } }]);
   const setAllDay = (allDay: boolean) => setForm({ ...form, allDay, alert: alertFor(form.alert, allDay) });
+  // iOS gives focus back to the title when a sheet closes unless the keyboard was down before it opened.
+  const open = (next: Picker) => { Keyboard.dismiss(); setPicker(next); };
   const pickAlert = (alert: EventAlert) => { setForm({ ...form, alert }); setPicker(null); void checkPermission(alert, true); };
   const alertLabel = (alert: EventAlert) => t(form.allDay && alert !== 'none' ? `cal.alert.allDay.${alert}` : `cal.alert.${alert}`);
   const time = (value: string) => formatNotifyTime(value, i18n.language);
@@ -108,15 +110,15 @@ export function EventEdit({ initial, date, me, meName, partner, partnerId, timeZ
       </View>
       <View style={{ backgroundColor: color.surface, borderWidth: tokens.border.outline.normal, borderColor: color.divider, borderRadius: tokens.radius.card, paddingHorizontal: 14 }}>
         <SwitchRow label={t('cal.allDay')} value={form.allDay} onValueChange={setAllDay} last={false} />
-        <ListRow label={t('edit.field.date')} value={formattedDate(form.date, i18n.language, true)} onPress={() => { setDraftDate(fromIsoDate(form.date)); setPicker('date'); }} last={false} />
+        <ListRow label={t('edit.field.date')} value={formattedDate(form.date, i18n.language, true)} onPress={() => { setDraftDate(fromIsoDate(form.date)); open('date'); }} last={false} />
         {!form.allDay && <>
-          <ListRow label={t('cal.field.start')} value={time(form.time)} onPress={() => setPicker('start')} last={false} />
+          <ListRow label={t('cal.field.start')} value={time(form.time)} onPress={() => open('start')} last={false} />
           <View style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderColor: color.divider }}>
-            <View style={{ flex: 1 }}><ListRow label={t('cal.field.end')} value={form.endTime ? time(form.endTime) : t('cal.field.end.none')} valueTone={endError ? 'danger' : 'text2'} onPress={() => setPicker('end')} /></View>
+            <View style={{ flex: 1 }}><ListRow label={t('cal.field.end')} value={form.endTime ? time(form.endTime) : t('cal.field.end.none')} valueTone={endError ? 'danger' : 'text2'} onPress={() => open('end')} /></View>
             {form.endTime && <IconButton plain compact icon="close" label={t('cal.field.end.clear')} onPress={() => setForm({ ...form, endTime: null })} />}
           </View>
         </>}
-        <ListRow label={t('edit.field.notify')} value={alertLabel(form.alert)} onPress={() => setPicker('alert')} />
+        <ListRow label={t('edit.field.notify')} value={alertLabel(form.alert)} onPress={() => open('alert')} />
       </View>
       {endError && <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}><Icon name="warn" size={16} color={color.danger} />{note(t('cal.err.end'), 'danger')}</View>}
       <View style={{ gap: 4 }}>
