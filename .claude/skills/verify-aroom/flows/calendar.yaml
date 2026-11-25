@@ -1,0 +1,41 @@
+appId: com.jinjinstar.aroom.dev
+---
+# Starts after the home-dday flow, with the partner's events already written by `partner --event`. A partner who joins
+# while the owner is in the app brings up "연결됐어요" and then the notification pre-prompt; allowing it lets alerts schedule.
+- tapOn:
+    text: "시작하기"
+    optional: true
+- tapOn:
+    text: "알림 켜기"
+    optional: true
+- tapOn:
+    text: "허용|Allow"
+    optional: true
+- extendedWaitUntil:
+    visible: "달력.*"
+    timeout: 20000
+- tapOn: "달력.*"
+- extendedWaitUntil:
+    visible: ".*이케아 장보기.*"
+    timeout: 20000
+- assertVisible: ".*헬스장 등록.*하루 작성.*"
+- tapOn: "일정 추가"
+- extendedWaitUntil:
+    visible: "새 일정"
+    timeout: 10000
+- tapOn: "예: 저녁 데이트"
+- inputText: "저녁 데이트"
+# hideKeyboard can send the return key; the sheet stays open either way.
+- hideKeyboard
+# Rows read as "<label>, <value>"; the alert row sits below the fold on a 6.3-inch screen.
+- tapOn: "종료, 없음"
+- tapOn: "완료"
+- assertVisible: "종료, 오후 8:00"
+- hideKeyboard
+- scrollUntilVisible:
+    element: "알림, 없음"
+    direction: DOWN
+- tapOn: "알림, 없음"
+- tapOn: "30분 전"
+- assertVisible: "알림, 30분 전"
+- assertVisible: "알림은 두 사람의 기기에서 모두 울려요."

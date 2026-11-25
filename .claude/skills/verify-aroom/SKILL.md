@@ -8,7 +8,7 @@ description: Drive the Aroom iOS app (apps/mobile) on a simulator the way a user
 The surface is the iOS app. A Release simulator build talks to Aroom-dev, a test user is signed in through the same `aroom-dev://auth-callback` link a magic-link email returns, Maestro drives the screens, and `simctl` takes the screenshots. Everything runs through `aroom.mjs` next to this file. macOS only; CI (ubuntu) runs just `aroom.test.mjs` through `pnpm verify`.
 
 ```sh
-node .claude/skills/verify-aroom/aroom.mjs <doctor|build|launch|session|drive|shot|cleanup>
+node .claude/skills/verify-aroom/aroom.mjs <doctor|build|launch|session|partner|drive|shot|cleanup>
 ```
 
 ## Launch
@@ -16,6 +16,8 @@ node .claude/skills/verify-aroom/aroom.mjs <doctor|build|launch|session|drive|sh
 1. `node .claude/skills/verify-aroom/aroom.mjs build` prebuilds `apps/mobile/ios` for the `development` variant, adds the keychain group, runs `pod install` and builds Release for the simulator into `apps/mobile/ios/build/verify`. The first build takes 15 to 25 minutes. After a JS-only change, `build --js-only` rebuilds in about 5 minutes. Ready when it prints `Built …/Aroom*.app`.
 2. `node .claude/skills/verify-aroom/aroom.mjs launch --fresh` creates this checkout's simulator `aroom-verify-<hash>` (iPhone 17 Pro, iOS 26.5, Korean), boots it, installs the build with empty app data and an empty keychain (the session lives in the keychain and survives an uninstall), and starts the app. Ready when it prints `Launched com.jinjinstar.aroom.dev`. The app is then on its first screen, signed out.
 3. `node .claude/skills/verify-aroom/aroom.mjs session [--space YYYY-MM-DD]` creates a test user `verify-aroom-…@example.com` on Aroom-dev (with a space when `--space` is given), opens the sign-in link and confirms the system "열기" prompt. Ready when the app leaves the sign-in screen.
+
+For a feature that needs both partners, `node .claude/skills/verify-aroom/aroom.mjs partner [--name 하루] [--event "title|YYYY-MM-DD|HH:MM|alert"]` adds a second test user who joins the last session's space through the invitation and profile endpoints and can write calendar events as that partner. `drive` keeps running as the session user, and `cleanup` deletes both.
 
 Each checkout gets its own simulator and state folder (`$TMPDIR/aroom-verify-<hash>`), so two worktrees can verify side by side. Never drive a simulator this CLI did not create.
 

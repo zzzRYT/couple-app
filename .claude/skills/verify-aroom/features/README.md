@@ -33,3 +33,4 @@ Each feature file starts with an H1 title and one paragraph on the user-visible 
 - [Home D+Day](./home-dday.md) covers a new space's first sign-in: profile, invite code, then the D+Day count on home (V0-02).
 - [Invite code](./invite-code.md) covers the waiting home card with the invite code and copying it (V0-10).
 - [Email sign-in](./email-sign-in.md) covers signing in with email and password from the start screen (V0-08).
+- [Couple calendar](./couple-calendar.md) covers the 달력 tab: both partners' events, the add sheet and an alert that rings (V0-13, V0-F19).

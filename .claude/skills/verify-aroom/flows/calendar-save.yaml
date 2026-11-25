@@ -1,0 +1,8 @@
+appId: com.jinjinstar.aroom.dev
+---
+# Continues from the filled add-event sheet the calendar flow leaves open.
+- tapOn: "저장"
+- extendedWaitUntil:
+    visible: ".*저녁 데이트.*나 작성.*"
+    timeout: 20000
+- assertVisible: ".*이케아 장보기.*하루 작성.*"
