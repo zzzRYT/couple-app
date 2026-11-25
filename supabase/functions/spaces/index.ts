@@ -1,5 +1,5 @@
 import { AppError } from '../_shared/errors.ts';
-import { createHandler, defaultDeps, json, route, str, uuidParam, type Deps } from '../_shared/http.ts';
+import { createHandler, defaultDeps, json, route, str, UUID, uuidParam, type Deps } from '../_shared/http.ts';
 import { parseCalendarDate } from '../_shared/dday.ts';
 
 function calendarDate(value: unknown): string {
@@ -31,7 +31,8 @@ function eventBody(body: Record<string, unknown>) {
   if (p_end_time !== null && (p_time === null || p_end_time <= p_time)) throw new AppError('INVALID_REQUEST');
   const alerts = p_time === null ? ['none', 'at', '1d'] : ['none', 'at', '5m', '15m', '30m', '1h', '1d'];
   if (!alerts.includes(body.alert as string)) throw new AppError('INVALID_REQUEST');
-  return { p_title: title(body.title), p_date: calendarDate(body.date), p_time, p_end_time, p_alert: body.alert };
+  if (body.ownerId !== null && (typeof body.ownerId !== 'string' || !UUID.test(body.ownerId))) throw new AppError('INVALID_REQUEST');
+  return { p_title: title(body.title), p_date: calendarDate(body.date), p_time, p_end_time, p_alert: body.alert, p_owner: body.ownerId };
 }
 function presetId(value: unknown): string | null {
   if (value === undefined || value === null) return null;
