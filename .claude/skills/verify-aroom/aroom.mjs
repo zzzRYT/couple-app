@@ -22,9 +22,9 @@ const HOME = process.env.AROOM_VERIFY_HOME ?? join(tmpdir(), `aroom-verify-${TAG
 const STATE = join(HOME, 'state.json');
 export const DEV_URL = projectUrl('dev');
 const BUNDLE = APP_IDENTITY.devIosBundleId;
-const SIM_NAME = `aroom-verify-${TAG}`;
+const SIM_NAME = basename(HOME);
 const RUNTIME = 'com.apple.CoreSimulator.SimRuntime.iOS-26-5';
-const DEVICE = 'com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro';
+const DEVICE = `com.apple.CoreSimulator.SimDeviceType.${process.env.AROOM_VERIFY_DEVICE ?? 'iPhone-17-Pro'}`;
 export const CHANNEL = 'verify-aroom';
 export const EMAIL_PREFIX = 'verify-aroom-';
 

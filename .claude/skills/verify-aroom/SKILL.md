@@ -19,6 +19,8 @@ node .claude/skills/verify-aroom/aroom.mjs <doctor|build|launch|session|drive|sh
 
 Each checkout gets its own simulator and state folder (`$TMPDIR/aroom-verify-<hash>`), so two worktrees can verify side by side. Never drive a simulator this CLI did not create.
 
+To check another screen size, set `AROOM_VERIFY_DEVICE` to a device type id suffix (`iPhone-SE-3rd-generation`, `iPhone-17-Pro-Max`) and `AROOM_VERIFY_HOME` to a state folder of its own on every command for that device. The simulator takes the folder's name, and each device keeps its own test users and `cleanup`.
+
 ## Doctor
 
 `node .claude/skills/verify-aroom/aroom.mjs doctor` is read-only. It checks Xcode, the iOS 26.5 runtime, Maestro, CocoaPods, that the dev token reaches a healthy Aroom-dev, that the build exists, inlines Aroom-dev and never Aroom-prod, uses the `verify-aroom` OTA channel and carries `keychain-access-groups`, and that the simulator is booted with the app installed. Run it first whenever anything looks off. Exit code 1 means a `FAIL` line names what to fix.
