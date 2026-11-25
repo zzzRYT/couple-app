@@ -18,7 +18,7 @@ appId: com.jinjinstar.aroom.dev
 - extendedWaitUntil:
     visible: ".*이케아 장보기.*"
     timeout: 20000
-- assertVisible: ".*헬스장 등록.*하루 작성.*"
+- assertVisible: ".*헬스장 등록.*하루님이 추가.*"
 - tapOn: "일정 추가"
 - extendedWaitUntil:
     visible: "새 일정"
