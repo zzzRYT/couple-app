@@ -10,16 +10,16 @@ import { EventEdit } from '../EventEdit';
 jest.mock('../../notifications/permissions', () => ({ notificationPermission: jest.fn(async () => 'granted'), requestNotificationPermission: jest.fn(async () => true) }));
 const events = [
   eventFixture({ id: 'dinner', title: '저녁 데이트', time: '19:00', endTime: '21:00', createdBy: ME }),
-  eventFixture({ id: 'ikea', title: '이케아 장보기', createdBy: PARTNER }),
-  eventFixture({ id: 'gym', title: '헬스장 등록', time: '08:00', createdBy: PARTNER }),
+  eventFixture({ id: 'ikea', title: '이케아 장보기', createdBy: PARTNER, updatedBy: ME }),
+  eventFixture({ id: 'gym', title: '헬스장 등록', time: '08:00', createdBy: PARTNER, updatedBy: PARTNER }),
 ];
-const screenProps = { events, me: ME, partner: '도담', today: '2026-11-25', offline: false, onAdd: jest.fn(), onEvent: jest.fn() };
+const screenProps = { events, me: ME, meName: '나리', partner: '도담', today: '2026-11-25', offline: false, onAdd: jest.fn(), onEvent: jest.fn() };
 
 describe('CalendarScreen', () => {
   it('V0-F19-AC-01 V0-F03-AC-05 shows the month, today with its events, and moves between months', async () => {
     const screen = await renderWithI18n(<CalendarScreen {...screenProps} />);
     expect(screen.getByText('2026년 11월')).toBeTruthy();
-    expect(screen.getByLabelText(screen.t('cal.a11y.day', { date: '11월 25일 수요일', n: 3 })).props.accessibilityState).toEqual({ selected: true });
+    expect(screen.getByLabelText(screen.t('cal.a11y.day.by', { date: '11월 25일 수요일', n: 3, names: '나 1, 도담 2' })).props.accessibilityState).toEqual({ selected: true });
     expect(screen.getByLabelText(screen.t('cal.a11y.day', { date: '11월 24일 화요일', n: 0 }))).toBeTruthy();
     await fireEvent.press(screen.getByLabelText(screen.t('cal.next')));
     expect(screen.getByText('2026년 12월')).toBeTruthy();
@@ -27,15 +27,30 @@ describe('CalendarScreen', () => {
     await fireEvent.press(screen.getByText(screen.t('cal.today')));
     expect(screen.getByText('2026년 11월')).toBeTruthy();
   });
-  it('V0-F19-AC-02 lists the chosen day all-day first, then by time, each with its writer', async () => {
+  it('V0-F19-AC-01 filters the grid and the day list to one writer', async () => {
+    const screen = await renderWithI18n(<CalendarScreen {...screenProps} />);
+    expect(screen.getByRole('button', { name: screen.t('cal.filter.all') }).props.accessibilityState).toEqual({ selected: true });
+    await fireEvent.press(screen.getByRole('button', { name: '도담' }));
+    expect(screen.getByRole('button', { name: '도담' }).props.accessibilityState).toEqual({ selected: true });
+    expect(screen.getByLabelText(screen.t('cal.a11y.day.by', { date: '11월 25일 수요일', n: 2, names: '도담 2' }))).toBeTruthy();
+    expect(screen.queryByText('저녁 데이트')).toBeNull();
+    expect(screen.getByText('헬스장 등록')).toBeTruthy();
+    await fireEvent.press(screen.getByRole('button', { name: screen.t('cal.by.me') }));
+    expect(screen.getByLabelText(screen.t('cal.a11y.day.by', { date: '11월 25일 수요일', n: 1, names: '나 1' }))).toBeTruthy();
+    expect(screen.queryByText('헬스장 등록')).toBeNull();
+    await fireEvent.press(screen.getByTestId('day-2026-11-24'));
+    expect(screen.getByText(screen.t('cal.empty.me'))).toBeTruthy();
+  });
+  it('V0-F19-AC-02 V0-F19-AC-04 lists the chosen day all-day first, then by time, each with who added and who last edited it', async () => {
     const onEvent = jest.fn();
     const screen = await renderWithI18n(<CalendarScreen {...screenProps} onEvent={onEvent} />);
-    const rows = screen.getAllByLabelText(/작성$/).map((row) => row.props.accessibilityLabel);
+    const rows = screen.getAllByLabelText(/, (도담님이|내가) 추가/).map((row) => row.props.accessibilityLabel);
     expect(rows).toEqual([
-      screen.t('cal.a11y.event', { time: screen.t('cal.allDay'), title: '이케아 장보기', name: '도담' }),
-      screen.t('cal.a11y.event', { time: '오전 8:00', title: '헬스장 등록', name: '도담' }),
-      screen.t('cal.a11y.event', { time: '오후 7:00 – 오후 9:00', title: '저녁 데이트', name: screen.t('cal.by.me') }),
+      screen.t('cal.a11y.event', { time: screen.t('cal.allDay'), title: '이케아 장보기', name: `${screen.t('cal.added', { name: '도담' })}, ${screen.t('cal.edited.me')}` }),
+      screen.t('cal.a11y.event', { time: '오전 8:00', title: '헬스장 등록', name: screen.t('cal.added', { name: '도담' }) }),
+      screen.t('cal.a11y.event', { time: '오후 7:00 – 오후 9:00', title: '저녁 데이트', name: screen.t('cal.added.me') }),
     ]);
+    expect(screen.getByText(`${screen.t('cal.allDay')} · 도담님이 추가 · 내가 수정`)).toBeTruthy();
     await fireEvent.press(screen.getByText('헬스장 등록'));
     expect(onEvent).toHaveBeenCalledWith(events[2]);
   });
@@ -50,13 +65,14 @@ describe('CalendarScreen', () => {
   });
 });
 
-const sheetProps = { date: '2026-11-25', me: ME, partner: '도담', timeZone: 'Asia/Seoul', offline: false, remove: jest.fn(), reload: jest.fn(), onClose: jest.fn(), onGone: jest.fn(), onSaved: jest.fn() };
+const sheetProps = { date: '2026-11-25', me: ME, meName: '나리', partner: '도담', timeZone: 'Asia/Seoul', offline: false, remove: jest.fn(), reload: jest.fn(), onClose: jest.fn(), onGone: jest.fn(), onSaved: jest.fn() };
 const saveButton = (screen: Awaited<ReturnType<typeof renderWithI18n>>) => screen.getByRole('button', { name: screen.t('common.save') });
 describe('EventEdit', () => {
   it('V0-F19-AC-03 keeps save off without a title or with an end before the start, and sends a timed event', async () => {
     const save = jest.fn(async () => undefined); const onSaved = jest.fn();
     const screen = await renderWithI18n(<EventEdit {...sheetProps} save={save} onSaved={onSaved} />);
     expect(screen.getByText(screen.t('cal.new.title'))).toBeTruthy();
+    expect(screen.queryByText(/추가한 일정/)).toBeNull();
     expect(saveButton(screen).props.accessibilityState.disabled).toBe(true);
     await fireEvent.changeText(screen.getByLabelText(screen.t('edit.field.title')), 'x'.repeat(21));
     expect(screen.getByText(screen.t('edit.err.title.long'))).toBeTruthy();
@@ -91,15 +107,19 @@ describe('EventEdit', () => {
     expect(requestNotificationPermission).toHaveBeenCalled();
     (notificationPermission as jest.Mock).mockResolvedValue('granted');
   });
-  it('V0-F19-AC-04 lets me edit or delete the partner\'s event and keeps them as the writer', async () => {
+  it('V0-F19-AC-04 lets me edit or delete the partner\'s event and shows who added it and who last edited it', async () => {
     const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined); const remove = jest.fn(async () => undefined); const onSaved = jest.fn();
-    const screen = await renderWithI18n(<EventEdit {...sheetProps} initial={eventFixture({ createdBy: PARTNER, version: 3 })} remove={remove} onSaved={onSaved} save={jest.fn()} />);
-    expect(screen.getByText(`${screen.t('cal.by', { name: '도담' })} · 11월 20일`)).toBeTruthy();
+    const screen = await renderWithI18n(<EventEdit {...sheetProps} initial={eventFixture({ createdBy: PARTNER, updatedBy: ME, updatedAt: '2026-11-25T03:00:00Z', version: 3 })} remove={remove} onSaved={onSaved} save={jest.fn()} />);
+    expect(screen.getByText(screen.t('cal.detail.added', { name: '도담', date: '11월 20일' }))).toBeTruthy();
+    expect(screen.getByText(screen.t('cal.detail.edited.me', { date: '11월 25일' }))).toBeTruthy();
     await fireEvent.press(screen.getByText(screen.t('cal.delete')));
     expect(alert.mock.calls[0]![0]).toBe(screen.t('cal.delete.title'));
     (alert.mock.calls[0]![2] as { style?: string; onPress?: () => void }[]).find((button) => button.style === 'destructive')!.onPress!();
     await waitFor(() => expect(onSaved).toHaveBeenCalledWith('deleted', '2026-11-25'));
     expect((remove.mock.calls[0] as unknown[])[0]).toBe(3);
+    const mine = await renderWithI18n(<EventEdit {...sheetProps} initial={eventFixture({})} save={jest.fn()} />);
+    expect(mine.getByText(mine.t('cal.detail.added.me', { date: '11월 20일' }))).toBeTruthy();
+    expect(mine.queryByText(/마지막 수정/)).toBeNull();
     alert.mockRestore();
   });
   it('V0-F19-AC-06 reloads on a stale edit and leaves when the partner deleted the event', async () => {

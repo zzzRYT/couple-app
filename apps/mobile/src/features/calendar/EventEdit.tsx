@@ -18,7 +18,8 @@ import { graphemeLength } from '../anniversaries/AnniversaryEdit';
 import { formatNotifyTime } from '../notifications/labels';
 import { notificationPermission, requestNotificationPermission } from '../notifications/permissions';
 import { NotificationTimeSheet } from '../settings/NotificationTimeSheet';
-import { ALL_DAY_ALERTS, TIMED_ALERTS, alertFor } from './model';
+import { Avatar } from './Avatar';
+import { ALL_DAY_ALERTS, PERSON_COLOR, TIMED_ALERTS, alertFor, authorOf, editorOf } from './model';
 
 /** `time` stays in the form while 종일 is on, so turning it off again brings the start back. */
 type Form = { title: string; date: string; allDay: boolean; time: string; endTime: string | null; alert: EventAlert };
@@ -28,9 +29,9 @@ const hourAfter = (time: string) => `${String(Math.min(Number(time.slice(0, 2)) 
 const formOf = (item: CalendarEvent | undefined, date: string): Form => ({ title: item?.title ?? '', date: item?.date ?? date, allDay: item ? item.time === null : false, time: item?.time ?? DEFAULT_TIME, endTime: item?.endTime ?? null, alert: item?.alert ?? 'none' });
 const fieldsOf = (form: Form): EventFields => ({ title: form.title.trim(), date: form.date, time: form.allDay ? null : form.time, endTime: form.allDay ? null : form.endTime, alert: form.alert });
 
-/** V0-13 일정 추가/편집. Both partners may edit or delete any event; the writer line keeps the original author. */
-export function EventEdit({ initial, date, me, partner, timeZone, offline, save, remove, reload, onClose, onGone, onSaved }: {
-  initial?: CalendarEvent; date: string; me: string; partner: string | null; timeZone: string; offline: boolean;
+/** V0-13 일정 추가/편집. Both partners may edit or delete any event; the writer card keeps the original author and names the last other editor. */
+export function EventEdit({ initial, date, me, meName, partner, timeZone, offline, save, remove, reload, onClose, onGone, onSaved }: {
+  initial?: CalendarEvent; date: string; me: string; meName: string; partner: string | null; timeZone: string; offline: boolean;
   save: (fields: EventFields, version: number | undefined, key: string) => Promise<void>; remove: (version: number, key: string) => Promise<void>;
   reload: () => Promise<CalendarEvent | undefined>; onClose: () => void; onGone: () => void; onSaved: (toast: 'saved' | 'deleted', date: string) => void;
 }) {
@@ -78,11 +79,19 @@ export function EventEdit({ initial, date, me, partner, timeZone, offline, save,
   const cancel = <Pressable onPress={close} accessibilityRole="button" style={{ minHeight: 48, justifyContent: 'center' }}><AppText>{t('common.cancel')}</AppText></Pressable>;
   const saveButton = <Pressable disabled={!ready || saving} onPress={() => void submit()} style={{ minHeight: 48, justifyContent: 'center', opacity: ready ? 1 : 0.6 }} accessibilityRole="button" accessibilityState={{ disabled: !ready || saving }}><AppText tone={ready ? 'primary' : 'text2'} style={emphasis(16)}>{t('common.save')}</AppText></Pressable>;
   const heading = t(initial ? 'cal.edit.title' : 'cal.new.title');
-  const author = initial && (initial.createdBy === me ? t('cal.by.me') : name);
+  const monthDay = (at: string) => formattedMonthDay(todayIn(at, timeZone), i18n.language);
+  const author = initial && authorOf(initial, me), editor = initial && editorOf(initial, me);
   const note = (text: string, tone: 'text2' | 'danger' = 'text2') => <AppText tone={tone} variant="bodySm">{text}</AppText>;
   return <View style={{ flex: 1, backgroundColor: color.bg, paddingTop: insets.top }}>
     <View style={{ minHeight: 48, paddingHorizontal: 20 }}>{large ? <><View style={{ minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>{cancel}{saveButton}</View><AppText style={[emphasis(17), { paddingBottom: 8 }]}>{heading}</AppText></> : <View style={{ minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>{cancel}<AppText accessibilityRole="header" style={emphasis(17)}>{heading}</AppText>{saveButton}</View>}</View>
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 40, gap: 14 }}>
+      {initial && author && <View accessible style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, paddingHorizontal: 14, backgroundColor: color.surface, borderWidth: tokens.border.outline.normal, borderColor: color[PERSON_COLOR[author]], borderRadius: tokens.radius.card }}>
+        <Avatar person={author} name={author === 'me' ? meName : name} size={40} />
+        <View style={{ flex: 1, gap: 2 }}>
+          <AppText style={[emphasis(15), { color: color[PERSON_COLOR[author]] }]}>{author === 'me' ? t('cal.detail.added.me', { date: monthDay(initial.createdAt) }) : t('cal.detail.added', { name, date: monthDay(initial.createdAt) })}</AppText>
+          {editor && <AppText tone="text2" style={{ fontSize: 13, lineHeight: 19 }}>{editor === 'me' ? t('cal.detail.edited.me', { date: monthDay(initial.updatedAt) }) : t('cal.detail.edited', { name, date: monthDay(initial.updatedAt) })}</AppText>}
+        </View>
+      </View>}
       <View style={{ gap: 6 }}><View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}><AppText style={emphasis(14)}>{t('edit.field.title')}</AppText><AppText tone={titleLength > 20 || (titleTouched && !form.title.trim()) ? 'danger' : 'text2'} style={{ fontSize: 13, lineHeight: 20 }}>{t('edit.counter', { n: titleLength, max: 20 })}</AppText></View>
         <TextField hideLabel label={t('edit.field.title')} placeholder={t('cal.field.title.ph')} value={form.title} onChangeText={(title) => setForm({ ...form, title })} onBlur={() => setTitleTouched(true)} error={titleLength > 20 ? t('edit.err.title.long') : titleTouched && !form.title.trim() ? t('edit.err.title.empty') : undefined} /></View>
       <View style={{ backgroundColor: color.surface, borderWidth: tokens.border.outline.normal, borderColor: color.divider, borderRadius: tokens.radius.card, paddingHorizontal: 14 }}>
@@ -103,7 +112,6 @@ export function EventEdit({ initial, date, me, partner, timeZone, offline, save,
         {note(t('cal.alert.note'))}
         {note(partner ? t('edit.shared.hint', { name: partner }) : t('edit.shared.hint.unpaired'))}
       </View>
-      {initial && author && <AppText tone="text2" variant="bodySm" style={emphasis(13)}>{`${t('cal.by', { name: author })} · ${formattedMonthDay(todayIn(initial.createdAt, timeZone), i18n.language)}`}</AppText>}
       {initial && <Button variant="dangerOutline" label={t('cal.delete')} disabled={offline} onPress={deleteItem} />}
     </ScrollView>
     {error && <View style={{ position: 'absolute', left: 20, right: 20, bottom: 110 }}><Toast text={t(`edit.${error}.err`)} icon="warn" onHide={hideError} /></View>}

@@ -16,7 +16,7 @@ export default function CalendarRoute() {
   if (failed || (state.offline && !snapshot)) return <V0Error offline={!failed} title={t('tab.cal')} retry={() => void refresh()} />;
   if (!snapshot) return <Screen><Skeleton label={t('state.loading')} height={72} /></Screen>;
   const partner = snapshot.members.find((member) => member.userId !== snapshot.me.userId);
-  return <View style={{ flex: 1 }}><CalendarScreen events={snapshot.events} me={snapshot.me.userId} partner={partner?.displayName ?? t('home.pending.partner')} today={todayIn(now, snapshot.space.timeZone)} offline={state.offline} syncedAt={state.lastSyncedAt} focusDate={date}
+  return <View style={{ flex: 1 }}><CalendarScreen events={snapshot.events} me={snapshot.me.userId} meName={snapshot.me.displayName ?? t('cal.by.me')} partner={partner?.displayName ?? t('home.pending.partner')} today={todayIn(now, snapshot.space.timeZone)} offline={state.offline} syncedAt={state.lastSyncedAt} focusDate={date}
     onAdd={(day) => router.push({ pathname: '/event-edit', params: { date: day } })} onEvent={(event) => router.push({ pathname: '/event-edit', params: { id: event.id } })} />
     {!toastHidden && (toast === 'saved' || toast === 'deleted') && <View style={{ position: 'absolute', left: 20, right: 20, bottom: 96 }}><Toast text={t(`edit.${toast}`)} onHide={() => setToastHidden(true)} /></View>}</View>;
 }

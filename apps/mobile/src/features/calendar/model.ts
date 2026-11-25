@@ -1,9 +1,14 @@
 import type { CalendarEvent, EventAlert } from '../../lib/client';
 
-export type Author = 'me' | 'partner';
-/** One square of the month grid; `null` is a blank before the 1st so the 1st sits under its weekday (Sunday first). */
-export type DayCell = { date: string; day: number; today: boolean; dots: Author[] } | null;
-export const MAX_DOTS = 3;
+/** One of the two partners, seen from this phone. */
+export type Person = 'me' | 'partner';
+/** Which writer's events the month shows; screen state only. */
+export type Filter = 'all' | Person;
+export const PEOPLE: readonly Person[] = ['me', 'partner'];
+/** Each person's color token: their face, row bar and writer text. */
+export const PERSON_COLOR = { me: 'primary', partner: 'info' } as const satisfies Record<Person, 'primary' | 'info'>;
+/** One square of the month grid; `null` is a blank before the 1st so the 1st sits under its weekday (Sunday first). `authors` counts the day's events per writer, me first. */
+export type DayCell = { date: string; day: number; today: boolean; authors: { person: Person; n: number }[] } | null;
 export const TIMED_ALERTS: readonly EventAlert[] = ['none', 'at', '5m', '15m', '30m', '1h', '1d'];
 export const ALL_DAY_ALERTS: readonly EventAlert[] = ['none', 'at', '1d'];
 
@@ -15,7 +20,15 @@ export function shiftMonth(month: string, delta: number): string {
   return `${value.getUTCFullYear()}-${pad(value.getUTCMonth() + 1)}`;
 }
 /** Unknown writers (an account deleted since) are not me. */
-export const authorOf = (event: CalendarEvent, me: string): Author => event.createdBy === me ? 'me' : 'partner';
+const personOf = (userId: string | null, me: string): Person => userId === me ? 'me' : 'partner';
+export const authorOf = (event: CalendarEvent, me: string): Person => personOf(event.createdBy, me);
+/** Who last changed the event, only when that is not the person who added it. */
+export function editorOf(event: CalendarEvent, me: string): Person | null {
+  const editor = event.updatedBy === null ? null : personOf(event.updatedBy, me);
+  return editor === authorOf(event, me) ? null : editor;
+}
+export const filterEvents = (events: readonly CalendarEvent[], me: string, filter: Filter): readonly CalendarEvent[] =>
+  filter === 'all' ? events : events.filter((event) => authorOf(event, me) === filter);
 /** All-day first, then by start time, then by id so both phones show the same order. */
 export function compareEvents(a: CalendarEvent, b: CalendarEvent): number {
   return (a.time === null ? 0 : 1) - (b.time === null ? 0 : 1) || (a.time ?? '').localeCompare(b.time ?? '') || a.id.localeCompare(b.id);
@@ -28,7 +41,7 @@ export function eventsByDate(events: readonly CalendarEvent[]): Map<string, Cale
   }
   return byDate;
 }
-/** The grid of `month` (`YYYY-MM`) with today marked and up to three author dots a day. `today` is a date in the space time zone. */
+/** The grid of `month` (`YYYY-MM`) with today marked and each day's writers. `today` is a date in the space time zone. */
 export function monthGrid(month: string, today: string, byDate: ReadonlyMap<string, readonly CalendarEvent[]>, me: string): DayCell[] {
   const year = Number(month.slice(0, 4)), index = Number(month.slice(5, 7)) - 1;
   const blanks = new Date(Date.UTC(year, index, 1)).getUTCDay();
@@ -37,7 +50,9 @@ export function monthGrid(month: string, today: string, byDate: ReadonlyMap<stri
     ...Array.from({ length: blanks }, () => null),
     ...Array.from({ length: days }, (_, offset) => {
       const date = `${month}-${pad(offset + 1)}`;
-      return { date, day: offset + 1, today: date === today, dots: (byDate.get(date) ?? []).slice(0, MAX_DOTS).map((event) => authorOf(event, me)) };
+      const writers = (byDate.get(date) ?? []).map((event) => authorOf(event, me));
+      const authors = PEOPLE.map((person) => ({ person, n: writers.filter((writer) => writer === person).length })).filter(({ n }) => n > 0);
+      return { date, day: offset + 1, today: date === today, authors };
     }),
   ];
 }

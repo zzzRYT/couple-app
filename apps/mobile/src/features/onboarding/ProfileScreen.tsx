@@ -9,7 +9,7 @@ import type { Birthday } from '../../lib/client';
 import { BirthdayField } from './BirthdayField';
 
 type ProfileBirthday = Birthday & { year: number | null };
-function graphemes(value: string): string[] {
+export function graphemes(value: string): string[] {
   const Segmenter = (Intl as unknown as { Segmenter?: new (locale?: string, options?: { granularity: 'grapheme' }) => { segment: (value: string) => Iterable<{ segment: string }> } }).Segmenter;
   return Segmenter ? Array.from(new Segmenter(undefined, { granularity: 'grapheme' }).segment(value), (part) => part.segment) : Array.from(value);
 }
