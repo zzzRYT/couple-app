@@ -1,6 +1,8 @@
-import { Stack } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { V0_FEATURES } from '../config/features';
+import { useAppColor } from '../theme/useAppColor';
 import type { AppGate } from './appGate';
+import { useDisplayAppearance } from './preferences';
 
 /**
  * Gates whose screen is not an index route. Without a target, a screen that became guarded falls back to the open route
@@ -15,7 +17,10 @@ function gateScreen(gate: AppGate['kind']): '/set-password-prompt' | '/new-passw
 /** The root stack: each gate opens only its own screens; invite links and the auth callback stay reachable in every state. */
 export function AppStack({ gate }: { gate: AppGate['kind'] }) {
   const redirectTo = gateScreen(gate);
-  return <Stack screenOptions={{ headerShown: false }}>
+  const color = useAppColor();
+  const base = useDisplayAppearance().scheme === 'dark' ? DarkTheme : DefaultTheme;
+  // The stack draws this ground behind its screens; when a gate swaps the whole stack, it shows until the next screen slides in.
+  return <ThemeProvider value={{ ...base, colors: { ...base.colors, background: color.bg } }}><Stack screenOptions={{ headerShown: false }}>
     <Stack.Screen name="i/[code]" />
     <Stack.Screen name="invite/[code]" />
     <Stack.Screen name="auth-callback" options={{ gestureEnabled: false }} />
@@ -50,5 +55,5 @@ export function AppStack({ gate }: { gate: AppGate['kind'] }) {
     <Stack.Protected guard={gate === 'active' && V0_FEATURES.endSpace} redirectTo={redirectTo}><Stack.Screen name="settings/end-space" /></Stack.Protected>
     {/* Any signed-in state: the space may end (realtime) while the deletion is in flight, and the screen must stay mounted. */}
     <Stack.Protected guard={gate === 'active' || gate === 'needsOnboardingChoice' || gate === 'ended'} redirectTo={redirectTo}><Stack.Screen name="settings/delete-account" /><Stack.Screen name="settings/reset-password" /></Stack.Protected>
-  </Stack>;
+  </Stack></ThemeProvider>;
 }
