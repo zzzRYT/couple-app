@@ -24,6 +24,15 @@ describe('bottom sheet motion', () => {
     expect(StyleSheet.flatten(screen.getByTestId('sheet-scrim').props.style).transform).toBeUndefined();
   });
 
+  it('paints the scrim from the theme token, which never equals the page background it dims', async () => {
+    const screen = await renderWithI18n(sheet(true));
+    expect(StyleSheet.flatten(screen.getByTestId('sheet-scrim').props.style).backgroundColor).toBe(tokens.color.app.light.normal.scrim);
+    for (const scheme of ['light', 'dark'] as const) for (const mode of ['normal', 'highContrast'] as const) {
+      const { scrim, bg } = tokens.color.app[scheme][mode];
+      expect(scrim.slice(0, 7)).not.toBe(bg);
+    }
+  });
+
   it('fades without sliding under Reduce Motion', async () => {
     mockReduced = true;
     const screen = await renderWithI18n(sheet(true));

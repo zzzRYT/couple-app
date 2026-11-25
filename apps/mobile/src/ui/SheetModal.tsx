@@ -2,17 +2,18 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { tokens } from '../theme/tokens';
+import { useAppColor } from '../theme/useAppColor';
 import { useReducedMotion } from './motion';
 
 const TRANSITION_MS = tokens.motion.transitionMs;
-export const SCRIM = 'rgba(43,35,32,0.5)';
 
 /**
  * Bottom-anchored modal where the scrim stays put and fades while only the sheet slides. The native `slide` animation
  * moves the whole modal, scrim included, so the Modal itself never animates. Reduced motion drops the slide and keeps the fade.
  */
-export function SheetModal({ visible, onClose, dismissLabel, scrim = SCRIM, children }: { visible: boolean; onClose: () => void; dismissLabel: string; scrim?: string; children: ReactNode }) {
+export function SheetModal({ visible, onClose, dismissLabel, children }: { visible: boolean; onClose: () => void; dismissLabel: string; children: ReactNode }) {
   const reduced = useReducedMotion();
+  const { scrim } = useAppColor();
   const { height } = useWindowDimensions();
   const progress = useSharedValue(0);
   const [leaving, setLeaving] = useState(false);
