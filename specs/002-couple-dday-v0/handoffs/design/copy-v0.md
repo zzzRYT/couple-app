@@ -1,6 +1,6 @@
 # V0 copy (ko / en / ja) — all V0 copy keys
 
-Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1795615498-516b`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
+Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1795646600-627a`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
 
 **Brand names**: the boards draw the app as 모피루 / Mopiru / モピル and the mascot as 모피 / Mopi / モピ. The owner has since decided (spec D-08, 2026-11-02): app **아룸 / Aroom / アルーム**, mascot **아루미 / Aroomi / アルーミ**. The table below keeps the board text verbatim; in the app only `app.name` and `mascot.name` hold the names, every other value references them with i18next nesting, and the Korean particle after 아룸 becomes 을/이/은/과/으로 (e.g. `widget.none.title` → `$t(app.name)을 시작해요`). See `../H02-v0-shell-home.md` §6.
 
@@ -532,7 +532,12 @@ sections: 이 화면의 문구
 | `cal.by.me` | 나 | Me | 自分 | 신규 · EN·JA 초안 |
 | `cal.by` | {name} 작성 | Added by {name} | {name}が追加 | 신규 · EN·JA 초안 |
 | `cal.a11y.day` | {date}, 일정 {n}개 | {date}, {n} events | {date}、予定{n}件 | 신규 · EN·JA 초안 |
-| `cal.a11y.event` | {time}, {title}, {name} | {time}, {title}, {name} | {time}、{title}、{name} | 신규 · EN·JA 초안 |
+| `cal.a11y.event` | {time}, {title}, {owner}, {name} | {time}, {title}, {owner}, {name} | {time}、{title}、{owner}、{name} | 신규 · EN·JA 초안 |
+| `cal.owner` | 누구 일정이에요? | Whose plan is it? | 誰の予定ですか？ | 신규 · EN·JA 초안 |
+| `cal.owner.together` | 함께 | Together | ふたり | 신규 · EN·JA 초안 |
+| `cal.owner.mine` | 내 일정 | My plan | 自分の予定 | 신규 · EN·JA 초안 |
+| `cal.owner.partner` | {name}님 일정 | {name}'s plan | {name}さんの予定 | 신규 · EN·JA 초안 |
+| `cal.owner.together.long` | 함께하는 일정 | Our plan together | ふたりの予定 | 신규 · EN·JA 초안 |
 | `cal.a11y.day.by` | {date}, 일정 {n}개, {names} | {date}, {n} events, {names} | {date}、予定{n}件、{names} | 신규 · EN·JA 초안 |
 | `cal.added.me` | 내가 추가 | Added by me | 自分が追加 | 신규 · EN·JA 초안 |
 | `cal.added` | {name}님이 추가 | Added by {name} | {name}さんが追加 | 신규 · EN·JA 초안 |
@@ -543,9 +548,10 @@ sections: 이 화면의 문구
 | `cal.detail.edited.me` | 마지막 수정: 나 · {date} | Last edited by you · {date} | 最終編集：自分 · {date} | 신규 · EN·JA 초안 |
 | `cal.detail.edited` | 마지막 수정: {name}님 · {date} | Last edited by {name} · {date} | 最終編集：{name}さん · {date} | 신규 · EN·JA 초안 |
 | `cal.filter.all` | 모두 | All | すべて | 신규 · EN·JA 초안 |
-| `cal.filter.a11y` | 누가 추가한 일정을 볼지 | Whose events to show | 誰が追加した予定を表示するか | 신규 · EN·JA 초안 |
-| `cal.empty.me` | 이날 내가 추가한 일정은 없어요 | You added nothing for this day | この日に自分が追加した予定はありません | 신규 · EN·JA 초안 |
-| `cal.empty.partner` | 이날 {name}님이 추가한 일정은 없어요 | {name} added nothing for this day | この日に{name}さんが追加した予定はありません | 신규 · EN·JA 초안 |
+| `cal.filter.a11y` | 누구 일정을 볼지 | Whose plans to show | 誰の予定を表示するか | 신규 · EN·JA 초안 |
+| `cal.empty.me` | 이날 내 일정은 없어요 | No plans of yours this day | この日の自分の予定はありません | 신규 · EN·JA 초안 |
+| `cal.empty.partner` | 이날 {name}님 일정은 없어요 | No plans of {name}'s this day | この日の{name}さんの予定はありません | 신규 · EN·JA 초안 |
+| `cal.empty.together` | 이날 함께하는 일정은 없어요 | No plans together this day | この日のふたりの予定はありません | 신규 · EN·JA 초안 |
 | `cal.new.title` | 새 일정 | New event | 新しい予定 | 신규 · EN·JA 초안 |
 | `cal.edit.title` | 일정 편집 | Edit event | 予定を編集 | 신규 · EN·JA 초안 |
 | `cal.field.title.ph` | 예: 저녁 데이트 | e.g. Dinner date | 例：ディナーデート | 신규 · EN·JA 초안 |

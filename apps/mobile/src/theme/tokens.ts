@@ -48,6 +48,7 @@ export const tokens = {
           "warnBg": "#FFEFC4",
           "info": "#2D5E86",
           "infoBg": "#E1EDF5",
+          "together": "#7A3D78",
           "focus": "#2D5E86",
           "bw": 2,
           "scrim": "#2B232080"
@@ -72,6 +73,7 @@ export const tokens = {
           "warnBg": "#FFEFC4",
           "info": "#1D4A6E",
           "infoBg": "#E1EDF5",
+          "together": "#5C2459",
           "focus": "#1D4A6E",
           "bw": 3,
           "scrim": "#1F140D99"
@@ -98,6 +100,7 @@ export const tokens = {
           "warnBg": "#40361A",
           "info": "#9CC6E4",
           "infoBg": "#25364A",
+          "together": "#D9A5D6",
           "focus": "#9CC6E4",
           "bw": 2,
           "scrim": "#000000B3"
@@ -122,6 +125,7 @@ export const tokens = {
           "warnBg": "#40361A",
           "info": "#B9DBF2",
           "infoBg": "#25364A",
+          "together": "#EDC6EA",
           "focus": "#B9DBF2",
           "bw": 3,
           "scrim": "#000000CC"
