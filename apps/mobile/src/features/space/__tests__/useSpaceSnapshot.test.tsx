@@ -78,3 +78,16 @@ it('keeps an expired lease visible from the realtime hint so the partner can con
   await act(async () => { realtime.emit('space-1', { event: 'session', payload: { sessionId: 's1', status: 'released' } }); });
   expect(hook.result.current.state.snapshot?.promptSession).toBeNull();
 });
+
+it('a signed-out start asks for no space, so signing in opens it without the load error first', async () => {
+  let signedIn = false;
+  const mySpace = jest.fn(async () => { if (!signedIn) throw new Error('not signed in'); return { active: { spaceId: 'space-1' }, ended: null }; });
+  const realtime = memoryRealtime();
+  const hook = await renderHook(({ userId }: { userId: string | null }) => useSpaceSnapshot({ client: { mySpace, snapshot: async () => snapshotFixture() }, realtime, userId }), { initialProps: { userId: null } });
+  await act(async () => {});
+  expect(hook.result.current.entry).toBe('loading');
+  signedIn = true;
+  await hook.rerender({ userId: 'me' });
+  expect(hook.result.current.entry).not.toBe('error');
+  await waitFor(() => expect(hook.result.current.entry).toBe('active'));
+});
