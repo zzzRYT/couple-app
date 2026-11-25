@@ -25,13 +25,14 @@ appId: com.jinjinstar.aroom.dev
     timeout: 10000
 - tapOn: "예: 저녁 데이트"
 - inputText: "저녁 데이트"
-# hideKeyboard can send the return key; the sheet stays open either way.
-- hideKeyboard
-# Rows read as "<label>, <value>"; the alert row sits below the fold on a 6.3-inch screen.
+# A fresh simulator shows a one-time keyboard tip over the sheet.
+- tapOn:
+    text: "Continue|계속"
+    optional: true
+# No hideKeyboard: on iOS it taps outside the keyboard and can open a row. Opening a picker dismisses the keyboard.
 - tapOn: "종료, 없음"
 - tapOn: "완료"
 - assertVisible: "종료, 오후 8:00"
-- hideKeyboard
 - scrollUntilVisible:
     element: "알림, 없음"
     direction: DOWN
@@ -39,3 +40,6 @@ appId: com.jinjinstar.aroom.dev
 - tapOn: "30분 전"
 - assertVisible: "알림, 30분 전"
 - assertVisible: "알림은 두 사람의 기기에서 모두 울려요."
+- scrollUntilVisible:
+    element: "누구 일정이에요?"
+    direction: UP
