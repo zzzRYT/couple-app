@@ -1,5 +1,5 @@
 import { AppError } from '../_shared/errors.ts';
-import { createHandler, defaultDeps, json, route, str, uuidParam, type Deps } from '../_shared/http.ts';
+import { createHandler, defaultDeps, json, route, str, UUID, uuidParam, type Deps } from '../_shared/http.ts';
 import { parseCalendarDate } from '../_shared/dday.ts';
 
 function calendarDate(value: unknown): string {
@@ -7,13 +7,32 @@ function calendarDate(value: unknown): string {
   if (parseCalendarDate(date) === null) throw new AppError('INVALID_REQUEST');
   return date;
 }
+const count = (value: string) => [...new Intl.Segmenter('ko', { granularity: 'grapheme' }).segment(value)].length;
+function title(value: unknown): string {
+  if (typeof value !== 'string') throw new AppError('INVALID_REQUEST');
+  const trimmed = value.trim();
+  if (!trimmed || count(trimmed) > 20 || [...trimmed].length > 40) throw new AppError('INVALID_REQUEST');
+  return trimmed;
+}
 function anniversaryBody(body: Record<string, unknown>) {
-  if (typeof body.title !== 'string' || (body.memo !== null && typeof body.memo !== 'string')) throw new AppError('INVALID_REQUEST');
-  const title = body.title.trim();
-  const count = (value: string) => [...new Intl.Segmenter('ko', { granularity: 'grapheme' }).segment(value)].length;
-  if (!title || count(title) > 20 || [...title].length > 40 || (typeof body.memo === 'string' && (count(body.memo) > 100 || [...body.memo].length > 200))) throw new AppError('INVALID_REQUEST');
+  if (body.memo !== null && typeof body.memo !== 'string') throw new AppError('INVALID_REQUEST');
+  const p_title = title(body.title);
+  if (typeof body.memo === 'string' && (count(body.memo) > 100 || [...body.memo].length > 200)) throw new AppError('INVALID_REQUEST');
   if (body.repeat !== 'yearly' && body.repeat !== 'once') throw new AppError('INVALID_REQUEST');
-  return { p_title: title, p_memo: body.memo, p_date: calendarDate(body.date), p_repeat: body.repeat };
+  return { p_title, p_memo: body.memo, p_date: calendarDate(body.date), p_repeat: body.repeat };
+}
+function clockTime(value: unknown): string | null {
+  if (value === null) return null;
+  if (typeof value !== 'string' || !/^([01]\d|2[0-3]):[0-5]\d$/.test(value)) throw new AppError('INVALID_REQUEST');
+  return value;
+}
+function eventBody(body: Record<string, unknown>) {
+  const p_time = clockTime(body.time), p_end_time = clockTime(body.endTime);
+  if (p_end_time !== null && (p_time === null || p_end_time <= p_time)) throw new AppError('INVALID_REQUEST');
+  const alerts = p_time === null ? ['none', 'at', '1d'] : ['none', 'at', '5m', '15m', '30m', '1h', '1d'];
+  if (!alerts.includes(body.alert as string)) throw new AppError('INVALID_REQUEST');
+  if (body.ownerId !== null && (typeof body.ownerId !== 'string' || !UUID.test(body.ownerId))) throw new AppError('INVALID_REQUEST');
+  return { p_title: title(body.title), p_date: calendarDate(body.date), p_time, p_end_time, p_alert: body.alert, p_owner: body.ownerId };
 }
 function presetId(value: unknown): string | null {
   if (value === undefined || value === null) return null;
@@ -65,6 +84,14 @@ export function spacesHandler(deps: Deps) {
       deps.db.rpc('update_custom_anniversary', { actor: userId, target: uuidParam(params.spaceId), p_id: uuidParam(params.anniversaryId), p_expected_version: expectedVersion(body.expectedVersion), ...anniversaryBody(body) })),
     route('DELETE', '/spaces/:spaceId/anniversaries/:anniversaryId', async ({ userId, params, body, deps }) => {
       await deps.db.rpc('delete_custom_anniversary', { actor: userId, target: uuidParam(params.spaceId), p_id: uuidParam(params.anniversaryId), p_expected_version: expectedVersion(body.expectedVersion) });
+      return new Response(null, { status: 204 });
+    }),
+    route('POST', '/spaces/:spaceId/events', async ({ userId, params, body, deps }) =>
+      json(await deps.db.rpc('create_space_event', { actor: userId, target: uuidParam(params.spaceId), ...eventBody(body) }), 201)),
+    route('PATCH', '/spaces/:spaceId/events/:eventId', ({ userId, params, body, deps }) =>
+      deps.db.rpc('update_space_event', { actor: userId, target: uuidParam(params.spaceId), p_id: uuidParam(params.eventId), p_expected_version: expectedVersion(body.expectedVersion), ...eventBody(body) })),
+    route('DELETE', '/spaces/:spaceId/events/:eventId', async ({ userId, params, body, deps }) => {
+      await deps.db.rpc('delete_space_event', { actor: userId, target: uuidParam(params.spaceId), p_id: uuidParam(params.eventId), p_expected_version: expectedVersion(body.expectedVersion) });
       return new Response(null, { status: 204 });
     }),
     route('PATCH', '/spaces/:spaceId/time-zone', ({ userId, params, body, deps }) => {

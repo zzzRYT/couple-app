@@ -1,4 +1,5 @@
 import { computeAnniversaries, type AnniversaryInput, type Occurrence } from '../../lib/anniversaries';
+import type { CalendarEvent, EventAlert } from '../../lib/client';
 import { parseCalendarDate } from '../../lib/dday';
 import { occurrenceTitle } from '../anniversaries/format';
 import type { Early, NotifyPrefs } from './preferences';
@@ -80,4 +81,31 @@ export function planNotifications(input: AnniversaryInput, prefs: NotifyPrefs, t
     extra = planned.size >= max;
   }
   return [...planned.values()].sort((a, b) => a.fireAt.localeCompare(b.fireAt) || a.id.localeCompare(b.id)).slice(0, max);
+}
+
+/** What an alert depends on; the sync key carries exactly these. */
+export type EventAlertInput = Pick<CalendarEvent, 'id' | 'title' | 'date' | 'time' | 'alert'>;
+const ALERT_MINUTES: Record<Exclude<EventAlert, 'none'>, number> = { at: 0, '5m': 5, '15m': 15, '30m': 30, '1h': 60, '1d': 1440 };
+/** An all-day event has no start, so its alert rings at this wall time on the day or the day before. */
+export const ALL_DAY_ALERT_TIME = '09:00';
+function eventBody({ time, alert }: EventAlertInput, t: Translate): string {
+  if (alert === '1d') return t('cal.notify.tomorrow');
+  if (time === null) return t('cal.notify.today');
+  return alert === 'at' ? t('cal.notify.now') : alert === '1h' ? t('cal.notify.hour') : t('cal.notify.min', { n: ALERT_MINUTES[alert as '5m' | '15m' | '30m'] });
+}
+/**
+ * Calendar alerts for this device, in the space time zone. The id carries everything that moves the alert, so editing an event
+ * replaces its notification and deleting it cancels it through the same diff as the anniversary reminders.
+ */
+export function planEventNotifications(events: readonly EventAlertInput[], timeZone: string, t: Translate, nowIso: string): PlannedNotification[] {
+  const now = Date.parse(nowIso);
+  return events.flatMap((event) => {
+    if (event.alert === 'none') return [];
+    const fireAt = event.time === null
+      ? zonedInstant(event.alert === '1d' ? new Date(parseCalendarDate(event.date)! - DAY_MS).toISOString().slice(0, 10) : event.date, ALL_DAY_ALERT_TIME, timeZone)
+      : zonedInstant(event.date, event.time, timeZone) - ALERT_MINUTES[event.alert] * 60_000;
+    if (fireAt <= now) return [];
+    const id = `v0:event:${event.id}:${event.date}:${event.time ?? 'day'}:${event.alert}`;
+    return [{ id, fireAt: new Date(fireAt).toISOString(), title: event.title, body: eventBody(event, t), data: { v0: true as const, key: `event:${event.id}` } }];
+  });
 }

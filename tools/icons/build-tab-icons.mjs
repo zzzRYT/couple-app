@@ -10,6 +10,8 @@ import sharp from 'sharp';
 const out = fileURLToPath(new URL('../../apps/mobile/assets/tabs/', import.meta.url));
 const glyphs = {
   home: '<path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>',
+  // From the V0-13 board (design/canvas/project/V0-13-calendar.dc.html).
+  calendar: '<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>',
   anniversaries: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="M12 18s-3-1.9-3-3.8a1.5 1.5 0 0 1 3-.6 1.5 1.5 0 0 1 3 .6c0 1.9-3 3.8-3 3.8z"/>',
   settings: '<path d="M10.3 2.8h3.4l.5 2.2a7.4 7.4 0 0 1 1.7 1l2.1-.8 1.7 3-1.6 1.6a7.5 7.5 0 0 1 0 2l1.6 1.6-1.7 3-2.1-.8a7.4 7.4 0 0 1-1.7 1l-.5 2.2h-3.4l-.5-2.2a7.4 7.4 0 0 1-1.7-1l-2.1.8-1.7-3 1.6-1.6a7.5 7.5 0 0 1 0-2L4.3 8.2l1.7-3 2.1.8a7.4 7.4 0 0 1 1.7-1z"/><circle cx="12" cy="11" r="3"/>',
 };
