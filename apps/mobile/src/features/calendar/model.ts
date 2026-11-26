@@ -1,3 +1,4 @@
+import { occurrencesBetween, type AnniversaryInput, type Occurrence } from '../../lib/anniversaries';
 import type { CalendarEvent, EventAlert } from '../../lib/client';
 
 /** One of the two partners, seen from this phone. */
@@ -41,6 +42,16 @@ export function eventsByDate(events: readonly CalendarEvent[]): Map<string, Cale
   for (const event of [...events].sort(compareEvents)) {
     const day = byDate.get(event.date);
     if (day) day.push(event); else byDate.set(event.date, [event]);
+  }
+  return byDate;
+}
+/** The anniversaries that fall in `month` (`YYYY-MM`), by date, in the anniversary list's order. */
+export function anniversariesByDate(input: AnniversaryInput, month: string): Map<string, Occurrence[]> {
+  const byDate = new Map<string, Occurrence[]>();
+  // `-31` bounds every month as a string, even short ones.
+  for (const item of occurrencesBetween(input, `${month}-01`, `${month}-31`)) {
+    const day = byDate.get(item.date);
+    if (day) day.push(item); else byDate.set(item.date, [item]);
   }
   return byDate;
 }

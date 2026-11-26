@@ -1,5 +1,5 @@
 import { eventFixture } from '../../../test/fixtures';
-import { alertFor, editorOf, eventsByDate, filterEvents, monthGrid, ownerOf, shiftMonth } from '../model';
+import { alertFor, anniversariesByDate, editorOf, eventsByDate, filterEvents, monthGrid, ownerOf, shiftMonth } from '../model';
 
 const calendarEvent = (overrides: Parameters<typeof eventFixture>[0]) => eventFixture({ date: '2026-12-03', ...overrides });
 
@@ -32,6 +32,20 @@ it('V0-F19-AC-04 names the last editor only when it is the other partner, and ke
 it('V0-F19-AC-02 sorts a day all-day first, then by start time, then by id', () => {
   const events = [calendarEvent({ id: 'late', time: '19:00' }), calendarEvent({ id: 'z' }), calendarEvent({ id: 'early', time: '08:00' }), calendarEvent({ id: 'a' }), calendarEvent({ id: 'other', date: '2026-12-04' })];
   expect(eventsByDate(events).get('2026-12-03')!.map((event) => event.id)).toEqual(['a', 'z', 'early', 'late']);
+});
+
+it('V0-F19-AC-08 places each anniversary on its day in any month, by the D-day rules', () => {
+  const input = {
+    startDate: '2024-02-29', timeZone: 'Asia/Seoul', me: { birthday: { month: 3, day: 1 } }, partner: { birthday: { month: 2, day: 29 } },
+    customs: [{ id: 'met', title: 'Met', date: '2023-02-10', repeat: 'yearly' as const }, { id: 'trip', title: 'Trip', date: '2031-02-20', repeat: 'once' as const }],
+  };
+  const keys = (month: string) => Object.fromEntries([...anniversariesByDate(input, month)].map(([date, items]) => [date, items.map((item) => item.key)]));
+  expect(keys('2031-02')).toEqual({
+    '2031-02-10': ['custom:met:2031'], '2031-02-14': ['season:valentine:2031'], '2031-02-20': ['custom:trip'], '2031-02-28': ['y7', 'bday:partner:2031'],
+  });
+  expect(keys('2024-02')).toEqual({ '2024-02-10': ['custom:met:2024'], '2024-02-29': ['bday:partner:2024'] });
+  expect(keys('2031-03')['2031-03-03']).toBeUndefined();
+  expect(keys('2032-02')['2032-02-20']).toBeUndefined();
 });
 
 it('moves across years and resets an alert all-day events cannot use', () => {
