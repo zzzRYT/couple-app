@@ -7,6 +7,7 @@ import { useAppColor } from '../../theme/useAppColor';
 /* eslint-disable @typescript-eslint/no-require-imports -- Metro bundles images through require, and the app declares no image module types */
 const tabIcons = {
   home: { default: require('../../../assets/tabs/home.png'), selected: require('../../../assets/tabs/home-selected.png') },
+  calendar: { default: require('../../../assets/tabs/calendar.png'), selected: require('../../../assets/tabs/calendar-selected.png') },
   anniversaries: { default: require('../../../assets/tabs/anniversaries.png'), selected: require('../../../assets/tabs/anniversaries-selected.png') },
   settings: { default: require('../../../assets/tabs/settings.png'), selected: require('../../../assets/tabs/settings-selected.png') },
 };
@@ -16,12 +17,13 @@ export default function TabLayout() {
   const { t } = useTranslation();
   const color = useAppColor();
   const path = usePathname();
-  const label = (key: string, n: number, selected: boolean) => t('a11y.tab', { name: t(key), total: 3, n, sel: selected ? t('a11y.tab.sel') : '' });
+  const label = (key: string, n: number, selected: boolean) => t('a11y.tab', { name: t(key), total: 4, n, sel: selected ? t('a11y.tab.sel') : '' });
   return (
     <NativeTabs tintColor={color.primary} iconColor={color.text2} labelStyle={{ color: color.text2 }}>
       <NativeTabs.Trigger name="home" accessibilityLabel={label('tab.home', 1, path === '/home')}><NativeTabs.Trigger.Label>{t('tab.home')}</NativeTabs.Trigger.Label><NativeTabs.Trigger.Icon src={tabIcons.home} renderingMode="template" drawable="home" /></NativeTabs.Trigger>
-      <NativeTabs.Trigger name="anniversaries/index" accessibilityLabel={label('tab.anniv', 2, path.startsWith('/anniversaries'))}><NativeTabs.Trigger.Label>{t('tab.anniv')}</NativeTabs.Trigger.Label><NativeTabs.Trigger.Icon src={tabIcons.anniversaries} renderingMode="template" drawable="calendar" /></NativeTabs.Trigger>
-      <NativeTabs.Trigger name="settings/index" accessibilityLabel={label('tab.settings', 3, path.startsWith('/settings'))}><NativeTabs.Trigger.Label>{t('tab.settings')}</NativeTabs.Trigger.Label><NativeTabs.Trigger.Icon src={tabIcons.settings} renderingMode="template" drawable="settings" /></NativeTabs.Trigger>
+      <NativeTabs.Trigger name="calendar/index" accessibilityLabel={label('tab.cal', 2, path.startsWith('/calendar'))}><NativeTabs.Trigger.Label>{t('tab.cal')}</NativeTabs.Trigger.Label><NativeTabs.Trigger.Icon src={tabIcons.calendar} renderingMode="template" drawable="calendar" /></NativeTabs.Trigger>
+      <NativeTabs.Trigger name="anniversaries/index" accessibilityLabel={label('tab.anniv', 3, path.startsWith('/anniversaries'))}><NativeTabs.Trigger.Label>{t('tab.anniv')}</NativeTabs.Trigger.Label><NativeTabs.Trigger.Icon src={tabIcons.anniversaries} renderingMode="template" drawable="favorite" /></NativeTabs.Trigger>
+      <NativeTabs.Trigger name="settings/index" accessibilityLabel={label('tab.settings', 4, path.startsWith('/settings'))}><NativeTabs.Trigger.Label>{t('tab.settings')}</NativeTabs.Trigger.Label><NativeTabs.Trigger.Icon src={tabIcons.settings} renderingMode="template" drawable="settings" /></NativeTabs.Trigger>
     </NativeTabs>
   );
 }

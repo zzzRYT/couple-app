@@ -1,6 +1,6 @@
 # V0 copy (ko / en / ja) — all V0 copy keys
 
-Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1794729122-0949`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
+Extracted 2026-11-02 from the copy boards `copy-v0-*` of artifact https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X (version `1795646600-627a`). KO is the source; EN and JA are drafts awaiting native review. The `status` column says whether a key is new (신규), reuses an existing repo key with the same text (재사용 · 기존 키 …), or changes an existing key's text (변경). `⏎` marks a line break.
 
 **Brand names**: the boards draw the app as 모피루 / Mopiru / モピル and the mascot as 모피 / Mopi / モピ. The owner has since decided (spec D-08, 2026-11-02): app **아룸 / Aroom / アルーム**, mascot **아루미 / Aroomi / アルーミ**. The table below keeps the board text verbatim; in the app only `app.name` and `mascot.name` hold the names, every other value references them with i18next nesting, and the Korean particle after 아룸 becomes 을/이/은/과/으로 (e.g. `widget.none.title` → `$t(app.name)을 시작해요`). See `../H02-v0-shell-home.md` §6.
 
@@ -28,7 +28,6 @@ sections: 이 화면의 문구
 | `anniv.years` | {n}주년 | {n}-year anniversary | {n}周年 | 재사용 · 기존 키 milestone.label.anniv |
 | `anniv.birthday` | {name} 생일 | {name}'s birthday | {name}の誕生日 | 신규 · EN·JA 초안 |
 | `anniv.birthday.me` | 내 생일 | My birthday | 私の誕生日 | 신규 · EN·JA 초안 |
-| `anniv.playful.toggle` | 재미있는 기념일 보기 | Show playful days | 楽しい記念日を表示 | 신규 · EN·JA 초안 |
 | `anniv.pepero` | 빼빼로데이 | Pepero Day | ペペロデー | 신규 · EN·JA 초안 |
 | `anniv.christmas` | 크리스마스 | Christmas | クリスマス | 신규 · EN·JA 초안 |
 | `anniv.kind.milestone` | 함께한 날 | Our milestones | ふたりの記念日 | 신규 · EN·JA 초안 |
@@ -218,6 +217,7 @@ sections: 이 화면의 문구
 | `anniv.preset.region.kr` | 한국 | Korea | 韓国 | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
 | `anniv.preset.region.jp` | 일본 | Japan | 日本 | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
 | `anniv.detail.preset.auto` | 커플 기념일이라 자동으로 넣었어요. 지우면 다시 생기지 않아요. | Added automatically as a couple day. If you delete it, it won't come back. | カップルの記念日として自動で追加しました。削除しても再び追加されません。 | 신규 · 커플 기념일 프리셋 (2026-11-11) · EN·JA 초안 |
+| `anniv.playful.toggle` | 재미있는 기념일 보기 | Show playful days | 楽しい記念日を表示 | 신규 · EN·JA 초안 · #64에서 앱에 먼저 들어간 키 |
 
 ## V0-05 기념일 편집 (`copy-v0-edit.dc.html`)
 sections: 이 화면의 문구
@@ -516,3 +516,67 @@ sections: 이 화면의 문구
 | `update.body` | App Store에서 {version} 버전으로 업데이트해 주세요. 새 기능과 고친 점이 들어 있어요. | Update to version {version} on the App Store to get the latest features and fixes. | App Storeでバージョン{version}にアップデートしてください。新しい機能と修正が入っています。 | 신규 · EN·JA 초안 |
 | `update.action` | App Store에서 업데이트 | Update on the App Store | App Storeでアップデート | 신규 · EN·JA 초안 |
 | `common.later` | 나중에 | Not now | あとで | 재사용 · 기존 키 common.later |
+
+## V0-13 달력 (`copy-v0-calendar.dc.html`)
+sections: 이 화면의 문구
+
+| key | ko | en | ja | status |
+|---|---|---|---|---|
+| `tab.cal` | 달력 | Calendar | カレンダー | 신규 · EN·JA 초안 |
+| `cal.today` | 오늘 | Today | 今日 | 신규 · EN·JA 초안 |
+| `cal.prev` | 이전 달 | Previous month | 前の月 | 신규 · EN·JA 초안 |
+| `cal.next` | 다음 달 | Next month | 次の月 | 신규 · EN·JA 초안 |
+| `cal.add` | 일정 추가 | Add event | 予定を追加 | 신규 · EN·JA 초안 |
+| `cal.empty` | 이날은 일정이 없어요 | Nothing planned for this day | この日の予定はありません | 신규 · EN·JA 초안 |
+| `cal.allDay` | 종일 | All day | 終日 | 신규 · EN·JA 초안 |
+| `cal.by.me` | 나 | Me | 自分 | 신규 · EN·JA 초안 |
+| `cal.by` | {name} 작성 | Added by {name} | {name}が追加 | 신규 · EN·JA 초안 |
+| `cal.a11y.day` | {date}, 일정 {n}개 | {date}, {n} events | {date}、予定{n}件 | 신규 · EN·JA 초안 |
+| `cal.a11y.event` | {time}, {title}, {owner}, {name} | {time}, {title}, {owner}, {name} | {time}、{title}、{owner}、{name} | 신규 · EN·JA 초안 |
+| `cal.owner` | 누구 일정이에요? | Whose plan is it? | 誰の予定ですか？ | 신규 · EN·JA 초안 |
+| `cal.owner.together` | 함께 | Together | ふたり | 신규 · EN·JA 초안 |
+| `cal.owner.mine` | 내 일정 | My plan | 自分の予定 | 신규 · EN·JA 초안 |
+| `cal.owner.partner` | {name}님 일정 | {name}'s plan | {name}さんの予定 | 신규 · EN·JA 초안 |
+| `cal.owner.together.long` | 함께하는 일정 | Our plan together | ふたりの予定 | 신규 · EN·JA 초안 |
+| `cal.a11y.day.by` | {date}, 일정 {n}개, {names} | {date}, {n} events, {names} | {date}、予定{n}件、{names} | 신규 · EN·JA 초안 |
+| `cal.added.me` | 내가 추가 | Added by me | 自分が追加 | 신규 · EN·JA 초안 |
+| `cal.added` | {name}님이 추가 | Added by {name} | {name}さんが追加 | 신규 · EN·JA 초안 |
+| `cal.edited.me` | 내가 수정 | Edited by me | 自分が編集 | 신규 · EN·JA 초안 |
+| `cal.edited` | {name}님이 수정 | Edited by {name} | {name}さんが編集 | 신규 · EN·JA 초안 |
+| `cal.detail.added.me` | 내가 추가한 일정 · {date} | You added this · {date} | 自分が追加した予定 · {date} | 신규 · EN·JA 초안 |
+| `cal.detail.added` | {name}님이 추가한 일정 · {date} | {name} added this · {date} | {name}さんが追加した予定 · {date} | 신규 · EN·JA 초안 |
+| `cal.detail.edited.me` | 마지막 수정: 나 · {date} | Last edited by you · {date} | 最終編集：自分 · {date} | 신규 · EN·JA 초안 |
+| `cal.detail.edited` | 마지막 수정: {name}님 · {date} | Last edited by {name} · {date} | 最終編集：{name}さん · {date} | 신규 · EN·JA 초안 |
+| `cal.filter.all` | 모두 | All | すべて | 신규 · EN·JA 초안 |
+| `cal.filter.a11y` | 누구 일정을 볼지 | Whose plans to show | 誰の予定を表示するか | 신규 · EN·JA 초안 |
+| `cal.empty.me` | 이날 내 일정은 없어요 | No plans of yours this day | この日の自分の予定はありません | 신규 · EN·JA 초안 |
+| `cal.empty.partner` | 이날 {name}님 일정은 없어요 | No plans of {name}'s this day | この日の{name}さんの予定はありません | 신규 · EN·JA 초안 |
+| `cal.empty.together` | 이날 함께하는 일정은 없어요 | No plans together this day | この日のふたりの予定はありません | 신규 · EN·JA 초안 |
+| `cal.new.title` | 새 일정 | New event | 新しい予定 | 신규 · EN·JA 초안 |
+| `cal.edit.title` | 일정 편집 | Edit event | 予定を編集 | 신규 · EN·JA 초안 |
+| `cal.field.title.ph` | 예: 저녁 데이트 | e.g. Dinner date | 例：ディナーデート | 신규 · EN·JA 초안 |
+| `cal.field.start` | 시작 | Starts | 開始 | 신규 · EN·JA 초안 |
+| `cal.field.end` | 종료 | Ends | 終了 | 신규 · EN·JA 초안 |
+| `cal.field.end.none` | 없음 | None | なし | 신규 · EN·JA 초안 |
+| `cal.field.end.clear` | 종료 시간 지우기 | Remove end time | 終了時刻を削除 | 신규 · EN·JA 초안 |
+| `cal.err.end` | 종료는 시작보다 늦어야 해요 | End must be after the start | 終了は開始より後にしてください | 신규 · EN·JA 초안 |
+| `cal.alert.none` | 없음 | None | なし | 신규 · EN·JA 초안 |
+| `cal.alert.at` | 일정 시작 시간 | At time of event | 予定の時刻 | 신규 · EN·JA 초안 |
+| `cal.alert.5m` | 5분 전 | 5 minutes before | 5分前 | 신규 · EN·JA 초안 |
+| `cal.alert.15m` | 15분 전 | 15 minutes before | 15分前 | 신규 · EN·JA 초안 |
+| `cal.alert.30m` | 30분 전 | 30 minutes before | 30分前 | 신규 · EN·JA 초안 |
+| `cal.alert.1h` | 1시간 전 | 1 hour before | 1時間前 | 신규 · EN·JA 초안 |
+| `cal.alert.1d` | 1일 전 | 1 day before | 1日前 | 신규 · EN·JA 초안 |
+| `cal.alert.allDay.at` | 당일 (오전 9시) | On the day (9 AM) | 当日（午前9時） | 신규 · EN·JA 초안 |
+| `cal.alert.allDay.1d` | 1일 전 (오전 9시) | 1 day before (9 AM) | 1日前（午前9時） | 신규 · EN·JA 초안 |
+| `cal.alert.note` | 알림은 두 사람의 기기에서 모두 울려요. | You both get this alert on your phones. | 通知はふたりの端末に届きます。 | 신규 · EN·JA 초안 |
+| `cal.alert.denied` | 기기 설정에서 알림이 꺼져 있어 이 기기에서는 울리지 않아요. | Notifications are off in Settings, so this phone won't ring. | 端末の設定で通知がオフのため、この端末では鳴りません。 | 신규 · EN·JA 초안 |
+| `cal.delete` | 이 일정 삭제 | Delete event | この予定を削除 | 신규 · EN·JA 초안 |
+| `cal.delete.title` | 일정을 삭제할까요? | Delete this event? | 予定を削除しますか？ | 신규 · EN·JA 초안 |
+| `cal.gone.title` | 이미 삭제된 일정이에요 | This event was already deleted | この予定はすでに削除されています | 신규 · EN·JA 초안 |
+| `cal.gone.body` | {name}님이 삭제했어요. 달력으로 돌아갈게요. | {name} deleted it. Going back to the calendar. | {name}さんが削除しました。カレンダーに戻ります。 | 신규 · EN·JA 초안 |
+| `cal.notify.now` | 지금 시작해요 | Starting now | まもなく始まります | 신규 · EN·JA 초안 |
+| `cal.notify.min` | {n}분 후에 시작해요 | Starts in {n} minutes | {n}分後に始まります | 신규 · EN·JA 초안 |
+| `cal.notify.hour` | 1시간 후에 시작해요 | Starts in 1 hour | 1時間後に始まります | 신규 · EN·JA 초안 |
+| `cal.notify.today` | 오늘 일정이에요 | Happening today | 今日の予定です | 신규 · EN·JA 초안 |
+| `cal.notify.tomorrow` | 내일 일정이에요 | Happening tomorrow | 明日の予定です | 신규 · EN·JA 초안 |

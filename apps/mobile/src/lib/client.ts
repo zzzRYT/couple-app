@@ -12,10 +12,14 @@ export type PromptSession = { sessionId: string; ownerUserId: string; expiresAt:
 export type Birthday = { month: number; day: number };
 export type CustomAnniversary = { id: string; title: string; memo: string | null; date: string; repeat: 'yearly' | 'once'; createdBy: string | null; createdAt: string; updatedBy: string | null; updatedAt: string; version: number; presetId?: string | null };
 export type AnniversaryFields = Pick<CustomAnniversary, 'title' | 'memo' | 'date' | 'repeat'>;
+/** Wall-clock times in the space time zone; no `time` means all-day, which allows only the `none`, `at` and `1d` alerts. */
+export type EventAlert = 'none' | 'at' | '5m' | '15m' | '30m' | '1h' | '1d';
+export type CalendarEvent = { id: string; title: string; date: string; time: string | null; endTime: string | null; alert: EventAlert; /** Whose plan it is; null = 함께. */ ownerId: string | null; createdBy: string | null; createdAt: string; updatedBy: string | null; updatedAt: string; version: number };
+export type EventFields = Pick<CalendarEvent, 'title' | 'date' | 'time' | 'endTime' | 'alert' | 'ownerId'>;
 export type Snapshot = {
   space: { spaceId: string; status: 'active'; anniversaryDate: string; timeZone: string; memberCount: number; updatedAt: string; invitation: { status: string; expiresAt: string } | null; anniversaryChangedBy: string | null; anniversaryChangedAt: string | null };
   features: { generation: boolean; generatedRender: boolean }; versionNumber: number; sceneDocument: SceneDocument; roomPresentation: RoomPresentation; roomThemeDocument: RoomThemeDocument;
-  promptSession: PromptSession | null; catalogVersion: number | string; serverTime: string; members: { userId: string; aiConsentState: 'not_given' | 'granted' | 'revoked'; displayName: string | null; birthday: Birthday | null; hasBirthday: boolean }[]; me: { userId: string; displayName: string | null; birthday: (Birthday & { year: number | null }) | null }; anniversaries: CustomAnniversary[];
+  promptSession: PromptSession | null; catalogVersion: number | string; serverTime: string; members: { userId: string; aiConsentState: 'not_given' | 'granted' | 'revoked'; displayName: string | null; birthday: Birthday | null; hasBirthday: boolean }[]; me: { userId: string; displayName: string | null; birthday: (Birthday & { year: number | null }) | null }; anniversaries: CustomAnniversary[]; events: CalendarEvent[];
 };
 export type HomeCover = { status: 'none' | 'ready'; version: number; signedUrl?: string; signedUrlExpiresAt?: string; crop?: { x: number; y: number; width: number; height: number }; uploadedBy: string | null; updatedAt: string | null };
 export type MySpace = { active: { spaceId: string } | null; ended: { kind: 'ended' | 'disconnect' | 'account_deleted'; by: 'me' | 'partner'; at: string } | null };
@@ -34,7 +38,8 @@ export function createClient(api: Api) {
   return {
     createSpace: (anniversaryDate: string, timeZone: string) => api.json<{ spaceId: string; memberCount: number }>(routes.createSpace(), { method: 'POST', body: { anniversaryDate, timeZone } }),
     mySpace: () => api.json<MySpace>(routes.mySpace()),
-    snapshot: (spaceId: string) => api.json<Snapshot>(routes.snapshot(spaceId)),
+    // A server without the calendar migration sends no events.
+    snapshot: async (spaceId: string) => { const snapshot = await api.json<Snapshot>(routes.snapshot(spaceId)); return { ...snapshot, events: snapshot.events ?? [] }; },
     endSpace: (spaceId: string) => api.json<{ status: 'ended' }>(routes.endSpace(spaceId), { method: 'POST', body: { confirm: true } }),
     /** The screen says "disconnect"; the contract endpoint is still `block`. */
     disconnect: (spaceId: string) => api.json<{ status: 'ended' }>(routes.disconnect(spaceId), { method: 'POST', body: { confirm: true } }),
@@ -43,6 +48,9 @@ export function createClient(api: Api) {
     updateAnniversary: (spaceId: string, anniversaryDate: string, expectedUpdatedAt: string) => api.json<{ anniversaryDate: string; updatedAt: string; milestonesReset: string[] }>(routes.anniversary(spaceId), { method: 'PATCH', body: { anniversaryDate, expectedUpdatedAt } }),
     createAnniversary: (spaceId: string, fields: AnniversaryFields & { presetId?: string }, idempotencyKey: string) => api.json<CustomAnniversary>(routes.anniversaries(spaceId), { method: 'POST', body: fields, keyInBody: true, idempotencyKey }),
     updateAnniversaryItem: (spaceId: string, id: string, fields: AnniversaryFields, expectedVersion: number, idempotencyKey: string) => api.json<CustomAnniversary>(routes.anniversaryItem(spaceId, id), { method: 'PATCH', body: { ...fields, expectedVersion }, keyInBody: true, idempotencyKey }),
+    createEvent: (spaceId: string, fields: EventFields, idempotencyKey: string) => api.json<CalendarEvent>(routes.events(spaceId), { method: 'POST', body: fields, keyInBody: true, idempotencyKey }),
+    updateEvent: (spaceId: string, id: string, fields: EventFields, expectedVersion: number, idempotencyKey: string) => api.json<CalendarEvent>(routes.eventItem(spaceId, id), { method: 'PATCH', body: { ...fields, expectedVersion }, keyInBody: true, idempotencyKey }),
+    deleteEvent: (spaceId: string, id: string, expectedVersion: number, idempotencyKey: string) => api.json<void>(routes.eventItem(spaceId, id), { method: 'DELETE', body: { expectedVersion }, keyInBody: true, idempotencyKey }),
     deleteAnniversaryItem: (spaceId: string, id: string, expectedVersion: number, idempotencyKey: string) => api.json<void>(routes.anniversaryItem(spaceId, id), { method: 'DELETE', body: { expectedVersion }, keyInBody: true, idempotencyKey }),
     updateRoomMode: (spaceId: string, mode: RoomThemeDocument['mode'], timeZone: string, expectedCurrentVersion: number) => api.json<{ versionNumber: number; mode: RoomThemeDocument['mode']; timeZone: string }>(routes.roomMode(spaceId), { method: 'PATCH', body: { mode, timeZone, expectedCurrentVersion }, keyInBody: true }),
     createInvitation: (spaceId: string) => api.json<{ invitationId: string; code: string; expiresAt: string }>(routes.createInvitation(spaceId), { method: 'POST', body: { expiresInSeconds: 86400 } }),

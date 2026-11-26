@@ -832,6 +832,24 @@
    "w": 1760,
    "x": 1840,
    "y": 9181
+  },
+  "V0-13-calendar.dc.html": {
+   "expand": "fill",
+   "h": 2820,
+   "page": "v0-calendar",
+   "title": "V0-13 커플 달력",
+   "w": 1760,
+   "x": 0,
+   "y": 0
+  },
+  "copy-v0-calendar.dc.html": {
+   "expand": "fill",
+   "h": 3350,
+   "page": "v0-calendar",
+   "title": "문구 · V0-13 달력",
+   "w": 1760,
+   "x": 1840,
+   "y": 0
   }
  },
  "createdOnFiles": {
@@ -1005,6 +1023,15 @@
    "size": "s",
    "fill": "orange",
    "page": "room"
+  },
+  "title-v0-calendar": {
+   "kind": "title1",
+   "maxW": 3600,
+   "page": "v0-calendar",
+   "text": "V0 · 달력",
+   "w": 240,
+   "x": 0,
+   "y": -300
   }
  },
  "order": [
@@ -1090,6 +1117,8 @@
   "copy-v0-anniv.dc.html",
   "V0-05-anniv-edit.dc.html",
   "copy-v0-edit.dc.html",
+  "V0-13-calendar.dc.html",
+  "copy-v0-calendar.dc.html",
   "V0-06-widgets.dc.html",
   "copy-v0-widgets.dc.html",
   "V0-07-settings.dc.html",
@@ -1117,6 +1146,10 @@
   {
    "id": "v0-anniv",
    "name": "V0 · 기념일"
+  },
+  {
+   "id": "v0-calendar",
+   "name": "V0 · 달력"
   },
   {
    "id": "v0-widgets",

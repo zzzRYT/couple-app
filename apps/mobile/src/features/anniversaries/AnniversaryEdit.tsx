@@ -20,7 +20,7 @@ import { formattedDate, formattedMonthDay, relativeDate } from './format';
 
 type Form = AnniversaryFields & { notify: 'default' | 'off'; presetId: string | null };
 const OPTIONAL_PRESETS = ANNIVERSARY_PRESETS.filter((preset) => !preset.builtIn);
-function length(value: string): number {
+export function graphemeLength(value: string): number {
   const Segmenter = (Intl as unknown as { Segmenter?: new (locale?: string, options?: { granularity: 'grapheme' }) => { segment: (input: string) => Iterable<unknown> } }).Segmenter;
   return Segmenter ? Array.from(new Segmenter(undefined, { granularity: 'grapheme' }).segment(value)).length : Array.from(value).length;
 }
@@ -35,7 +35,7 @@ export function AnniversaryEdit({ initial, customs, today, partner, offline, ini
   const [form, setForm] = useState<Form>(() => defaults(initial)); const [baseline, setBaseline] = useState<Form>(() => defaults(initial)); const [version, setVersion] = useState(initial?.version); const [saving, setSaving] = useState(false); const [error, setError] = useState<'save' | 'delete' | null>(null); const [titleTouched, setTitleTouched] = useState(false); const key = useRef(randomUUID()); const source = useRef(initial);
   const hideError = useCallback(() => setError(null), []);
   useEffect(() => { setForm((f) => ({ ...f, notify: initialNotify })); setBaseline((f) => ({ ...f, notify: initialNotify })); }, [initialNotify]);
-  const titleLength = length(form.title.trim()), memoLength = length(form.memo ?? ''); const valid = !!form.title.trim() && titleLength <= 20 && memoLength <= 100 && parseCalendarDate(form.date) !== null;
+  const titleLength = graphemeLength(form.title.trim()), memoLength = graphemeLength(form.memo ?? ''); const valid = !!form.title.trim() && titleLength <= 20 && memoLength <= 100 && parseCalendarDate(form.date) !== null;
   const dirty = JSON.stringify(form) !== JSON.stringify(baseline);
   const close = () => dirty ? Alert.alert(t('edit.discard.title'), '', [{ text: t('edit.discard.cta'), style: 'destructive', onPress: onClose }, { text: t('edit.discard.keep'), isPreferred: true }]) : onClose();
   const errorFlow = (action: 'save' | 'delete') => async (err: unknown) => {

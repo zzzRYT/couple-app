@@ -33,6 +33,7 @@ export function AppStack({ gate }: { gate: AppGate['kind'] }) {
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="anniversary/[key]" />
       <Stack.Screen name="anniversary-edit" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
+      <Stack.Screen name="event-edit" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
       <Stack.Screen name="invite" />
       <Stack.Screen name="connected" />
       <Stack.Screen name="notify-intro" options={{ gestureEnabled: false }} />
