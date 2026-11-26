@@ -1,0 +1,10 @@
+{
+  "planet.tab": "ポテト星",
+  "planet.days": "一緒に過ごして{n}日目",
+  "planet.a11y": "ポテト星、オブジェクト0個、アロミが立っています",
+  "planet.left": "左に回す",
+  "planet.right": "右に回す",
+  "planet.hint": "ドラッグして星を回そう",
+  "planet.zoomIn": "拡大",
+  "planet.zoomOut": "縮小"
+}

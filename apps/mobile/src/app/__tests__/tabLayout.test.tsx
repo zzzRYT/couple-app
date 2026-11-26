@@ -7,12 +7,13 @@ import TabLayout from '../(tabs)/_layout';
 type Asset = { testUri: string };
 type IconProps = { src?: { default: Asset; selected: Asset }; sf?: unknown; renderingMode?: string; drawable?: string };
 const mockIcons: IconProps[] = [];
+const mockTriggers: { name: string; hidden?: boolean }[] = [];
 jest.mock('expo-router', () => ({ usePathname: () => '/home' }));
 jest.mock('expo-router/native-tabs', () => {
   const NativeTabs = ({ children }: { children: ReactNode }) => children;
-  NativeTabs.Trigger = Object.assign(({ children }: { children: ReactNode }) => children, {
+  NativeTabs.Trigger = Object.assign(({ children, name, hidden }: { children: ReactNode; name: string; hidden?: boolean }) => { mockTriggers.push({ name, hidden }); return children; }, {
     Label: () => null,
-    Icon: (props: IconProps) => { mockIcons.push(props); return null; },
+    Icon: (props: IconProps) => { if (props.src) mockIcons.push(props); return null; },
   });
   return { NativeTabs };
 });
@@ -33,4 +34,9 @@ it('V0-F03-AC-05 ships every tab glyph at the 25 pt tab size for 1x, 2x and 3x s
   for (const glyph of ['home', 'home-selected', 'calendar', 'calendar-selected', 'anniversaries', 'anniversaries-selected', 'settings', 'settings-selected']) {
     expect([width(`${glyph}.png`), width(`${glyph}@2x.png`), width(`${glyph}@3x.png`)]).toEqual([25, 50, 75]);
   }
+});
+
+it('V1-NF-01 hides the planet tab in production', async () => {
+  await renderWithI18n(<TabLayout />);
+  expect(mockTriggers.find((trigger) => trigger.name === 'planet')?.hidden).toBe(true);
 });

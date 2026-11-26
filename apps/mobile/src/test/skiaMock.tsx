@@ -7,3 +7,6 @@ export const Image = (props: Record<string, unknown>) => <View testID="skia-imag
 export const Rect = (props: Record<string, unknown>) => <View testID="skia-rect" {...props} />;
 export const useImage = (source: unknown) => source ?? null;
 export const Path = (props: Record<string, unknown>) => <View testID="skia-path" {...props} />;
+
+export const LinearGradient = (props: Record<string, unknown>) => <View testID="skia-gradient" {...props} />;
+export const vec = (x: number, y: number) => ({ x, y });
