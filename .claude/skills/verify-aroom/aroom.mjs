@@ -222,6 +222,10 @@ async function partner(args) {
   if (joined.status !== 200) throw new Error(`accept invitation: ${joined.status} ${JSON.stringify(joined.json)}`);
   const profile = await api('PUT', '/functions/v1/profile/profile/member', publishable, tokens.access_token, { displayName: name, birthday: null });
   if (profile.status !== 200) throw new Error(`partner profile: ${profile.status} ${JSON.stringify(profile.json)}`);
+  if (args.includes('--photo')) {
+    const photo = await api('PUT', '/functions/v1/profile/profile/photo', publishable, tokens.access_token, { image: readFileSync(args[args.indexOf('--photo') + 1]).toString('base64') });
+    if (photo.status !== 204) throw new Error(`partner photo: ${photo.status} ${JSON.stringify(photo.json)}`);
+  }
   for (const event of events) {
     const [title, date, time, alert, whose = 'together'] = (event ?? '').split('|');
     if (!title || !/^\d{4}-\d{2}-\d{2}$/.test(date ?? '')) throw new Error('--event needs "title|YYYY-MM-DD|HH:MM or empty|alert|together, me or partner"');
@@ -303,8 +307,8 @@ const USAGE = `usage: aroom.mjs <command>
   launch [--fresh]           create/boot the verification simulator, install and start the app (--fresh: empty app data)
   session [--space DATE] [--no-open]
                              new test user on Aroom-dev (optionally with a space), signed in through the auth-callback link
-  partner [--name NAME] [--event "title|YYYY-MM-DD|HH:MM|alert|together|me|partner"]...
-                             second test user joins the last session's space (invitation + profile), optionally writing events
+  partner [--name NAME] [--photo JPEG] [--event "title|YYYY-MM-DD|HH:MM|alert|together|me|partner"]...
+                             second test user joins the last session's space (invitation + profile), optionally setting a photo and writing events
   drive <flow>               run flows/<flow>.yaml with Maestro as the last session user (MAESTRO_EMAIL, MAESTRO_PASSWORD)
   shot <feature>/<name>      screenshot to design/evidence/verify-aroom/<feature>/<name>.png
   cleanup                    delete test users, spaces and the simulator; evidence stays`;
