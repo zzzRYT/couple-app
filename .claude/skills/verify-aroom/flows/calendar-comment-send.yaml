@@ -1,0 +1,14 @@
+appId: com.jinjinstar.aroom.dev
+---
+# Continues from the open event sheet with the comment box on screen.
+- tapOn: "댓글 남기기"
+- inputText: "좋아, 퇴근하고 바로 갈게"
+- tapOn:
+    text: "Continue|계속"
+    optional: true
+- tapOn: "댓글 보내기"
+- extendedWaitUntil:
+    visible: "댓글 2"
+    timeout: 20000
+- assertVisible: ".*좋아, 퇴근하고 바로 갈게"
+- assertVisible: "댓글 삭제"
