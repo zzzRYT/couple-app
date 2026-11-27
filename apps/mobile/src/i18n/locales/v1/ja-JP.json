@@ -1,10 +1,16 @@
 {
   "planet.tab": "ポテト星",
   "planet.days": "一緒に過ごして{n}日目",
-  "planet.a11y": "ポテト星、オブジェクト0個、アロミが立っています",
+  "planet.a11y": "ポテト星、オブジェクト{n}個、アロミが立っています",
   "planet.left": "左に回す",
   "planet.right": "右に回す",
   "planet.hint": "ドラッグして星を回そう",
   "planet.zoomIn": "拡大",
-  "planet.zoomOut": "縮小"
+  "planet.zoomOut": "縮小",
+  "planet.devEntitlement": "開発用拡張 · レベル {level}",
+  "planet.devPlace": "開発用オブジェクトを置く",
+  "planet.capacity": "星がいっぱいです。次の成長を待ちましょう。",
+  "planet.noSpace": "今は置ける場所がありません。",
+  "planet.storageError": "星を保存できませんでした。もう一度お試しください。",
+  "planet.assetError": "オブジェクトを読み込めませんでした。"
 }

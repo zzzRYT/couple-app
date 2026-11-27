@@ -1,10 +1,16 @@
 {
   "planet.tab": "Planet",
   "planet.days": "Day {n} together",
-  "planet.a11y": "Potato Planet, 0 objects, Aroomi is standing",
+  "planet.a11y": "Potato Planet, {n} objects, Aroomi is standing",
   "planet.left": "Rotate left",
   "planet.right": "Rotate right",
   "planet.hint": "Drag to rotate the planet",
   "planet.zoomIn": "Zoom in",
-  "planet.zoomOut": "Zoom out"
+  "planet.zoomOut": "Zoom out",
+  "planet.devEntitlement": "Dev expansion · level {level}",
+  "planet.devPlace": "Place a test object",
+  "planet.capacity": "Your planet is full for now. Let’s wait for it to grow.",
+  "planet.noSpace": "There is no room here just yet.",
+  "planet.storageError": "Could not save your planet. Please try again.",
+  "planet.assetError": "Could not load the object."
 }

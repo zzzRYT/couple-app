@@ -1,10 +1,16 @@
 {
   "planet.tab": "감자별",
   "planet.days": "함께한 지 {n}일째",
-  "planet.a11y": "감자별, 오브젝트 0개, 아루미가 서 있어요",
+  "planet.a11y": "감자별, 오브젝트 {n}개, 아루미가 서 있어요",
   "planet.left": "왼쪽으로 돌리기",
   "planet.right": "오른쪽으로 돌리기",
   "planet.hint": "끌어서 별을 돌려 보세요",
   "planet.zoomIn": "확대",
-  "planet.zoomOut": "축소"
+  "planet.zoomOut": "축소",
+  "planet.devEntitlement": "개발용 확장 · 레벨 {level}",
+  "planet.devPlace": "개발용 오브젝트 놓기",
+  "planet.capacity": "별이 가득 찼어요. 다음 성장을 기다려 주세요.",
+  "planet.noSpace": "이 자리는 조금 좁아요. 다른 자리를 찾아볼게요.",
+  "planet.storageError": "별을 저장하지 못했어요. 잠시 후 다시 시도해 주세요.",
+  "planet.assetError": "오브젝트를 불러오지 못했어요."
 }
