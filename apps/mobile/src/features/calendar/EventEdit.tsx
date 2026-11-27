@@ -79,7 +79,7 @@ export function EventEdit({ initial, date, me, meName, partner, partnerId, timeZ
   const send = async () => {
     if (!canSend) return;
     setSending(true); setError(null);
-    try { await addComment(draft.trim(), commentKey.current); setDraft(''); commentKey.current = randomUUID(); } catch (err) { await errorFlow('comment')(err); } finally { setSending(false); }
+    try { await addComment(draft.trim(), commentKey.current); setDraft(''); commentKey.current = randomUUID(); Keyboard.dismiss(); } catch (err) { await errorFlow('comment')(err); } finally { setSending(false); }
   };
   // A NOT_FOUND here means the comment is already gone, which is what deleting wanted.
   const deleteComment = (commentId: string) => Alert.alert(t('cal.comment.delete.title'), '', [{ text: t('common.cancel'), style: 'cancel' }, { text: t('common.delete'), style: 'destructive', onPress: () => { void removeComment(commentId, randomUUID()).catch((err: unknown) => { if (!(err instanceof ApiError && err.code === 'NOT_FOUND')) setError('delete'); }); } }]);
@@ -100,7 +100,7 @@ export function EventEdit({ initial, date, me, meName, partner, partnerId, timeZ
   const note = (text: string, tone: 'text2' | 'danger' = 'text2') => <AppText tone={tone} variant="bodySm">{text}</AppText>;
   return <View style={{ flex: 1, backgroundColor: color.bg, paddingTop: insets.top }}>
     <View style={{ minHeight: 48, paddingHorizontal: 20 }}>{large ? <><View style={{ minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>{cancel}{saveButton}</View><AppText style={[emphasis(17), { paddingBottom: 8 }]}>{heading}</AppText></> : <View style={{ minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>{cancel}<AppText accessibilityRole="header" style={emphasis(17)}>{heading}</AppText>{saveButton}</View>}</View>
-    <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 40, gap: 14 }}>
+    <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 40, gap: 14 }}>
       {initial && author && <View accessible style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, paddingHorizontal: 14, backgroundColor: color.surface, borderWidth: tokens.border.outline.normal, borderColor: color[OWNER_COLOR[author]], borderRadius: tokens.radius.card }}>
         <Avatar owner={author} name={author === 'me' ? meName : name} size={40} />
         <View style={{ flex: 1, gap: 2 }}>
