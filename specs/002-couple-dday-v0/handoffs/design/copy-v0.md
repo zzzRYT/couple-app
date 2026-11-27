@@ -575,6 +575,16 @@ sections: 이 화면의 문구
 | `cal.delete.title` | 일정을 삭제할까요? | Delete this event? | 予定を削除しますか？ | 신규 · EN·JA 초안 |
 | `cal.gone.title` | 이미 삭제된 일정이에요 | This event was already deleted | この予定はすでに削除されています | 신규 · EN·JA 초안 |
 | `cal.gone.body` | {name}님이 삭제했어요. 달력으로 돌아갈게요. | {name} deleted it. Going back to the calendar. | {name}さんが削除しました。カレンダーに戻ります。 | 신규 · EN·JA 초안 |
+| `cal.comment.title` | 댓글 {n} | Comments {n} | コメント {n} | 신규 · EN·JA 초안 |
+| `cal.comment.count` | 댓글 {n} | {n} comments | コメント{n}件 | 신규 · EN·JA 초안 |
+| `cal.comment.empty` | 아직 댓글이 없어요 | No comments yet | まだコメントはありません | 신규 · EN·JA 초안 |
+| `cal.comment.ph` | 댓글 남기기 | Add a comment | コメントを書く | 신규 · EN·JA 초안 |
+| `cal.comment.send` | 댓글 보내기 | Send comment | コメントを送信 | 신규 · EN·JA 초안 |
+| `cal.comment.err.long` | 댓글은 200자까지 쓸 수 있어요 | Comments can be up to 200 characters | コメントは200文字までです | 신규 · EN·JA 초안 |
+| `cal.comment.err` | 댓글을 보내지 못했어요. 다시 시도해 주세요. | Couldn't send the comment. Please try again. | コメントを送信できませんでした。もう一度お試しください。 | 신규 · EN·JA 초안 |
+| `cal.comment.delete` | 댓글 삭제 | Delete comment | コメントを削除 | 신규 · EN·JA 초안 |
+| `cal.comment.delete.title` | 댓글을 삭제할까요? | Delete this comment? | コメントを削除しますか？ | 신규 · EN·JA 초안 |
+| `cal.comment.a11y` | {name}, {time}, {body} | {name}, {time}, {body} | {name}、{time}、{body} | 신규 · EN·JA 초안 |
 | `cal.notify.now` | 지금 시작해요 | Starting now | まもなく始まります | 신규 · EN·JA 초안 |
 | `cal.notify.min` | {n}분 후에 시작해요 | Starts in {n} minutes | {n}分後に始まります | 신규 · EN·JA 초안 |
 | `cal.notify.hour` | 1시간 후에 시작해요 | Starts in 1 hour | 1時間後に始まります | 신규 · EN·JA 초안 |

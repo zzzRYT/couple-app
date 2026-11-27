@@ -1,4 +1,4 @@
-import type { CalendarEvent, EventAlert } from '../../lib/client';
+import type { CalendarEvent, EventAlert, EventComment } from '../../lib/client';
 
 /** One of the two partners, seen from this phone. */
 export type Person = 'me' | 'partner';
@@ -23,7 +23,7 @@ export function shiftMonth(month: string, delta: number): string {
 }
 /** Unknown writers (an account deleted since) are not me. */
 const personOf = (userId: string | null, me: string): Person => userId === me ? 'me' : 'partner';
-export const authorOf = (event: CalendarEvent, me: string): Person => personOf(event.createdBy, me);
+export const authorOf = (item: Pick<CalendarEvent, 'createdBy'>, me: string): Person => personOf(item.createdBy, me);
 export const ownerOf = (event: Pick<CalendarEvent, 'ownerId'>, me: string): Owner => event.ownerId === null ? 'together' : personOf(event.ownerId, me);
 /** Who last changed the event, only when that is not the person who added it. */
 export function editorOf(event: CalendarEvent, me: string): Person | null {
@@ -43,6 +43,12 @@ export function eventsByDate(events: readonly CalendarEvent[]): Map<string, Cale
     if (day) day.push(event); else byDate.set(event.date, [event]);
   }
   return byDate;
+}
+/** How many comments each event has, by event id. */
+export function commentCounts(comments: readonly EventComment[]): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const comment of comments) counts.set(comment.eventId, (counts.get(comment.eventId) ?? 0) + 1);
+  return counts;
 }
 /** The grid of `month` (`YYYY-MM`) with today marked and each day's owners. `today` is a date in the space time zone. */
 export function monthGrid(month: string, today: string, byDate: ReadonlyMap<string, readonly CalendarEvent[]>, me: string): DayCell[] {
