@@ -52,3 +52,20 @@ export async function reencodeCover(input: Uint8Array, crop: Crop): Promise<Proc
     throw new Error('COVER_INVALID_IMAGE');
   }
 }
+
+const PROFILE_PHOTO_SIDE = 512;
+/** Center-crops a JPEG to a square 512x512 JPEG; like the cover, re-encoding drops EXIF/GPS from the upload. */
+export async function reencodeProfilePhoto(input: Uint8Array): Promise<Uint8Array> {
+  const header = inspectCoverHeader(input);
+  if (header?.format !== 'image/jpeg' || header.width < 1 || header.height < 1 || header.width * header.height > MAX_PIXELS) throw new Error('PHOTO_INVALID_IMAGE');
+  try {
+    const image = await Image.decode(input);
+    if (image.width !== header.width || image.height !== header.height) throw new Error('PHOTO_INVALID_IMAGE');
+    const side = Math.min(image.width, image.height);
+    image.crop(Math.floor((image.width - side) / 2), Math.floor((image.height - side) / 2), side, side);
+    image.resize(PROFILE_PHOTO_SIDE, PROFILE_PHOTO_SIDE);
+    return await image.encodeJPEG(88);
+  } catch {
+    throw new Error('PHOTO_INVALID_IMAGE');
+  }
+}

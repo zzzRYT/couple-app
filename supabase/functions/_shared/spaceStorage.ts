@@ -10,6 +10,8 @@ export interface SpaceStorage {
 }
 /** Home cover photos live in a private bucket under `<spaceId>/…`, current object and pending-delete objects alike. */
 export const HOME_COVER_BUCKET = 'home-cover';
+/** Profile photos live in a private bucket under `<userId>/…`, so the same prefix purge removes a person's photos. */
+export const PROFILE_PHOTO_BUCKET = 'profile-photo';
 export function bucketStorage(client: SupabaseClient, bucket = HOME_COVER_BUCKET): SpaceStorage {
   async function remove(prefix: string): Promise<void> {
     for (;;) {
