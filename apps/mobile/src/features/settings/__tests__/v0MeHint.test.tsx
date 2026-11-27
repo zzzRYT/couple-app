@@ -2,7 +2,7 @@ import { renderWithI18n } from '../../../test/render';
 import { snapshotFixture } from '../../../test/fixtures';
 import MeRoute from '../../../app/settings/me';
 const mockUseSpace = jest.fn();
-jest.mock('../../space/SpaceContext', () => ({ useSpace: () => mockUseSpace() }));
+jest.mock('../../space/SpaceContext', () => ({ useSpace: () => mockUseSpace(), useOptionalSpace: () => mockUseSpace() }));
 jest.mock('../../../lib/AppContext', () => ({ useApp: () => ({ client: { saveMemberProfile: jest.fn() } }) }));
 it('V0-F12-AC-02 shows the partner birthday wait hint only while needed', async () => {
   const snapshot = snapshotFixture();

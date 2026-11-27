@@ -5,6 +5,7 @@ import { V0HomeScreen } from '../../features/home/V0HomeScreen';
 import { V0Error } from '../../features/home/states';
 import { useApp } from '../../lib/AppContext';
 import { useSpace } from '../../features/space/SpaceContext';
+import { profilesOf } from '../../features/space/profiles';
 import { useNow } from '../../lib/useNow';
 import { useMilestone } from '../../features/milestone/useMilestone';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +34,7 @@ export default function HomeRoute() {
     let active = true;
     void SecureStore.getItemAsync(key).then((seen) => {
       if (!active || (seen && Date.parse(seen) >= Date.parse(changedAt))) return;
-      setPartnerEdited({ key, changedAt, text: t('home.partnerEdited', { name: snapshot.members.find((member) => member.userId === space.anniversaryChangedBy)?.displayName ?? t('home.pending.partner'), date: formattedMonthDay(space.anniversaryDate, i18n.language) }) });
+      setPartnerEdited({ key, changedAt, text: t('home.partnerEdited', { name: profilesOf(snapshot, t).partner.name, date: formattedMonthDay(space.anniversaryDate, i18n.language) }) });
     });
     return () => { active = false; };
   }, [focused, snapshot, spaceId, userId, t, i18n.language]);

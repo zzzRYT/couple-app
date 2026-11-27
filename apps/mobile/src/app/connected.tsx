@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { useApp } from '../lib/AppContext';
 import { readNotifyPrefs } from '../features/notifications/preferences';
 import { useSpace } from '../features/space/SpaceContext';
+import { profilesOf } from '../features/space/profiles';
+import { Avatar } from '../features/calendar/Avatar';
 import { AppText, Button, Screen } from '../ui/components';
 import { CheerMascot } from '../ui/CheerMascot';
 import { Icon } from '../ui/Icon';
@@ -20,7 +22,7 @@ export default function ConnectedRoute() {
   useEffect(() => { if (spaceId && userId) { void SecureStore.setItemAsync(`v0.connected.seen.${spaceId}.${userId}`, 'true'); track('couple_connected'); } }, [spaceId, userId]);
   const snapshot = state.snapshot;
   if (!snapshot) return null;
-  const partner = snapshot.members.find((member) => member.userId !== userId)?.displayName ?? t('home.pending.partner');
+  const { me, partner: { name: partner } } = profilesOf(snapshot, t);
   const count = dayCount(snapshot.space.anniversaryDate, now, snapshot.space.timeZone);
   const n = count.ok ? count.dayCount : 0;
   const start = async () => {
@@ -31,7 +33,7 @@ export default function ConnectedRoute() {
     <View style={{ marginTop: tokens.spacing[6] }}><CheerMascot size={170} label={t('mascot.alt.cheer')} /></View>
     <AppText variant="title" align="center">{t('start.connected.title')}</AppText>
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: tokens.spacing[1] }}>
-      <AppText style={emphasis(18)}>{snapshot.me.displayName}</AppText><Icon name="heart" size={16} color={color.primary} fill={color.primary} /><AppText style={emphasis(18)}>{partner}</AppText>
+      <Avatar owner="me" name={me.name} size={40} /><AppText style={emphasis(18)}>{me.name}</AppText><Icon name="heart" size={16} color={color.primary} fill={color.primary} /><Avatar owner="partner" name={partner} size={40} /><AppText style={emphasis(18)}>{partner}</AppText>
     </View>
     <AppText tone="text2" align="center">{t('start.connected.body', { name: partner, n })}</AppText>
     <AppText variant="display" align="center">{t('dday.big', { n })}</AppText>

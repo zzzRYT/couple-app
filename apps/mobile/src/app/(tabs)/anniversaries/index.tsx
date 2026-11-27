@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { AnniversaryList } from '../../../features/anniversaries/AnniversaryList';
 import { V0Error } from '../../../features/home/states';
 import { useSpace } from '../../../features/space/SpaceContext';
+import { profilesOf } from '../../../features/space/profiles';
 import { computeAnniversaries } from '../../../lib/anniversaries';
 import { useNow } from '../../../lib/useNow';
 import { Screen, Skeleton, Toast } from '../../../ui/components';
@@ -28,5 +29,5 @@ export default function AnniversariesRoute() {
   if (!snapshot) return <Screen><Skeleton label={t('state.loading')} height={72} /></Screen>;
   const partner = snapshot.members.find((member) => member.userId !== snapshot.me.userId);
   const view = computeAnniversaries({ startDate: snapshot.space.anniversaryDate, timeZone: snapshot.space.timeZone, me: snapshot.me, partner: partner ?? null, customs: snapshot.anniversaries, includePlayful: playful }, now);
-  return <View style={{ flex: 1 }}><AnniversaryList playful={playful} onPlayful={changePlayful} playfulReady={playfulReady} view={view} filter={filter} pastOpen={pastOpen} offline={state.offline} syncedAt={state.lastSyncedAt} hasCustoms={snapshot.anniversaries.length > 0} birthdayState={!snapshot.me.birthday ? 'mine' : !partner ? 'pending' : !partner.hasBirthday ? 'wait' : 'none'} partner={partner?.displayName ?? t('home.pending.partner')} onFilter={setFilter} onPast={() => setPastOpen(!pastOpen)} onAdd={() => router.push('/anniversary-edit')} onItem={(item) => router.push({ pathname: '/anniversary/[key]', params: { key: encodeURIComponent(item.key) } })} onBirthday={() => router.push('/settings/me')} />{!toastHidden && (toast === 'saved' || toast === 'deleted') && <View style={{ position: 'absolute', left: 20, right: 20, bottom: 96 }}><Toast text={t(`edit.${toast}`)} onHide={() => setToastHidden(true)} /></View>}</View>;
+  return <View style={{ flex: 1 }}><AnniversaryList playful={playful} onPlayful={changePlayful} playfulReady={playfulReady} view={view} filter={filter} pastOpen={pastOpen} offline={state.offline} syncedAt={state.lastSyncedAt} hasCustoms={snapshot.anniversaries.length > 0} birthdayState={!snapshot.me.birthday ? 'mine' : !partner ? 'pending' : !partner.hasBirthday ? 'wait' : 'none'} partner={profilesOf(snapshot, t).partner.name} onFilter={setFilter} onPast={() => setPastOpen(!pastOpen)} onAdd={() => router.push('/anniversary-edit')} onItem={(item) => router.push({ pathname: '/anniversary/[key]', params: { key: encodeURIComponent(item.key) } })} onBirthday={() => router.push('/settings/me')} />{!toastHidden && (toast === 'saved' || toast === 'deleted') && <View style={{ position: 'absolute', left: 20, right: 20, bottom: 96 }}><Toast text={t(`edit.${toast}`)} onHide={() => setToastHidden(true)} /></View>}</View>;
 }

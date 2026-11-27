@@ -17,6 +17,7 @@ export const routes = {
   acceptInvitation: () => 'invitations/invitations/accept',
   preferences: () => 'profile/profile/preferences',
   memberProfile: () => 'profile/profile/member',
+  profilePhoto: () => 'profile/profile/photo',
   timeZone: (spaceId: string) => `spaces/spaces/${spaceId}/time-zone`,
   roomMode: (spaceId: string) => `spaces/spaces/${spaceId}/room-mode`,
   conversation: (spaceId: string) => `prompt-session/spaces/${spaceId}/prompt-conversation`,

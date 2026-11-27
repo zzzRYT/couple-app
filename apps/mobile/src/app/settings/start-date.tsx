@@ -10,6 +10,7 @@ import { dayCount, todayIn } from '../../lib/dday';
 import { useNow } from '../../lib/useNow';
 import { useApp } from '../../lib/AppContext';
 import { useSpace } from '../../features/space/SpaceContext';
+import { profilesOf } from '../../features/space/profiles';
 import { ApiError } from '../../lib/errors';
 /** V0-set-start: the change is spelled out under the date before saving, then confirmed once more (V0-set-start-confirm). */
 export default function StartDateRoute() {
@@ -17,7 +18,7 @@ export default function StartDateRoute() {
   const [date, setDate] = useState(() => fromIsoDate(snapshot?.space.anniversaryDate ?? todayIn(now, 'UTC'))); const [error, setError] = useState(false);
   if (!snapshot) return null;
   const { space } = snapshot; const value = toIsoDate(date); const check = dayCount(value, now, space.timeZone);
-  const change = t('set.start.confirm.body', { old: space.anniversaryDate.replace(/-/g, '.'), new: value.replace(/-/g, '.'), name: snapshot.members.find((m) => m.userId !== snapshot.me.userId)?.displayName ?? t('home.pending.partner') });
+  const change = t('set.start.confirm.body', { old: space.anniversaryDate.replace(/-/g, '.'), new: value.replace(/-/g, '.'), name: profilesOf(snapshot, t).partner.name });
   const save = () => Alert.alert(t('set.start.confirm.title'), change, [
     { text: t('common.cancel'), style: 'cancel' }, { text: t('set.start.confirm.cta'), isPreferred: true, onPress: () => { void client.updateAnniversary(space.spaceId, value, space.updatedAt).then(async () => { await refresh(); router.back(); }).catch(async (err: unknown) => { await refresh(); if (err instanceof ApiError && err.code === 'VERSION_CONFLICT') setDate(fromIsoDate((await client.snapshot(space.spaceId)).space.anniversaryDate)); setError(true); }); } },
   ]);
