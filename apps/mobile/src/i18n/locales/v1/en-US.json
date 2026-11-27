@@ -6,5 +6,18 @@
   "planet.right": "Rotate right",
   "planet.hint": "Drag to rotate the planet",
   "planet.zoomIn": "Zoom in",
-  "planet.zoomOut": "Zoom out"
+  "planet.zoomOut": "Zoom out",
+  "planet.a11yOne": "Potato Planet, 1 object, Aroomi is standing",
+  "planet.create": "Create an object",
+  "planet.createPrompt": "What should we put on the planet?",
+  "planet.createSend": "Create",
+  "planet.queued": "Waiting",
+  "planet.running": "Creating",
+  "planet.preview": "Preview · use the buttons or drag to rotate",
+  "planet.place": "Place on planet",
+  "planet.regenerate": "Make again",
+  "planet.failed": "Could not create",
+  "planet.rejected": "Request rejected",
+  "planet.cancelled": "Cancelled",
+  "planet.sampleNotice": "Practice sample. Your text and placement last only on this screen."
 }

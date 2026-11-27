@@ -6,5 +6,18 @@
   "planet.right": "右に回す",
   "planet.hint": "ドラッグして星を回そう",
   "planet.zoomIn": "拡大",
-  "planet.zoomOut": "縮小"
+  "planet.zoomOut": "縮小",
+  "planet.a11yOne": "ポテト星、オブジェクト1個、アロミが立っています",
+  "planet.create": "オブジェクトを作る",
+  "planet.createPrompt": "星に何を置きましょうか？",
+  "planet.createSend": "作る",
+  "planet.queued": "待機中です",
+  "planet.running": "作成中です",
+  "planet.preview": "プレビュー・ボタンかドラッグで回せます",
+  "planet.place": "星に置く",
+  "planet.regenerate": "作り直す",
+  "planet.failed": "作成できませんでした",
+  "planet.rejected": "リクエストを受け付けられません",
+  "planet.cancelled": "キャンセルしました",
+  "planet.sampleNotice": "練習用サンプルです。入力と配置はこの画面でのみ保持されます。"
 }

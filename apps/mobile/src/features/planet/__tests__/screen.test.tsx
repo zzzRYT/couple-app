@@ -7,6 +7,7 @@ let mockActive = true;
 const mockSceneUnmounted = jest.fn();
 const mockCamera = jest.fn();
 jest.mock('../../../ui/motion', () => ({ useLoopActive: () => mockActive }));
+jest.mock('../SurfaceAnchor', () => ({ SurfaceAnchor: () => null }));
 jest.mock('../PlanetScene', () => ({ PlanetScene: ({ scene }: { scene: { camera: unknown } }) => {
   mockCamera(scene.camera);
   jest.requireActual<typeof import('react')>('react').useEffect(() => () => mockSceneUnmounted(), []);
@@ -42,4 +43,21 @@ it('releases the planet scene when the screen loses focus or the app backgrounds
   await screen.rerender(<PlanetScreen {...props} />);
   expect(mockSceneUnmounted).toHaveBeenCalledTimes(1);
   mockActive = true;
+});
+
+
+it('creates a sample, previews it and places it on the planet', async () => {
+  const screen = await renderWithI18n(<PlanetScreen anniversary="2026-11-25" timeZone="Asia/Seoul" now="2026-11-26T00:00:00Z" />);
+  jest.useFakeTimers();
+  await fireEvent.press(screen.getByLabelText('오브젝트 만들기'));
+  await fireEvent.changeText(screen.getByLabelText('별에 무엇을 놓아 볼까요?'), '작은 나무');
+  await fireEvent.press(screen.getByLabelText('만들기'));
+  expect(screen.getByText('대기 중이에요')).toBeTruthy();
+  await act(() => { jest.advanceTimersByTime(1000); });
+  expect(screen.getByText('만드는 중이에요')).toBeTruthy();
+  await act(() => { jest.advanceTimersByTime(1000); });
+  expect(screen.getByText('미리 보기 · 버튼이나 드래그로 돌려 보세요')).toBeTruthy();
+  await fireEvent.press(screen.getByLabelText('별에 놓기'));
+  expect(screen.getByLabelText('감자별, 오브젝트 1개, 아루미가 서 있어요')).toBeTruthy();
+  jest.useRealTimers();
 });
