@@ -23,5 +23,5 @@ Preconditions:
 
 ## Gotchas
 
-- On the iOS 26.5 simulator used for S1, the GL context and frame callback run but neither the planet nor a basic cube appears. The screenshot records that limitation, not a successful 3D rendering.
+- On the iOS 26.5 simulator used for S1, a GL synchronization workaround displays the planet and its temporary Aroomi; see the V1 rendering research for its limits.
 - The layout and tab icon need Claude Design review. Verify drag, pinch, reduced motion, frame rate and first-show time on a physical device.

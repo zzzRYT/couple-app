@@ -7,17 +7,21 @@ export function Aroomi({ reducedMotion }: { reducedMotion: boolean }) {
   const left = useRef<Group>(null); const right = useRef<Group>(null); const character = useRef<Group>(null);
   useFrame(({ clock }) => {
     if (reducedMotion) {
-      if (character.current) character.current.rotation.y = 0;
+      if (character.current) { character.current.rotation.y = 0; character.current.position.set(0, 0, 0); }
       if (left.current) left.current.rotation.z = 0;
       if (right.current) right.current.rotation.z = 0;
       return;
     }
     const t = clock.elapsedTime;
-    if (character.current) character.current.rotation.y = Math.sin(t * 0.3) * 0.35;
+    if (character.current) {
+      const x = Math.sin(t * 0.18) * 0.14;
+      character.current.position.set(x, -0.5 * x * x, 0);
+      character.current.rotation.y = Math.sin(t * 0.3) * 0.35;
+    }
     if (left.current) left.current.rotation.z = Math.sin(t * 1.2) * 0.45;
     if (right.current) right.current.rotation.z = -Math.sin(t * 1.2) * 0.45;
   });
-  return <group ref={character} position={[0, 0.94, 0]} scale={0.38}>
+  return <group ref={character} scale={0.38}>
     <mesh position={[0, 0.5, 0]} scale={[0.84, 1, 0.76]}><sphereGeometry args={[0.5, 24, 16]} /><meshStandardMaterial color="#F0CFA6" roughness={1} /></mesh>
     {[-1, 1].map((side) => <group key={side} ref={side < 0 ? left : right} position={[side * 0.37, 0.44, 0]}><mesh position={[side * 0.11, 0, 0]} scale={[0.25, 0.14, 0.14]}><sphereGeometry /><meshStandardMaterial color="#F0CFA6" roughness={1} /></mesh></group>)}
     {[-1, 1].map((side) => <group key={side}>

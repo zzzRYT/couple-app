@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import type { ReactNode } from 'react';
 import { renderWithI18n } from '../../test/render';
 import TabLayout from '../(tabs)/_layout';
+import { V1_FEATURES } from '../../config/features';
 
 type Asset = { testUri: string };
 type IconProps = { src?: { default: Asset; selected: Asset }; sf?: unknown; renderingMode?: string; drawable?: string };
@@ -39,4 +40,15 @@ it('V0-F03-AC-05 ships every tab glyph at the 25 pt tab size for 1x, 2x and 3x s
 it('V1-NF-01 hides the planet tab in production', async () => {
   await renderWithI18n(<TabLayout />);
   expect(mockTriggers.find((trigger) => trigger.name === 'planet')?.hidden).toBe(true);
+});
+
+it('places the development planet tab between calendar and anniversaries', async () => {
+  mockTriggers.length = 0;
+  V1_FEATURES.planet = true;
+  try {
+    await renderWithI18n(<TabLayout />);
+    expect(mockTriggers.filter((trigger) => !trigger.hidden).map((trigger) => trigger.name)).toEqual([
+      'home', 'calendar/index', 'planet', 'anniversaries/index', 'settings/index',
+    ]);
+  } finally { V1_FEATURES.planet = false; }
 });

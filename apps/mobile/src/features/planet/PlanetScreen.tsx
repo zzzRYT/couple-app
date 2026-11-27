@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useType } from '../../theme/typography';
 import { useTabBarClearance } from '../../ui/components';
+import { useLoopActive } from '../../ui/motion';
 import { dayCount } from '../../lib/dday';
 import { roomVariant } from '../settings/followTime';
 import { drag, inertia, initialCamera, pinch, themes, type Camera } from './model';
@@ -12,6 +13,7 @@ import { PlanetScene } from './PlanetScene';
 
 export function PlanetScreen({ anniversary, timeZone, now }: { anniversary: string; timeZone: string; now: string }) {
   const { t } = useTranslation(); const { type } = useType(); const insets = useSafeAreaInsets(); const clearance = useTabBarClearance();
+  const active = useLoopActive();
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [camera, setCamera] = useState(initialCamera); const cameraRef = useRef(camera);
   const [reducedMotion, setReducedMotion] = useState(false); const reduced = useRef(false); const frame = useRef(0);
@@ -22,6 +24,7 @@ export function PlanetScreen({ anniversary, timeZone, now }: { anniversary: stri
     const subscription = AccessibilityInfo.addEventListener('reduceMotionChanged', (value) => { reduced.current = value; setReducedMotion(value); });
     return () => { subscription.remove(); cancelAnimationFrame(frame.current); };
   }, []);
+  useEffect(() => { if (!active) cancelAnimationFrame(frame.current); }, [active]);
   const responder = useMemo(() => PanResponder.create({
     onStartShouldSetPanResponderCapture: () => true,
     onMoveShouldSetPanResponderCapture: () => true,
@@ -53,7 +56,7 @@ export function PlanetScreen({ anniversary, timeZone, now }: { anniversary: stri
       <Text style={{ ...type('title'), color: timeOfDay === 'day' ? '#3F2D22' : '#F7EBDD' }}>{t('planet.days', { n: count.ok ? count.dayCount : 0 })}</Text>
     </View>
     <View style={{ flex: 1 }} accessible accessibilityLabel={t('planet.a11y')} accessibilityActions={[{ name: 'increment', label: t('planet.right') }, { name: 'decrement', label: t('planet.left') }, { name: 'zoomIn', label: t('planet.zoomIn') }, { name: 'zoomOut', label: t('planet.zoomOut') }]} onAccessibilityAction={(event) => { const action = event.nativeEvent.actionName; if (action === 'increment' || action === 'decrement') update(drag(cameraRef.current, action === 'increment' ? 30 : -30, 0)); else if (action === 'zoomIn' || action === 'zoomOut') update(pinch(cameraRef.current, action === 'zoomIn' ? 1.2 : 1 / 1.2)); }} {...responder.panHandlers}>
-      <PlanetScene scene={{ theme: themes.potato, timeOfDay, camera }} reducedMotion={reducedMotion} />
+      {active && <PlanetScene scene={{ theme: themes.potato, timeOfDay, camera }} reducedMotion={reducedMotion} />}
     </View>
     <Text style={{ position: 'absolute', alignSelf: 'center', bottom: clearance + 16, color: timeOfDay === 'day' ? '#3F2D22' : '#F7EBDD' }}>{t('planet.hint')}</Text>
   </View>;

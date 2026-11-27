@@ -1,4 +1,4 @@
-import { drag, inertia, initialCamera, pinch, themes } from '../model';
+import { drag, inertia, initialCamera, pinch, surfacePosition, themes } from '../model';
 import { v1Features } from '../../../config/features';
 import { roomVariant } from '../../settings/followTime';
 
@@ -21,6 +21,12 @@ it('V1-F01-AC-07 uses the space time zone for day and night', () => {
 it('provides all seven P02 theme token sets', () => {
   expect(Object.keys(themes)).toHaveLength(7);
   expect(themes.potato.detail).toBe('#C39772');
+});
+
+it('places surface anchors on the potato at the pole and equator', () => {
+  const north = surfacePosition(90, 0); const front = surfacePosition(0, 0);
+  expect(north[0]).toBeCloseTo(0); expect(north[1]).toBeCloseTo(0.94); expect(north[2]).toBeCloseTo(0);
+  expect(front[0]).toBeCloseTo(0); expect(front[1]).toBeCloseTo(0); expect(front[2]).toBeCloseTo(0.9557);
 });
 
 it('V1-NF-01 enables the planet only in development builds', () => {
