@@ -1,0 +1,14 @@
+appId: com.jinjinstar.aroom.dev
+---
+# Starts on the planet tab and stops at the preview of the created object.
+- tapOn: "오브젝트 만들기"
+# The label text carries the same words, so the second match is the input.
+- tapOn:
+    text: "별에 무엇을 놓아 볼까요?"
+    index: 1
+- inputText: "작은 나무"
+- tapOn: "연습용 샘플이에요.*"
+- tapOn: "만들기"
+- extendedWaitUntil:
+    visible: "별에 놓기"
+    timeout: 20000

@@ -1,0 +1,8 @@
+appId: com.jinjinstar.aroom.dev
+---
+# Continues from a preview and stops when the object is saved on the planet.
+- tapOn: "별에 놓기"
+- extendedWaitUntil:
+    visible: "오브젝트 만들기"
+    timeout: 20000
+- assertVisible: "감자별, 오브젝트 [1-9][0-9]*개, 아루미가 서 있어요"

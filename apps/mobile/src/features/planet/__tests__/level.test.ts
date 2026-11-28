@@ -1,5 +1,5 @@
-import { planetLevel } from '../level';
-import { canPlace, type Placement } from '../placement';
+import { fitObject, planetLevel } from '../level';
+import { canPlace, spots, type Placement } from '../placement';
 
 it('uses the highest earned or entitled level, ignoring invalid entitlements', () => {
   expect(planetLevel(99).level).toBe(1);
@@ -16,4 +16,26 @@ it('refuses additions at capacity and overlapping the character or another objec
   expect(canPlace([first], { ...first, id: 'b' }, 2, 1)).toBe('overlap');
   expect(canPlace([], { ...first, latitude: 90 }, 1, 1)).toBe('overlap');
   expect(canPlace([], { ...first, radius: NaN }, 1, 1)).toBe('invalid');
+});
+
+it('scales an oversized object down to the level maximum and never scales one up', () => {
+  expect(planetLevel(0).maxObject).toBe(0.3);
+  expect(planetLevel(730).maxObject).toBe(0.42);
+  expect(fitObject(0.6, 0.3)).toEqual({ scale: 0.5, radius: 0.3 });
+  expect(fitObject(1000, 0.3)!.radius).toBeCloseTo(0.3);
+  expect(fitObject(0.3, 0.3)).toEqual({ scale: 1, radius: 0.3 });
+  expect(fitObject(0.1, 0.3)).toEqual({ scale: 1, radius: 0.1 });
+});
+
+it('refuses a size that is not a positive finite number', () => {
+  for (const size of [0, -1, NaN, Infinity]) expect(fitObject(size, 0.3)).toBeNull();
+});
+
+it('leaves room for a full planet of maximum-size objects at every level', () => {
+  for (const days of [0, 100, 365, 730]) {
+    const { capacity, scale, maxObject } = planetLevel(days);
+    const placed: Placement[] = [];
+    for (const spot of spots) { const item = { ...spot, id: `${placed.length}`, heading: 0, radius: maxObject }; if (canPlace(placed, item, capacity, scale) === 'ok') placed.push(item); }
+    expect(placed).toHaveLength(capacity);
+  }
 });

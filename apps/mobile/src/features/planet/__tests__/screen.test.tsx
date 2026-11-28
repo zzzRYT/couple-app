@@ -2,6 +2,7 @@ import { act, fireEvent, waitFor } from '@testing-library/react-native';
 import { AccessibilityInfo, PanResponder } from 'react-native';
 import { renderWithI18n } from '../../../test/render';
 import { PlanetScreen } from '../PlanetScreen';
+import { pickRegion } from '../photo';
 import { initialWalker, walkerCoordinates, type Walker } from '../walk';
 
 jest.mock('../planetAsset', () => ({ loadPlanetAsset: async () => ({ clone: () => ({}) }), disposePlanetAsset: jest.fn() }));
@@ -9,14 +10,17 @@ let mockPlanet: import('../planetStorage').PlanetData = { maxLevel: 1, placement
 jest.mock('../planetStorage', () => ({ readPlanet: async () => mockPlanet, writePlanet: async (_id: string, value: typeof mockPlanet) => { mockPlanet = value; } }));
 beforeEach(() => { mockPlanet = { maxLevel: 1, placements: [] }; });
 
+jest.mock('../photo', () => ({ pickRegion: jest.fn() }));
 let mockActive = true;
 const mockSceneUnmounted = jest.fn();
 const mockCamera = jest.fn();
 const mockWalk = jest.fn<void, [{ walker: Walker; walkBlend: number }]>();
+const mockPlacements = jest.fn();
 jest.mock('../../../config/features', () => ({ V1_FEATURES: { planet: true } }));
 jest.mock('../../../ui/motion', () => ({ useLoopActive: () => mockActive }));
-jest.mock('../PlanetScene', () => ({ PlanetScene: ({ scene, walker, walkBlend }: { scene: { camera: unknown }; walker: Walker; walkBlend: number }) => {
-  mockCamera(scene.camera); mockWalk({ walker, walkBlend });
+jest.mock('../SurfaceAnchor', () => ({ SurfaceAnchor: () => null }));
+jest.mock('../PlanetScene', () => ({ PlanetScene: ({ scene, placements, walker, walkBlend }: { scene: { camera: unknown }; placements: unknown; walker: Walker; walkBlend: number }) => {
+  mockCamera(scene.camera); mockPlacements(placements); mockWalk({ walker, walkBlend });
   jest.requireActual<typeof import('react')>('react').useEffect(() => () => mockSceneUnmounted(), []);
   return null;
 } }));
@@ -74,6 +78,56 @@ it('keeps the highest reached level after the development entitlement is turned 
   expect(screen.getByText('개발용 확장 · 레벨 4')).toBeTruthy();
 });
 
+it('creates a sample, previews it and places it on the planet', async () => {
+  const screen = await renderWithI18n(<PlanetScreen spaceId="space-1" anniversary="2026-11-25" timeZone="Asia/Seoul" now="2026-11-26T00:00:00Z" />);
+  jest.useFakeTimers();
+  await fireEvent.press(await screen.findByLabelText('오브젝트 만들기'));
+  await fireEvent.changeText(screen.getByLabelText('별에 무엇을 놓아 볼까요?'), '작은 나무');
+  await fireEvent.press(screen.getByLabelText('만들기'));
+  expect(screen.getByText('대기 중이에요')).toBeTruthy();
+  await act(() => { jest.advanceTimersByTime(1000); });
+  expect(screen.getByText('만드는 중이에요')).toBeTruthy();
+  await act(() => { jest.advanceTimersByTime(1000); });
+  expect(screen.getByText('미리 보기 · 버튼이나 드래그로 돌려 보세요')).toBeTruthy();
+  expect(mockCamera.mock.lastCall?.[0]).toMatchObject({ yaw: Math.PI, pitch: -0.35 });
+  expect(mockPlacements.mock.lastCall?.[0]).toMatchObject([{ assetId: 'sample-tree', latitude: 0, longitude: -180, radius: 0.3, scale: 0.3 / 0.53 }]);
+  await fireEvent.press(screen.getByLabelText('별에 놓기'));
+  await waitFor(() => expect(screen.getByLabelText('감자별, 오브젝트 1개, 아루미가 서 있어요')).toBeTruthy());
+  expect(mockPlanet.placements).toMatchObject([{ assetId: 'sample-tree', radius: 0.3, scale: 0.3 / 0.53 }]);
+  jest.useRealTimers();
+});
+
+it('creates an object from the cropped part of a photo and places it', async () => {
+  jest.mocked(pickRegion).mockResolvedValueOnce('denied').mockRejectedValueOnce(new Error('no camera')).mockResolvedValueOnce('cancelled').mockResolvedValueOnce({ uri: 'file:///region.jpg' });
+  const screen = await renderWithI18n(<PlanetScreen spaceId="space-1" anniversary="2026-11-25" timeZone="Asia/Seoul" now="2026-11-26T00:00:00Z" />);
+  await fireEvent.press(await screen.findByLabelText('오브젝트 만들기'));
+  await fireEvent.press(screen.getByLabelText('사진 찍기'));
+  expect(await screen.findByText('카메라를 쓸 수 없어요. 설정에서 허용해 주세요.')).toBeTruthy();
+  await fireEvent.press(screen.getByLabelText('사진 찍기'));
+  expect(await screen.findByText('사진을 가져오지 못했어요.')).toBeTruthy();
+  await fireEvent.press(screen.getByLabelText('사진 고르기'));
+  expect(screen.queryByLabelText('사진에서 고른 부분')).toBeNull();
+  await fireEvent.press(screen.getByLabelText('사진 고르기'));
+  expect((await screen.findByLabelText('사진에서 고른 부분')).props.source).toEqual({ uri: 'file:///region.jpg' });
+  jest.useFakeTimers();
+  await fireEvent.press(screen.getByLabelText('이 부분으로 만들기'));
+  await act(() => { jest.advanceTimersByTime(2000); });
+  await act(() => { jest.advanceTimersByTime(1000); });
+  await fireEvent.press(screen.getByLabelText('별에 놓기'));
+  await waitFor(() => expect(mockPlanet.placements).toMatchObject([{ assetId: 'sample-tree', radius: 0.3 }]));
+  expect(screen.queryByLabelText('사진에서 고른 부분')).toBeNull();
+  jest.useRealTimers();
+});
+
+it('does not start a creation when the planet is already full', async () => {
+  mockPlanet = { maxLevel: 1, placements: [0, 1, 2, 3].map((i) => ({ id: `${i}`, latitude: 0, longitude: i * 60 - 180, heading: 0, radius: 0.3 })) };
+  const screen = await renderWithI18n(<PlanetScreen spaceId="space-1" anniversary="2026-11-25" timeZone="Asia/Seoul" now="2026-11-26T00:00:00Z" />);
+  await waitFor(() => expect(screen.getByLabelText('감자별, 오브젝트 4개, 아루미가 서 있어요')).toBeTruthy());
+  await fireEvent.press(screen.getByLabelText('오브젝트 만들기'));
+  expect(screen.getByText('별이 가득 찼어요. 다음 성장을 기다려 주세요.')).toBeTruthy();
+  expect(screen.queryByLabelText('별에 무엇을 놓아 볼까요?')).toBeNull();
+});
+
 const props = { spaceId: 'space-1', anniversary: '2026-11-25', timeZone: 'Asia/Seoul', now: '2026-11-26T00:00:00Z' };
 const shown = () => mockWalk.mock.lastCall![0];
 async function enterWalk(screen: Awaited<ReturnType<typeof renderWithI18n>>) {
@@ -93,7 +147,7 @@ it('zooms smoothly into the walk view and back out to the unchanged overview', a
   await fireEvent.press(screen.getByText('별 전체 보기'));
   await waitFor(() => expect(shown().walkBlend).toBe(0), { timeout: 3000 });
   expect(mockCamera.mock.lastCall?.[0]).toEqual(camera);
-  expect(screen.getByText('끌어서 별을 돌려 보세요')).toBeTruthy();
+  expect(screen.queryByText('끌어서 아루미와 걸어 보세요')).toBeNull();
 });
 
 it('jumps between the views without a zoom when reduced motion is on', async () => {
@@ -141,4 +195,12 @@ it('offers walk steps as accessibility actions and says when an object is in the
   expect(walkerCoordinates(shown().walker).latitude).toBeGreaterThan(25);
   await step('walkBack');
   expect(screen.queryByText('오브젝트가 있어서 지나갈 수 없어요.')).toBeNull();
+});
+
+it('zooms back out when the create panel opens from the walk view, so the preview shows in the overview', async () => {
+  const screen = await renderWithI18n(<PlanetScreen {...props} />);
+  await enterWalk(screen);
+  await fireEvent.press(screen.getByLabelText('오브젝트 만들기'));
+  await waitFor(() => expect(shown().walkBlend).toBe(0), { timeout: 3000 });
+  expect(screen.getByLabelText('별에 무엇을 놓아 볼까요?')).toBeTruthy();
 });

@@ -1,6 +1,8 @@
 import { surfacePosition } from './model';
 
-export type Placement = { id: string; latitude: number; longitude: number; heading: number; radius: number };
+export type Placement = { id: string; latitude: number; longitude: number; heading: number; radius: number; assetId?: string; scale?: number };
+
+export const spots = [...Array.from({ length: 6 }, (_, i) => ({ latitude: 0, longitude: i * 60 - 180 })), ...Array.from({ length: 4 }, (_, i) => ({ latitude: -55, longitude: i * 90 - 180 }))];
 
 export function overlaps(point: readonly number[], radius: number, other: Pick<Placement, 'latitude' | 'longitude' | 'radius'>, scale: number): boolean {
   const center = surfacePosition(other.latitude, other.longitude);
