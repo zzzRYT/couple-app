@@ -11,7 +11,7 @@ import { dayCount } from '../../lib/dday';
 import { roomVariant } from '../settings/followTime';
 import { drag, inertia, initialCamera, pinch, themes, type Camera } from './model';
 import { PlanetScene } from './PlanetScene';
-import { planetLevel } from './level';
+import { fitObject, planetLevel } from './level';
 import { canPlace, type Placement } from './placement';
 import { readPlanet, writePlanet, type PlanetData } from './planetStorage';
 import { demoAsset } from './demoAsset';
@@ -22,7 +22,7 @@ import { fakeGenerator, type GenerationJob } from './generator';
 
 const generator = fakeGenerator();
 const positions = [...Array.from({ length: 6 }, (_, i) => ({ latitude: 0, longitude: i * 60 - 180 })), ...Array.from({ length: 4 }, (_, i) => ({ latitude: -55, longitude: i * 90 - 180 }))];
-type Spot = Placement | 'planet.capacity' | 'planet.noSpace';
+type Spot = Placement | 'planet.capacity' | 'planet.noSpace' | 'planet.failed';
 
 export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId: string; anniversary: string; timeZone: string; now: string }) {
   const { t } = useTranslation(); const { type } = useType(); const insets = useSafeAreaInsets(); const clearance = useTabBarClearance();
@@ -90,14 +90,18 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
   const earned = planetLevel(count.ok ? Math.max(0, count.dayCount - 1) : 0, devEntitlement ? [4] : []);
   const growth = planetLevel(0, [earned.level, data?.maxLevel ?? 1]);
   useEffect(() => { if (data && !busy && message !== 'planet.storageError' && earned.level > data.maxLevel) void save({ ...data, maxLevel: earned.level }); }, [data, earned.level, busy, message]);
-  const spotFor = (object: Pick<Placement, 'radius' | 'assetId'>, placements: readonly Placement[]): Spot => {
+  const spotFor = (object: Pick<Placement, 'radius' | 'assetId' | 'scale'>, placements: readonly Placement[]): Spot => {
     if (placements.length >= growth.capacity) return 'planet.capacity';
     const id = `${Date.now()}-${placements.length}`;
     return positions.map((position): Placement => ({ ...position, ...object, id, heading: 0 })).find((item) => canPlace(placements, item, growth.capacity, growth.scale) === 'ok') ?? 'planet.noSpace';
   };
-  const preview = useMemo(() => data && job?.state === 'succeeded' ? spotFor({ radius: 0.31, assetId: job.assetId }, data.placements) : null, [data, job, growth.level]);
+  const preview = useMemo(() => {
+    if (!data || job?.state !== 'succeeded') return null;
+    const fit = fitObject(job.size, growth.maxObject);
+    return fit ? spotFor({ ...fit, assetId: job.assetId }, data.placements) : 'planet.failed';
+  }, [data, job, growth.level]);
   // shortcut: the fake generator only makes the sample tree; render inventory assets by id once they exist.
-  const rendered = useMemo(() => [...(data?.placements ?? []), ...(preview && typeof preview !== 'string' ? [preview] : [])].flatMap((item) => item.assetId === 'sample-tree' ? [{ ...item, content: <SampleObject /> }] : asset ? [{ ...item, content: <primitive object={asset.clone()} /> }] : []), [asset, data, preview]);
+  const rendered = useMemo(() => [...(data?.placements ?? []), ...(preview && typeof preview !== 'string' ? [preview] : [])].flatMap((item) => item.assetId === 'sample-tree' ? [{ ...item, content: <group scale={item.scale ?? 1}><SampleObject /></group> }] : asset ? [{ ...item, content: <primitive object={asset.clone()} /> }] : []), [asset, data, preview]);
   const place = async (spot: Spot) => {
     if (!data) return false;
     if (typeof spot === 'string') { setMessage(spot); return false; }

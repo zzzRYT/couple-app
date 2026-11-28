@@ -86,6 +86,6 @@ it('creates a sample, previews it and places it on the planet', async () => {
   expect(screen.getByText('미리 보기 · 버튼이나 드래그로 돌려 보세요')).toBeTruthy();
   await fireEvent.press(screen.getByLabelText('별에 놓기'));
   await waitFor(() => expect(screen.getByLabelText('감자별, 오브젝트 1개, 아루미가 서 있어요')).toBeTruthy());
-  expect(mockPlanet.placements).toMatchObject([{ assetId: 'sample-tree' }]);
+  expect(mockPlanet.placements).toMatchObject([{ assetId: 'sample-tree', radius: 0.3, scale: 0.3 / 0.53 }]);
   jest.useRealTimers();
 });

@@ -8,7 +8,7 @@ it.each(['succeeded', 'failed', 'rejected'] as const)('advances to %s and keeps 
   expect(running.state).toBe('running');
   const result = generator.poll(running);
   expect(result.state).toBe(outcome);
-  expect(result.assetId).toBe(outcome === 'succeeded' ? 'sample-tree' : undefined);
+  expect(result).toEqual(outcome === 'succeeded' ? { jobId: 'local', state: 'succeeded', assetId: 'sample-tree', size: 0.53 } : { jobId: 'local', state: outcome });
   expect(generator.poll(result)).toEqual(result);
   expect(generator.cancel(result)).toEqual(result);
 });

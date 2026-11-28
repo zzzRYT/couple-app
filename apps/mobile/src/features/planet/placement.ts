@@ -1,6 +1,6 @@
 import { surfacePosition } from './model';
 
-export type Placement = { id: string; latitude: number; longitude: number; heading: number; radius: number; assetId?: string };
+export type Placement = { id: string; latitude: number; longitude: number; heading: number; radius: number; assetId?: string; scale?: number };
 
 // Radius is a conservative bounding sphere in world units, including the character.
 export function canPlace(placements: readonly Placement[], candidate: Placement, capacity: number, scale: number): 'ok' | 'capacity' | 'overlap' | 'invalid' {
