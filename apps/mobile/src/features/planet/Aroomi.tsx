@@ -36,6 +36,10 @@ export function Aroomi({ reducedMotion }: { reducedMotion: boolean }) {
       <mesh {...onBody(side * 0.13, 0.68)} scale={[0.025, 0.035, 0.012]}><sphereGeometry args={[1, 12, 8]} /><meshStandardMaterial color="#3A261C" roughness={1} /></mesh>
       <mesh {...onBody(side * 0.23, 0.57)} scale={[0.05, 0.035, 0.008]}><sphereGeometry args={[1, 12, 8]} /><meshStandardMaterial color="#F2A99B" roughness={1} /></mesh>
     </group>)}
+    {/* Smile traced from design/mascot/vector/icon_face_A.svg: 0.092 wide, 0.016 thick, its lowest point 0.05 under the eye line. */}
+    <group {...onBody(0, 0.63)}>
+      <mesh position={[0, 0.054, 0]} rotation={[0, 0, -Math.PI / 2 - 0.76]} scale={[1, 1, 0.6]}><torusGeometry args={[0.054, 0.008, 6, 12, 1.52]} /><meshStandardMaterial color="#3A261C" roughness={1} /></mesh>
+    </group>
     {/* K01 sash: the band of the body shell from the left shoulder (y 0.56) round to the right waist (y 0.25). */}
     <group position={[0, 0.5, 0]} scale={[BODY[0] * 1.03, BODY[1] * 1.03, BODY[2] * 1.03]}>
       <mesh rotation={[0, 0, 0.322]}><sphereGeometry args={[1, 48, 1, 0, Math.PI * 2, 1.672, 0.2]} /><meshStandardMaterial color="#5263BD" roughness={1} /></mesh>
