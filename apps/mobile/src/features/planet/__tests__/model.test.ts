@@ -44,6 +44,6 @@ it('turns the planet so a surface point faces the camera, within the pitch limit
     expect(x).toBeCloseTo(0, 1);
     expect(z).toBeGreaterThan(0.8);
   }
-  expect(seen(0, -180)[1]).toBeCloseTo(0);
+  expect(seen(0, -180)[1]).toBeGreaterThan(0.3);
   expect(face(initialCamera, -55, 90).pitch).toBe(-0.7);
 });

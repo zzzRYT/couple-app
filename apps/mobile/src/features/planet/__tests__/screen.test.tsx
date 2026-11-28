@@ -87,7 +87,7 @@ it('creates a sample, previews it and places it on the planet', async () => {
   expect(screen.getByText('만드는 중이에요')).toBeTruthy();
   await act(() => { jest.advanceTimersByTime(1000); });
   expect(screen.getByText('미리 보기 · 버튼이나 드래그로 돌려 보세요')).toBeTruthy();
-  expect(mockCamera.mock.lastCall?.[0]).toMatchObject({ yaw: Math.PI, pitch: 0 });
+  expect(mockCamera.mock.lastCall?.[0]).toMatchObject({ yaw: Math.PI, pitch: -0.35 });
   expect(mockPlacements.mock.lastCall?.[0]).toMatchObject([{ assetId: 'sample-tree', latitude: 0, longitude: -180, radius: 0.3, scale: 0.3 / 0.53 }]);
   await fireEvent.press(screen.getByLabelText('별에 놓기'));
   await waitFor(() => expect(screen.getByLabelText('감자별, 오브젝트 1개, 아루미가 서 있어요')).toBeTruthy());

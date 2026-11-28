@@ -24,8 +24,9 @@ export const initialCamera: Camera = { yaw: 0, pitch: 0, zoom: 1 };
 export function drag(camera: Camera, dx: number, dy: number): Camera {
   return { ...camera, yaw: camera.yaw + dx * 0.01, pitch: Math.max(-0.7, Math.min(0.7, camera.pitch + dy * 0.01)) };
 }
+// The extra tilt lifts the point above the view axis, so an object standing there shows its side.
 export function face(camera: Camera, latitude: number, longitude: number): Camera {
-  return { ...camera, yaw: -longitude * Math.PI / 180, pitch: Math.max(-0.7, Math.min(0.7, latitude * Math.PI / 180)) };
+  return { ...camera, yaw: -longitude * Math.PI / 180, pitch: Math.max(-0.7, Math.min(0.7, latitude * Math.PI / 180 - 0.35)) };
 }
 export function pinch(camera: Camera, ratio: number): Camera {
   return { ...camera, zoom: Math.max(1, Math.min(2.2, camera.zoom * ratio)) };

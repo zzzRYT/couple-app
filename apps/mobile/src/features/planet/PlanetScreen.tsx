@@ -46,7 +46,7 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
     finally { saving.current = false; setBusy(false); }
   };
   const [creating, setCreating] = useState(false); const [prompt, setPrompt] = useState(''); const [photo, setPhoto] = useState<string | null>(null);
-  const [job, setJob] = useState<GenerationJob | null>(null);
+  const [job, setJob] = useState<GenerationJob | null>(null); const [panelHeight, setPanelHeight] = useState(0); const [pillBottom, setPillBottom] = useState(0);
   useEffect(() => {
     if (!job || (job.state !== 'queued' && job.state !== 'running')) return;
     const timer = setTimeout(() => setJob((current) => current ? generator.poll(current) : current), 1000);
@@ -123,10 +123,11 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
   const sky = timeOfDay === 'day' ? themes.potato.sky : ['#1E1B3A', '#3A3260'];
   return <View style={{ flex: 1, backgroundColor }} onLayout={(event) => setSize(event.nativeEvent.layout)}>
     <BackgroundCanvas pointerEvents="none" style={{ position: 'absolute', inset: 0 }}><Rect x={0} y={0} width={size.width} height={size.height}><LinearGradient start={vec(0, 0)} end={vec(0, size.height)} colors={sky} /></Rect></BackgroundCanvas>
-    <View style={{ position: 'absolute', left: 20, top: insets.top + 16, zIndex: 1, borderRadius: 30, padding: 14, backgroundColor: timeOfDay === 'day' ? '#FFFAF2' : '#2E2942' }}>
+    <View onLayout={(event) => setPillBottom(event.nativeEvent.layout.y + event.nativeEvent.layout.height)} style={{ position: 'absolute', left: 20, top: insets.top + 16, zIndex: 1, borderRadius: 30, padding: 14, backgroundColor: timeOfDay === 'day' ? '#FFFAF2' : '#2E2942' }}>
       <Text style={{ ...type('title'), color: timeOfDay === 'day' ? '#3F2D22' : '#F7EBDD' }}>{t('planet.days', { n: count.ok ? count.dayCount : 0 })}</Text>
     </View>
-    <View style={{ flex: 1 }} accessible accessibilityLabel={t('planet.a11y', { n: data?.placements.length ?? 0 })} accessibilityActions={[{ name: 'increment', label: t('planet.right') }, { name: 'decrement', label: t('planet.left') }, { name: 'zoomIn', label: t('planet.zoomIn') }, { name: 'zoomOut', label: t('planet.zoomOut') }]} onAccessibilityAction={(event) => { const action = event.nativeEvent.actionName; if (action === 'increment' || action === 'decrement') update(drag(cameraRef.current, action === 'increment' ? 30 : -30, 0)); else if (action === 'zoomIn' || action === 'zoomOut') update(pinch(cameraRef.current, action === 'zoomIn' ? 1.2 : 1 / 1.2)); }} {...responder.panHandlers}>
+    {/* The create panel covers the lower screen, so the planet moves to the middle of the area left between it and the day count. */}
+    <View style={{ flex: 1, transform: [{ translateY: creating ? (pillBottom - panelHeight - clearance) / 2 : 0 }] }} accessible accessibilityLabel={t('planet.a11y', { n: data?.placements.length ?? 0 })} accessibilityActions={[{ name: 'increment', label: t('planet.right') }, { name: 'decrement', label: t('planet.left') }, { name: 'zoomIn', label: t('planet.zoomIn') }, { name: 'zoomOut', label: t('planet.zoomOut') }]} onAccessibilityAction={(event) => { const action = event.nativeEvent.actionName; if (action === 'increment' || action === 'decrement') update(drag(cameraRef.current, action === 'increment' ? 30 : -30, 0)); else if (action === 'zoomIn' || action === 'zoomOut') update(pinch(cameraRef.current, action === 'zoomIn' ? 1.2 : 1 / 1.2)); }} {...responder.panHandlers}>
       {active && <PlanetScene scene={{ theme: themes.potato, timeOfDay, camera }} reducedMotion={reducedMotion} scale={growth.scale} placements={rendered} />}
     </View>
     {V1_FEATURES.planet && <Pressable accessibilityRole="switch" accessibilityState={{ checked: devEntitlement }} onPress={() => setDevEntitlement((value) => !value)} style={{ position: 'absolute', right: 20, top: insets.top + 16, padding: 12, backgroundColor: '#FFFAF2', borderRadius: 20 }}><Text>{t('planet.devEntitlement', { level: growth.level })}</Text></Pressable>}
@@ -135,7 +136,7 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
       <Button label={t('planet.create')} disabled={!data} onPress={() => { if (data && data.placements.length >= growth.capacity) { setMessage('planet.capacity'); return; } setMessage(''); setCreating(true); setJob(null); }} />
       {!!message && <Text accessibilityLiveRegion="polite" style={{ color: timeOfDay === 'day' ? '#3F2D22' : '#F7EBDD' }}>{t(message)}</Text>}
     </View>}
-    {creating && <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ position: 'absolute', bottom: clearance, left: 12, right: 12 }}>
+    {creating && <KeyboardAvoidingView onLayout={(event) => setPanelHeight(event.nativeEvent.layout.height)} behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ position: 'absolute', bottom: clearance, left: 12, right: 12 }}>
       <View style={{ backgroundColor: '#FFFAF2', borderRadius: 20, padding: 16, gap: 8 }}>
         <Text>{t('planet.sampleNotice')}</Text>
         {!job && <><TextField label={t('planet.createPrompt')} value={prompt} onChangeText={setPrompt} maxLength={300} multiline />
