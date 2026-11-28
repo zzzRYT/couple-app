@@ -1,6 +1,6 @@
-import { BufferGeometry, CylinderGeometry, Float32BufferAttribute, MeshStandardMaterial } from 'three';
+import { BufferGeometry, CylinderGeometry, Float32BufferAttribute, MeshStandardMaterial, SphereGeometry } from 'three';
 import { MarchingCubes } from 'three/examples/jsm/objects/MarchingCubes.js';
-import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { mergeGeometries, mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 // Sizes are the K01 table with height 1 and the soles at y 0. Shape and pose are measured on the drawn Aroomi,
 // design/mascot/harmonized/mascot_wave_main.png.
@@ -9,8 +9,8 @@ const WIDE = 0.42; const DEEP = 0.38;
 // with the underside 0.05 above the soles.
 const MID = 0.45;
 const SHOULDER = [0.37, 0.44] as const;
-// The drawn resting arm reaches 0.16 past the body at a third of the height, which is this far below level.
-const ARM_REST = 0.65; const ARM = [Math.cos(ARM_REST), -Math.sin(ARM_REST)] as const;
+// K02 lowers a resting arm 1.1 rad below level, which puts the hand where it is drawn: 0.1 past the body at 0.3 of the height.
+const ARM_REST = 1.1; const ARM = [Math.cos(ARM_REST), -Math.sin(ARM_REST)] as const;
 
 type Run = [end: number, cells: number];
 const lines = (start: number, runs: Run[]) => runs.reduce((out, [end, cells]) => {
@@ -65,23 +65,34 @@ export function bodyFront(x: number, y: number) {
   return { z, normal: [gradient[0]! / length, gradient[1]! / length, gradient[2]! / length] as const };
 }
 
-// K01 sash: the strip of the body shell, 0.10 wide, on the plane through the left shoulder (y 0.56) and the right waist (y 0.25).
-export function makeAroomiSash() {
+// The scarf: a strip of the body shell, 0.10 wide, on the drawn slant from 0.55 of the height on the left side to 0.36 on the right.
+export function makeAroomiScarf() {
   const band = new CylinderGeometry(1, 1, 1, 48, 2, true);
   const positions = band.getAttribute('position'); const normals = band.getAttribute('normal');
   for (let i = 0; i < positions.count; i += 1) {
-    const x = positions.getX(i) * WIDE; const z = positions.getZ(i) * DEEP; const lift = 0.403 + positions.getY(i) * 0.107;
+    const x = positions.getX(i) * WIDE; const z = positions.getZ(i) * DEEP; const lift = 0.455 + positions.getY(i) * 0.1025;
     let inside = 0; let outside = 1.2;
     for (let step = 0; step < 20; step += 1) {
       const reach = (inside + outside) / 2;
-      if (level(x * reach, lift + 0.3735 * x * reach, z * reach) < 1) inside = reach; else outside = reach;
+      if (level(x * reach, lift + 0.226 * x * reach, z * reach) < 1) inside = reach; else outside = reach;
     }
-    level(x * inside, lift + 0.3735 * x * inside, z * inside);
+    level(x * inside, lift + 0.226 * x * inside, z * inside);
     const length = Math.hypot(gradient[0]!, gradient[1]!, gradient[2]!);
     normals.setXYZ(i, gradient[0]! / length, gradient[1]! / length, gradient[2]! / length);
-    positions.setXYZ(i, x * inside + normals.getX(i) * 0.012, lift + 0.3735 * x * inside + normals.getY(i) * 0.012, z * inside + normals.getZ(i) * 0.012);
+    positions.setXYZ(i, x * inside + normals.getX(i) * 0.012, lift + 0.226 * x * inside + normals.getY(i) * 0.012, z * inside + normals.getZ(i) * 0.012);
   }
   return band;
+}
+
+// The scarf's knot and its two leaf-shaped tails, shaped as on design/mascot/harmonized/mascot_back.png: the knot sits 0.38 from
+// the middle and the tails reach about 0.24 outward and down. K01 puts them on the right waist, where the scarf is lowest.
+// They sit behind the arm so the arm never crosses them.
+export function makeAroomiKnot() {
+  const x = -0.38; const y = 0.455 + 0.226 * x; const { z, normal } = bodyFront(x, y);
+  const at = [x + normal[0] * 0.03, y + normal[1] * 0.03, -z - normal[2] * 0.03] as const;
+  const tails = [0.26, 0.87].map((droop, i) => new SphereGeometry(1, 12, 8).scale(0.12, 0.055, 0.015).rotateZ(Math.PI + droop)
+    .translate(at[0] - Math.cos(droop) * 0.11, at[1] - Math.sin(droop) * 0.11, at[2] - 0.01 - i * 0.02));
+  return mergeGeometries([new SphereGeometry(0.045, 12, 8).translate(...at), ...tails]);
 }
 
 // One closed skin for body, arms and feet. `follow` is how far each vertex goes with its arm, negative on -x.
@@ -109,7 +120,7 @@ export function makeAroomiBody() {
   return { geometry, follow, rest: { position: Float32Array.from(positions.array), normal: normals.slice() } };
 }
 
-// Turn the -x arm by `angle` from its resting pose around the shoulder and mirror the +x arm.
+// Lift both arms by `angle` from the resting pose around the shoulders.
 // The vertices move here, not in a skinned shader: that second shader program added about 1.5 s to the first draw on the simulator.
 export function swingArms({ geometry, follow, rest }: ReturnType<typeof makeAroomiBody>, angle: number) {
   const position = geometry.getAttribute('position'); const normal = geometry.getAttribute('normal');
@@ -117,7 +128,7 @@ export function swingArms({ geometry, follow, rest }: ReturnType<typeof makeAroo
   for (let i = 0; i < follow.length; i += 1) {
     const weight = Math.abs(follow[i]!);
     if (!weight) continue;
-    const side = Math.sign(follow[i]!); const sin = -side * Math.sin(angle);
+    const side = Math.sign(follow[i]!); const sin = side * Math.sin(angle);
     const x = rest.position[i * 3]!; const y = rest.position[i * 3 + 1]!; const nx = rest.normal[i * 3]!; const ny = rest.normal[i * 3 + 1]!;
     const dx = x - side * SHOULDER[0]; const dy = y - SHOULDER[1];
     position.setXY(i, x + weight * (dx * cos - dy * sin), y + weight * (dx * sin + dy * cos));
