@@ -13,6 +13,7 @@ const mockSceneUnmounted = jest.fn();
 const mockCamera = jest.fn();
 jest.mock('../../../config/features', () => ({ V1_FEATURES: { planet: true } }));
 jest.mock('../../../ui/motion', () => ({ useLoopActive: () => mockActive }));
+jest.mock('../SurfaceAnchor', () => ({ SurfaceAnchor: () => null }));
 jest.mock('../PlanetScene', () => ({ PlanetScene: ({ scene }: { scene: { camera: unknown } }) => {
   mockCamera(scene.camera);
   jest.requireActual<typeof import('react')>('react').useEffect(() => () => mockSceneUnmounted(), []);
@@ -70,4 +71,21 @@ it('keeps the highest reached level after the development entitlement is turned 
   await fireEvent.press(screen.getByText('개발용 확장 · 레벨 4'));
   expect(screen.getByRole('switch').props.accessibilityState).toMatchObject({ checked: false });
   expect(screen.getByText('개발용 확장 · 레벨 4')).toBeTruthy();
+});
+
+it('creates a sample, previews it and places it on the planet', async () => {
+  const screen = await renderWithI18n(<PlanetScreen spaceId="space-1" anniversary="2026-11-25" timeZone="Asia/Seoul" now="2026-11-26T00:00:00Z" />);
+  jest.useFakeTimers();
+  await fireEvent.press(await screen.findByLabelText('오브젝트 만들기'));
+  await fireEvent.changeText(screen.getByLabelText('별에 무엇을 놓아 볼까요?'), '작은 나무');
+  await fireEvent.press(screen.getByLabelText('만들기'));
+  expect(screen.getByText('대기 중이에요')).toBeTruthy();
+  await act(() => { jest.advanceTimersByTime(1000); });
+  expect(screen.getByText('만드는 중이에요')).toBeTruthy();
+  await act(() => { jest.advanceTimersByTime(1000); });
+  expect(screen.getByText('미리 보기 · 버튼이나 드래그로 돌려 보세요')).toBeTruthy();
+  await fireEvent.press(screen.getByLabelText('별에 놓기'));
+  await waitFor(() => expect(screen.getByLabelText('감자별, 오브젝트 1개, 아루미가 서 있어요')).toBeTruthy());
+  expect(mockPlanet.placements).toMatchObject([{ assetId: 'sample-tree' }]);
+  jest.useRealTimers();
 });

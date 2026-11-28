@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AccessibilityInfo, PanResponder, Pressable, Text, View } from 'react-native';
+import { AccessibilityInfo, KeyboardAvoidingView, PanResponder, Platform, Pressable, Text, View } from 'react-native';
 import { Canvas as BackgroundCanvas, LinearGradient, Rect, vec } from '@shopify/react-native-skia';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useType } from '../../theme/typography';
 import { V1_FEATURES } from '../../config/features';
-import { useTabBarClearance } from '../../ui/components';
+import { Button, TextField, useTabBarClearance } from '../../ui/components';
 import { useLoopActive } from '../../ui/motion';
 import { dayCount } from '../../lib/dday';
 import { roomVariant } from '../settings/followTime';
@@ -17,6 +17,12 @@ import { readPlanet, writePlanet, type PlanetData } from './planetStorage';
 import { demoAsset } from './demoAsset';
 import { disposePlanetAsset, loadPlanetAsset } from './planetAsset';
 import type { Object3D } from 'three';
+import { SampleObject } from './SampleObject';
+import { fakeGenerator, type GenerationJob } from './generator';
+
+const generator = fakeGenerator();
+const positions = [...Array.from({ length: 6 }, (_, i) => ({ latitude: 0, longitude: i * 60 - 180 })), ...Array.from({ length: 4 }, (_, i) => ({ latitude: -55, longitude: i * 90 - 180 }))];
+type Spot = Placement | 'planet.capacity' | 'planet.noSpace';
 
 export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId: string; anniversary: string; timeZone: string; now: string }) {
   const { t } = useTranslation(); const { type } = useType(); const insets = useSafeAreaInsets(); const clearance = useTabBarClearance();
@@ -39,6 +45,13 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
     catch { setMessage('planet.storageError'); return false; }
     finally { saving.current = false; setBusy(false); }
   };
+  const [creating, setCreating] = useState(false); const [prompt, setPrompt] = useState('');
+  const [job, setJob] = useState<GenerationJob | null>(null);
+  useEffect(() => {
+    if (!job || (job.state !== 'queued' && job.state !== 'running')) return;
+    const timer = setTimeout(() => setJob((current) => current ? generator.poll(current) : current), 1000);
+    return () => clearTimeout(timer);
+  }, [job]);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [camera, setCamera] = useState(initialCamera); const cameraRef = useRef(camera);
   const [reducedMotion, setReducedMotion] = useState(false); const reduced = useRef(false); const frame = useRef(0);
@@ -77,16 +90,22 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
   const earned = planetLevel(count.ok ? Math.max(0, count.dayCount - 1) : 0, devEntitlement ? [4] : []);
   const growth = planetLevel(0, [earned.level, data?.maxLevel ?? 1]);
   useEffect(() => { if (data && !busy && message !== 'planet.storageError' && earned.level > data.maxLevel) void save({ ...data, maxLevel: earned.level }); }, [data, earned.level, busy, message]);
-  const rendered = useMemo(() => asset ? (data?.placements ?? []).map((item) => ({ ...item, content: <primitive object={asset.clone()} /> })) : [], [asset, data]);
-  const addObject = async () => {
-    if (!data || !asset) return;
-    const positions = [...Array.from({ length: 6 }, (_, i) => ({ latitude: 0, longitude: i * 60 - 180 })), ...Array.from({ length: 4 }, (_, i) => ({ latitude: -55, longitude: i * 90 - 180 }))];
-    if (data.placements.length >= growth.capacity) { setMessage('planet.capacity'); return; }
-    const id = `${Date.now()}-${data.placements.length}`;
-    const candidate = positions.map((position): Placement => ({ ...position, id, heading: 0, radius: 0.31 })).find((item) => canPlace(data.placements, item, growth.capacity, growth.scale) === 'ok');
-    if (!candidate) { setMessage('planet.noSpace'); return; }
-    if (await save({ maxLevel: growth.level, placements: [...data.placements, candidate] })) setMessage('');
+  const spotFor = (object: Pick<Placement, 'radius' | 'assetId'>, placements: readonly Placement[]): Spot => {
+    if (placements.length >= growth.capacity) return 'planet.capacity';
+    const id = `${Date.now()}-${placements.length}`;
+    return positions.map((position): Placement => ({ ...position, ...object, id, heading: 0 })).find((item) => canPlace(placements, item, growth.capacity, growth.scale) === 'ok') ?? 'planet.noSpace';
   };
+  const preview = useMemo(() => data && job?.state === 'succeeded' ? spotFor({ radius: 0.31, assetId: job.assetId }, data.placements) : null, [data, job, growth.level]);
+  // shortcut: the fake generator only makes the sample tree; render inventory assets by id once they exist.
+  const rendered = useMemo(() => [...(data?.placements ?? []), ...(preview && typeof preview !== 'string' ? [preview] : [])].flatMap((item) => item.assetId === 'sample-tree' ? [{ ...item, content: <SampleObject /> }] : asset ? [{ ...item, content: <primitive object={asset.clone()} /> }] : []), [asset, data, preview]);
+  const place = async (spot: Spot) => {
+    if (!data) return false;
+    if (typeof spot === 'string') { setMessage(spot); return false; }
+    const saved = await save({ maxLevel: growth.level, placements: [...data.placements, spot] });
+    if (saved) setMessage('');
+    return saved;
+  };
+  const closeCreate = () => { setCreating(false); setJob(null); };
   const backgroundColor = timeOfDay === 'day' ? themes.potato.sky[0] : '#1E1B3A';
   const sky = timeOfDay === 'day' ? themes.potato.sky : ['#1E1B3A', '#3A3260'];
   return <View style={{ flex: 1, backgroundColor }} onLayout={(event) => setSize(event.nativeEvent.layout)}>
@@ -98,10 +117,25 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
       {active && <PlanetScene scene={{ theme: themes.potato, timeOfDay, camera }} reducedMotion={reducedMotion} scale={growth.scale} placements={rendered} />}
     </View>
     {V1_FEATURES.planet && <Pressable accessibilityRole="switch" accessibilityState={{ checked: devEntitlement }} onPress={() => setDevEntitlement((value) => !value)} style={{ position: 'absolute', right: 20, top: insets.top + 16, padding: 12, backgroundColor: '#FFFAF2', borderRadius: 20 }}><Text>{t('planet.devEntitlement', { level: growth.level })}</Text></Pressable>}
-    <View style={{ position: 'absolute', alignSelf: 'center', bottom: clearance + 42, alignItems: 'center' }}>
-      <Pressable accessibilityRole="button" disabled={!data || !asset || busy} onPress={() => void addObject()} style={{ padding: 12, borderRadius: 20, backgroundColor: '#FFFAF2' }}><Text>{t('planet.devPlace')}</Text></Pressable>
+    {!creating && <View style={{ position: 'absolute', alignSelf: 'center', bottom: clearance + 12, alignItems: 'center', gap: 8 }}>
+      <Pressable accessibilityRole="button" disabled={!data || !asset || busy} onPress={() => { if (data) void place(spotFor({ radius: 0.31 }, data.placements)); }} style={{ padding: 12, borderRadius: 20, backgroundColor: '#FFFAF2' }}><Text>{t('planet.devPlace')}</Text></Pressable>
+      <Button label={t('planet.create')} disabled={!data} onPress={() => { if (data && data.placements.length >= growth.capacity) { setMessage('planet.capacity'); return; } setMessage(''); setCreating(true); setJob(null); }} />
       {!!message && <Text accessibilityLiveRegion="polite" style={{ color: timeOfDay === 'day' ? '#3F2D22' : '#F7EBDD' }}>{t(message)}</Text>}
-    </View>
-    <Text style={{ position: 'absolute', alignSelf: 'center', bottom: clearance + 16, color: timeOfDay === 'day' ? '#3F2D22' : '#F7EBDD' }}>{t('planet.hint')}</Text>
+    </View>}
+    {creating && <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ position: 'absolute', bottom: clearance, left: 12, right: 12 }}>
+      <View style={{ backgroundColor: '#FFFAF2', borderRadius: 20, padding: 16, gap: 8 }}>
+        <Text>{t('planet.sampleNotice')}</Text>
+        {!job && <><TextField label={t('planet.createPrompt')} value={prompt} onChangeText={setPrompt} maxLength={300} multiline />
+          <Button label={t('planet.createSend')} disabled={!prompt.trim()} onPress={() => setJob(generator.submit(prompt))} /></>}
+        {job && (job.state === 'queued' || job.state === 'running') && <><Text accessibilityLiveRegion="polite">{t(job.state === 'queued' ? 'planet.queued' : 'planet.running')}</Text><Button variant="secondary" label={t('common.cancel')} onPress={() => setJob(generator.cancel(job))} /></>}
+        {job?.state === 'succeeded' && preview && (typeof preview === 'string' ? <Text accessibilityLiveRegion="polite">{t(preview)}</Text> : <><Text>{t('planet.preview')}</Text>
+          <View style={{ flexDirection: 'row', gap: 8 }}><Button compact variant="secondary" label={t('planet.left')} onPress={() => update(drag(cameraRef.current, -30, 0))} /><Button compact variant="secondary" label={t('planet.right')} onPress={() => update(drag(cameraRef.current, 30, 0))} /></View>
+          <Button label={t('planet.place')} disabled={busy} onPress={() => void place(preview).then((saved) => { if (saved) { closeCreate(); setPrompt(''); } })} />
+          <Button variant="secondary" label={t('planet.regenerate')} onPress={() => setJob(null)} />
+          {!!message && <Text accessibilityLiveRegion="polite">{t(message)}</Text>}</>)}
+        {job && ['failed', 'rejected', 'cancelled'].includes(job.state) && <><Text accessibilityLiveRegion="polite">{t(job.state === 'failed' ? 'planet.failed' : job.state === 'rejected' ? 'planet.rejected' : 'planet.cancelled')}</Text><Button label={t('common.retry')} onPress={() => setJob(null)} /></>}
+        <Button variant="ghost" label={t('common.close')} onPress={closeCreate} />
+      </View>
+    </KeyboardAvoidingView>}
   </View>;
 }

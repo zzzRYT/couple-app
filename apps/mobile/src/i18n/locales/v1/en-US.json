@@ -12,5 +12,17 @@
   "planet.capacity": "Your planet is full for now. Let’s wait for it to grow.",
   "planet.noSpace": "There is no room here just yet.",
   "planet.storageError": "Could not save your planet. Please try again.",
-  "planet.assetError": "Could not load the object."
+  "planet.assetError": "Could not load the object.",
+  "planet.create": "Create an object",
+  "planet.createPrompt": "What should we put on the planet?",
+  "planet.createSend": "Create",
+  "planet.queued": "Waiting",
+  "planet.running": "Creating",
+  "planet.preview": "Preview · use the buttons or drag to rotate",
+  "planet.place": "Place on planet",
+  "planet.regenerate": "Make again",
+  "planet.failed": "Could not create",
+  "planet.rejected": "Request rejected",
+  "planet.cancelled": "Cancelled",
+  "planet.sampleNotice": "Practice sample. Placed objects are saved on this device only."
 }
