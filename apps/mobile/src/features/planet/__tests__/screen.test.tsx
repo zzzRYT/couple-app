@@ -16,11 +16,12 @@ const mockSceneUnmounted = jest.fn();
 const mockCamera = jest.fn();
 const mockWalk = jest.fn<void, [{ walker: Walker; walkBlend: number }]>();
 const mockPlacements = jest.fn();
+const mockPoke = jest.fn();
 jest.mock('../../../config/features', () => ({ V1_FEATURES: { planet: true } }));
 jest.mock('../../../ui/motion', () => ({ useLoopActive: () => mockActive }));
 jest.mock('../SurfaceAnchor', () => ({ SurfaceAnchor: () => null }));
-jest.mock('../PlanetScene', () => ({ PlanetScene: ({ scene, placements, walker, walkBlend }: { scene: { camera: unknown }; placements: unknown; walker: Walker; walkBlend: number }) => {
-  mockCamera(scene.camera); mockPlacements(placements); mockWalk({ walker, walkBlend });
+jest.mock('../PlanetScene', () => ({ PlanetScene: ({ scene, placements, walker, walkBlend, poke }: { scene: { camera: unknown }; placements: unknown; walker: Walker; walkBlend: number; poke: unknown }) => {
+  mockCamera(scene.camera); mockPlacements(placements); mockWalk({ walker, walkBlend }); mockPoke(poke);
   jest.requireActual<typeof import('react')>('react').useEffect(() => () => mockSceneUnmounted(), []);
   return null;
 } }));
@@ -42,6 +43,17 @@ it('updates the scene camera from drag and pinch touches', async () => {
   expect(mockCamera.mock.lastCall?.[0]).toMatchObject({ yaw: 0.6, pitch: 0.2, zoom: 1 });
   await act(() => { move([{ pageX: 100, pageY: 200 }, { pageX: 200, pageY: 200 }]); move([{ pageX: 100, pageY: 200 }, { pageX: 250, pageY: 200 }]); });
   expect(mockCamera.mock.lastCall?.[0]).toMatchObject({ yaw: 0.6, pitch: 0.2, zoom: 1.5 });
+  responder.mockRestore();
+});
+
+it('passes a tap to the scene so Aroomi can react, and not a drag', async () => {
+  const responder = jest.spyOn(PanResponder, 'create');
+  await renderWithI18n(<PlanetScreen spaceId="space-1" anniversary="2026-11-25" timeZone="Asia/Seoul" now="2026-11-26T00:00:00Z" />);
+  const release = (dx: number) => responder.mock.calls.at(-1)![0].onPanResponderRelease?.({ nativeEvent: { locationX: 120, locationY: 300 } } as never, { dx, dy: 0 } as never);
+  await act(() => { release(40); });
+  expect(mockPoke.mock.lastCall?.[0]).toMatchObject({ n: 0 });
+  await act(() => { release(2); });
+  expect(mockPoke.mock.lastCall?.[0]).toEqual({ x: 120, y: 300, n: 1 });
   responder.mockRestore();
 });
 
@@ -177,6 +189,22 @@ it('walks while a drag is held, leaves the overview camera alone, and stops when
   const stopped = shown().walker;
   await act(() => new Promise((resolve) => setTimeout(resolve, 100)));
   expect(shown().walker).toBe(stopped);
+  responder.mockRestore();
+});
+
+it('in the walk view a tap still reaches Aroomi without taking a step, and a walking drag is not a tap', async () => {
+  const responder = jest.spyOn(PanResponder, 'create');
+  const screen = await renderWithI18n(<PlanetScreen {...props} />);
+  const handlers = responder.mock.calls.at(-1)![0];
+  await enterWalk(screen);
+  const taps = mockPoke.mock.lastCall?.[0].n;
+  await act(() => { handlers.onPanResponderRelease?.({ nativeEvent: { locationX: 200, locationY: 400 } } as never, { dx: 1, dy: 2 } as never); });
+  expect(mockPoke.mock.lastCall?.[0]).toEqual({ x: 200, y: 400, n: taps + 1 });
+  expect(shown()).toMatchObject({ walker: initialWalker, walkBlend: 1 });
+  await act(() => { handlers.onPanResponderMove?.({ nativeEvent: { touches: [{ pageX: 140, pageY: 200 }] } } as never, { dx: 40, dy: 0 } as never); });
+  await waitFor(() => expect(walkerCoordinates(shown().walker).latitude).toBeLessThan(85));
+  await act(() => { handlers.onPanResponderRelease?.({ nativeEvent: { locationX: 240, locationY: 400 } } as never, { dx: 40, dy: 0 } as never); });
+  expect(mockPoke.mock.lastCall?.[0].n).toBe(taps + 1);
   responder.mockRestore();
 });
 

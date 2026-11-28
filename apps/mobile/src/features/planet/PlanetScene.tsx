@@ -5,7 +5,7 @@ import { Canvas, useThree } from '@react-three/fiber/native';
 import type { RootState } from '@react-three/fiber/native';
 import type { ExpoWebGLRenderingContext } from 'expo-gl';
 import { Platform } from 'react-native';
-import { Aroomi } from './Aroomi';
+import { Aroomi, type Poke } from './Aroomi';
 import { SurfaceAnchor } from './SurfaceAnchor';
 import { potatoRadius, type PlanetScene as Scene } from './model';
 import type { Placement } from './placement';
@@ -46,7 +46,7 @@ function Potato({ ground }: { ground: string }) {
   return <mesh geometry={geometry} scale={[1, 0.94, 0.96]}><meshStandardMaterial color={ground} roughness={1} /></mesh>;
 }
 
-export function PlanetScene({ scene, reducedMotion, objects, placements = [], scale = 1, walker = initialWalker, walkBlend = 0 }: { scene: Scene; reducedMotion: boolean; objects?: ReactNode; placements?: ReadonlyArray<Placement & { content: ReactNode }>; scale?: number; walker?: Walker; walkBlend?: number }) {
+export function PlanetScene({ scene, reducedMotion, objects, placements = [], scale = 1, walker = initialWalker, walkBlend = 0, poke }: { scene: Scene; reducedMotion: boolean; objects?: ReactNode; placements?: ReadonlyArray<Placement & { content: ReactNode }>; scale?: number; walker?: Walker; walkBlend?: number; poke?: Poke }) {
   const { theme, timeOfDay, camera } = scene; const pose = walkerPose(walker, scale);
   return <Canvas onCreated={prepareRenderer} frameloop={reducedMotion ? 'demand' : 'always'} camera={{ fov: 30, position: [0, 0, 6 / camera.zoom] }}>
     <CameraRig zoom={camera.zoom} scale={scale} blend={walkBlend} />
@@ -56,7 +56,7 @@ export function PlanetScene({ scene, reducedMotion, objects, placements = [], sc
     <group quaternion={planetOrientation(camera, walker, walkBlend)}>
       <group scale={scale}><Potato ground={theme.ground[1]} />
       <mesh scale={[1.005, 0.945, 0.965]}><sphereGeometry args={[1, 48, 24, 0, Math.PI * 2, 0, 0.78]} /><meshStandardMaterial color={theme.cap[0]} roughness={1} /></mesh></group>
-      <group position={pose.position} quaternion={pose.quaternion}><Aroomi reducedMotion={reducedMotion} wander={1 - walkBlend} /></group>
+      <group position={pose.position} quaternion={pose.quaternion}><Aroomi reducedMotion={reducedMotion} wander={1 - walkBlend} poke={poke} /></group>
       <group name="planet-objects">{objects}{placements.map((item) => <SurfaceAnchor key={item.id} latitude={item.latitude} longitude={item.longitude} heading={item.heading} surfaceScale={scale}>{item.content}</SurfaceAnchor>)}</group>
     </group>
   </Canvas>;
