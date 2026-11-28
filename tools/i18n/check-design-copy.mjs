@@ -8,8 +8,11 @@ const { merged } = await loadRuntimeCopies();
 // mirrored base copy. Validate its generation before accepting its keys.
 execFileSync(process.execPath, ['tools/i18n/build-v0-overlay.mjs', '--check'], { stdio: 'inherit' });
 const overlay = JSON.parse(await readFile('apps/mobile/src/i18n/locales/v0/ko-KR.json', 'utf8'));
-const keys = new Set([...Object.keys(merged.ko), ...Object.keys(overlay)]);
+const v1 = JSON.parse(await readFile('apps/mobile/src/i18n/locales/v1/ko-KR.json', 'utf8'));
+const keys = new Set([...Object.keys(merged.ko), ...Object.keys(overlay), ...Object.keys(v1)]);
 for (const [lang, locale] of [['ko', 'ko-KR'], ['en', 'en-US'], ['ja', 'ja-JP']]) {
+  const v1Locale = JSON.parse(await readFile(`apps/mobile/src/i18n/locales/v1/${locale}.json`, 'utf8'));
+  if (JSON.stringify(Object.keys(v1Locale).sort()) !== JSON.stringify(Object.keys(v1).sort())) throw Error(`V1 locale ${locale} keys differ`);
   const generated = JSON.parse(await readFile(`apps/mobile/src/i18n/locales/${locale}.json`, 'utf8'));
   const sourceKeys = Object.keys(merged[lang]).sort();
   if (JSON.stringify(Object.keys(generated).sort()) !== JSON.stringify(sourceKeys) || sourceKeys.some((key) => generated[key] !== merged[lang][key])) throw Error(`Generated locale ${locale} is stale; run node tools/i18n/import-design-copy.mjs`);

@@ -5,6 +5,9 @@ import * as SecureStore from 'expo-secure-store';
 import ko from './locales/ko-KR.json';
 import en from './locales/en-US.json';
 import ja from './locales/ja-JP.json';
+import v1Ko from './locales/v1/ko-KR.json';
+import v1En from './locales/v1/en-US.json';
+import v1Ja from './locales/v1/ja-JP.json';
 import v0Ko from './locales/v0/ko-KR.json';
 import v0En from './locales/v0/en-US.json';
 import v0Ja from './locales/v0/ja-JP.json';
@@ -24,7 +27,7 @@ export async function createI18n(options: { deviceLocale?: string; storage?: Sto
   const language = explicit ?? supported(options.deviceLocale ?? getLocales()[0]?.languageTag) ?? 'en-US';
   const instance = createInstance();
   await instance.use(initReactI18next).init({
-    lng: language, fallbackLng: 'en-US', resources: { 'ko-KR': { translation: { ...ko, ...v0Ko } }, 'en-US': { translation: { ...en, ...v0En } }, 'ja-JP': { translation: { ...ja, ...v0Ja } } },
+    lng: language, fallbackLng: 'en-US', resources: { 'ko-KR': { translation: { ...ko, ...v0Ko, ...v1Ko } }, 'en-US': { translation: { ...en, ...v0En, ...v1En } }, 'ja-JP': { translation: { ...ja, ...v0Ja, ...v1Ja } } },
     keySeparator: false, interpolation: { prefix: '{', suffix: '}', escapeValue: false },
   });
   return instance;

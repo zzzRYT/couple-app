@@ -20,7 +20,7 @@ Every row is enforced by a deterministic check that fails the build. A rule with
 | An Edge Function imports only its own folder and `_shared/`, and has an `import_map` in `supabase/config.toml` | `tools/ci/check-functions-imports.mjs` | `pnpm verify` |
 | Remote Supabase commands in Markdown go through `tools/supabase/remote.mjs`, never `npx supabase` | `tools/ci/check-docs-supabase.mjs` | `pnpm verify` |
 | Each migration header states a rollback or deletion policy | `tools/ci/check-migrations.mjs` | `pnpm verify` |
-| Each V0 scenario ID in the spec appears in a test name | `tools/tests/traceability.test.mjs` | `pnpm verify` |
+| Each V0 scenario ID in the spec and each completed V1 slice scenario ID appears in a test name | `tools/tests/traceability.test.mjs` | `pnpm verify` |
 | The `verify-aroom` build points at Aroom-dev and drops any Aroom-prod value | `.claude/skills/verify-aroom/aroom.test.mjs` | `pnpm verify` |
 | Each `verify-aroom` feature file keeps the map's four sections, is linked from its README, and drives only flows that exist | `.claude/skills/verify-aroom/aroom.test.mjs` | `pnpm verify` |
 | Every Edge Function boots in the Edge Runtime | `tools/ci/check-functions-boot.mjs` | `pnpm verify:db` |

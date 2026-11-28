@@ -1,11 +1,11 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
-it('defines the expected auth, onboarding and three tab routes', () => {
+it('defines the expected auth, onboarding and four tab routes', () => {
   const app = resolve(__dirname, '..');
   expect(readdirSync(resolve(app, '(auth)'))).toEqual(expect.arrayContaining(['index.tsx', 'login.tsx']));
   expect(readdirSync(resolve(app, '(onboarding)'))).toEqual(expect.arrayContaining(['index.tsx', 'choose-space.tsx', 'create-space.tsx', 'join.tsx']));
   expect(readdirSync(app)).toContain('invite.tsx');
-  expect(readdirSync(resolve(app, '(tabs)')).filter((name) => !name.startsWith('_')).sort()).toEqual(['anniversaries', 'home.tsx', 'index.tsx', 'room.tsx', 'settings']);
+  expect(readdirSync(resolve(app, '(tabs)')).filter((name) => !name.startsWith('_')).sort()).toEqual(['anniversaries', 'calendar', 'home.tsx', 'index.tsx', 'planet.tsx', 'room.tsx', 'settings']);
 });
 it('keeps the end-space, report and ended-notice screens outside the tab group so the tab bar is hidden', () => {
   const app = resolve(__dirname, '..');
@@ -20,8 +20,8 @@ it('V0-F11-AC-08 keeps the routes the widget links open', () => {
   expect(readdirSync(resolve(app, 'anniversary'))).toContain('[key].tsx');
 });
 
-it('V0-F03-AC-05 registers the three V0 tab triggers in order', () => {
+it('V0-F03-AC-05 registers the four V0 tab triggers in order: home, calendar, anniversaries, settings', () => {
   const layout = readFileSync(resolve(__dirname, '../(tabs)/_layout.tsx'), 'utf8');
   const names = [...layout.matchAll(/<NativeTabs\.Trigger name="([^"]+)"/g)].map((match) => match[1]);
-  expect(names).toEqual(['home', 'anniversaries/index', 'settings/index']);
+  expect(names.filter((name) => name !== 'planet')).toEqual(['home', 'calendar/index', 'anniversaries/index', 'settings/index']);
 });

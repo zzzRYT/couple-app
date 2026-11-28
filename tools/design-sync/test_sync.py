@@ -80,6 +80,7 @@ class SyncTests(unittest.TestCase):
             (root/'apps/mobile/src/i18n/locales').mkdir(parents=True)
             repo = HERE.parents[1]
             shutil.copytree(repo/'apps/mobile/src/i18n/locales/v0', root/'apps/mobile/src/i18n/locales/v0')
+            shutil.copytree(repo/'apps/mobile/src/i18n/locales/v1', root/'apps/mobile/src/i18n/locales/v1')
             shutil.copyfile(repo/'apps/mobile/src/i18n/v0Keys.d.ts', root/'apps/mobile/src/i18n/v0Keys.d.ts')
             v0_copy = Path('specs/002-couple-dday-v0/handoffs/design/copy-v0.md')
             (root/v0_copy).parent.mkdir(parents=True)

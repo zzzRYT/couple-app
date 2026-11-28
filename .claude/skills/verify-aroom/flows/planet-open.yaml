@@ -1,0 +1,9 @@
+appId: com.jinjinstar.aroom.dev
+---
+- extendedWaitUntil:
+    visible: "감자별.*"
+    timeout: 30000
+- tapOn: "감자별.*"
+- extendedWaitUntil:
+    visible: "감자별, 오브젝트 0개, 아루미가 서 있어요"
+    timeout: 30000

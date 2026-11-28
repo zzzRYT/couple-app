@@ -1,7 +1,7 @@
 {
   "ios": {
     "engine": "hot-updater/interface@1",
-    "hash": "35a5db23df086b4cfc7185054a5aaed5fc4d8fc041a6c4c0f85b4dcf3b4984b6",
+    "hash": "cd193e7ca80fb3f177271ee79fc9b565879b9ac7e85bd243691a048e69cb8554",
     "sources": [
       {
         "type": "contents",
@@ -173,6 +173,15 @@
           "native-dependency"
         ],
         "hash": "8f23222921ec24417713ec7a073da723c7c063815354db8fab4dbf23596f2078"
+      },
+      {
+        "type": "contents",
+        "id": "dependency:expo-gl",
+        "contents": "expo-gl@58.0.4",
+        "reasons": [
+          "native-dependency"
+        ],
+        "hash": "d17b32eab8282d7168ae73183641560eafa94b255f0a671224620c14e07212c1"
       },
       {
         "type": "contents",
@@ -403,7 +412,7 @@
   },
   "android": {
     "engine": "hot-updater/interface@1",
-    "hash": "6640bd20a25c0f09dc6f67b553de778c3aa04b635cbc75ed5ba3accc75c2d31e",
+    "hash": "6bbf94b0acf58b9557448f5f3be74d09376b37443ec2753aaff8ea09abddf252",
     "sources": [
       {
         "type": "contents",
@@ -566,6 +575,15 @@
           "native-dependency"
         ],
         "hash": "8f23222921ec24417713ec7a073da723c7c063815354db8fab4dbf23596f2078"
+      },
+      {
+        "type": "contents",
+        "id": "dependency:expo-gl",
+        "contents": "expo-gl@58.0.4",
+        "reasons": [
+          "native-dependency"
+        ],
+        "hash": "d17b32eab8282d7168ae73183641560eafa94b255f0a671224620c14e07212c1"
       },
       {
         "type": "contents",

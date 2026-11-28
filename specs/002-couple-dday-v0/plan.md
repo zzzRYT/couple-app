@@ -273,6 +273,8 @@ CI(`.github/workflows/ci.yml`)는 이미 lint·typecheck·mobile test·pgTAP·de
 | V0-F17-AC-01~05 | RNTL | `features/settings/__tests__/security.test.tsx` |
 | V0-F17-AC-02~04 | Deno | `auth-password/__tests__/password.test.ts` |
 | V0-F18-AC-01~03, -05 | RNTL | `features/account/__tests__/deletePassword.test.tsx` |
+| V0-F19-AC-01~04, -06 | Deno + pgTAP | `supabase/functions/spaces/__tests__/events.test.ts`, `supabase/tests/v0_calendar_event.test.sql` |
+| V0-F19-AC-01~07 | Jest + RNTL | `features/calendar/__tests__/*.test.ts(x)`, `features/notifications/__tests__/plan.test.ts` |
 | V0-F18-AC-01~04, -06~08 | Deno + pgTAP | `account/__tests__/passwordDelete.test.ts`, `account/__tests__/providers.test.ts`, `supabase/tests/v0_password_auth.test.sql` |
 
 ### 11. 슬라이스 사이 검증 게이트

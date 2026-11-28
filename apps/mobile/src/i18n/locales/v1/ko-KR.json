@@ -1,0 +1,10 @@
+{
+  "planet.tab": "감자별",
+  "planet.days": "함께한 지 {n}일째",
+  "planet.a11y": "감자별, 오브젝트 0개, 아루미가 서 있어요",
+  "planet.left": "왼쪽으로 돌리기",
+  "planet.right": "오른쪽으로 돌리기",
+  "planet.hint": "끌어서 별을 돌려 보세요",
+  "planet.zoomIn": "확대",
+  "planet.zoomOut": "축소"
+}

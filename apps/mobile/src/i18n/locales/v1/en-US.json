@@ -1,0 +1,10 @@
+{
+  "planet.tab": "Planet",
+  "planet.days": "Day {n} together",
+  "planet.a11y": "Potato Planet, 0 objects, Aroomi is standing",
+  "planet.left": "Rotate left",
+  "planet.right": "Rotate right",
+  "planet.hint": "Drag to rotate the planet",
+  "planet.zoomIn": "Zoom in",
+  "planet.zoomOut": "Zoom out"
+}

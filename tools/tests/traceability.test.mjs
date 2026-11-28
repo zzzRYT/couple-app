@@ -33,7 +33,7 @@ function expandIds(cell) {
   let prefix = '';
   for (const raw of cell.replace(/`/g, '').split(',')) {
     const token = raw.trim();
-    const full = token.match(/^(V0-(?:F\d\d-AC-|EC-|NF-|DR-))(\d\d)(?:~(\d\d))?$/);
+    const full = token.match(/^(V[01]-(?:F\d\d-AC-|EC-|NF-|DR-))(\d\d)(?:~(\d\d))?$/);
     const short = token.match(/^-(\d\d)(?:~(\d\d))?$/);
     const match = full ?? short;
     if (!match) continue;
@@ -93,4 +93,30 @@ test('SC-004 every spec scenario has a test, or a device-checks.md row when it n
     { missingTests: [], missingDevice: [] },
     `scenario ids without a test (put the id in the test name) or a device-checks.md row`,
   );
+});
+
+// Only completed V1 slices are required to have every listed scenario covered.
+test('SC-006 completed V1 slice scenarios have tests', async () => {
+  const tasks = await read('specs/003-ai-couple-planet-v1/tasks.md');
+  const section = tasks.split('## 추적표')[1];
+  assert.ok(section, 'V1 traceability table not found');
+  const ids = [];
+  for (const line of section.split('\n')) {
+    const cells = line.split('|').map((cell) => cell.trim());
+    if (/^V1-S\d+$/.test(cells[1] ?? '') && /^\[x\]$/i.test(cells[3] ?? '')) {
+      const expanded = expandIds(cells[2]);
+      assert.ok(expanded.length, `no scenario ids parsed for ${cells[1]}`);
+      ids.push(...expanded);
+    }
+  }
+  let text = '';
+  for (const { dir, only } of TEST_ROOTS) for (const path of await walk(dir, only)) {
+    const source = await read(path);
+    for (const match of source.matchAll(/\b(?:it|test)\s*\(\s*(['"`])([^'"`]+)\1/g)) text += `\n${match[2]}`;
+  }
+  assert.deepEqual(ids.filter((id) => !hasId(text, id)), []);
+});
+
+test('V1 ranges expand into exact scenario IDs', () => {
+  assert.deepEqual(expandIds('V1-F01-AC-01~03, V1-F02-AC-01, -02'), ['V1-F01-AC-01', 'V1-F01-AC-02', 'V1-F01-AC-03', 'V1-F02-AC-01', 'V1-F02-AC-02']);
 });

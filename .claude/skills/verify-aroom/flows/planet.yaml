@@ -1,0 +1,21 @@
+appId: com.jinjinstar.aroom.dev
+---
+- extendedWaitUntil:
+    visible: "나를 알려 주세요"
+    timeout: 20000
+- tapOn: "상대에게 보일 이름"
+- inputText: "검증"
+- hideKeyboard
+- tapOn:
+    text: "다음"
+    optional: true
+- tapOn:
+    text: "홈에서 기다릴게요"
+    optional: true
+- extendedWaitUntil:
+    visible: "감자별.*"
+    timeout: 20000
+- tapOn: "감자별.*"
+- extendedWaitUntil:
+    visible: "감자별, 오브젝트 0개, 아루미가 서 있어요"
+    timeout: 20000

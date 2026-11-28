@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>auth</title><style>body{font:16px/1.55 system-ui,sans-serif;max-width:1100px;margin:auto;padding:24px;color:#352a2d;background:#fbf8f5}a{color:#804052}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:1em;border-radius:10px}img{max-width:300px;max-height:600px;object-fit:contain;border:1px solid #ddd;border-radius:8px}figure{display:inline-block;vertical-align:top;margin:8px}figcaption{max-width:300px;overflow-wrap:anywhere}table{border-collapse:collapse;background:white;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}td{overflow-wrap:anywhere}nav{margin-bottom:1em}</style><body><p><strong>아티팩트 정본의 저장소 미러 · 버전 1794730943-9b84 · 생성 파일은 수정하지 마세요. 상태 명세와 PNG는 아티팩트에 비해 오래되었을 수 있습니다.</strong> <a href="https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X">아티팩트</a></p><nav><a href="../index.html">전체</a> · <a href="feature.md">기능 편집</a></nav><h1>auth</h1><pre># auth
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>auth</title><style>body{font:16px/1.55 system-ui,sans-serif;max-width:1100px;margin:auto;padding:24px;color:#352a2d;background:#fbf8f5}a{color:#804052}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:1em;border-radius:10px}img{max-width:300px;max-height:600px;object-fit:contain;border:1px solid #ddd;border-radius:8px}figure{display:inline-block;vertical-align:top;margin:8px}figcaption{max-width:300px;overflow-wrap:anywhere}table{border-collapse:collapse;background:white;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}td{overflow-wrap:anywhere}nav{margin-bottom:1em}</style><body><p><strong>아티팩트 정본의 저장소 미러 · 버전 1795646600-627a · 생성 파일은 수정하지 마세요. 상태 명세와 PNG는 아티팩트에 비해 오래되었을 수 있습니다.</strong> <a href="https://claude.ai/artifact/M2WFQCFnVzoWbHNhJPCz5X">아티팩트</a></p><nav><a href="../index.html">전체</a> · <a href="feature.md">기능 편집</a></nav><h1>auth</h1><pre># auth
 
 승인자: 미승인
 승인일: 미정
@@ -93,8 +93,6 @@ Route: /(auth)/login, /(auth)/email-code
 - [S02-select__ios-light-ko.png](../../../exports/S02-select__ios-light-ko.png)
 
 ## 상태와 상호작용
-
-개발 빌드의 테스트 계정 빠른 로그인은 `login.quick.title`을 사용합니다.
 
 - **캔버스 보드**: `S02-login`
 - **개정(2026-10-27, 소유자 결정)**: 제품 로그인은 Sign in with Apple만 보여요(iOS는 Apple 공식 버튼, 처리 중·취소·오류 상태는 그대로). 카카오 버튼은 플래그로 숨기고, 이메일 선택·코드 입력은 개발 빌드 전용 테스트 로그인으로만 남아요. Android는 당분간 Apple 버튼이 없어요(웹 흐름은 Services ID 설정 뒤). 아래 원래 설명과 `S01-return`의 `login.kakao`·`login.email`은 이 개정이 우선해요.

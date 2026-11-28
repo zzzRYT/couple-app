@@ -80,7 +80,10 @@ async function devSql(query) {
   return management('/database/query', { method: 'POST', body: JSON.stringify({ query }) });
 }
 async function api(method, path, key, bearer, body) {
-  const response = await fetch(`${DEV_URL}${path}`, { method, headers: { apikey: key, Authorization: `Bearer ${bearer}`, 'Content-Type': 'application/json', 'Idempotency-Key': randomUUID() }, body: body === undefined ? undefined : JSON.stringify(body) });
+  const idempotencyKey = randomUUID();
+  // Like the app (lib/api.ts keyInBody), Edge Function writes carry the key in the body as well as the header.
+  const payload = body === undefined ? undefined : JSON.stringify(path.startsWith('/functions/') ? { ...body, idempotencyKey } : body);
+  const response = await fetch(`${DEV_URL}${path}`, { method, headers: { apikey: key, Authorization: `Bearer ${bearer}`, 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey }, body: payload });
   const text = await response.text();
   let json = null;
   try { json = text ? JSON.parse(text) : null; } catch { json = text; }
@@ -151,7 +154,7 @@ function launch(args) {
 function maestro(flow) {
   const { udid, users } = state();
   if (!udid) throw new Error('No verification simulator; run launch first');
-  const user = users.at(-1);
+  const user = users.findLast((candidate) => !candidate.partner);
   const file = join(SKILL, 'flows', `${flow}.yaml`);
   if (!existsSync(file)) throw new Error(`No flow ${file}`);
   // Maestro reads MAESTRO_* variables from its environment, which keeps the password off the command line.
@@ -159,30 +162,77 @@ function maestro(flow) {
   run('maestro', ['--device', udid, 'test', '--no-ansi', '--test-output-dir', join(HOME, 'maestro'), file], { env: { ...process.env, ...vars } });
 }
 
-async function session(args) {
-  const { publishable, secret } = await devKeys();
+async function signIn(publishable, { email, password }) {
+  const tokens = await api('POST', '/auth/v1/token?grant_type=password', publishable, publishable, { email, password });
+  if (tokens.status !== 200) throw new Error(`password grant: ${tokens.status}`);
+  return tokens.json;
+}
+/** Records the user in state before anything else can fail, so cleanup always finds it. */
+async function newUser(publishable, secret, extra = {}) {
   const email = `${EMAIL_PREFIX}${Date.now()}-${randomInt(1000, 9999)}@example.com`;
   const password = randomUUID();
   // Email sign-up is closed on Aroom-dev (guard_email_signup), so the user starts as a phone user and gets the email after.
   const created = await api('POST', '/auth/v1/admin/users', secret, secret, { phone: `1555${randomInt(1000000, 9999999)}`, password, phone_confirm: true });
   if (created.status !== 200) throw new Error(`create user: ${created.status} ${JSON.stringify(created.json)}`);
+  const user = { id: created.json.id, email, password, ...extra };
   const current = state();
-  save({ ...current, users: [...current.users, { id: created.json.id, email, password }] });
+  save({ ...current, users: [...current.users, user] });
   const updated = await api('PUT', `/auth/v1/admin/users/${created.json.id}`, secret, secret, { email, email_confirm: true, app_metadata: { provider: 'email', providers: ['email'] } });
   if (updated.status !== 200) throw new Error(`set email: ${updated.status}`);
-  const tokens = await api('POST', '/auth/v1/token?grant_type=password', publishable, publishable, { email, password });
-  if (tokens.status !== 200) throw new Error(`password grant: ${tokens.status}`);
+  return { user, tokens: await signIn(publishable, user) };
+}
+function remember(id, change) {
+  const current = state();
+  save({ ...current, users: current.users.map((user) => (user.id === id ? { ...user, ...change } : user)) });
+}
+
+async function session(args) {
+  const { publishable, secret } = await devKeys();
+  const { user, tokens } = await newUser(publishable, secret);
+  const email = user.email;
   const space = args[args.indexOf('--space') + 1];
   if (args.includes('--space')) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(space ?? '')) throw new Error('--space needs an anniversary date, YYYY-MM-DD');
-    const made = await api('POST', '/functions/v1/spaces/spaces', publishable, tokens.json.access_token, { anniversaryDate: space, timeZone: 'Asia/Seoul' });
+    const made = await api('POST', '/functions/v1/spaces/spaces', publishable, tokens.access_token, { anniversaryDate: space, timeZone: 'Asia/Seoul' });
     if (made.status !== 201) throw new Error(`create space: ${made.status} ${JSON.stringify(made.json)}`);
+    remember(user.id, { spaceId: made.json.spaceId });
     console.log(`Space ${made.json.spaceId}, anniversary ${space}`);
   }
   console.log(`Test user ${email} on ${TARGETS.dev.name}`);
   if (args.includes('--no-open')) return;
-  run('xcrun', ['simctl', 'openurl', state().udid, sessionLink(tokens.json)]);
+  run('xcrun', ['simctl', 'openurl', state().udid, sessionLink(tokens)]);
   maestro('open-link');
+}
+
+/**
+ * A second test user joins the last session's space through the app's own invitation and profile endpoints, then
+ * optionally writes calendar events as that partner, so a proof can show both partners' entries on one device.
+ */
+async function partner(args) {
+  const owner = state().users.findLast((user) => user.spaceId);
+  if (!owner) throw new Error('No session with a space; run session --space DATE first');
+  const name = args.includes('--name') ? args[args.indexOf('--name') + 1] : '하루';
+  const events = args.flatMap((arg, i) => (arg === '--event' ? [args[i + 1]] : []));
+  const { publishable, secret } = await devKeys();
+  const ownerTokens = await signIn(publishable, owner);
+  const invite = await api('POST', `/functions/v1/invitations/spaces/${owner.spaceId}/invitations`, publishable, ownerTokens.access_token, { expiresInSeconds: 86400 });
+  if (invite.status !== 201 && invite.status !== 200) throw new Error(`create invitation: ${invite.status} ${JSON.stringify(invite.json)}`);
+  const { user, tokens } = await newUser(publishable, secret, { partner: true });
+  const joined = await api('POST', '/functions/v1/invitations/invitations/accept', publishable, tokens.access_token, { code: invite.json.code });
+  if (joined.status !== 200) throw new Error(`accept invitation: ${joined.status} ${JSON.stringify(joined.json)}`);
+  const profile = await api('PUT', '/functions/v1/profile/profile/member', publishable, tokens.access_token, { displayName: name, birthday: null });
+  if (profile.status !== 200) throw new Error(`partner profile: ${profile.status} ${JSON.stringify(profile.json)}`);
+  for (const event of events) {
+    const [title, date, time, alert, whose = 'together'] = (event ?? '').split('|');
+    if (!title || !/^\d{4}-\d{2}-\d{2}$/.test(date ?? '')) throw new Error('--event needs "title|YYYY-MM-DD|HH:MM or empty|alert|together, me or partner"');
+    // Whose plan, seen from the session user: me is the session user, partner is this joined user.
+    const ownerId = { together: null, me: owner.id, partner: user.id }[whose];
+    if (ownerId === undefined) throw new Error(`--event owner must be together, me or partner, not ${whose}`);
+    const made = await api('POST', `/functions/v1/spaces/spaces/${owner.spaceId}/events`, publishable, tokens.access_token, { title, date, time: time || null, endTime: null, alert: alert || 'none', ownerId });
+    if (made.status !== 201) throw new Error(`partner event: ${made.status} ${JSON.stringify(made.json)}`);
+    console.log(`Partner event "${title}" on ${date}`);
+  }
+  console.log(`Partner ${name} (${user.email}) joined space ${owner.spaceId}`);
 }
 
 function shot(name) {
@@ -253,7 +303,9 @@ const USAGE = `usage: aroom.mjs <command>
   launch [--fresh]           create/boot the verification simulator, install and start the app (--fresh: empty app data)
   session [--space DATE] [--no-open]
                              new test user on Aroom-dev (optionally with a space), signed in through the auth-callback link
-  drive <flow>               run flows/<flow>.yaml with Maestro as the last test user (MAESTRO_EMAIL, MAESTRO_PASSWORD)
+  partner [--name NAME] [--event "title|YYYY-MM-DD|HH:MM|alert|together|me|partner"]...
+                             second test user joins the last session's space (invitation + profile), optionally writing events
+  drive <flow>               run flows/<flow>.yaml with Maestro as the last session user (MAESTRO_EMAIL, MAESTRO_PASSWORD)
   shot <feature>/<name>      screenshot to design/evidence/verify-aroom/<feature>/<name>.png
   cleanup                    delete test users, spaces and the simulator; evidence stays`;
 
@@ -263,6 +315,7 @@ async function main([command, ...args]) {
     case 'build': return build(args);
     case 'launch': return launch(args);
     case 'session': return session(args);
+    case 'partner': return partner(args);
     case 'drive': return maestro(args[0]);
     case 'shot': return shot(args[0]);
     case 'cleanup': return cleanup();

@@ -44,12 +44,12 @@ V1 화면 보드는 아직 없다(spec "이 spec이 정하지 않는 것"). S1�
 
 **데이터 형태**: 별 장면은 순수한 값 하나에서 그린다. `PlanetScene = { theme: ThemeTokens /* P02 8개 */, timeOfDay: 'day' | 'night', camera: { yaw, pitch, zoom /* 1~2.2 */ } }`. 테마는 `P02` 7개 프리셋을 담은 표(레지스트리) 하나로 두고, S7이 같은 표를 쓴다. 조작은 `camera` 값만 바꾸는 순수 함수(끌기·핀치·관성 감쇠)로 두어 단위 테스트한다.
 
-- [ ] **T101** V1 추적 검사: 이 문서 끝의 추적표(슬라이스, 정확한 시나리오 ID 목록, 완료 표시)를 두고, `tools/tests/traceability.test.mjs`가 완료 표시된 행의 V1 ID가 테스트 이름에 있는지 검사하게 넓힌다. 슬라이스마다 끝날 때 자기 행을 완료로 바꾼다. AGENTS.md 규칙 표의 추적 행은 "V0 scenario ID"만 말하므로, 검사가 넓어지는 이 PR에서 그 행을 V1까지 고친다. — SC-006
-- [ ] **T102** V1 플래그 묶음을 `apps/mobile/src/config/features.ts`에 더한다. `__DEV__`가 아니라 `config/auth.ts`처럼 `EXPO_PUBLIC_APP_VARIANT === 'development'`로 켜서, `verify-aroom`의 Release 구성 development 빌드에서도 켜진다. 플래그가 꺼져 있으면 탭·경로가 없다는 테스트. — V1-NF-01
-- [ ] **T103** 렌더 스택 설치와 기록: `expo-gl`, `three`, `@react-three/fiber`, `@react-three/drei`(SDK 58 호환 버전, `npx expo install`), Metro `assetExts`에 `glb`. 네이티브 변경이라 새 dev 빌드. 다른 후보와 고른 이유를 이 폴더 `research.md`에 짧게 남긴다. — OQ-02
-- [ ] **T104** 아루미 모바일 GLB: 오너에게 받은 `aroomi-v1-tpose.glb`를 삼각형 약 1만 개·텍스처 절반으로 줄여 `apps/mobile/assets/`에 넣는다(줄이는 명령을 스크립트로 남겨 다시 돌릴 수 있게). 원본을 못 받으면 S1을 시작하지 않고 막힘으로 보고한다. — V1-F02-AC-01, A-02
-- [ ] **T105** 테마 표와 장면 순수 함수: `PlanetScene` 타입, `P02` 7개 프리셋 표(`detail`이 없는 6개는 OQ-25 기본값), 카메라 조작 함수(끌기 → yaw/pitch, 핀치 → zoom 1~2.2 고정, 약 600ms 관성 감쇠, 동작 줄이기면 관성 0), 공간 시간대 낮·밤(OQ-24 기본값). 단위 테스트. — V1-F01-AC-02~04, -07
-- [ ] **T106** 감자별 화면: 별(울퉁불퉁한 구, 위쪽 풀밭 cap, 매트 재질, `P01` 빛), 아루미를 `attach_ground` 기준으로 표면에 세움, 자율 이동과 팔 동작(인사·만세·차렷, 팔 회전축만), 왼쪽 위 D+Day 알약(V0 `dayCount` 재사용), 접근성 동작(왼쪽·오른쪽으로 돌리기)과 요약 라벨. 탭은 `P01` 임시 배치(OQ-01 기본값). — V1-F01-AC-01, -05, -06, V1-F02-AC-01, -02
+- [x] **T101** V1 추적 검사: 이 문서 끝의 추적표(슬라이스, 정확한 시나리오 ID 목록, 완료 표시)를 두고, `tools/tests/traceability.test.mjs`가 완료 표시된 행의 V1 ID가 테스트 이름에 있는지 검사하게 넓힌다. 슬라이스마다 끝날 때 자기 행을 완료로 바꾼다. AGENTS.md 규칙 표의 추적 행은 "V0 scenario ID"만 말하므로, 검사가 넓어지는 이 PR에서 그 행을 V1까지 고친다. — SC-006
+- [x] **T102** V1 플래그 묶음을 `apps/mobile/src/config/features.ts`에 더한다. `__DEV__`가 아니라 `config/auth.ts`처럼 `EXPO_PUBLIC_APP_VARIANT === 'development'`로 켜서, `verify-aroom`의 Release 구성 development 빌드에서도 켜진다. 플래그가 꺼져 있으면 탭·경로가 없다는 테스트. — V1-NF-01
+- [x] **T103** 렌더 스택 설치와 기록: `expo-gl`, `three`, `@react-three/fiber`, `@react-three/drei`(SDK 58 호환 버전, `npx expo install`), Metro `assetExts`에 `glb`. 네이티브 변경이라 새 dev 빌드. 다른 후보와 고른 이유를 이 폴더 `research.md`에 짧게 남긴다. — OQ-02
+- [ ] **T104** 아루미 모바일 GLB (오너 파일 대기, S1은 임시 도형으로 진행): 오너에게 받은 `aroomi-v1-tpose.glb`를 삼각형 약 1만 개·텍스처 절반으로 줄여 `apps/mobile/assets/`에 넣는다(줄이는 명령을 스크립트로 남겨 다시 돌릴 수 있게). 원본을 받은 뒤 완료한다. — V1-F02-AC-01, A-02
+- [x] **T105** 테마 표와 장면 순수 함수: `PlanetScene` 타입, `P02` 7개 프리셋 표(`detail`이 없는 6개는 OQ-25 기본값), 카메라 조작 함수(끌기 → yaw/pitch, 핀치 → zoom 1~2.2 고정, 약 600ms 관성 감쇠, 동작 줄이기면 관성 0), 공간 시간대 낮·밤(OQ-24 기본값). 단위 테스트. — V1-F01-AC-02~04, -07
+- [ ] **T106** 감자별 화면: 별(울퉁불퉁한 구, 위쪽 풀밭 cap, 매트 재질, `P01` 빛), 아루미를 `attach_ground` 기준으로 표면에 세움, 자율 이동과 팔 동작(인사·만세·차렷, 팔 회전축만), 왼쪽 위 D+Day 알약(V0 `dayCount` 재사용), 접근성 동작(왼쪽·오른쪽으로 돌리기)과 요약 라벨. 임시 아루미를 쓰며 실제 기기 조작은 오너가 확인한다. — V1-F01-AC-01, -05, -06, V1-F02-AC-01, -02
 - [ ] **T107** 측정: 오너 기기와 지원 하한 후보 기기에서 끌기 중 fps와 첫 표시 시간을 재서 PR에 표로 남기고, 하한을 못 지키면 낮은 품질 단계(그림자·관성·자율 이동 줄이기)를 더하거나 OQ-02의 대안을 연다. — V1-F01-AC-08, V1-NF-02, V1-EC-07, SC-001
 - [ ] **T108** `verify-aroom` 시뮬레이터 증거(밝게·어둡게, 동작 줄이기)와 design-review 선언.
 

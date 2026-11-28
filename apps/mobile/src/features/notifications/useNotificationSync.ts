@@ -7,6 +7,7 @@ import { useSpace } from '../space/SpaceContext';
 import type { WidgetData } from '../widgets/snapshot';
 import { syncWidgets, widgetGeneration } from '../widgets/writer';
 import { subscribeNotifyPrefs } from './preferences';
+import type { EventAlertInput } from './plan';
 import { resyncNotifications } from './scheduler';
 
 const DEBOUNCE_MS = 500;
@@ -27,6 +28,7 @@ export function useNotificationSync() {
     partner: partner ? { birthday: partner.birthday, displayName: partner.displayName } : null,
     customs: snapshot.anniversaries.map(({ id, title, date, repeat, presetId }) => ({ id, title, date, repeat, presetId })),
   });
+  const events = snapshot && JSON.stringify(snapshot.events.map(({ id, title, date, time, alert }) => ({ id, title, date, time, alert })));
   const closed = !userId ? (sessionLoaded ? 'none' : null) : entry === 'ended' ? (ended?.by === 'me' ? 'none' : 'ended') : entry === 'none' ? 'none' : null;
   const widget = snapshot ? JSON.stringify({
     state: snapshot.space.memberCount < 2 ? 'pending' : 'normal', spaceId: snapshot.space.spaceId, names: { me: snapshot.me.displayName, partner: partner?.displayName ?? null },
@@ -40,7 +42,7 @@ export function useNotificationSync() {
     const sync = () => {
       clearTimeout(timer);
       timer = setTimeout(() => {
-        if (userId && input) void resyncNotifications(userId, input, (key, vars) => i18n.t(key, vars), new Date().toISOString()).catch(() => undefined);
+        if (userId && input) void resyncNotifications(userId, input, events ? JSON.parse(events) as EventAlertInput[] : [], (key, vars) => i18n.t(key, vars), new Date().toISOString()).catch(() => undefined);
         void syncWidgets(data, opened).catch(() => undefined);
       }, DEBOUNCE_MS);
     };
@@ -49,5 +51,5 @@ export function useNotificationSync() {
     const foreground = AppState.addEventListener('change', (status) => { if (status === 'active') sync(); });
     i18n.on('languageChanged', sync);
     return () => { clearTimeout(timer); stopPrefs(); foreground.remove(); i18n.off('languageChanged', sync); };
-  }, [userId, dates, widget, i18n]);
+  }, [userId, dates, events, widget, i18n]);
 }
