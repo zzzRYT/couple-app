@@ -25,14 +25,14 @@ export default function AnniversaryDetailRoute() {
   const item = view && [...view.todayItems, ...view.upcoming, ...view.past].find((entry) => entry.key === decoded);
   const custom = snapshot?.anniversaries.find((entry) => entry.id === item?.customId);
   // Under the edit sheet the item can vanish mid-flow; the sheet decides where to go, and this screen only leaves once it is on top again.
-  useEffect(() => { if (focused && snapshot && !item && !closing.current) router.replace('/(tabs)/anniversaries'); }, [focused, snapshot, item]);
+  useEffect(() => { if (focused && snapshot && !item && !closing.current) router.dismissTo('/(tabs)/anniversaries'); }, [focused, snapshot, item]);
   useEffect(() => { if (snapshot && custom) void getAnniversaryNotify(snapshot.me.userId, custom.id).then(setNotify); }, [snapshot?.me.userId, custom?.id]);
   if (!snapshot || !item || !view) return null;
   const name = profilesOf(snapshot, t).partner.name;
   const remove = () => Alert.alert(t('edit.delete.title'), partner ? t('edit.delete.body', { name }) : t('edit.delete.body.unpaired'), [ { text: t('common.cancel'), style: 'cancel' }, { text: t('common.delete'), style: 'destructive', onPress: () => {
     if (!custom) return;
     void client.deleteAnniversaryItem(snapshot.space.spaceId, custom.id, custom.version, randomUUID()).then(async () => {
-      closing.current = true; await refresh(); router.replace({ pathname: '/(tabs)/anniversaries', params: { toast: 'deleted' } });
+      closing.current = true; await refresh(); router.dismissTo({ pathname: '/(tabs)/anniversaries', params: { toast: 'deleted', at: String(Date.now()) } });
     }).catch((error: unknown) => {
       if (error instanceof ApiError && error.code === 'VERSION_CONFLICT') { void refresh(); Alert.alert(t('edit.conflict.title', { name }), t('edit.conflict.body'), [{ text: t('common.ok') }]); return; }
       if (error instanceof ApiError && error.code === 'NOT_FOUND' && error.details.gone === true) { closing.current = true; Alert.alert(t('edit.gone.title'), t('edit.gone.body', { name }), [{ text: t('common.ok'), onPress: () => { router.dismissTo('/(tabs)/anniversaries'); void refresh(); } }]); return; }

@@ -52,18 +52,10 @@ export function nextCustomDate(custom: { date: string; repeat: 'yearly' | 'once'
   return date >= today ? date : annualDate(year + 1, month, day);
 }
 
-/** Calculate list and celebration occurrences in the space's calendar time zone. */
-export function computeAnniversaries(input: AnniversaryInput, nowIso: string) {
+/** Every occurrence dated from `first` to `last` (inclusive), sorted by date, then kind. The list asks for a year either side of today; the calendar asks for one month. */
+export function occurrencesBetween(input: AnniversaryInput, first: string, last: string): Occurrence[] {
   const start = parseCalendarDate(input.startDate);
   if (start === null) throw new Error('Invalid start date');
-  const today = todayIn(nowIso, input.timeZone);
-  const current = parseCalendarDate(today)!;
-  const count = dayCount(input.startDate, nowIso, input.timeZone);
-  const year = Number(today.slice(0, 4));
-  const month = Number(today.slice(5, 7));
-  const day = Number(today.slice(8, 10));
-  const first = annualDate(year - 1, month, day);
-  const last = annualDate(year + 1, month, day);
   const items: Occurrence[] = [];
   // Customs are dates the couple chose, so they keep dates before the relationship (ND12); the generated kinds start with it.
   const add = (item: Occurrence) => {
@@ -75,7 +67,10 @@ export function computeAnniversaries(input: AnniversaryInput, nowIso: string) {
   const startYear = Number(input.startDate.slice(0, 4));
   // My birthday shows once I enter it; the partner's only once both of us have (V0-F05-AC-01).
   const birthdays = input.me.birthday ? [{ who: 'me' as const, ...input.me.birthday }, ...(input.partner?.birthday ? [{ who: 'partner' as const, ...input.partner.birthday }] : [])] : [];
-  for (let y = year - 1; y <= year + 1; y++) {
+  for (const custom of input.customs) {
+    if (custom.repeat === 'once' && parseCalendarDate(custom.date) !== null) add({ key: `custom:${custom.id}`, kind: 'custom', date: custom.date, customId: custom.id, title: custom.title, presetId: custom.presetId });
+  }
+  for (let y = Number(first.slice(0, 4)); y <= Number(last.slice(0, 4)); y++) {
     if (y > startYear) add({ key: `y${y - startYear}`, kind: 'years', date: annualDate(y, Number(input.startDate.slice(5, 7)), Number(input.startDate.slice(8, 10))), n: y - startYear });
     for (const { who, month, day } of birthdays) add({ key: `bday:${who}:${y}`, kind: 'birthday', date: annualDate(y, month, day), who });
     for (const preset of ANNIVERSARY_PRESETS) {
@@ -85,15 +80,23 @@ export function computeAnniversaries(input: AnniversaryInput, nowIso: string) {
     add({ key: `season:pepero:${y}`, kind: 'season', date: annualDate(y, 11, 11), seasonId: 'pepero' });
     add({ key: `season:christmas:${y}`, kind: 'season', date: annualDate(y, 12, 25), seasonId: 'christmas' });
     for (const custom of input.customs) {
-      if (parseCalendarDate(custom.date) === null) continue;
-      if (custom.repeat === 'once') {
-        if (y === year) add({ key: `custom:${custom.id}`, kind: 'custom', date: custom.date, customId: custom.id, title: custom.title, presetId: custom.presetId });
-      } else if (y >= Number(custom.date.slice(0, 4))) {
+      if (custom.repeat !== 'once' && parseCalendarDate(custom.date) !== null && y >= Number(custom.date.slice(0, 4))) {
         add({ key: `custom:${custom.id}:${y}`, kind: 'custom', date: annualDate(y, Number(custom.date.slice(5, 7)), Number(custom.date.slice(8, 10))), customId: custom.id, title: custom.title, presetId: custom.presetId });
       }
     }
   }
-  items.sort(compareDate);
+  return items.sort(compareDate);
+}
+
+/** Calculate list and celebration occurrences in the space's calendar time zone. */
+export function computeAnniversaries(input: AnniversaryInput, nowIso: string) {
+  const today = todayIn(nowIso, input.timeZone);
+  const current = parseCalendarDate(today)!;
+  const count = dayCount(input.startDate, nowIso, input.timeZone);
+  const year = Number(today.slice(0, 4));
+  const month = Number(today.slice(5, 7));
+  const day = Number(today.slice(8, 10));
+  const items = occurrencesBetween(input, annualDate(year - 1, month, day), annualDate(year + 1, month, day));
   const todayItems = items.filter((item) => item.date === today);
   const upcoming = items.filter((item) => item.date > today);
   const past = items.filter((item) => item.date < today).sort((a, b) => b.date.localeCompare(a.date) || compareKind(a, b));
