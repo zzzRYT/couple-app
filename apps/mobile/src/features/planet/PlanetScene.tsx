@@ -8,6 +8,7 @@ import { Platform } from 'react-native';
 import { Aroomi } from './Aroomi';
 import { SurfaceAnchor } from './SurfaceAnchor';
 import { potatoRadius, type PlanetScene as Scene } from './model';
+import type { Placement } from './placement';
 
 function prepareRenderer({ gl }: RootState) {
   if (Platform.OS !== 'ios') return;
@@ -41,7 +42,7 @@ function Potato({ ground }: { ground: string }) {
   return <mesh geometry={geometry} scale={[1, 0.94, 0.96]}><meshStandardMaterial color={ground} roughness={1} /></mesh>;
 }
 
-export function PlanetScene({ scene, reducedMotion, objects }: { scene: Scene; reducedMotion: boolean; objects?: ReactNode }) {
+export function PlanetScene({ scene, reducedMotion, objects, placements = [], scale = 1 }: { scene: Scene; reducedMotion: boolean; objects?: ReactNode; placements?: ReadonlyArray<Placement & { content: ReactNode }>; scale?: number }) {
   const { theme, timeOfDay, camera } = scene;
   return <Canvas onCreated={prepareRenderer} frameloop={reducedMotion ? 'demand' : 'always'} camera={{ fov: 30, position: [0, 0, 6 / camera.zoom] }}>
     <CameraZoom zoom={camera.zoom} />
@@ -49,10 +50,10 @@ export function PlanetScene({ scene, reducedMotion, objects }: { scene: Scene; r
     <directionalLight position={[-3, 5, 4]} intensity={1.75} color={timeOfDay === 'day' ? '#FFF4DF' : '#C9B8E8'} />
     <directionalLight position={[3, -2, 3]} intensity={0.35} color="#AACBE2" />
     <group rotation={[camera.pitch, camera.yaw, 0]}>
-      <Potato ground={theme.ground[1]} />
-      <mesh scale={[1.005, 0.945, 0.965]}><sphereGeometry args={[1, 48, 24, 0, Math.PI * 2, 0, 0.78]} /><meshStandardMaterial color={theme.cap[0]} roughness={1} /></mesh>
-      <SurfaceAnchor latitude={90} longitude={0}><Aroomi reducedMotion={reducedMotion} /></SurfaceAnchor>
-      <group name="planet-objects">{objects}</group>
+      <group scale={scale}><Potato ground={theme.ground[1]} />
+      <mesh scale={[1.005, 0.945, 0.965]}><sphereGeometry args={[1, 48, 24, 0, Math.PI * 2, 0, 0.78]} /><meshStandardMaterial color={theme.cap[0]} roughness={1} /></mesh></group>
+      <SurfaceAnchor latitude={90} longitude={0} surfaceScale={scale}><Aroomi reducedMotion={reducedMotion} /></SurfaceAnchor>
+      <group name="planet-objects">{objects}{placements.map((item) => <SurfaceAnchor key={item.id} latitude={item.latitude} longitude={item.longitude} heading={item.heading} surfaceScale={scale}>{item.content}</SurfaceAnchor>)}</group>
     </group>
   </Canvas>;
 }

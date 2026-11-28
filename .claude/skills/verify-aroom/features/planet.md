@@ -6,6 +6,7 @@ A development build exposes a planet tab with the space D+Day and an accessible 
 
 - The D+Day pill uses the space anniversary and time zone.
 - The planet control offers rotation and zoom accessibility actions.
+- A development toggle and a test-object button exercise the proposed level, capacity and local placements in `specs/003-ai-couple-planet-v1/planet-level.md`.
 
 ## How to get to it (user POV)
 
@@ -23,5 +24,6 @@ Preconditions:
 
 ## Gotchas
 
+- The test-object button is disabled while a save runs and drops taps during that time, so wait for the object count in the planet accessibility label between taps.
 - On the iOS 26.5 simulator used for S1, a GL synchronization workaround displays the planet and its temporary Aroomi; see the V1 rendering research for its limits.
 - The layout and tab icon need Claude Design review. Verify drag, pinch, reduced motion, frame rate and first-show time on a physical device.
