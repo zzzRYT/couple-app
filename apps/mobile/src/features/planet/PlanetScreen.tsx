@@ -166,7 +166,8 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
       <Pressable accessibilityRole="button" onPress={toggleWalk} style={{ padding: 12, borderRadius: 20, backgroundColor: '#FFFAF2' }}><Text>{t(walking ? 'planet.overview' : 'planet.walk')}</Text></Pressable>
       <Pressable accessibilityRole="button" disabled={!data || !asset || busy} onPress={() => { if (data) void place(spotFor({ radius: 0.31 }, data.placements)); }} style={{ padding: 12, borderRadius: 20, backgroundColor: '#FFFAF2' }}><Text>{t('planet.devPlace')}</Text></Pressable>
       <Button label={t('planet.create')} disabled={!data} onPress={() => { if (data && data.placements.length >= growth.capacity) { setMessage('planet.capacity'); return; } setMessage(''); setCreating(true); setJob(null); if (walking) toggleWalk(); }} />
-      {!!notice && <Text accessibilityLiveRegion="polite" style={{ color: timeOfDay === 'day' ? '#3F2D22' : '#F7EBDD' }}>{t(notice)}</Text>}
+      {/* In the walk view this line lies on the planet, whose colours do not change at night. */}
+      {!!notice && <Text accessibilityLiveRegion="polite" style={{ color: timeOfDay === 'day' || walking ? '#3F2D22' : '#F7EBDD' }}>{t(notice)}</Text>}
     </View>}
     {creating && <KeyboardAvoidingView onLayout={(event) => setPanelHeight(event.nativeEvent.layout.height)} behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ position: 'absolute', bottom: clearance, left: 12, right: 12 }}>
       <View style={{ backgroundColor: '#FFFAF2', borderRadius: 20, padding: 16, gap: 8 }}>
