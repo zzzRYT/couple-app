@@ -1,8 +1,8 @@
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber/native';
-import { Bone, Skeleton, Vector3 } from 'three';
-import type { Group, SkinnedMesh } from 'three';
-import { BODY, makeAroomiBody } from './aroomiBody';
+import { Vector3 } from 'three';
+import type { Group } from 'three';
+import { BODY, makeAroomiBody, swingArms } from './aroomiBody';
 
 // Seat a part on the front of the body, turned to face along the surface normal.
 function onBody(x: number, y: number, lift = 0): { position: [number, number, number]; rotation: [number, number, number, 'YXZ'] } {
@@ -13,22 +13,13 @@ function onBody(x: number, y: number, lift = 0): { position: [number, number, nu
 
 // Temporary generated model; replace this component when the owner's GLB is available.
 export function Aroomi({ reducedMotion }: { reducedMotion: boolean }) {
-  const character = useRef<Group>(null); const mesh = useRef<SkinnedMesh>(null);
-  const { geometry, root, left, right, skeleton } = useMemo(() => {
-    const root = new Bone(); const left = new Bone(); const right = new Bone();
-    left.position.set(-0.37, 0.44, 0); right.position.set(0.37, 0.44, 0);
-    root.add(left, right);
-    return { geometry: makeAroomiBody(), root, left, right, skeleton: new Skeleton([root, left, right]) };
-  }, []);
-  useLayoutEffect(() => {
-    mesh.current?.bind(skeleton);
-    return () => { geometry.dispose(); skeleton.dispose(); };
-  }, [geometry, skeleton]);
+  const character = useRef<Group>(null);
+  const body = useMemo(makeAroomiBody, []);
+  useEffect(() => () => body.geometry.dispose(), [body]);
   useFrame(({ clock }) => {
     if (reducedMotion) {
       if (character.current) { character.current.rotation.y = 0; character.current.position.set(0, 0, 0); }
-      left.rotation.z = 0;
-      right.rotation.z = 0;
+      swingArms(body, 0);
       return;
     }
     const t = clock.elapsedTime;
@@ -37,14 +28,10 @@ export function Aroomi({ reducedMotion }: { reducedMotion: boolean }) {
       character.current.position.set(x, -0.5 * x * x, 0);
       character.current.rotation.y = Math.sin(t * 0.3) * 0.35;
     }
-    left.rotation.z = Math.sin(t * 1.2) * 0.45;
-    right.rotation.z = -Math.sin(t * 1.2) * 0.45;
+    swingArms(body, Math.sin(t * 1.2) * 0.45);
   });
   return <group ref={character} scale={0.38}>
-    <skinnedMesh ref={mesh} geometry={geometry} frustumCulled={false}>
-      <primitive object={root} />
-      <meshStandardMaterial color="#F0CFA6" roughness={1} />
-    </skinnedMesh>
+    <mesh geometry={body.geometry}><meshStandardMaterial color="#F0CFA6" roughness={1} /></mesh>
     {[-1, 1].map((side) => <group key={side}>
       <mesh {...onBody(side * 0.13, 0.68)} scale={[0.025, 0.035, 0.012]}><sphereGeometry args={[1, 12, 8]} /><meshStandardMaterial color="#3A261C" roughness={1} /></mesh>
       <mesh {...onBody(side * 0.23, 0.57)} scale={[0.05, 0.035, 0.008]}><sphereGeometry args={[1, 12, 8]} /><meshStandardMaterial color="#F2A99B" roughness={1} /></mesh>

@@ -1,4 +1,4 @@
-import { BufferGeometry, Float32BufferAttribute, MeshStandardMaterial, Uint16BufferAttribute } from 'three';
+import { BufferGeometry, Float32BufferAttribute, MeshStandardMaterial } from 'three';
 import { MarchingCubes } from 'three/examples/jsm/objects/MarchingCubes.js';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
@@ -35,7 +35,7 @@ function distance(x: number, y: number, z: number) {
   return blend(blend(ellipsoid(side, y - 0.5, z, ...BODY), arm, 0.06), foot, 0.035);
 }
 
-// One closed skin for body, arms and feet. Bone 0 is the body, bones 1 and 2 the arms at -x and +x.
+// One closed skin for body, arms and feet. `follow` is how far each vertex goes with its arm, negative on -x.
 export function makeAroomiBody() {
   const surface = new MarchingCubes(SIZE, new MeshStandardMaterial());
   surface.isolation = 0;
@@ -44,7 +44,7 @@ export function makeAroomiBody() {
   const sampled = new BufferGeometry().setAttribute('position', new Float32BufferAttribute(surface.geometry.getAttribute('position').array.slice(0, surface.count * 3), 3));
   const geometry = mergeVertices(sampled);
   surface.geometry.dispose(); (surface.material as MeshStandardMaterial).dispose(); sampled.dispose();
-  const positions = geometry.getAttribute('position'); const normals: number[] = []; const bones: number[] = []; const weights: number[] = [];
+  const positions = geometry.getAttribute('position'); const normals = new Float32Array(positions.count * 3); const follow = new Float32Array(positions.count);
   for (let i = 0; i < positions.count; i += 1) {
     const [x, y, z] = AXES.map((axis, component) => {
       const at = (positions.getComponent(i, component) + 1) * SIZE / 2; const cell = Math.floor(at);
@@ -52,13 +52,27 @@ export function makeAroomiBody() {
     }) as [number, number, number];
     positions.setXYZ(i, x, y, z);
     const e = 0.002; const n = [distance(x + e, y, z) - distance(x - e, y, z), distance(x, y + e, z) - distance(x, y - e, z), distance(x, y, z + e) - distance(x, y, z - e)]; const length = Math.hypot(...n) || 1;
-    normals.push(n[0]! / length, n[1]! / length, n[2]! / length);
-    // The shoulder fillet bends between the body bone and the arm bone.
-    const arm = Math.max(0, Math.min(1, (Math.abs(x) - 0.4) / 0.06));
-    bones.push(0, x < 0 ? 1 : 2, 0, 0); weights.push(1 - arm, arm, 0, 0);
+    normals.set([n[0]! / length, n[1]! / length, n[2]! / length], i * 3);
+    // The shoulder fillet bends between the body and the arm.
+    follow[i] = Math.sign(x) * Math.max(0, Math.min(1, (Math.abs(x) - 0.4) / 0.06));
   }
   geometry.setAttribute('normal', new Float32BufferAttribute(normals, 3));
-  geometry.setAttribute('skinIndex', new Uint16BufferAttribute(bones, 4));
-  geometry.setAttribute('skinWeight', new Float32BufferAttribute(weights, 4));
-  return geometry;
+  return { geometry, follow, rest: { position: Float32Array.from(positions.array), normal: normals.slice() } };
+}
+
+// Turn the -x arm by `angle` around its shoulder pivot and mirror the +x arm.
+// The vertices move here, not in a skinned shader: that second shader program added about 1.5 s to the first draw on the simulator.
+export function swingArms({ geometry, follow, rest }: ReturnType<typeof makeAroomiBody>, angle: number) {
+  const position = geometry.getAttribute('position'); const normal = geometry.getAttribute('normal');
+  const cos = Math.cos(angle) - 1;
+  for (let i = 0; i < follow.length; i += 1) {
+    const weight = Math.abs(follow[i]!);
+    if (!weight) continue;
+    const side = Math.sign(follow[i]!); const sin = -side * Math.sin(angle);
+    const x = rest.position[i * 3]!; const y = rest.position[i * 3 + 1]!; const nx = rest.normal[i * 3]!; const ny = rest.normal[i * 3 + 1]!;
+    const dx = x - side * 0.37; const dy = y - 0.44;
+    position.setXY(i, x + weight * (dx * cos - dy * sin), y + weight * (dx * sin + dy * cos));
+    normal.setXY(i, nx + weight * (nx * cos - ny * sin), ny + weight * (nx * sin + ny * cos));
+  }
+  position.needsUpdate = true; normal.needsUpdate = true;
 }
