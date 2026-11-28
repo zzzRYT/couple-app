@@ -13,7 +13,8 @@ const events = [
   eventFixture({ id: 'ikea', title: '이케아 장보기', ownerId: null, createdBy: PARTNER, updatedBy: ME }),
   eventFixture({ id: 'gym', title: '헬스장 등록', time: '08:00', ownerId: PARTNER, createdBy: PARTNER, updatedBy: PARTNER }),
 ];
-const screenProps = { events, eventComments: [], me: ME, meName: '나리', partner: '도담', today: '2026-11-25', offline: false, onAdd: jest.fn(), onEvent: jest.fn() };
+const anniversaries = { startDate: '2026-06-01', timeZone: 'Asia/Seoul', me: { birthday: null }, partner: null, customs: [] };
+const screenProps = { events, anniversaries, eventComments: [], me: ME, meName: '나리', partner: '도담', today: '2026-11-25', offline: false, onAdd: jest.fn(), onEvent: jest.fn() };
 
 describe('CalendarScreen', () => {
   it('V0-F19-AC-01 V0-F03-AC-05 shows the month, today with its events, and moves between months', async () => {
@@ -26,6 +27,23 @@ describe('CalendarScreen', () => {
     expect(screen.getByText(screen.t('cal.empty'))).toBeTruthy();
     await fireEvent.press(screen.getByText(screen.t('cal.today')));
     expect(screen.getByText('2026년 11월')).toBeTruthy();
+  });
+  it('V0-F19-AC-08 marks anniversaries on their days and lists them read-only above the events', async () => {
+    const onAdd = jest.fn(), onEvent = jest.fn();
+    const screen = await renderWithI18n(<CalendarScreen {...screenProps} onAdd={onAdd} onEvent={onEvent} anniversaries={{ ...anniversaries, customs: [{ id: 'met', title: '첫 만남', date: '2020-11-25', repeat: 'yearly' }] }} />);
+    expect(screen.getByTestId('day-2026-11-25').props.accessibilityLabel).toBe(`${screen.t('cal.a11y.day.by', { date: '11월 25일 수요일', n: 3, names: '함께 2, 도담 1' })}, 첫 만남`);
+    expect(screen.getByTestId('day-2026-11-11').props.accessibilityLabel).toBe(`${screen.t('cal.a11y.day', { date: '11월 11일 수요일', n: 0 })}, ${screen.t('anniv.pepero')}`);
+    const row = screen.getByLabelText(screen.t('anniv.row.a11y', { title: '첫 만남', date: '2026년 11월 25일 (수)', left: screen.t('dday.today') }));
+    expect(row.props.accessibilityRole).toBe('text');
+    await fireEvent.press(row);
+    expect(onAdd).not.toHaveBeenCalled(); expect(onEvent).not.toHaveBeenCalled();
+    expect(screen.getByText('이케아 장보기')).toBeTruthy();
+    await fireEvent.press(screen.getByRole('button', { name: screen.t('cal.by.me') }));
+    expect(screen.getByText('첫 만남')).toBeTruthy();
+    await fireEvent.press(screen.getByLabelText(screen.t('cal.next')));
+    await fireEvent.press(screen.getByTestId('day-2026-12-25'));
+    expect(screen.getByText(screen.t('anniv.christmas'))).toBeTruthy();
+    expect(screen.getByText(screen.t('cal.empty.me'))).toBeTruthy();
   });
   it('V0-F19-AC-01 filters the grid and the day list to one owner, whoever added the event', async () => {
     const screen = await renderWithI18n(<CalendarScreen {...screenProps} />);
@@ -71,7 +89,7 @@ describe('CalendarScreen', () => {
     await fireEvent.press(screen.getByText(screen.t('cal.add')));
     expect(onAdd).not.toHaveBeenCalled();
   });
-  it('V0-F19-AC-08 adds the comment count to the day row of an event that has comments', async () => {
+  it('V0-F19-AC-09 adds the comment count to the day row of an event that has comments', async () => {
     const screen = await renderWithI18n(<CalendarScreen {...screenProps} eventComments={[commentFixture({ id: 'c1', eventId: 'ikea' }), commentFixture({ id: 'c2', eventId: 'ikea', createdBy: ME })]} />);
     const count = screen.t('cal.comment.count', { n: 2 });
     const ikea = screen.getByLabelText(`${screen.t('cal.a11y.event', { time: screen.t('cal.allDay'), title: '이케아 장보기', owner: screen.t('cal.owner.together.long'), name: `${screen.t('cal.added', { name: '도담' })}, ${screen.t('cal.edited.me')}` })}, ${count}`);
@@ -188,7 +206,7 @@ describe('EventEdit', () => {
 
 describe('EventEdit comments', () => {
   const thread = [commentFixture({ id: 'theirs', body: '좋아!', createdBy: PARTNER }), commentFixture({ id: 'mine', body: '7시에 보자', createdBy: ME, createdAt: '2026-11-21T11:30:00Z' })];
-  it('V0-F19-AC-08 lists the thread with who wrote each comment and when, and sends a trimmed comment', async () => {
+  it('V0-F19-AC-09 lists the thread with who wrote each comment and when, and sends a trimmed comment', async () => {
     const addComment = jest.fn(async () => undefined);
     const screen = await renderWithI18n(<EventEdit {...sheetProps} initial={eventFixture({})} comments={thread} addComment={addComment} save={jest.fn()} />);
     expect(screen.getByText(screen.t('cal.comment.title', { n: 2 }))).toBeTruthy();
@@ -206,7 +224,7 @@ describe('EventEdit comments', () => {
     await fireEvent.press(screen.getByText(screen.t('common.cancel')));
     expect(sheetProps.onClose).toHaveBeenCalled();
   });
-  it('V0-F19-AC-08 shows an empty thread, keeps sending off offline, and only on an existing event', async () => {
+  it('V0-F19-AC-09 shows an empty thread, keeps sending off offline, and only on an existing event', async () => {
     const empty = await renderWithI18n(<EventEdit {...sheetProps} initial={eventFixture({})} save={jest.fn()} />);
     expect(empty.getByText(empty.t('cal.comment.empty'))).toBeTruthy();
     const offline = await renderWithI18n(<EventEdit {...sheetProps} offline initial={eventFixture({})} comments={thread} save={jest.fn()} />);
@@ -216,7 +234,7 @@ describe('EventEdit comments', () => {
     const created = await renderWithI18n(<EventEdit {...sheetProps} save={jest.fn()} />);
     expect(created.queryByText(created.t('cal.comment.empty'))).toBeNull();
   });
-  it('V0-F19-AC-08 keeps the draft and says so when sending fails, and leaves when the event is gone', async () => {
+  it('V0-F19-AC-09 keeps the draft and says so when sending fails, and leaves when the event is gone', async () => {
     const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
     const failed = await renderWithI18n(<EventEdit {...sheetProps} initial={eventFixture({})} addComment={jest.fn().mockRejectedValue(new TypeError('network'))} save={jest.fn()} />);
     await fireEvent.changeText(failed.getByLabelText(failed.t('cal.comment.ph')), '좋아');
@@ -229,7 +247,7 @@ describe('EventEdit comments', () => {
     await waitFor(() => expect(alert).toHaveBeenCalledWith(gone.t('cal.gone.title'), gone.t('cal.gone.body', { name: '도담' }), [expect.objectContaining({ text: gone.t('common.ok') })]));
     alert.mockRestore();
   });
-  it('V0-F19-AC-09 lets me delete only my own comment after a confirm, and treats an already deleted one as done', async () => {
+  it('V0-F19-AC-10 lets me delete only my own comment after a confirm, and treats an already deleted one as done', async () => {
     const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
     const confirm = () => (alert.mock.calls.at(-1)![2] as { style?: string; onPress?: () => void }[]).find((button) => button.style === 'destructive')!.onPress!();
     const removeComment = jest.fn().mockRejectedValueOnce(new ApiError(404, 'NOT_FOUND')).mockRejectedValueOnce(new ApiError(500, 'INTERNAL'));

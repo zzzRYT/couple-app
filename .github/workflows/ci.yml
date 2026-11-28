@@ -14,5 +14,9 @@ jobs:
         with:
           version: 2.122.0
       - run: pnpm verify
+      # 54320-54329 (supabase/config.toml) sit inside the runner's ephemeral port range, so an outbound connection from the image pulls can hold 54322 when the db container binds it. Reserving them keeps the kernel from handing them out; explicit binds still work.
+      - run: |
+          sysctl net.ipv4.ip_local_port_range net.ipv4.ip_local_reserved_ports
+          sudo sysctl -w net.ipv4.ip_local_reserved_ports=54320-54329
       # Functions tests need Auth and Realtime too, so the whole local stack starts (migrations and seed apply on start).
       - run: pnpm verify:db

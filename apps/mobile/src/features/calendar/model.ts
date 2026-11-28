@@ -1,3 +1,4 @@
+import { occurrencesBetween, type AnniversaryInput, type Occurrence } from '../../lib/anniversaries';
 import type { CalendarEvent, EventAlert, EventComment } from '../../lib/client';
 
 /** One of the two partners, seen from this phone. */
@@ -49,6 +50,16 @@ export function commentCounts(comments: readonly EventComment[]): Map<string, nu
   const counts = new Map<string, number>();
   for (const comment of comments) counts.set(comment.eventId, (counts.get(comment.eventId) ?? 0) + 1);
   return counts;
+}
+/** The anniversaries that fall in `month` (`YYYY-MM`), by date, in the anniversary list's order. */
+export function anniversariesByDate(input: AnniversaryInput, month: string): Map<string, Occurrence[]> {
+  const byDate = new Map<string, Occurrence[]>();
+  // `-31` bounds every month as a string, even short ones.
+  for (const item of occurrencesBetween(input, `${month}-01`, `${month}-31`)) {
+    const day = byDate.get(item.date);
+    if (day) day.push(item); else byDate.set(item.date, [item]);
+  }
+  return byDate;
 }
 /** The grid of `month` (`YYYY-MM`) with today marked and each day's owners. `today` is a date in the space time zone. */
 export function monthGrid(month: string, today: string, byDate: ReadonlyMap<string, readonly CalendarEvent[]>, me: string): DayCell[] {

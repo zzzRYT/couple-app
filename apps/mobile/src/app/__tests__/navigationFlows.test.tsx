@@ -3,7 +3,7 @@ import { router, Stack, Tabs } from 'expo-router';
 import { act, renderRouter, testRouter, waitFor } from 'expo-router/testing-library';
 
 const screen = (name: string) => () => <Text>{name}</Text>;
-const tabsLayout = () => <Tabs><Tabs.Screen name="home" /><Tabs.Screen name="room" /><Tabs.Screen name="settings/index" /></Tabs>;
+const tabsLayout = () => <Tabs><Tabs.Screen name="home" /><Tabs.Screen name="calendar/index" /><Tabs.Screen name="anniversaries/index" /><Tabs.Screen name="room" /><Tabs.Screen name="settings/index" /></Tabs>;
 const routes = {
   _layout: () => <Stack />,
   '(auth)/_layout': () => <Stack />,
@@ -18,7 +18,12 @@ const routes = {
   '(tabs)/_layout': tabsLayout,
   '(tabs)/index': screen('home'),
   '(tabs)/home': screen('home'),
+  '(tabs)/calendar/index': screen('calendar'),
+  '(tabs)/anniversaries/index': screen('anniversaries'),
   '(tabs)/room': screen('room'),
+  'event-edit': screen('event edit'),
+  'anniversary-edit': screen('anniversary edit'),
+  'anniversary/[key]': screen('anniversary'),
   '(tabs)/settings/index': screen('settings'),
   invite: screen('invite'),
   'settings/connect': screen('connect'),
@@ -46,6 +51,10 @@ const cases = [
   { name: '13 create with empty history returns to choice', start: '/create-space', actions: [['dismissTo', '/choose-space']], back: false, tabs: 0, path: '/choose-space' },
   { name: '14 repeated prompt navigation resolves to one modal route', start: '/room', actions: [['navigate', '/prompt'], ['navigate', '/prompt']], back: true, tabs: 1, path: '/prompt' },
   { name: '15 invite opened from Settings › Connect waits at Home', start: '/settings', actions: [['push', '/settings/connect'], ['push', '/invite'], ['dismissTo', '/home']], back: false, tabs: 1, path: '/home' },
+  // The edit sheets and the detail sit above the tabs; replace there stacked one more tabs tree per save (the calendar pile-up).
+  { name: '16 saving two events returns to the one calendar tab', start: '/calendar', actions: [['push', '/event-edit'], ['dismissTo', '/calendar'], ['push', '/event-edit'], ['dismissTo', '/calendar']], back: true, tabs: 1, path: '/calendar' },
+  { name: '17 saving from an anniversary detail returns to the one anniversaries tab', start: '/anniversaries', actions: [['push', '/anniversary/x'], ['push', '/anniversary-edit'], ['dismissTo', '/anniversaries']], back: true, tabs: 1, path: '/anniversaries' },
+  { name: '18 deleting from an anniversary detail returns to the one anniversaries tab', start: '/anniversaries', actions: [['push', '/anniversary/x'], ['dismissTo', '/anniversaries']], back: true, tabs: 1, path: '/anniversaries' },
 ] as const;
 
 it.each(cases)('$name', async ({ start, actions, back, tabs, path }) => {

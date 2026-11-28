@@ -121,7 +121,8 @@ describe('anniversary edit route', () => {
     const screen = await renderWithI18n(<AnniversaryEditRoute />);
     await fireEvent.changeText(await screen.findByLabelText(screen.t('edit.field.title')), 'Concert');
     await fireEvent.press(screen.getByText(screen.t('common.save')));
-    await waitFor(() => expect(router.replace).toHaveBeenCalledWith({ pathname: '/(tabs)/anniversaries', params: { toast: 'saved' } }));
+    await waitFor(() => expect(router.dismissTo).toHaveBeenCalledWith({ pathname: '/(tabs)/anniversaries', params: { toast: 'saved', at: expect.any(String) } }));
+    expect(router.replace).not.toHaveBeenCalled();
     expect(mockApp.client[call]).toHaveBeenCalledTimes(1);
     expect(jest.mocked(track).mock.calls).toEqual(tracked);
   });

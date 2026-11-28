@@ -3,7 +3,7 @@ import { call, localDeps } from '../../_shared/__tests__/local.ts';
 import { couple } from '../../_shared/__tests__/fixtures.ts';
 import { spacesHandler } from '../index.ts';
 
-Deno.test('V0-F19-AC-08 V0-F19-AC-09 a partner comments on the author\'s event, the author replies, and only a writer deletes their comment', async () => {
+Deno.test('V0-F19-AC-09 V0-F19-AC-10 a partner comments on the author\'s event, the author replies, and only a writer deletes their comment', async () => {
   const deps = await localDeps();
   const h = spacesHandler(deps);
   const { a, b, c, spaceId } = await couple(deps);

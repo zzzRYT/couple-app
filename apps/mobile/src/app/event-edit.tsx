@@ -15,7 +15,7 @@ export default function EventEditRoute() {
   const spaceId = snapshot.space.spaceId;
   return <EventEdit initial={initial.current} date={date ?? todayIn(now, snapshot.space.timeZone)} me={snapshot.me.userId} meName={snapshot.me.displayName ?? t('cal.by.me')} partner={partnerMember ? partnerMember.displayName ?? t('home.pending.partner') : null} partnerId={partnerMember?.userId ?? null} timeZone={snapshot.space.timeZone} offline={state.offline}
     comments={snapshot.eventComments.filter((comment) => comment.eventId === id)}
-    onClose={() => router.back()} onGone={() => { router.dismissTo('/(tabs)/calendar'); void refresh(); }} onSaved={(toast, day) => router.replace({ pathname: '/(tabs)/calendar', params: { toast, date: day } })}
+    onClose={() => router.back()} onGone={() => { router.dismissTo('/(tabs)/calendar'); void refresh(); }} onSaved={(toast, day) => router.dismissTo({ pathname: '/(tabs)/calendar', params: { toast, date: day, at: String(Date.now()) } })}
     save={async (fields, version, key) => { if (id && version) await client.updateEvent(spaceId, id, fields, version, key); else await client.createEvent(spaceId, fields, key); await refresh(); }}
     remove={async (version, key) => { if (id) { await client.deleteEvent(spaceId, id, version, key); await refresh(); } }}
     addComment={async (body, key) => { if (id) { await client.createEventComment(spaceId, id, body, key); await refresh(); } }}
