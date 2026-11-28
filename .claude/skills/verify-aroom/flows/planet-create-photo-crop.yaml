@@ -1,0 +1,7 @@
+appId: com.jinjinstar.aroom.dev
+---
+# Continues from the system crop editor and stops with the cropped part shown in the create panel.
+- tapOn: "선택|Choose"
+- extendedWaitUntil:
+    visible: "사진에서 고른 부분"
+    timeout: 20000
