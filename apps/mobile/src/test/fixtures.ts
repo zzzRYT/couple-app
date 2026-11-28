@@ -1,4 +1,4 @@
-import type { CalendarEvent, Snapshot } from '../lib/client';
+import type { CalendarEvent, EventComment, Snapshot } from '../lib/client';
 import { defaultMascotPlacement } from '../../../../packages/scene-contract/src/mascot';
 export const ME = '00000000-0000-0000-0000-00000000000a';
 export const PARTNER = '00000000-0000-0000-0000-00000000000b';
@@ -12,7 +12,8 @@ export function snapshotFixture(overrides: { memberCount?: number; objects?: Sna
     roomThemeDocument: { schemaVersion: 1, mode: 'day', timeZone: 'Asia/Seoul', day: { backgroundToken: 'room.day', paletteToken: 'warm', assetVariants: [] }, night: { backgroundToken: 'room.night', paletteToken: 'warm', assetVariants: [] } },
     promptSession: overrides.promptSession ?? null, catalogVersion: 1, serverTime: '2026-10-27T03:00:00Z',
     members: [{ userId: ME, aiConsentState: overrides.consent ?? 'granted', displayName: '하루', birthday: null, hasBirthday: false, photo: null }, ...(memberCount > 1 ? [{ userId: PARTNER, aiConsentState: overrides.consent ?? 'granted', displayName: '도담', birthday: null, hasBirthday: false, photo: null } as const] : [])],
-    me: { userId: ME, displayName: '하루', birthday: null, photo: null }, anniversaries: [], events: [],
+    me: { userId: ME, displayName: '하루', birthday: null, photo: null }, anniversaries: [], events: [], eventComments: [],
   };
 }
 export const eventFixture = (overrides: Partial<CalendarEvent> = {}): CalendarEvent => ({ id: 'e', title: '저녁 데이트', date: '2026-11-25', time: null, endTime: null, alert: 'none', ownerId: null, createdBy: ME, createdAt: '2026-11-20T03:00:00Z', updatedBy: ME, updatedAt: '2026-11-20T03:00:00Z', version: 1, ...overrides });
+export const commentFixture = (overrides: Partial<EventComment> = {}): EventComment => ({ id: 'c', eventId: 'e', body: '좋아!', createdBy: PARTNER, createdAt: '2026-11-21T10:05:00Z', ...overrides });

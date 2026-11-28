@@ -3,7 +3,7 @@ import { Pressable, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { AnniversaryInput } from '../../lib/anniversaries';
-import type { CalendarEvent } from '../../lib/client';
+import type { CalendarEvent, EventComment } from '../../lib/client';
 import { parseCalendarDate } from '../../lib/dday';
 import { tokens } from '../../theme/tokens';
 import { useType } from '../../theme/typography';
@@ -15,7 +15,7 @@ import { KindTile } from '../anniversaries/KindTile';
 import { formatNotifyTime } from '../notifications/labels';
 import { OfflineBand } from '../space/OfflineBand';
 import { Avatar } from './Avatar';
-import { OWNERS, OWNER_COLOR, anniversariesByDate, authorOf, editorOf, eventsByDate, filterEvents, monthGrid, monthOf, ownerOf, shiftMonth, type Filter, type Owner, type Person } from './model';
+import { OWNERS, OWNER_COLOR, anniversariesByDate, authorOf, commentCounts, editorOf, eventsByDate, filterEvents, monthGrid, monthOf, ownerOf, shiftMonth, type Filter, type Owner, type Person } from './model';
 
 const WEEK = 7;
 const utc = (date: string) => new Date(parseCalendarDate(date)!);
@@ -23,8 +23,8 @@ const eventTime = (event: Pick<CalendarEvent, 'time' | 'endTime'>, language: str
   event.time === null ? allDay : event.endTime ? `${formatNotifyTime(event.time, language)} – ${formatNotifyTime(event.endTime, language)}` : formatNotifyTime(event.time, language);
 
 /** V0-13 달력: owner chips, the month grid with each day's owners' faces and an anniversary tile, then the chosen day's anniversaries (read-only; editing stays on the anniversary screens) and events with whose plan and who added it. Color is never the only cue: each face sits beside a name. */
-export function CalendarScreen({ events, anniversaries, me, meName, partner, today, offline, syncedAt = null, focusDate, onAdd, onEvent }: {
-  events: readonly CalendarEvent[]; anniversaries: AnniversaryInput; me: string; meName: string; partner: string; today: string; offline: boolean; syncedAt?: string | null; focusDate?: string;
+export function CalendarScreen({ events, anniversaries, eventComments, me, meName, partner, today, offline, syncedAt = null, focusDate, onAdd, onEvent }: {
+  events: readonly CalendarEvent[]; anniversaries: AnniversaryInput; eventComments: readonly EventComment[]; me: string; meName: string; partner: string; today: string; offline: boolean; syncedAt?: string | null; focusDate?: string;
   onAdd: (date: string) => void; onEvent: (event: CalendarEvent) => void;
 }) {
   const { t, i18n } = useTranslation(); const { emphasis } = useType(); const color = useAppColor(); const insets = useSafeAreaInsets(); const clearance = useTabBarClearance();
@@ -33,6 +33,7 @@ export function CalendarScreen({ events, anniversaries, me, meName, partner, tod
   useEffect(() => { if (focusDate) { setSelected(focusDate); setMonth(monthOf(focusDate)); } }, [focusDate]);
   const byDate = useMemo(() => eventsByDate(filterEvents(events, me, filter)), [events, me, filter]);
   const cells = monthGrid(month, today, byDate, me);
+  const counts = useMemo(() => commentCounts(eventComments), [eventComments]);
   const dayEvents = byDate.get(selected) ?? [];
   const annivByDate = anniversariesByDate(anniversaries, month); const dayAnnivs = annivByDate.get(selected) ?? [];
   const language = i18n.language;
@@ -84,7 +85,8 @@ export function CalendarScreen({ events, anniversaries, me, meName, partner, tod
         {dayEvents.length === 0 ? <View style={{ alignItems: 'center', gap: 10, paddingVertical: 20 }}><AppText tone="text2" align="center">{filter === 'all' ? t('cal.empty') : t(`cal.empty.${filter}`, { name: partner })}</AppText><Button compact variant="secondary" label={t('cal.add')} disabled={offline} onPress={() => onAdd(selected)} /></View>
           : <View style={{ backgroundColor: color.surface, borderWidth: tokens.border.outline.normal, borderColor: color.divider, borderRadius: tokens.radius.card, overflow: 'hidden' }}>{dayEvents.map((event, index) => {
             const owner = ownerOf(event, me), author = authorOf(event, me), editor = editorOf(event, me), time = eventTime(event, language, t('cal.allDay'));
-            return <Pressable key={event.id} accessibilityRole="button" accessibilityLabel={t('cal.a11y.event', { time, title: event.title, owner: ownerLong(owner), name: editor ? `${added(author)}, ${edited(editor)}` : added(author) })} onPress={() => onEvent(event)} style={({ pressed }) => ({ minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10, paddingLeft: 12, paddingRight: 14, borderTopWidth: index ? 1 : 0, borderColor: color.divider, opacity: pressed ? 0.7 : 1 })}>
+            const n = counts.get(event.id) ?? 0, comments = n ? t('cal.comment.count', { n }) : null;
+            return <Pressable key={event.id} accessibilityRole="button" accessibilityLabel={t('cal.a11y.event', { time, title: event.title, owner: ownerLong(owner), name: editor ? `${added(author)}, ${edited(editor)}` : added(author) }) + (comments ? `, ${comments}` : '')} onPress={() => onEvent(event)} style={({ pressed }) => ({ minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10, paddingLeft: 12, paddingRight: 14, borderTopWidth: index ? 1 : 0, borderColor: color.divider, opacity: pressed ? 0.7 : 1 })}>
               <View style={{ width: 4, alignSelf: 'stretch', borderRadius: 2, backgroundColor: color[OWNER_COLOR[owner]] }} />
               <Avatar owner={owner} name={names[owner]} size={34} />
               <View style={{ flex: 1, gap: 2 }}>
@@ -92,7 +94,7 @@ export function CalendarScreen({ events, anniversaries, me, meName, partner, tod
                   <AppText numberOfLines={2} style={[emphasis(16), { flex: 1 }]}>{event.title}</AppText>
                   <View style={{ paddingHorizontal: 8, borderRadius: tokens.radius.pill, borderWidth: tokens.border.outline.normal, borderColor: color[OWNER_COLOR[owner]] }}><AppText style={[emphasis(12), { color: color[OWNER_COLOR[owner]] }]}>{label(owner)}</AppText></View>
                 </View>
-                <AppText tone="text2" style={{ fontSize: 13, lineHeight: 19 }}>{`${time} · `}<AppText style={[emphasis(13), { color: color[OWNER_COLOR[author]] }]}>{added(author)}</AppText>{editor && ` · ${edited(editor)}`}</AppText>
+                <AppText tone="text2" style={{ fontSize: 13, lineHeight: 19 }}>{`${time} · `}<AppText style={[emphasis(13), { color: color[OWNER_COLOR[author]] }]}>{added(author)}</AppText>{editor && ` · ${edited(editor)}`}{comments && ` · ${comments}`}</AppText>
               </View>
             </Pressable>;
           })}</View>}

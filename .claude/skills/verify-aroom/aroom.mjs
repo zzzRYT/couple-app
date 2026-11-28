@@ -206,13 +206,20 @@ async function session(args) {
 
 /**
  * A second test user joins the last session's space through the app's own invitation and profile endpoints, then
- * optionally writes calendar events as that partner, so a proof can show both partners' entries on one device.
+ * optionally writes calendar events (each `--comment` after an `--event` comments on it) as that partner, so a proof can show both partners' entries on one device.
  */
 async function partner(args) {
   const owner = state().users.findLast((user) => user.spaceId);
   if (!owner) throw new Error('No session with a space; run session --space DATE first');
   const name = args.includes('--name') ? args[args.indexOf('--name') + 1] : '하루';
-  const events = args.flatMap((arg, i) => (arg === '--event' ? [args[i + 1]] : []));
+  const events = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--event') events.push({ event: args[++i], comments: [] });
+    else if (args[i] === '--comment') {
+      if (!events.length) throw new Error('--comment follows the --event it comments on');
+      events.at(-1).comments.push(args[++i]);
+    }
+  }
   const { publishable, secret } = await devKeys();
   const ownerTokens = await signIn(publishable, owner);
   const invite = await api('POST', `/functions/v1/invitations/spaces/${owner.spaceId}/invitations`, publishable, ownerTokens.access_token, { expiresInSeconds: 86400 });
@@ -226,7 +233,7 @@ async function partner(args) {
     const photo = await api('PUT', '/functions/v1/profile/profile/photo', publishable, tokens.access_token, { image: readFileSync(args[args.indexOf('--photo') + 1]).toString('base64') });
     if (photo.status !== 204) throw new Error(`partner photo: ${photo.status} ${JSON.stringify(photo.json)}`);
   }
-  for (const event of events) {
+  for (const { event, comments } of events) {
     const [title, date, time, alert, whose = 'together'] = (event ?? '').split('|');
     if (!title || !/^\d{4}-\d{2}-\d{2}$/.test(date ?? '')) throw new Error('--event needs "title|YYYY-MM-DD|HH:MM or empty|alert|together, me or partner"');
     // Whose plan, seen from the session user: me is the session user, partner is this joined user.
@@ -235,6 +242,11 @@ async function partner(args) {
     const made = await api('POST', `/functions/v1/spaces/spaces/${owner.spaceId}/events`, publishable, tokens.access_token, { title, date, time: time || null, endTime: null, alert: alert || 'none', ownerId });
     if (made.status !== 201) throw new Error(`partner event: ${made.status} ${JSON.stringify(made.json)}`);
     console.log(`Partner event "${title}" on ${date}`);
+    for (const body of comments) {
+      const comment = await api('POST', `/functions/v1/spaces/spaces/${owner.spaceId}/events/${made.json.id}/comments`, publishable, tokens.access_token, { body });
+      if (comment.status !== 201) throw new Error(`partner comment: ${comment.status} ${JSON.stringify(comment.json)}`);
+      console.log(`Partner comment on "${title}": ${body}`);
+    }
   }
   console.log(`Partner ${name} (${user.email}) joined space ${owner.spaceId}`);
 }
@@ -307,7 +319,7 @@ const USAGE = `usage: aroom.mjs <command>
   launch [--fresh]           create/boot the verification simulator, install and start the app (--fresh: empty app data)
   session [--space DATE] [--no-open]
                              new test user on Aroom-dev (optionally with a space), signed in through the auth-callback link
-  partner [--name NAME] [--photo JPEG] [--event "title|YYYY-MM-DD|HH:MM|alert|together|me|partner"]...
+  partner [--name NAME] [--photo JPEG] [--event "title|YYYY-MM-DD|HH:MM|alert|together|me|partner" [--comment TEXT]...]...
                              second test user joins the last session's space (invitation + profile), optionally setting a photo and writing events
   drive <flow>               run flows/<flow>.yaml with Maestro as the last session user (MAESTRO_EMAIL, MAESTRO_PASSWORD)
   shot <feature>/<name>      screenshot to design/evidence/verify-aroom/<feature>/<name>.png

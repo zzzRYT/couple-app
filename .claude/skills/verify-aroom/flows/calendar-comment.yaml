@@ -1,0 +1,19 @@
+appId: com.jinjinstar.aroom.dev
+---
+# Starts after the home-dday flow, with the partner's event and comment already written by `partner --event … --comment …`.
+- tapOn:
+    text: "시작하기"
+    optional: true
+- tapOn:
+    text: "알림 켜기"
+    optional: true
+- tapOn:
+    text: "허용|Allow"
+    optional: true
+- extendedWaitUntil:
+    visible: "달력.*"
+    timeout: 20000
+- tapOn: "달력.*"
+- extendedWaitUntil:
+    visible: ".*헬스장 등록.*댓글 1.*"
+    timeout: 20000

@@ -3,7 +3,7 @@ import { Alert, Keyboard, Pressable, ScrollView, View } from 'react-native';
 import { randomUUID } from 'expo-crypto';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { CalendarEvent, EventAlert, EventFields } from '../../lib/client';
+import type { CalendarEvent, EventAlert, EventComment, EventFields } from '../../lib/client';
 import { todayIn } from '../../lib/dday';
 import { ApiError } from '../../lib/errors';
 import { tokens } from '../../theme/tokens';
@@ -29,18 +29,20 @@ const hourAfter = (time: string) => `${String(Math.min(Number(time.slice(0, 2)) 
 const formOf = (item: CalendarEvent | undefined, date: string): Form => ({ title: item?.title ?? '', date: item?.date ?? date, allDay: item ? item.time === null : false, time: item?.time ?? DEFAULT_TIME, endTime: item?.endTime ?? null, alert: item?.alert ?? 'none', ownerId: item?.ownerId ?? null });
 const fieldsOf = (form: Form): EventFields => ({ title: form.title.trim(), date: form.date, time: form.allDay ? null : form.time, endTime: form.allDay ? null : form.endTime, alert: form.alert, ownerId: form.ownerId });
 
-/** V0-13 일정 추가/편집. Both partners may edit or delete any event and change whose plan it is (new events start as 함께); the writer card keeps the original author and names the last other editor. */
-export function EventEdit({ initial, date, me, meName, partner, partnerId, timeZone, offline, save, remove, reload, onClose, onGone, onSaved }: {
-  initial?: CalendarEvent; date: string; me: string; meName: string; partner: string | null; partnerId: string | null; timeZone: string; offline: boolean;
+/** V0-13 일정 추가/편집. Both partners may edit or delete any event and change whose plan it is (new events start as 함께); the writer card keeps the original author and names the last other editor. An existing event also carries one flat comment thread where each writer may delete only their own. */
+export function EventEdit({ initial, date, me, meName, partner, partnerId, timeZone, offline, comments, save, remove, addComment, removeComment, reload, onClose, onGone, onSaved }: {
+  initial?: CalendarEvent; date: string; me: string; meName: string; partner: string | null; partnerId: string | null; timeZone: string; offline: boolean; comments: readonly EventComment[];
+  addComment: (body: string, key: string) => Promise<void>; removeComment: (commentId: string, key: string) => Promise<void>;
   save: (fields: EventFields, version: number | undefined, key: string) => Promise<void>; remove: (version: number, key: string) => Promise<void>;
   reload: () => Promise<CalendarEvent | undefined>; onClose: () => void; onGone: () => void; onSaved: (toast: 'saved' | 'deleted', date: string) => void;
 }) {
   const { t, i18n } = useTranslation(); const { emphasis } = useType(); const color = useAppColor(); const insets = useSafeAreaInsets(); const large = useLargeText();
   const name = partner ?? t('home.pending.partner');
   const [form, setForm] = useState(() => formOf(initial, date)); const [baseline, setBaseline] = useState(form); const [version, setVersion] = useState(initial?.version);
-  const [saving, setSaving] = useState(false); const [error, setError] = useState<'save' | 'delete' | null>(null); const [titleTouched, setTitleTouched] = useState(false);
+  const [saving, setSaving] = useState(false); const [error, setError] = useState<'save' | 'delete' | 'comment' | null>(null); const [titleTouched, setTitleTouched] = useState(false);
   const [picker, setPicker] = useState<Picker>(null); const [draftDate, setDraftDate] = useState(fromIsoDate(form.date)); const [denied, setDenied] = useState(false);
-  const key = useRef(randomUUID()); const source = useRef(initial);
+  const [draft, setDraft] = useState(''); const [sending, setSending] = useState(false);
+  const key = useRef(randomUUID()); const commentKey = useRef(randomUUID()); const source = useRef(initial);
   const hideError = useCallback(() => setError(null), []);
   const checkPermission = useCallback(async (alert: EventAlert, ask: boolean) => {
     if (alert === 'none') { setDenied(false); return; }
@@ -53,9 +55,11 @@ export function EventEdit({ initial, date, me, meName, partner, partnerId, timeZ
   const valid = !!form.title.trim() && titleLength <= 20 && !endError;
   const ready = valid && !offline;
   const dirty = JSON.stringify(form) !== JSON.stringify(baseline);
+  const draftLength = graphemeLength(draft.trim());
+  const canSend = !!draft.trim() && draftLength <= 200 && !offline && !sending;
   const close = () => dirty ? Alert.alert(t('edit.discard.title'), '', [{ text: t('edit.discard.cta'), style: 'destructive', onPress: onClose }, { text: t('edit.discard.keep'), isPreferred: true }]) : onClose();
   const gone = () => Alert.alert(t('cal.gone.title'), t('cal.gone.body', { name }), [{ text: t('common.ok'), onPress: onGone }]);
-  const errorFlow = (action: 'save' | 'delete') => async (err: unknown) => {
+  const errorFlow = (action: 'save' | 'delete' | 'comment') => async (err: unknown) => {
     if (err instanceof ApiError && err.code === 'VERSION_CONFLICT') {
       let latest: CalendarEvent | undefined;
       try { latest = await reload(); } catch { setError(action); return; }
@@ -72,6 +76,13 @@ export function EventEdit({ initial, date, me, meName, partner, partnerId, timeZ
     try { await save(fieldsOf(form), version, key.current); onSaved('saved', form.date); } catch (err) { await errorFlow('save')(err); } finally { setSaving(false); }
   };
   const deleteItem = () => Alert.alert(t('cal.delete.title'), partner ? t('edit.delete.body', { name: partner }) : t('edit.delete.body.unpaired'), [{ text: t('common.cancel'), style: 'cancel' }, { text: t('common.delete'), style: 'destructive', onPress: () => { if (!version) return; void remove(version, randomUUID()).then(() => onSaved('deleted', form.date)).catch(errorFlow('delete')); } }]);
+  const send = async () => {
+    if (!canSend) return;
+    setSending(true); setError(null);
+    try { await addComment(draft.trim(), commentKey.current); setDraft(''); commentKey.current = randomUUID(); Keyboard.dismiss(); } catch (err) { await errorFlow('comment')(err); } finally { setSending(false); }
+  };
+  // A NOT_FOUND here means the comment is already gone, which is what deleting wanted.
+  const deleteComment = (commentId: string) => Alert.alert(t('cal.comment.delete.title'), '', [{ text: t('common.cancel'), style: 'cancel' }, { text: t('common.delete'), style: 'destructive', onPress: () => { void removeComment(commentId, randomUUID()).catch((err: unknown) => { if (!(err instanceof ApiError && err.code === 'NOT_FOUND')) setError('delete'); }); } }]);
   const setAllDay = (allDay: boolean) => setForm({ ...form, allDay, alert: alertFor(form.alert, allDay) });
   // iOS gives focus back to the title when a sheet closes unless the keyboard was down before it opened.
   const open = (next: Picker) => { Keyboard.dismiss(); setPicker(next); };
@@ -82,13 +93,14 @@ export function EventEdit({ initial, date, me, meName, partner, partnerId, timeZ
   const saveButton = <Pressable disabled={!ready || saving} onPress={() => void submit()} style={{ minHeight: 48, justifyContent: 'center', opacity: ready ? 1 : 0.6 }} accessibilityRole="button" accessibilityState={{ disabled: !ready || saving }}><AppText tone={ready ? 'primary' : 'text2'} style={emphasis(16)}>{t('common.save')}</AppText></Pressable>;
   const heading = t(initial ? 'cal.edit.title' : 'cal.new.title');
   const monthDay = (at: string) => formattedMonthDay(todayIn(at, timeZone), i18n.language);
+  const when = (at: string) => `${monthDay(at)} ${time(new Intl.DateTimeFormat('en-GB', { timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(at)))}`;
   const author = initial && authorOf(initial, me), editor = initial && editorOf(initial, me);
   const owner = ownerOf(form, me);
   const owners: Record<Owner, { id: string | null; label: string; name: string }> = { together: { id: null, label: t('cal.owner.together'), name: '' }, me: { id: me, label: t('cal.by.me'), name: meName }, partner: { id: partnerId, label: name, name } };
   const note = (text: string, tone: 'text2' | 'danger' = 'text2') => <AppText tone={tone} variant="bodySm">{text}</AppText>;
   return <View style={{ flex: 1, backgroundColor: color.bg, paddingTop: insets.top }}>
     <View style={{ minHeight: 48, paddingHorizontal: 20 }}>{large ? <><View style={{ minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>{cancel}{saveButton}</View><AppText style={[emphasis(17), { paddingBottom: 8 }]}>{heading}</AppText></> : <View style={{ minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>{cancel}<AppText accessibilityRole="header" style={emphasis(17)}>{heading}</AppText>{saveButton}</View>}</View>
-    <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 40, gap: 14 }}>
+    <ScrollView keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 40, gap: 14 }}>
       {initial && author && <View accessible style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, paddingHorizontal: 14, backgroundColor: color.surface, borderWidth: tokens.border.outline.normal, borderColor: color[OWNER_COLOR[author]], borderRadius: tokens.radius.card }}>
         <Avatar owner={author} name={author === 'me' ? meName : name} size={40} />
         <View style={{ flex: 1, gap: 2 }}>
@@ -126,9 +138,30 @@ export function EventEdit({ initial, date, me, meName, partner, partnerId, timeZ
         {note(t('cal.alert.note'))}
         {note(partner ? t('edit.shared.hint', { name: partner }) : t('edit.shared.hint.unpaired'))}
       </View>
+      {initial && <View style={{ gap: 10 }}>
+        <AppText accessibilityRole="header" style={emphasis(14)}>{t('cal.comment.title', { n: comments.length })}</AppText>
+        {comments.length === 0 && note(t('cal.comment.empty'))}
+        {comments.map((comment) => {
+          const person = authorOf(comment, me), who = person === 'me' ? meName : name, at = when(comment.createdAt);
+          return <View key={comment.id} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 4 }}>
+            <View accessible accessibilityLabel={t('cal.comment.a11y', { name: who, time: at, body: comment.body })} style={{ flex: 1, flexDirection: 'row', gap: 10, paddingVertical: 4 }}>
+              <Avatar owner={person} name={who} size={28} />
+              <View style={{ flex: 1, gap: 2 }}>
+                <AppText tone="text2" style={{ fontSize: 13, lineHeight: 19 }}><AppText style={[emphasis(13), { color: color[OWNER_COLOR[person]] }]}>{who}</AppText>{` · ${at}`}</AppText>
+                <AppText>{comment.body}</AppText>
+              </View>
+            </View>
+            {person === 'me' && <IconButton plain compact icon="trash" label={t('cal.comment.delete')} disabled={offline} onPress={() => deleteComment(comment.id)} />}
+          </View>;
+        })}
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
+          <View style={{ flex: 1 }}><TextField hideLabel label={t('cal.comment.ph')} placeholder={t('cal.comment.ph')} value={draft} onChangeText={setDraft} editable={!offline} error={draftLength > 200 ? t('cal.comment.err.long') : undefined} /></View>
+          <IconButton tone="primary" icon="send" label={t('cal.comment.send')} disabled={!canSend} onPress={() => void send()} />
+        </View>
+      </View>}
       {initial && <Button variant="dangerOutline" label={t('cal.delete')} disabled={offline} onPress={deleteItem} />}
     </ScrollView>
-    {error && <View style={{ position: 'absolute', left: 20, right: 20, bottom: 110 }}><Toast text={t(`edit.${error}.err`)} icon="warn" onHide={hideError} /></View>}
+    {error && <View style={{ position: 'absolute', left: 20, right: 20, bottom: 110 }}><Toast text={t(error === 'comment' ? 'cal.comment.err' : `edit.${error}.err`)} icon="warn" onHide={hideError} /></View>}
     <DateWheelSheet visible={picker === 'date'} value={draftDate} onChange={setDraftDate} minYear={Number(date.slice(0, 4)) - 5} maxYear={Number(date.slice(0, 4)) + 10} onDone={() => { setForm({ ...form, date: toIsoDate(draftDate) }); setPicker(null); }} onClose={() => setPicker(null)} />
     <NotificationTimeSheet visible={picker === 'start'} title={t('cal.field.start')} time={form.time} onClose={() => setPicker(null)} onSelect={(start) => setForm({ ...form, time: start })} />
     <NotificationTimeSheet visible={picker === 'end'} title={t('cal.field.end')} time={form.endTime ?? hourAfter(form.time)} onClose={() => setPicker(null)} onSelect={(endTime) => setForm({ ...form, endTime })} />

@@ -59,6 +59,12 @@ function eventBody(body: Record<string, unknown>) {
   if (body.ownerId !== null && (typeof body.ownerId !== 'string' || !UUID.test(body.ownerId))) throw new AppError('INVALID_REQUEST');
   return { p_title: title(body.title), p_date: calendarDate(body.date), p_time, p_end_time, p_alert: body.alert, p_owner: body.ownerId };
 }
+function commentBody(value: unknown): string {
+  if (typeof value !== 'string') throw new AppError('INVALID_REQUEST');
+  const trimmed = value.trim();
+  if (!trimmed || count(trimmed) > 200 || [...trimmed].length > 400) throw new AppError('INVALID_REQUEST');
+  return trimmed;
+}
 function presetId(value: unknown): string | null {
   if (value === undefined || value === null) return null;
   if (typeof value !== 'string' || !/^[A-Za-z]{1,32}$/.test(value)) throw new AppError('INVALID_REQUEST');
@@ -121,6 +127,12 @@ export function spacesHandler(deps: Deps, photos: PhotoSigner = photoSigner(serv
       deps.db.rpc('update_space_event', { actor: userId, target: uuidParam(params.spaceId), p_id: uuidParam(params.eventId), p_expected_version: expectedVersion(body.expectedVersion), ...eventBody(body) })),
     route('DELETE', '/spaces/:spaceId/events/:eventId', async ({ userId, params, body, deps }) => {
       await deps.db.rpc('delete_space_event', { actor: userId, target: uuidParam(params.spaceId), p_id: uuidParam(params.eventId), p_expected_version: expectedVersion(body.expectedVersion) });
+      return new Response(null, { status: 204 });
+    }),
+    route('POST', '/spaces/:spaceId/events/:eventId/comments', async ({ userId, params, body, deps }) =>
+      json(await deps.db.rpc('create_space_event_comment', { actor: userId, target: uuidParam(params.spaceId), p_event: uuidParam(params.eventId), p_body: commentBody(body.body) }), 201)),
+    route('DELETE', '/spaces/:spaceId/events/:eventId/comments/:commentId', async ({ userId, params, deps }) => {
+      await deps.db.rpc('delete_space_event_comment', { actor: userId, target: uuidParam(params.spaceId), p_event: uuidParam(params.eventId), p_id: uuidParam(params.commentId) });
       return new Response(null, { status: 204 });
     }),
     route('PATCH', '/spaces/:spaceId/time-zone', ({ userId, params, body, deps }) => {

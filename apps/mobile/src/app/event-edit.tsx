@@ -15,8 +15,12 @@ export default function EventEditRoute() {
   const profiles = profilesOf(snapshot, t);
   const spaceId = snapshot.space.spaceId;
   return <EventEdit initial={initial.current} date={date ?? todayIn(now, snapshot.space.timeZone)} me={snapshot.me.userId} meName={profiles.me.name || t('cal.by.me')} partner={profiles.partner.userId ? profiles.partner.name : null} partnerId={profiles.partner.userId} timeZone={snapshot.space.timeZone} offline={state.offline}
+    comments={snapshot.eventComments.filter((comment) => comment.eventId === id)}
     onClose={() => router.back()} onGone={() => { router.dismissTo('/(tabs)/calendar'); void refresh(); }} onSaved={(toast, day) => router.dismissTo({ pathname: '/(tabs)/calendar', params: { toast, date: day, at: String(Date.now()) } })}
     save={async (fields, version, key) => { if (id && version) await client.updateEvent(spaceId, id, fields, version, key); else await client.createEvent(spaceId, fields, key); await refresh(); }}
     remove={async (version, key) => { if (id) { await client.deleteEvent(spaceId, id, version, key); await refresh(); } }}
+    addComment={async (body, key) => { if (id) { await client.createEventComment(spaceId, id, body, key); await refresh(); } }}
+    // Refresh after a failed delete too: NOT_FOUND means the comment is already gone and the list should drop it.
+    removeComment={async (commentId, key) => { if (id) { try { await client.deleteEventComment(spaceId, id, commentId, key); } finally { await refresh(); } } }}
     reload={async () => { const latest = await client.snapshot(spaceId); await refresh(); return latest.events.find((item) => item.id === id); }} />;
 }
