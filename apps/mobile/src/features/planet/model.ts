@@ -14,11 +14,13 @@ export type PlanetScene = { theme: ThemeTokens; timeOfDay: 'day' | 'night'; came
 export function potatoRadius(x: number, y: number, z: number): number {
   return 1 + 0.035 * Math.sin(x * 5 + z * 3) * Math.sin(y * 5 - z * 2);
 }
-export function surfacePosition(latitude: number, longitude: number): [number, number, number] {
-  const lat = latitude * Math.PI / 180; const lon = longitude * Math.PI / 180;
-  const x = Math.cos(lat) * Math.sin(lon); const y = Math.sin(lat); const z = Math.cos(lat) * Math.cos(lon);
+export function surfacePoint(x: number, y: number, z: number): [number, number, number] {
   const radius = potatoRadius(x, y, z);
   return [x * radius, y * radius * 0.94, z * radius * 0.96];
+}
+export function surfacePosition(latitude: number, longitude: number): [number, number, number] {
+  const lat = latitude * Math.PI / 180; const lon = longitude * Math.PI / 180;
+  return surfacePoint(Math.cos(lat) * Math.sin(lon), Math.sin(lat), Math.cos(lat) * Math.cos(lon));
 }
 export const initialCamera: Camera = { yaw: 0, pitch: 0, zoom: 1 };
 export function drag(camera: Camera, dx: number, dy: number): Camera {
