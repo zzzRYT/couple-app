@@ -11,6 +11,7 @@ beforeEach(() => { mockPlanet = { maxLevel: 1, placements: [] }; });
 let mockActive = true;
 const mockSceneUnmounted = jest.fn();
 const mockCamera = jest.fn();
+jest.mock('../../../config/features', () => ({ V1_FEATURES: { planet: true } }));
 jest.mock('../../../ui/motion', () => ({ useLoopActive: () => mockActive }));
 jest.mock('../PlanetScene', () => ({ PlanetScene: ({ scene }: { scene: { camera: unknown } }) => {
   mockCamera(scene.camera);
@@ -49,7 +50,7 @@ it('releases the planet scene when the screen loses focus or the app backgrounds
   mockActive = true;
 });
 
- it('keeps saved objects when the planet reaches capacity', async () => {
+it('keeps saved objects when the planet reaches capacity', async () => {
   const screen = await renderWithI18n(<PlanetScreen spaceId="space-1" anniversary="2026-11-25" timeZone="Asia/Seoul" now="2026-11-26T00:00:00Z" />);
   const add = screen.getByText('개발용 오브젝트 놓기');
   for (let i = 1; i <= 4; i += 1) {
@@ -60,4 +61,13 @@ it('releases the planet scene when the screen loses focus or the app backgrounds
   await fireEvent.press(add);
   expect(screen.getByText('별이 가득 찼어요. 다음 성장을 기다려 주세요.')).toBeTruthy();
   expect(mockPlanet.placements).toHaveLength(4);
+});
+
+it('keeps the highest reached level after the development entitlement is turned off', async () => {
+  const screen = await renderWithI18n(<PlanetScreen spaceId="space-1" anniversary="2026-11-25" timeZone="Asia/Seoul" now="2026-11-26T00:00:00Z" />);
+  await fireEvent.press(await screen.findByText('개발용 확장 · 레벨 1'));
+  await waitFor(() => expect(mockPlanet.maxLevel).toBe(4));
+  await fireEvent.press(screen.getByText('개발용 확장 · 레벨 4'));
+  expect(screen.getByRole('switch').props.accessibilityState).toMatchObject({ checked: false });
+  expect(screen.getByText('개발용 확장 · 레벨 4')).toBeTruthy();
 });

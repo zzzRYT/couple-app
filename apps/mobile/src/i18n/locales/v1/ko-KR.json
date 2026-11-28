@@ -10,7 +10,7 @@
   "planet.devEntitlement": "개발용 확장 · 레벨 {level}",
   "planet.devPlace": "개발용 오브젝트 놓기",
   "planet.capacity": "별이 가득 찼어요. 다음 성장을 기다려 주세요.",
-  "planet.noSpace": "이 자리는 조금 좁아요. 다른 자리를 찾아볼게요.",
+  "planet.noSpace": "지금은 놓을 자리가 없어요.",
   "planet.storageError": "별을 저장하지 못했어요. 잠시 후 다시 시도해 주세요.",
   "planet.assetError": "오브젝트를 불러오지 못했어요."
 }
