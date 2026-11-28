@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AccessibilityInfo, KeyboardAvoidingView, PanResponder, Platform, Pressable, Text, View } from 'react-native';
+import { AccessibilityInfo, Image, KeyboardAvoidingView, PanResponder, Platform, Pressable, Text, View } from 'react-native';
 import { Canvas as BackgroundCanvas, LinearGradient, Rect, vec } from '@shopify/react-native-skia';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,6 +19,7 @@ import { disposePlanetAsset, loadPlanetAsset } from './planetAsset';
 import type { Object3D } from 'three';
 import { SampleObject } from './SampleObject';
 import { fakeGenerator, type GenerationJob } from './generator';
+import { pickRegion } from './photo';
 
 const generator = fakeGenerator();
 const positions = [...Array.from({ length: 6 }, (_, i) => ({ latitude: 0, longitude: i * 60 - 180 })), ...Array.from({ length: 4 }, (_, i) => ({ latitude: -55, longitude: i * 90 - 180 }))];
@@ -45,7 +46,7 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
     catch { setMessage('planet.storageError'); return false; }
     finally { saving.current = false; setBusy(false); }
   };
-  const [creating, setCreating] = useState(false); const [prompt, setPrompt] = useState('');
+  const [creating, setCreating] = useState(false); const [prompt, setPrompt] = useState(''); const [photo, setPhoto] = useState<string | null>(null);
   const [job, setJob] = useState<GenerationJob | null>(null);
   useEffect(() => {
     if (!job || (job.state !== 'queued' && job.state !== 'running')) return;
@@ -100,6 +101,8 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
     const fit = fitObject(job.size, growth.maxObject);
     return fit ? spotFor({ ...fit, assetId: job.assetId }, data.placements) : 'planet.failed';
   }, [data, job, growth.level]);
+  // Turn the planet so the previewed object faces the viewer.
+  useEffect(() => { if (preview && typeof preview !== 'string') update({ ...cameraRef.current, yaw: -preview.longitude * Math.PI / 180, pitch: Math.max(-0.7, Math.min(0.7, preview.latitude * Math.PI / 180)) }); }, [preview]);
   // shortcut: the fake generator only makes the sample tree; render inventory assets by id once they exist.
   const rendered = useMemo(() => [...(data?.placements ?? []), ...(preview && typeof preview !== 'string' ? [preview] : [])].flatMap((item) => item.assetId === 'sample-tree' ? [{ ...item, content: <group scale={item.scale ?? 1}><SampleObject /></group> }] : asset ? [{ ...item, content: <primitive object={asset.clone()} /> }] : []), [asset, data, preview]);
   const place = async (spot: Spot) => {
@@ -109,7 +112,14 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
     if (saved) setMessage('');
     return saved;
   };
-  const closeCreate = () => { setCreating(false); setJob(null); };
+  const closeCreate = () => { setCreating(false); setJob(null); setPhoto(null); };
+  const choosePhoto = async (source: 'camera' | 'library') => {
+    try {
+      const picked = await pickRegion(source);
+      if (picked === 'denied') setMessage('planet.photoDenied');
+      else if (picked !== 'cancelled') { setPhoto(picked.uri); setMessage(''); }
+    } catch { setMessage('planet.photoError'); }
+  };
   const backgroundColor = timeOfDay === 'day' ? themes.potato.sky[0] : '#1E1B3A';
   const sky = timeOfDay === 'day' ? themes.potato.sky : ['#1E1B3A', '#3A3260'];
   return <View style={{ flex: 1, backgroundColor }} onLayout={(event) => setSize(event.nativeEvent.layout)}>
@@ -130,14 +140,17 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
       <View style={{ backgroundColor: '#FFFAF2', borderRadius: 20, padding: 16, gap: 8 }}>
         <Text>{t('planet.sampleNotice')}</Text>
         {!job && <><TextField label={t('planet.createPrompt')} value={prompt} onChangeText={setPrompt} maxLength={300} multiline />
-          <Button label={t('planet.createSend')} disabled={!prompt.trim()} onPress={() => setJob(generator.submit(prompt))} /></>}
+          <Button label={t('planet.createSend')} disabled={!prompt.trim()} onPress={() => setJob(generator.submit({ kind: 'text', prompt }))} />
+          <View style={{ flexDirection: 'row', gap: 8 }}><Button compact variant="secondary" label={t('planet.photoTake')} onPress={() => void choosePhoto('camera')} /><Button compact variant="secondary" label={t('planet.photoPick')} onPress={() => void choosePhoto('library')} /></View>
+          {!!photo && <><Image accessibilityLabel={t('planet.photoRegion')} source={{ uri: photo }} style={{ width: 96, height: 96, borderRadius: 12, alignSelf: 'center' }} />
+            <Button label={t('planet.photoSend')} onPress={() => setJob(generator.submit({ kind: 'photo', uri: photo }))} /></>}</>}
         {job && (job.state === 'queued' || job.state === 'running') && <><Text accessibilityLiveRegion="polite">{t(job.state === 'queued' ? 'planet.queued' : 'planet.running')}</Text><Button variant="secondary" label={t('common.cancel')} onPress={() => setJob(generator.cancel(job))} /></>}
         {job?.state === 'succeeded' && preview && (typeof preview === 'string' ? <Text accessibilityLiveRegion="polite">{t(preview)}</Text> : <><Text>{t('planet.preview')}</Text>
           <View style={{ flexDirection: 'row', gap: 8 }}><Button compact variant="secondary" label={t('planet.left')} onPress={() => update(drag(cameraRef.current, -30, 0))} /><Button compact variant="secondary" label={t('planet.right')} onPress={() => update(drag(cameraRef.current, 30, 0))} /></View>
           <Button label={t('planet.place')} disabled={busy} onPress={() => void place(preview).then((saved) => { if (saved) { closeCreate(); setPrompt(''); } })} />
-          <Button variant="secondary" label={t('planet.regenerate')} onPress={() => setJob(null)} />
-          {!!message && <Text accessibilityLiveRegion="polite">{t(message)}</Text>}</>)}
+          <Button variant="secondary" label={t('planet.regenerate')} onPress={() => setJob(null)} /></>)}
         {job && ['failed', 'rejected', 'cancelled'].includes(job.state) && <><Text accessibilityLiveRegion="polite">{t(job.state === 'failed' ? 'planet.failed' : job.state === 'rejected' ? 'planet.rejected' : 'planet.cancelled')}</Text><Button label={t('common.retry')} onPress={() => setJob(null)} /></>}
+        {!!message && <Text accessibilityLiveRegion="polite">{t(message)}</Text>}
         <Button variant="ghost" label={t('common.close')} onPress={closeCreate} />
       </View>
     </KeyboardAvoidingView>}

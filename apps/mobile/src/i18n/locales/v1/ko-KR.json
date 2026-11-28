@@ -24,5 +24,11 @@
   "planet.failed": "만들지 못했어요",
   "planet.rejected": "요청을 받을 수 없어요",
   "planet.cancelled": "취소했어요",
-  "planet.sampleNotice": "연습용 샘플이에요. 놓은 오브젝트는 이 기기에만 저장돼요."
+  "planet.sampleNotice": "연습용 샘플이에요. 글과 사진은 기기 밖으로 보내지 않고, 놓은 오브젝트는 이 기기에만 저장돼요.",
+  "planet.photoTake": "사진 찍기",
+  "planet.photoPick": "사진 고르기",
+  "planet.photoRegion": "사진에서 고른 부분",
+  "planet.photoSend": "이 부분으로 만들기",
+  "planet.photoDenied": "카메라를 쓸 수 없어요. 설정에서 허용해 주세요.",
+  "planet.photoError": "사진을 가져오지 못했어요."
 }

@@ -24,5 +24,11 @@
   "planet.failed": "作成できませんでした",
   "planet.rejected": "リクエストを受け付けられません",
   "planet.cancelled": "キャンセルしました",
-  "planet.sampleNotice": "練習用サンプルです。置いたオブジェクトはこの端末にだけ保存されます。"
+  "planet.sampleNotice": "練習用サンプルです。文章と写真は端末の外に送らず、置いたオブジェクトはこの端末にだけ保存されます。",
+  "planet.photoTake": "写真を撮る",
+  "planet.photoPick": "写真を選ぶ",
+  "planet.photoRegion": "写真から選んだ部分",
+  "planet.photoSend": "この部分で作る",
+  "planet.photoDenied": "カメラを使えません。設定で許可してください。",
+  "planet.photoError": "写真を取得できませんでした。"
 }

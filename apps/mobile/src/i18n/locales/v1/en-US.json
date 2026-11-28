@@ -24,5 +24,11 @@
   "planet.failed": "Could not create",
   "planet.rejected": "Request rejected",
   "planet.cancelled": "Cancelled",
-  "planet.sampleNotice": "Practice sample. Placed objects are saved on this device only."
+  "planet.sampleNotice": "Practice sample. Your text and photo never leave this device, and placed objects are saved on this device only.",
+  "planet.photoTake": "Take a photo",
+  "planet.photoPick": "Choose a photo",
+  "planet.photoRegion": "Selected part of the photo",
+  "planet.photoSend": "Create from this part",
+  "planet.photoDenied": "Camera access is off. Please allow it in Settings.",
+  "planet.photoError": "Could not get the photo."
 }
