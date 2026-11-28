@@ -15,13 +15,23 @@ Expo constraints: Hot Updater and `expo-updates` both own the release bundle URL
 
 ## Publish an update (1.0.1 and later)
 
-1. **Actions → OTA**, `channel=preview`, a `message`. It runs `hot-updater deploy --platform ios --channel preview` under `eas env:exec preview`, which supplies the Cloudflare credentials, the client key and the Supabase values (see [Supabase project](#supabase-project)). Copy the bundle ID it prints.
-2. On a TestFlight build, open the app, close it, and open it again: the change shows.
-3. **Actions → OTA**, `channel=production`, `bundle=<ID from step 1>`. It runs `hot-updater bundle promote <ID> --target production --action copy`, so production gets the exact bundle checked on preview.
+1. **Actions → OTA**, `channel=preview`, a `message`. It runs `hot-updater deploy --platform ios --channel preview` under `eas env:exec preview`, which supplies the Cloudflare credentials, the client key and the Supabase values (see [Supabase project](#supabase-project)), and gives the bundle its [release number](#release-numbers). Copy the bundle ID it prints.
+2. On a TestFlight build, open the app, close it, and open it again: the change shows, and Settings shows the version with the release number, such as `1.0.1 (2)`.
+3. **Actions → OTA**, `channel=production`, `bundle=<ID from step 1>`. It runs `hot-updater bundle promote <ID> --target production --action copy`, so production gets the exact bundle checked on preview, then creates the GitHub release for that number.
 
 Roll back with `hot-updater bundle disable <ID>`, which re-resolves delivery to the previous bundle. Run CLI commands from `apps/mobile` through the EAS environment, for example `eas env:exec preview 'npx hot-updater bundle list --channel production'`; no local secret file is needed. `npx hot-updater console` opens the web console the same way.
 
 `deploy` defaults to the production channel. `hot-updater.config.ts` refuses a production deploy unless `HOT_UPDATER_PRODUCTION_DEPLOY=true`, refuses any bundle without `EXPO_PUBLIC_HOT_UPDATER_API_KEY`, refuses a preview or production bundle built for another variant, and refuses a preview or production bundle without Aroom-prod's Supabase values: a bundle inlines `EXPO_PUBLIC_*` values, and one without the key would stop later updates on that device.
+
+## Release numbers
+
+Settings shows `<version> (<N>)` on an OTA bundle: N says which production OTA of that app version it is, so `1.0.1 (1)` is the first OTA on top of 1.0.1. A build's own bundle shows the version alone. The repository marks each production OTA with a GitHub release of the same name, title `1.0.1 (1)` and tag `v1.0.1-ota.1` on the commit the bundle was built from.
+
+- The preview deploy reads the version from the app config and takes N as one more than the highest `v<version>-ota.<N>` tag. It inlines `<version> (<N>)` into the bundle as `EXPO_PUBLIC_OTA_RELEASE` and starts the bundle message with that label and the commit (`.github/scripts/ota-release.mjs`).
+- The production promotion reads the label and commit back from the bundle message, stops if the tag already exists, promotes, and creates the release.
+- N counts production promotions, which is what people see. Previews deployed before a promotion all get the same N; promoting one of them takes the number, and promoting another stops at the existing tag, so deploy that change again as a new preview.
+- A bundle deployed outside the workflow has no number in its message, and the production promotion refuses it.
+- If the release step fails after the promotion succeeded, create it by hand from the run's environment: `gh release create <tag> --target <commit> --title "<version> (<N>)"`.
 
 ## Supabase project
 

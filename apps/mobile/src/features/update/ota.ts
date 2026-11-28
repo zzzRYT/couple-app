@@ -2,7 +2,7 @@ import { HotUpdater } from '@hot-updater/react-native';
 
 /** The Cloudflare Worker that serves OTA updates to builds from 1.0.1 on (docs/ota.md). 1.0.0 still asks EAS Update. */
 export const OTA_SERVER_URL = 'https://aroom-hot-updater.jinjinstar3.workers.dev';
-type Updater = Pick<ReturnType<typeof HotUpdater.init>, 'checkForUpdate' | 'reload' | 'getBundleId' | 'getChannel' | 'getMinBundleId'>;
+type Updater = Pick<ReturnType<typeof HotUpdater.init>, 'checkForUpdate' | 'reload'>;
 
 // Direct `process.env.EXPO_PUBLIC_*` reads are inlined at build time: store builds and OTA bundles both take the client
 // key from the EAS environment (docs/secrets.md). Builds without it, such as development builds and tests, never check.

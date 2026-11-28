@@ -202,6 +202,15 @@ test('V0-F14-AC-04 production OTA promotes the checked preview bundle', async ()
   assert.doesNotMatch(ota, /hot-updater deploy[^\n]*--channel production/);
 });
 
+test('V0-F14-AC-04 each production OTA carries the release number its tag names', async () => {
+  const ota = await read('.github/workflows/ota.yml');
+  assert.match(ota, /EXPO_PUBLIC_OTA_RELEASE="\$VERSION \(\$N\)"/);
+  assert.match(ota, /--channel preview --message "\$OTA_MESSAGE"/);
+  const promote = ota.split('      - name: Promote checked preview bundle to production')[1];
+  assert.ok(promote.indexOf('git ls-remote --exit-code --tags origin "refs/tags/$OTA_TAG"') < promote.indexOf('bundle promote'));
+  assert.ok(promote.indexOf('bundle promote') < promote.indexOf('gh release create "$OTA_TAG" --target "$OTA_SHA" --title "$OTA_TITLE"'));
+});
+
 test('V0-F14-AC-04 1.0.0 installs still get EAS updates built from the 1.0.0 native code', async () => {
   const legacy = await read('.github/workflows/ota-eas-legacy.yml');
   assert.match(legacy, /ref: \$\{\{ inputs\.ref \}\}/);

@@ -226,7 +226,7 @@ iOS 홈 화면 small·medium·large와 잠금 화면 circular·rectangular·inli
 6. **V0-F12-AC-06** — **Given** `V0-set-lang`, `V0-set-mode`, **When** 바꾸면, **Then** 이 기기에만 적용된다("이 기기에만 적용돼요.").
 7. **V0-F12-AC-07** — **Given** `V0-set-disconnect`, **When** "내용을 확인했어요"를 체크하고 연결 끊기를 확인하면, **Then** 공간이 끝나고(기존 `block` 끝점, reason `disconnect`) 상대는 `V0-state-ended`를 보며 이 기기의 위젯·알림이 지워진다.
 8. **V0-F12-AC-08** — **Given** 앱 비밀번호가 없는 Apple 계정의 `V0-set-delete`, **When** Apple로 다시 로그인해 확인하면, **Then** 기존 계정 삭제 흐름(S13 진행·실패·완료)이 실행되고 공간이 끝나며 Apple 연결이 해제되고 위젯·알림이 지워진다.
-9. **V0-F12-AC-09** — **Given** 도움 행, **When** 문의하기·개인정보 처리방침·이용약관을 누르면, **Then** 각각 메일 작성 또는 웹 문서(앱 언어별 `/privacy/`)를 연다. 주소가 아직 없으면 문의하기는 숨긴다. 자체 약관이 없는 동안 이용약관은 Apple 표준 EULA를 연다(A-23). 버전 행은 마케팅 버전과 빌드 번호를 보여 준다.
+9. **V0-F12-AC-09** — **Given** 도움 행, **When** 문의하기·개인정보 처리방침·이용약관을 누르면, **Then** 각각 메일 작성 또는 웹 문서(앱 언어별 `/privacy/`)를 연다. 주소가 아직 없으면 문의하기는 숨긴다. 자체 약관이 없는 동안 이용약관은 Apple 표준 EULA를 연다(A-23). 버전 행은 마케팅 버전을 보여 주고, OTA 번들이면 그 버전의 몇 번째 production OTA인지 괄호에 붙인다(예: `1.0.1 (2)`, 저장소 태그 `v1.0.1-ota.2`). 번들 id는 보이지 않는다.
 10. **V0-F12-AC-10** — **Given** 로그아웃, **When** 확인하면, **Then** 세션을 지우고 `V0-start-intro`로 가며 위젯은 "공간 없음" 상태, 예약 알림은 취소된다.
 
 ### User Story 9 - 이메일과 비밀번호로 로그인한다 (Priority: P1) — V0-F15

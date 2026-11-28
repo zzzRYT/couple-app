@@ -15,9 +15,13 @@ on:
         description: Required for production - the checked preview bundle ID to promote
         type: string
         required: false
+# Release numbers come from the tags a promotion creates, so runs take turns.
+concurrency: ota
 jobs:
   update:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     defaults:
       run:
         working-directory: apps/mobile
@@ -55,9 +59,30 @@ jobs:
           APP_VARIANT: preview
           EXPO_PUBLIC_APP_VARIANT: preview
           MESSAGE: ${{ inputs.message }}
-        run: eas env:exec preview 'npx hot-updater deploy --platform ios --channel preview --message "$MESSAGE"' --non-interactive
+        # The bundle shows "<version> (<N>)", N being the next production OTA of that version (docs/ota.md#release-numbers).
+        run: |
+          VERSION=$(npx expo config --json | node -pe 'JSON.parse(require("fs").readFileSync(0, "utf8")).version')
+          N=$(git ls-remote --tags origin "refs/tags/v$VERSION-ota.*" | node ../../.github/scripts/ota-release.mjs next)
+          EXPO_PUBLIC_OTA_RELEASE="$VERSION ($N)"
+          OTA_MESSAGE=$(node ../../.github/scripts/ota-release.mjs message "$EXPO_PUBLIC_OTA_RELEASE" "$GITHUB_SHA" "$MESSAGE")
+          export EXPO_PUBLIC_OTA_RELEASE OTA_MESSAGE
+          eas env:exec preview 'npx hot-updater deploy --platform ios --channel preview --message "$OTA_MESSAGE"' --non-interactive
+      - name: Read the release number of the preview bundle
+        if: inputs.channel == 'production'
+        env:
+          BUNDLE: ${{ inputs.bundle }}
+        run: |
+          eas env:exec preview 'npx hot-updater bundle show "$BUNDLE" --json > "$RUNNER_TEMP/bundle.json"' --non-interactive
+          node ../../.github/scripts/ota-release.mjs env "$RUNNER_TEMP/bundle.json" >> "$GITHUB_ENV"
       - name: Promote checked preview bundle to production
         if: inputs.channel == 'production'
         env:
           BUNDLE: ${{ inputs.bundle }}
-        run: eas env:exec preview 'npx hot-updater bundle promote "$BUNDLE" --target production --action copy --yes' --non-interactive
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/$OTA_TAG" > /dev/null; then
+            echo "$OTA_TITLE is already in production ($OTA_TAG). Deploy a new preview bundle; it gets the next number." >&2
+            exit 1
+          fi
+          eas env:exec preview 'npx hot-updater bundle promote "$BUNDLE" --target production --action copy --yes' --non-interactive
+          gh release create "$OTA_TAG" --target "$OTA_SHA" --title "$OTA_TITLE" --notes "Hot Updater bundle $BUNDLE, promoted to production."
