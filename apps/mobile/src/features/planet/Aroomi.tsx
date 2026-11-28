@@ -1,15 +1,34 @@
-import { useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber/native';
-import type { Group } from 'three';
+import { Bone, Skeleton, Vector3 } from 'three';
+import type { Group, SkinnedMesh } from 'three';
+import { BODY, makeAroomiBody } from './aroomiBody';
 
-// Temporary primitive model; replace this component when the owner's GLB is available.
+// Seat a part on the front of the body, turned to face along the surface normal.
+function onBody(x: number, y: number, lift = 0): { position: [number, number, number]; rotation: [number, number, number, 'YXZ'] } {
+  const z = BODY[2] * Math.sqrt(1 - (x / BODY[0]) ** 2 - ((y - 0.5) / BODY[1]) ** 2);
+  const normal = new Vector3(x / BODY[0] ** 2, (y - 0.5) / BODY[1] ** 2, z / BODY[2] ** 2).normalize();
+  return { position: [x + normal.x * lift, y + normal.y * lift, z + normal.z * lift], rotation: [-Math.asin(normal.y), Math.atan2(normal.x, normal.z), 0, 'YXZ'] };
+}
+
+// Temporary generated model; replace this component when the owner's GLB is available.
 export function Aroomi({ reducedMotion }: { reducedMotion: boolean }) {
-  const left = useRef<Group>(null); const right = useRef<Group>(null); const character = useRef<Group>(null);
+  const character = useRef<Group>(null); const mesh = useRef<SkinnedMesh>(null);
+  const { geometry, root, left, right, skeleton } = useMemo(() => {
+    const root = new Bone(); const left = new Bone(); const right = new Bone();
+    left.position.set(-0.37, 0.44, 0); right.position.set(0.37, 0.44, 0);
+    root.add(left, right);
+    return { geometry: makeAroomiBody(), root, left, right, skeleton: new Skeleton([root, left, right]) };
+  }, []);
+  useLayoutEffect(() => {
+    mesh.current?.bind(skeleton);
+    return () => { geometry.dispose(); skeleton.dispose(); };
+  }, [geometry, skeleton]);
   useFrame(({ clock }) => {
     if (reducedMotion) {
       if (character.current) { character.current.rotation.y = 0; character.current.position.set(0, 0, 0); }
-      if (left.current) left.current.rotation.z = 0;
-      if (right.current) right.current.rotation.z = 0;
+      left.rotation.z = 0;
+      right.rotation.z = 0;
       return;
     }
     const t = clock.elapsedTime;
@@ -18,18 +37,22 @@ export function Aroomi({ reducedMotion }: { reducedMotion: boolean }) {
       character.current.position.set(x, -0.5 * x * x, 0);
       character.current.rotation.y = Math.sin(t * 0.3) * 0.35;
     }
-    if (left.current) left.current.rotation.z = Math.sin(t * 1.2) * 0.45;
-    if (right.current) right.current.rotation.z = -Math.sin(t * 1.2) * 0.45;
+    left.rotation.z = Math.sin(t * 1.2) * 0.45;
+    right.rotation.z = -Math.sin(t * 1.2) * 0.45;
   });
   return <group ref={character} scale={0.38}>
-    <mesh position={[0, 0.5, 0]} scale={[0.84, 1, 0.76]}><sphereGeometry args={[0.5, 24, 16]} /><meshStandardMaterial color="#F0CFA6" roughness={1} /></mesh>
-    {[-1, 1].map((side) => <group key={side} ref={side < 0 ? left : right} position={[side * 0.37, 0.44, 0]}><mesh position={[side * 0.11, 0, 0]} scale={[0.25, 0.14, 0.14]}><sphereGeometry /><meshStandardMaterial color="#F0CFA6" roughness={1} /></mesh></group>)}
+    <skinnedMesh ref={mesh} geometry={geometry} frustumCulled={false}>
+      <primitive object={root} />
+      <meshStandardMaterial color="#F0CFA6" roughness={1} />
+    </skinnedMesh>
     {[-1, 1].map((side) => <group key={side}>
-      <mesh position={[side * 0.15, 0.05, 0.06]} scale={[0.17, 0.1, 0.2]}><sphereGeometry /><meshStandardMaterial color="#F0CFA6" roughness={1} /></mesh>
-      <mesh position={[side * 0.13, 0.68, 0.35]} scale={[0.025, 0.035, 0.015]}><sphereGeometry /><meshStandardMaterial color="#3A261C" roughness={1} /></mesh>
-      <mesh position={[side * 0.23, 0.57, 0.32]} scale={[0.05, 0.035, 0.015]}><sphereGeometry /><meshStandardMaterial color="#F2A99B" roughness={1} /></mesh>
+      <mesh {...onBody(side * 0.13, 0.68)} scale={[0.025, 0.035, 0.012]}><sphereGeometry args={[1, 12, 8]} /><meshStandardMaterial color="#3A261C" roughness={1} /></mesh>
+      <mesh {...onBody(side * 0.23, 0.57)} scale={[0.05, 0.035, 0.008]}><sphereGeometry args={[1, 12, 8]} /><meshStandardMaterial color="#F2A99B" roughness={1} /></mesh>
     </group>)}
-    <mesh position={[0, 0.37, 0.37]} rotation={[0, 0, 0.55]} scale={[0.1, 0.43, 0.025]}><boxGeometry /><meshStandardMaterial color="#5263BD" roughness={1} /></mesh>
-    <mesh position={[-0.04, 0.39, 0.4]} scale={0.06}><sphereGeometry /><meshStandardMaterial color="#FCCF7B" roughness={1} /></mesh>
+    {/* K01 sash: the band of the body shell from the left shoulder (y 0.56) round to the right waist (y 0.25). */}
+    <group position={[0, 0.5, 0]} scale={[BODY[0] * 1.03, BODY[1] * 1.03, BODY[2] * 1.03]}>
+      <mesh rotation={[0, 0, 0.322]}><sphereGeometry args={[1, 48, 1, 0, Math.PI * 2, 1.672, 0.2]} /><meshStandardMaterial color="#5263BD" roughness={1} /></mesh>
+    </group>
+    <mesh {...onBody(-0.04, 0.38, 0.02)} scale={[0.055, 0.055, 0.02]}><sphereGeometry args={[1, 12, 8]} /><meshStandardMaterial color="#FCCF7B" roughness={1} /></mesh>
   </group>;
 }
