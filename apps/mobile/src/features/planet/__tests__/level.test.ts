@@ -1,5 +1,5 @@
 import { fitObject, planetLevel } from '../level';
-import { canPlace, type Placement } from '../placement';
+import { canPlace, spots, type Placement } from '../placement';
 
 it('uses the highest earned or entitled level, ignoring invalid entitlements', () => {
   expect(planetLevel(99).level).toBe(1);
@@ -32,7 +32,6 @@ it('refuses a size that is not a positive finite number', () => {
 });
 
 it('leaves room for a full planet of maximum-size objects at every level', () => {
-  const spots = [...Array.from({ length: 6 }, (_, i) => ({ latitude: 0, longitude: i * 60 - 180 })), ...Array.from({ length: 4 }, (_, i) => ({ latitude: -55, longitude: i * 90 - 180 }))];
   for (const days of [0, 100, 365, 730]) {
     const { capacity, scale, maxObject } = planetLevel(days);
     const placed: Placement[] = [];

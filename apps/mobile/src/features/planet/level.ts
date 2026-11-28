@@ -12,9 +12,8 @@ export function planetLevel(days: number, entitlementLevels: readonly number[] =
   return { level, ...levels[level - 1]! };
 }
 
-// A generated object may be any size; it is scaled down to the level's maximum radius and never up.
-export function fitObject(size: number, maxObject: number): { scale: number; radius: number } | null {
-  if (!Number.isFinite(size) || size <= 0) return null;
-  const scale = Math.min(1, maxObject / size);
-  return { scale, radius: size * scale };
+export function fitObject(boundingRadius: number, maxObject: number): { scale: number; radius: number } | null {
+  if (!Number.isFinite(boundingRadius) || boundingRadius <= 0) return null;
+  const scale = Math.min(1, maxObject / boundingRadius);
+  return { scale, radius: boundingRadius * scale };
 }

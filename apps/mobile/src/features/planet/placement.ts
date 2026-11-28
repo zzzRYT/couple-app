@@ -2,6 +2,8 @@ import { surfacePosition } from './model';
 
 export type Placement = { id: string; latitude: number; longitude: number; heading: number; radius: number; assetId?: string; scale?: number };
 
+export const spots = [...Array.from({ length: 6 }, (_, i) => ({ latitude: 0, longitude: i * 60 - 180 })), ...Array.from({ length: 4 }, (_, i) => ({ latitude: -55, longitude: i * 90 - 180 }))];
+
 // Radius is a conservative bounding sphere in world units, including the character.
 export function canPlace(placements: readonly Placement[], candidate: Placement, capacity: number, scale: number): 'ok' | 'capacity' | 'overlap' | 'invalid' {
   if (placements.length >= capacity) return 'capacity';

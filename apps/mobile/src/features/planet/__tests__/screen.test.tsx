@@ -13,11 +13,12 @@ jest.mock('../photo', () => ({ pickRegion: jest.fn() }));
 let mockActive = true;
 const mockSceneUnmounted = jest.fn();
 const mockCamera = jest.fn();
+const mockPlacements = jest.fn();
 jest.mock('../../../config/features', () => ({ V1_FEATURES: { planet: true } }));
 jest.mock('../../../ui/motion', () => ({ useLoopActive: () => mockActive }));
 jest.mock('../SurfaceAnchor', () => ({ SurfaceAnchor: () => null }));
-jest.mock('../PlanetScene', () => ({ PlanetScene: ({ scene }: { scene: { camera: unknown } }) => {
-  mockCamera(scene.camera);
+jest.mock('../PlanetScene', () => ({ PlanetScene: ({ scene, placements }: { scene: { camera: unknown }; placements: unknown }) => {
+  mockCamera(scene.camera); mockPlacements(placements);
   jest.requireActual<typeof import('react')>('react').useEffect(() => () => mockSceneUnmounted(), []);
   return null;
 } }));
@@ -87,6 +88,7 @@ it('creates a sample, previews it and places it on the planet', async () => {
   await act(() => { jest.advanceTimersByTime(1000); });
   expect(screen.getByText('미리 보기 · 버튼이나 드래그로 돌려 보세요')).toBeTruthy();
   expect(mockCamera.mock.lastCall?.[0]).toMatchObject({ yaw: Math.PI, pitch: 0 });
+  expect(mockPlacements.mock.lastCall?.[0]).toMatchObject([{ assetId: 'sample-tree', latitude: 0, longitude: -180, radius: 0.3, scale: 0.3 / 0.53 }]);
   await fireEvent.press(screen.getByLabelText('별에 놓기'));
   await waitFor(() => expect(screen.getByLabelText('감자별, 오브젝트 1개, 아루미가 서 있어요')).toBeTruthy());
   expect(mockPlanet.placements).toMatchObject([{ assetId: 'sample-tree', radius: 0.3, scale: 0.3 / 0.53 }]);

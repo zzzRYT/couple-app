@@ -9,20 +9,19 @@ import { Button, TextField, useTabBarClearance } from '../../ui/components';
 import { useLoopActive } from '../../ui/motion';
 import { dayCount } from '../../lib/dday';
 import { roomVariant } from '../settings/followTime';
-import { drag, inertia, initialCamera, pinch, themes, type Camera } from './model';
+import { drag, face, inertia, initialCamera, pinch, themes, type Camera } from './model';
 import { PlanetScene } from './PlanetScene';
 import { fitObject, planetLevel } from './level';
-import { canPlace, type Placement } from './placement';
+import { canPlace, spots, type Placement } from './placement';
 import { readPlanet, writePlanet, type PlanetData } from './planetStorage';
 import { demoAsset } from './demoAsset';
 import { disposePlanetAsset, loadPlanetAsset } from './planetAsset';
 import type { Object3D } from 'three';
 import { SampleObject } from './SampleObject';
-import { fakeGenerator, type GenerationJob } from './generator';
+import { fakeGenerator, type GenerationInput, type GenerationJob } from './generator';
 import { pickRegion } from './photo';
 
 const generator = fakeGenerator();
-const positions = [...Array.from({ length: 6 }, (_, i) => ({ latitude: 0, longitude: i * 60 - 180 })), ...Array.from({ length: 4 }, (_, i) => ({ latitude: -55, longitude: i * 90 - 180 }))];
 type Spot = Placement | 'planet.capacity' | 'planet.noSpace' | 'planet.failed';
 
 export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId: string; anniversary: string; timeZone: string; now: string }) {
@@ -94,15 +93,14 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
   const spotFor = (object: Pick<Placement, 'radius' | 'assetId' | 'scale'>, placements: readonly Placement[]): Spot => {
     if (placements.length >= growth.capacity) return 'planet.capacity';
     const id = `${Date.now()}-${placements.length}`;
-    return positions.map((position): Placement => ({ ...position, ...object, id, heading: 0 })).find((item) => canPlace(placements, item, growth.capacity, growth.scale) === 'ok') ?? 'planet.noSpace';
+    return spots.map((position): Placement => ({ ...position, ...object, id, heading: 0 })).find((item) => canPlace(placements, item, growth.capacity, growth.scale) === 'ok') ?? 'planet.noSpace';
   };
   const preview = useMemo(() => {
     if (!data || job?.state !== 'succeeded') return null;
-    const fit = fitObject(job.size, growth.maxObject);
+    const fit = fitObject(job.boundingRadius, growth.maxObject);
     return fit ? spotFor({ ...fit, assetId: job.assetId }, data.placements) : 'planet.failed';
   }, [data, job, growth.level]);
-  // Turn the planet so the previewed object faces the viewer.
-  useEffect(() => { if (preview && typeof preview !== 'string') update({ ...cameraRef.current, yaw: -preview.longitude * Math.PI / 180, pitch: Math.max(-0.7, Math.min(0.7, preview.latitude * Math.PI / 180)) }); }, [preview]);
+  useEffect(() => { if (preview && typeof preview !== 'string') update(face(cameraRef.current, preview.latitude, preview.longitude)); }, [job]);
   // shortcut: the fake generator only makes the sample tree; render inventory assets by id once they exist.
   const rendered = useMemo(() => [...(data?.placements ?? []), ...(preview && typeof preview !== 'string' ? [preview] : [])].flatMap((item) => item.assetId === 'sample-tree' ? [{ ...item, content: <group scale={item.scale ?? 1}><SampleObject /></group> }] : asset ? [{ ...item, content: <primitive object={asset.clone()} /> }] : []), [asset, data, preview]);
   const place = async (spot: Spot) => {
@@ -112,7 +110,8 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
     if (saved) setMessage('');
     return saved;
   };
-  const closeCreate = () => { setCreating(false); setJob(null); setPhoto(null); };
+  const closeCreate = () => { setCreating(false); setJob(null); setPhoto(null); setMessage(''); };
+  const submit = (input: GenerationInput) => { setMessage(''); setJob(generator.submit(input)); };
   const choosePhoto = async (source: 'camera' | 'library') => {
     try {
       const picked = await pickRegion(source);
@@ -140,10 +139,10 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
       <View style={{ backgroundColor: '#FFFAF2', borderRadius: 20, padding: 16, gap: 8 }}>
         <Text>{t('planet.sampleNotice')}</Text>
         {!job && <><TextField label={t('planet.createPrompt')} value={prompt} onChangeText={setPrompt} maxLength={300} multiline />
-          <Button label={t('planet.createSend')} disabled={!prompt.trim()} onPress={() => setJob(generator.submit({ kind: 'text', prompt }))} />
+          <Button label={t('planet.createSend')} disabled={!prompt.trim()} onPress={() => submit({ kind: 'text', prompt })} />
           <View style={{ flexDirection: 'row', gap: 8 }}><Button compact variant="secondary" label={t('planet.photoTake')} onPress={() => void choosePhoto('camera')} /><Button compact variant="secondary" label={t('planet.photoPick')} onPress={() => void choosePhoto('library')} /></View>
           {!!photo && <><Image accessibilityLabel={t('planet.photoRegion')} source={{ uri: photo }} style={{ width: 96, height: 96, borderRadius: 12, alignSelf: 'center' }} />
-            <Button label={t('planet.photoSend')} onPress={() => setJob(generator.submit({ kind: 'photo', uri: photo }))} /></>}</>}
+            <Button label={t('planet.photoSend')} onPress={() => submit({ kind: 'photo', croppedRegionUri: photo })} /></>}</>}
         {job && (job.state === 'queued' || job.state === 'running') && <><Text accessibilityLiveRegion="polite">{t(job.state === 'queued' ? 'planet.queued' : 'planet.running')}</Text><Button variant="secondary" label={t('common.cancel')} onPress={() => setJob(generator.cancel(job))} /></>}
         {job?.state === 'succeeded' && preview && (typeof preview === 'string' ? <Text accessibilityLiveRegion="polite">{t(preview)}</Text> : <><Text>{t('planet.preview')}</Text>
           <View style={{ flexDirection: 'row', gap: 8 }}><Button compact variant="secondary" label={t('planet.left')} onPress={() => update(drag(cameraRef.current, -30, 0))} /><Button compact variant="secondary" label={t('planet.right')} onPress={() => update(drag(cameraRef.current, 30, 0))} /></View>

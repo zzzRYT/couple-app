@@ -17,6 +17,8 @@ it('preserves placements and the highest level when the current entitlement is l
 it('does not replace corrupt stored placements with an empty planet', async () => {
   jest.mocked(SecureStore.getItemAsync).mockResolvedValueOnce('{"maxLevel":4,"placements":[{}]}');
   await expect(readPlanet('space-1')).rejects.toThrow('Invalid planet data');
-  jest.mocked(SecureStore.getItemAsync).mockResolvedValueOnce('{"maxLevel":1,"placements":[{"id":"a","latitude":0,"longitude":0,"heading":0,"radius":0.3,"scale":0}]}');
-  await expect(readPlanet('space-1')).rejects.toThrow('Invalid planet data');
+  for (const field of ['"scale":0', '"assetId":5']) {
+    jest.mocked(SecureStore.getItemAsync).mockResolvedValueOnce(`{"maxLevel":1,"placements":[{"id":"a","latitude":0,"longitude":0,"heading":0,"radius":0.3,${field}}]}`);
+    await expect(readPlanet('space-1')).rejects.toThrow('Invalid planet data');
+  }
 });
