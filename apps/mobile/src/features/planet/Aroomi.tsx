@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber/native';
 import type { Group } from 'three';
 
 // Temporary primitive model; replace this component when the owner's GLB is available.
-export function Aroomi({ reducedMotion }: { reducedMotion: boolean }) {
+export function Aroomi({ reducedMotion, wander = 1 }: { reducedMotion: boolean; wander?: number }) {
   const left = useRef<Group>(null); const right = useRef<Group>(null); const character = useRef<Group>(null);
   useFrame(({ clock }) => {
     if (reducedMotion) {
@@ -14,9 +14,9 @@ export function Aroomi({ reducedMotion }: { reducedMotion: boolean }) {
     }
     const t = clock.elapsedTime;
     if (character.current) {
-      const x = Math.sin(t * 0.18) * 0.14;
+      const x = Math.sin(t * 0.18) * 0.14 * wander;
       character.current.position.set(x, -0.5 * x * x, 0);
-      character.current.rotation.y = Math.sin(t * 0.3) * 0.35;
+      character.current.rotation.y = Math.sin(t * 0.3) * 0.35 * wander;
     }
     if (left.current) left.current.rotation.z = Math.sin(t * 1.2) * 0.45;
     if (right.current) right.current.rotation.z = -Math.sin(t * 1.2) * 0.45;

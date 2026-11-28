@@ -1,7 +1,8 @@
 import { act, fireEvent, waitFor } from '@testing-library/react-native';
-import { PanResponder } from 'react-native';
+import { AccessibilityInfo, PanResponder } from 'react-native';
 import { renderWithI18n } from '../../../test/render';
 import { PlanetScreen } from '../PlanetScreen';
+import { initialWalker, walkerCoordinates, type Walker } from '../walk';
 
 jest.mock('../planetAsset', () => ({ loadPlanetAsset: async () => ({ clone: () => ({}) }), disposePlanetAsset: jest.fn() }));
 let mockPlanet: import('../planetStorage').PlanetData = { maxLevel: 1, placements: [] };
@@ -11,10 +12,11 @@ beforeEach(() => { mockPlanet = { maxLevel: 1, placements: [] }; });
 let mockActive = true;
 const mockSceneUnmounted = jest.fn();
 const mockCamera = jest.fn();
+const mockWalk = jest.fn<void, [{ walker: Walker; walkBlend: number }]>();
 jest.mock('../../../config/features', () => ({ V1_FEATURES: { planet: true } }));
 jest.mock('../../../ui/motion', () => ({ useLoopActive: () => mockActive }));
-jest.mock('../PlanetScene', () => ({ PlanetScene: ({ scene }: { scene: { camera: unknown } }) => {
-  mockCamera(scene.camera);
+jest.mock('../PlanetScene', () => ({ PlanetScene: ({ scene, walker, walkBlend }: { scene: { camera: unknown }; walker: Walker; walkBlend: number }) => {
+  mockCamera(scene.camera); mockWalk({ walker, walkBlend });
   jest.requireActual<typeof import('react')>('react').useEffect(() => () => mockSceneUnmounted(), []);
   return null;
 } }));
@@ -70,4 +72,73 @@ it('keeps the highest reached level after the development entitlement is turned 
   await fireEvent.press(screen.getByText('개발용 확장 · 레벨 4'));
   expect(screen.getByRole('switch').props.accessibilityState).toMatchObject({ checked: false });
   expect(screen.getByText('개발용 확장 · 레벨 4')).toBeTruthy();
+});
+
+const props = { spaceId: 'space-1', anniversary: '2026-11-25', timeZone: 'Asia/Seoul', now: '2026-11-26T00:00:00Z' };
+const shown = () => mockWalk.mock.lastCall![0];
+async function enterWalk(screen: Awaited<ReturnType<typeof renderWithI18n>>) {
+  await fireEvent.press(screen.getByText('산책하기'));
+  await waitFor(() => expect(shown().walkBlend).toBe(1), { timeout: 3000 });
+}
+
+it('zooms smoothly into the walk view and back out to the unchanged overview', async () => {
+  const screen = await renderWithI18n(<PlanetScreen {...props} />);
+  const camera = mockCamera.mock.lastCall?.[0];
+  mockWalk.mockClear();
+  await enterWalk(screen);
+  const blends = mockWalk.mock.calls.map(([scene]) => scene.walkBlend);
+  expect(blends.filter((blend) => blend > 0 && blend < 1).length).toBeGreaterThan(3);
+  expect(blends).toEqual([...blends].sort((a, b) => a - b));
+  expect(screen.getByText('끌어서 아루미와 걸어 보세요')).toBeTruthy();
+  await fireEvent.press(screen.getByText('별 전체 보기'));
+  await waitFor(() => expect(shown().walkBlend).toBe(0), { timeout: 3000 });
+  expect(mockCamera.mock.lastCall?.[0]).toEqual(camera);
+  expect(screen.getByText('끌어서 별을 돌려 보세요')).toBeTruthy();
+});
+
+it('jumps between the views without a zoom when reduced motion is on', async () => {
+  jest.spyOn(AccessibilityInfo, 'isReduceMotionEnabled').mockResolvedValueOnce(true);
+  const screen = await renderWithI18n(<PlanetScreen {...props} />);
+  await act(async () => {});
+  mockWalk.mockClear();
+  await fireEvent.press(screen.getByText('산책하기'));
+  expect(new Set(mockWalk.mock.calls.map(([scene]) => scene.walkBlend))).toEqual(new Set([1]));
+});
+
+it('walks while a drag is held, leaves the overview camera alone, and stops when the finger lifts', async () => {
+  const responder = jest.spyOn(PanResponder, 'create');
+  const screen = await renderWithI18n(<PlanetScreen {...props} />);
+  const handlers = responder.mock.calls.at(-1)![0]; const camera = mockCamera.mock.lastCall?.[0];
+  await enterWalk(screen);
+  const drag = (dx: number, dy: number) => act(() => { handlers.onPanResponderMove?.({ nativeEvent: { touches: [{ pageX: 100 + dx, pageY: 200 + dy }] } } as never, { dx, dy } as never); });
+  await drag(5, -5);
+  await act(() => new Promise((resolve) => setTimeout(resolve, 100)));
+  expect(shown().walker).toBe(initialWalker);
+  await drag(40, 0);
+  await waitFor(() => expect(walkerCoordinates(shown().walker).latitude).toBeLessThan(85));
+  expect(walkerCoordinates(shown().walker).longitude).toBeCloseTo(90);
+  expect(shown().walker.facing).toBeCloseTo(Math.PI / 2);
+  expect(mockCamera.mock.lastCall?.[0]).toEqual(camera);
+  await act(() => { handlers.onPanResponderRelease?.({} as never, {} as never); });
+  const stopped = shown().walker;
+  await act(() => new Promise((resolve) => setTimeout(resolve, 100)));
+  expect(shown().walker).toBe(stopped);
+  responder.mockRestore();
+});
+
+it('offers walk steps as accessibility actions and says when an object is in the way', async () => {
+  mockPlanet = { maxLevel: 1, placements: [{ id: 'a', latitude: 0, longitude: 180, heading: 0, radius: 0.31 }] };
+  const screen = await renderWithI18n(<PlanetScreen {...props} />);
+  const planet = await screen.findByLabelText('감자별, 오브젝트 1개, 아루미가 서 있어요');
+  await enterWalk(screen);
+  expect(planet.props.accessibilityActions).toEqual([{ name: 'walkForward', label: '앞으로 걷기' }, { name: 'walkRight', label: '오른쪽으로 걷기' }, { name: 'walkBack', label: '뒤로 걷기' }, { name: 'walkLeft', label: '왼쪽으로 걷기' }]);
+  // fireEvent drops this event because the pan responder claims touches only in its capture phase.
+  const step = (actionName: string) => act(() => { planet.props.onAccessibilityAction({ nativeEvent: { actionName } }); });
+  await step('walkForward');
+  expect(walkerCoordinates(shown().walker)).toEqual({ latitude: expect.closeTo(90 - 0.3 / 0.94 * 180 / Math.PI, 0), longitude: expect.closeTo(180) });
+  for (let i = 0; i < 4; i += 1) await step('walkForward');
+  expect(screen.getByText('오브젝트가 있어서 지나갈 수 없어요.')).toBeTruthy();
+  expect(walkerCoordinates(shown().walker).latitude).toBeGreaterThan(25);
+  await step('walkBack');
+  expect(screen.queryByText('오브젝트가 있어서 지나갈 수 없어요.')).toBeNull();
 });
