@@ -19,7 +19,7 @@ jest.mock('expo-secure-store', () => ({ setItemAsync: jest.fn() }));
 jest.mock('expo-router', () => ({ router: { replace: jest.fn(), dismissTo: jest.fn() } }));
 const mockIdentity = { userId: ME as string };
 jest.mock('../../../lib/AppContext', () => ({ useApp: () => mockIdentity }));
-jest.mock('../../space/SpaceContext', () => ({ useSpace: () => ({ spaceId: 'space-1', state: { snapshot: mockSnapshot } }) }));
+jest.mock('../../space/SpaceContext', () => { const space = () => ({ spaceId: 'space-1', state: { snapshot: mockSnapshot } }); return { useSpace: space, useOptionalSpace: space }; });
 const mockSnapshot = snapshotFixture();
 
 const request = Notifications.requestPermissionsAsync as jest.Mock;

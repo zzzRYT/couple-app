@@ -21,7 +21,7 @@ export type EventComment = { id: string; eventId: string; body: string; createdB
 export type Snapshot = {
   space: { spaceId: string; status: 'active'; anniversaryDate: string; timeZone: string; memberCount: number; updatedAt: string; invitation: { status: string; expiresAt: string } | null; anniversaryChangedBy: string | null; anniversaryChangedAt: string | null };
   features: { generation: boolean; generatedRender: boolean }; versionNumber: number; sceneDocument: SceneDocument; roomPresentation: RoomPresentation; roomThemeDocument: RoomThemeDocument;
-  promptSession: PromptSession | null; catalogVersion: number | string; serverTime: string; members: { userId: string; aiConsentState: 'not_given' | 'granted' | 'revoked'; displayName: string | null; birthday: Birthday | null; hasBirthday: boolean }[]; me: { userId: string; displayName: string | null; birthday: (Birthday & { year: number | null }) | null }; anniversaries: CustomAnniversary[]; events: CalendarEvent[]; eventComments: EventComment[];
+  promptSession: PromptSession | null; catalogVersion: number | string; serverTime: string; members: { userId: string; aiConsentState: 'not_given' | 'granted' | 'revoked'; displayName: string | null; birthday: Birthday | null; hasBirthday: boolean; photo?: string | null }[]; me: { userId: string; displayName: string | null; birthday: (Birthday & { year: number | null }) | null; photo?: string | null }; anniversaries: CustomAnniversary[]; events: CalendarEvent[]; eventComments: EventComment[];
 };
 export type HomeCover = { status: 'none' | 'ready'; version: number; signedUrl?: string; signedUrlExpiresAt?: string; crop?: { x: number; y: number; width: number; height: number }; uploadedBy: string | null; updatedAt: string | null };
 export type MySpace = { active: { spaceId: string } | null; ended: { kind: 'ended' | 'disconnect' | 'account_deleted'; by: 'me' | 'partner'; at: string } | null };
@@ -63,6 +63,9 @@ export function createClient(api: Api) {
     preferences: () => api.json<{ locale: Locale | null; uiTheme: 'system' | 'light' | 'dark' }>(routes.preferences()),
     savePreferences: (locale: Locale | null, uiTheme: 'system' | 'light' | 'dark') => api.json<void>(routes.preferences(), { method: 'PATCH', body: { locale, uiTheme } }),
     saveMemberProfile: (displayName: string, birthday: (Birthday & { year: number | null }) | null) => api.json<{ displayName: string; birthday: (Birthday & { year: number | null }) | null }>(routes.memberProfile(), { method: 'PUT', body: { displayName, birthday }, keyInBody: true }),
+    /** `image` is a base64 JPEG without the `data:` prefix. */
+    saveProfilePhoto: (image: string) => api.json<void>(routes.profilePhoto(), { method: 'PUT', body: { image }, keyInBody: true }),
+    removeProfilePhoto: () => api.json<void>(routes.profilePhoto(), { method: 'DELETE', body: {}, keyInBody: true }),
     updateTimeZone: (spaceId: string, timeZone: string, expectedUpdatedAt: string) => api.json<{ timeZone: string; updatedAt: string }>(routes.timeZone(spaceId), { method: 'PATCH', body: { timeZone, expectedUpdatedAt }, keyInBody: true }),
     conversation: (spaceId: string) => api.json<Conversation>(routes.conversation(spaceId)),
     acquire: (spaceId: string) => api.json<PromptSession>(routes.acquire(spaceId), { method: 'POST', body: {}, keyInBody: true }),

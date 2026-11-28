@@ -9,7 +9,7 @@ jest.mock('../../features/notifications/permissions', () => ({ notificationPermi
 const mockApp = { client: { createEvent: jest.fn(async () => undefined) } };
 jest.mock('../../lib/AppContext', () => ({ useApp: () => mockApp }));
 const mockSpace = { state: { status: 'ready', snapshot: snapshotFixture(), offline: false, lastSyncedAt: null }, refresh: jest.fn(async () => undefined) };
-jest.mock('../../features/space/SpaceContext', () => ({ useSpace: () => mockSpace }));
+jest.mock('../../features/space/SpaceContext', () => ({ useSpace: () => mockSpace, useOptionalSpace: () => mockSpace }));
 jest.mock('../../lib/useNow', () => ({ useNow: () => '2026-11-25T03:00:00Z' }));
 
 it('returns to the calendar tab already below the sheet instead of stacking another one', async () => {

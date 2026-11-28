@@ -34,3 +34,4 @@ Each feature file starts with an H1 title and one paragraph on the user-visible 
 - [Invite code](./invite-code.md) covers the waiting home card with the invite code and copying it (V0-10).
 - [Email sign-in](./email-sign-in.md) covers signing in with email and password from the start screen (V0-08).
 - [Couple calendar](./couple-calendar.md) covers the 달력 tab: both partners' events, the add sheet and an alert that rings (V0-13, V0-F19).
+- [Profile photo](./profile-photo.md) covers setting my photo and seeing both partners' photos on the connected screen, settings and calendar.

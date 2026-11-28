@@ -11,7 +11,7 @@ jest.mock('expo-localization', () => ({ getCalendars: () => [{ timeZone: 'Asia/S
 const mockApp = { client: { saveMemberProfile: jest.fn(), createSpace: jest.fn() } };
 const mockSpace = { entry: 'none', refresh: jest.fn(), reload: jest.fn(), queueInviteAfterActivation: jest.fn() };
 jest.mock('../../lib/AppContext', () => ({ useApp: () => mockApp }));
-jest.mock('../../features/space/SpaceContext', () => ({ useSpace: () => mockSpace }));
+jest.mock('../../features/space/SpaceContext', () => ({ useSpace: () => mockSpace, useOptionalSpace: () => null }));
 
 const calls: string[] = [];
 beforeEach(() => {

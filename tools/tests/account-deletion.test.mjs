@@ -47,12 +47,13 @@ function fakeDb({ state = 'requested', provider = 'email', origin = 'app', crede
   };
 }
 function ports(db, overrides = {}) {
-  const log = { removed: [], deleted: [], revoked: [], unlinked: [], warnings: [] };
+  const log = { removed: [], photos: [], deleted: [], revoked: [], unlinked: [], warnings: [] };
   return {
     log,
     ports: {
       db, now: () => NOW,
       storage: { removeSpaceObjects: async (id) => { log.removed.push(id); } },
+      photos: { removeSpaceObjects: async (id) => { log.photos.push(id); assert.ok(!log.deleted.length, 'photos go before the auth user'); } },
       auth: { providerUserId: async () => 'kakao-123', deleteUser: async (id) => { log.deleted.push(id); } },
       apple: { exchange: async () => ({ token: 't', hint: 'refresh_token' }), revoke: async (tokens) => { log.revoked.push(tokens.token); } },
       kakao: { unlink: async (id) => { log.unlinked.push(id); } },
@@ -68,6 +69,7 @@ test('an email account runs every step in order: purge spaces (Storage first), f
   const { ports: p, log } = ports(db);
   assert.equal(await runAccountDeletion(USER, p), 'done');
   assert.deepEqual(log.removed, ['s1', 's2']);
+  assert.deepEqual(log.photos, [USER], 'the person\'s profile-photo prefix is purged');
   assert.deepEqual(log.deleted, [USER]);
   assert.deepEqual(log.revoked, []);
   assert.ok(db.calls.indexOf('mark_purge_started') < db.calls.indexOf('purge_space'), 'purge is marked, Storage removed, then rows deleted');

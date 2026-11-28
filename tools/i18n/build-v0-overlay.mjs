@@ -25,7 +25,7 @@ for (const line of source.split('\n')) {
     locales[i][key] = value;
   }
 }
-if (seen.size !== 509) throw new Error(`expected 509 rows, got ${seen.size}`);
+if (seen.size !== 513) throw new Error(`expected 513 rows, got ${seen.size}`);
 for (const [i, name] of ['ko-KR', 'en-US', 'ja-JP'].entries()) {
   locales[i]['app.name'] = ['아룸', 'Aroom', 'アルーム'][i];
   locales[i]['mascot.name'] = ['아루미', 'Aroomi', 'アルーミ'][i];

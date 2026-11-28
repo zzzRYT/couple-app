@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
+import { Image, Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { AppText, Button, Card, Dialog, InfoRow, ListRow, RowTile, SectionLabel, SwitchRow, WORD_BREAK, useTabBarClearance } from '../../ui/components';
 import { Icon } from '../../ui/Icon';
@@ -11,6 +11,7 @@ import { V0_FEATURES } from '../../config/features';
 import { APP_IDENTITY } from '../../config/identity';
 import type { Snapshot } from '../../lib/client';
 import { formattedMonthDay, formattedYearMonthDay } from '../anniversaries/format';
+import { profilesOf } from '../space/profiles';
 import { earlyLabel, formatNotifyTime } from '../notifications/labels';
 import { useNotifySettings } from '../notifications/useNotifyPrefs';
 import { TERMS_URL, contactUrl, privacyUrl } from './helpLinks';
@@ -21,15 +22,17 @@ import type { ReactNode } from 'react';
 
 const { outline, palette } = tokens.color.illustration;
 const pad = (value: number) => String(value).padStart(2, '0');
-/** V0-set-main: the initial on a peach circle (unchanged in dark mode, like the illustrations), name and birthday, opening V0-set-me. */
-function ProfileCard({ name, detail, disabled, onPress }: { name: string; detail: string; disabled: boolean; onPress: () => void }) {
+/** V0-set-main: my photo, else the initial on a peach circle (unchanged in dark mode, like the illustrations), name and birthday, opening V0-set-me. */
+function ProfileCard({ name, photo, detail, disabled, onPress }: { name: string; photo: string | null; detail: string; disabled: boolean; onPress: () => void }) {
   const color = useAppColor();
   const { type, emphasis } = useType();
+  const [failed, setFailed] = useState<string | null>(null);
   return (
     <Pressable accessibilityRole="button" accessibilityLabel={`${name}, ${detail}`} accessibilityState={{ disabled }} disabled={disabled} onPress={onPress} style={({ pressed }) => ({ opacity: disabled ? 0.5 : pressed ? 0.7 : 1 })}>
       <Card style={{ flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 14 }}>
-        <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: palette.peach, borderWidth: 1.5, borderColor: outline, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={[emphasis(22), { color: outline }]}>{Array.from(name)[0]?.toLocaleUpperCase() ?? ''}</Text>
+        <View style={{ width: 52, height: 52, borderRadius: 26, overflow: 'hidden', backgroundColor: palette.peach, borderWidth: 1.5, borderColor: outline, alignItems: 'center', justifyContent: 'center' }}>
+          {photo && photo !== failed ? <Image testID="profile-card-photo" accessibilityElementsHidden importantForAccessibility="no" source={{ uri: photo }} resizeMode="cover" onError={() => setFailed(photo)} style={{ width: 52, height: 52 }} />
+            : <Text style={[emphasis(22), { color: outline }]}>{Array.from(name)[0]?.toLocaleUpperCase() ?? ''}</Text>}
         </View>
         <View style={{ flex: 1 }}>
           <Text {...WORD_BREAK} style={[emphasis(18), { color: color.text }]}>{name}</Text>
@@ -43,7 +46,7 @@ function ProfileCard({ name, detail, disabled, onPress }: { name: string; detail
 export function V0SettingsScreen({ snapshot, offline, version, apple = true, supportEmail = APP_IDENTITY.supportEmail, testMode, onLogout, onZone, navigate }: { snapshot: Snapshot; offline: boolean; version: string; apple?: boolean; supportEmail?: string | null; testMode?: ReactNode; onLogout: () => Promise<void>; onZone: (zone: string) => Promise<void>; navigate: (route: 'me' | 'start-date' | 'notifications' | 'language' | 'appearance' | 'security' | 'connect' | 'disconnect' | 'delete-account') => void }) {
   const { t, i18n } = useTranslation(); const color = useAppColor(); const preferences = usePreferences(); const clearance = useTabBarClearance();
   const [zone, setZone] = useState(false), [confirm, setConfirm] = useState(false), [busy, setBusy] = useState(false), [failed, setFailed] = useState(false);
-  const partner = snapshot.members.find((m) => m.userId !== snapshot.me.userId)?.displayName;
+  const profiles = profilesOf(snapshot, t);
   const notify = useNotifySettings(snapshot.me.userId);
   const contact = contactUrl({ ...APP_IDENTITY, supportEmail });
   const birthday = snapshot.me.birthday;
@@ -54,8 +57,8 @@ export function V0SettingsScreen({ snapshot, offline, version, apple = true, sup
   const openConfirm = () => { setFailed(false); setConfirm(true); };
   return <ScrollView contentInsetAdjustmentBehavior="automatic" style={{ flex: 1, backgroundColor: color.bg }} contentContainerStyle={{ padding: 20, paddingBottom: clearance + 20, gap: 8 }}>
     <AppText variant="title">{t('set.title')}</AppText>
-    <ProfileCard name={snapshot.me.displayName ?? ''} detail={birthdayLine} disabled={offline} onPress={() => navigate('me')} />
-    <SectionLabel text={t('set.section.us')} /><Card><ListRow tile="annivDays" label={t('set.us.start')} value={formattedYearMonthDay(snapshot.space.anniversaryDate, i18n.language)} disabled={offline} last={false} onPress={() => navigate('start-date')} />{snapshot.space.memberCount < 2 ? <ListRow tile="user" label={t('set.us.partner')} value={t('set.us.connect')} valueTone="primary" disabled={offline} last={false} onPress={() => navigate('connect')} /> : <InfoRow tile="user" label={t('set.us.partner')} value={t('set.us.connected', { name: partner ?? t('home.pending.partner') })} last={false} />}<ListRow tile="globe" label={t('set.us.tz')} value={zoneLabel(snapshot.space.timeZone, i18n.language)} disabled={offline} onPress={openZone} /></Card>
+    <ProfileCard name={profiles.me.name} photo={profiles.me.photo} detail={birthdayLine} disabled={offline} onPress={() => navigate('me')} />
+    <SectionLabel text={t('set.section.us')} /><Card><ListRow tile="annivDays" label={t('set.us.start')} value={formattedYearMonthDay(snapshot.space.anniversaryDate, i18n.language)} disabled={offline} last={false} onPress={() => navigate('start-date')} />{snapshot.space.memberCount < 2 ? <ListRow tile="user" label={t('set.us.partner')} value={t('set.us.connect')} valueTone="primary" disabled={offline} last={false} onPress={() => navigate('connect')} /> : <InfoRow tile="user" label={t('set.us.partner')} value={t('set.us.connected', { name: profiles.partner.name })} last={false} />}<ListRow tile="globe" label={t('set.us.tz')} value={zoneLabel(snapshot.space.timeZone, i18n.language)} disabled={offline} onPress={openZone} /></Card>
     <AppText variant="bodySm" tone="text2">{t('set.us.tz.note')}</AppText>
     {V0_FEATURES.notifications && <><SectionLabel text={t('set.section.notify')} /><Card><SwitchRow label={t('set.notify.toggle')} leading={<RowTile icon="bell" />} value={notify.prefs.enabled && !notify.denied} disabled={notify.denied} last={false} onPress={() => navigate('notifications')} onValueChange={(value) => void notify.setEnabled(value)} /><ListRow tile="clock" label={t('set.notify.time')} value={formatNotifyTime(notify.prefs.time, i18n.language)} last={false} onPress={() => navigate('notifications')} /><ListRow tile="annivCalendar" label={t('set.notify.early')} value={earlyLabel(notify.prefs.early, t)} onPress={() => navigate('notifications')} /></Card></>}
     <SectionLabel text={t('set.section.display')} /><Card><ListRow tile="globe" label={t('set.lang')} value={preferences.locale ? AUTONYMS[preferences.locale] : t('set.lang.system')} last={false} onPress={() => navigate('language')} /><ListRow tile="moon" label={t('set.mode')} value={t(`set.mode.${preferences.displayMode}`)} onPress={() => navigate('appearance')} /></Card>

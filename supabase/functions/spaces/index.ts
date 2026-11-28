@@ -1,6 +1,31 @@
+import type { SupabaseClient } from 'npm:@supabase/supabase-js@2';
 import { AppError } from '../_shared/errors.ts';
 import { createHandler, defaultDeps, json, route, str, UUID, uuidParam, type Deps } from '../_shared/http.ts';
+import { serviceClient } from '../_shared/db.ts';
 import { parseCalendarDate } from '../_shared/dday.ts';
+import { PROFILE_PHOTO_BUCKET } from '../_shared/spaceStorage.ts';
+
+const PHOTO_URL_TTL_SECONDS = 6 * 60 * 60;
+/** Signs profile photo paths in one call; the result maps each path that signed to its URL. */
+type PhotoSigner = { sign(paths: string[], seconds: number): Promise<Record<string, string>> };
+// The client is made on first use so tests whose members have no photo need no server environment.
+function photoSigner(client: () => SupabaseClient): PhotoSigner {
+  let made: SupabaseClient | undefined;
+  return {
+    async sign(paths, seconds) {
+      const { data, error } = await (made ??= client()).storage.from(PROFILE_PHOTO_BUCKET).createSignedUrls(paths, seconds);
+      if (error || !data) throw new Error('STORAGE_ERROR');
+      return Object.fromEntries(data.filter((entry) => entry.path && !entry.error).map((entry) => [entry.path, entry.signedUrl]));
+    },
+  };
+}
+type Person = { userId: string; photo?: string | null };
+async function memberPhotos(deps: Deps, photos: PhotoSigner, actor: string, target: string): Promise<Record<string, string>> {
+  const paths = await deps.db.rpc<Record<string, string> | null>('space_member_photos', { actor, target }) ?? {};
+  if (!Object.keys(paths).length) return {};
+  const signed = await photos.sign(Object.values(paths), PHOTO_URL_TTL_SECONDS);
+  return Object.fromEntries(Object.entries(paths).map(([userId, path]) => [userId, signed[path]]));
+}
 
 function calendarDate(value: unknown): string {
   const date = str(value, 10);
@@ -59,7 +84,7 @@ function roomMode(body: Record<string, unknown>) {
   if (!Number.isInteger(body.expectedCurrentVersion) || (body.expectedCurrentVersion as number) < 1) throw new AppError('INVALID_REQUEST');
   return { mode: body.mode, timeZone, expected: body.expectedCurrentVersion as number };
 }
-export function spacesHandler(deps: Deps) {
+export function spacesHandler(deps: Deps, photos: PhotoSigner = photoSigner(serviceClient)) {
   return createHandler([
     route('POST', '/spaces', async ({ userId, body, deps }) =>
       json(await deps.db.rpc('create_space', { actor: userId, anniversary: calendarDate(body.anniversaryDate), tz: str(body.timeZone ?? 'UTC', 64) }), 201)),
@@ -69,8 +94,12 @@ export function spacesHandler(deps: Deps) {
       return new Response(null, { status: 204 });
     }),
     route('GET', '/spaces/:spaceId/snapshot', async ({ userId, params, deps }) => {
-      const snapshot = await deps.db.rpc('space_snapshot', { actor: userId, target: uuidParam(params.spaceId) });
+      const target = uuidParam(params.spaceId);
+      const snapshot = await deps.db.rpc<{ members: Person[]; me: Person } | null>('space_snapshot', { actor: userId, target });
       if (!snapshot) throw new AppError('NOT_FOUND');
+      // Photos are decoration: when the lookup or signing fails, the snapshot still loads with no photos.
+      const urls = await memberPhotos(deps, photos, userId, target).catch(() => ({} as Record<string, string>));
+      for (const person of [...snapshot.members, snapshot.me]) person.photo = urls[person.userId] ?? null;
       return snapshot;
     }),
     // "Disconnect" is the screen name; the endpoint keeps the contract name `block`. Both are the same soft delete with a different reason.

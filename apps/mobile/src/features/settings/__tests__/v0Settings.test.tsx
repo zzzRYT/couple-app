@@ -136,3 +136,13 @@ it('a failed time-zone save says it was not saved, inside the sheet', async () =
   await waitFor(() => expect(screen.getByRole('alert', { name: screen.t('set.save.err') })).toBeTruthy());
   expect(screen.getByText(screen.t('set.room.tz.pick'))).toBeTruthy();
 });
+it('shows my photo on the profile card, and the initial without one or when it fails to load', async () => {
+  const snapshot = snapshotFixture(); snapshot.me.photo = 'https://cdn/p/card.jpg?token=1';
+  const screen = await renderWithI18n(<V0SettingsScreen snapshot={snapshot} offline={false} version="0.1" onLogout={jest.fn()} onZone={jest.fn()} navigate={jest.fn()} />);
+  expect(screen.getByTestId('profile-card-photo', { includeHiddenElements: true }).props.source).toEqual({ uri: 'https://cdn/p/card.jpg?token=1' });
+  expect(screen.queryByText('하')).toBeNull();
+  await fireEvent(screen.getByTestId('profile-card-photo', { includeHiddenElements: true }), 'error');
+  expect(screen.getByText('하')).toBeTruthy();
+  await screen.rerender(<V0SettingsScreen snapshot={snapshotFixture()} offline={false} version="0.1" onLogout={jest.fn()} onZone={jest.fn()} navigate={jest.fn()} />);
+  expect(screen.queryByTestId('profile-card-photo', { includeHiddenElements: true })).toBeNull();
+});

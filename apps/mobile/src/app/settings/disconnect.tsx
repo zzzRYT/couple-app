@@ -9,6 +9,7 @@ import { CheckRow } from '../../features/auth/passwordUi';
 import { leaveSpace } from '../../features/lifecycle/leave';
 import { useApp } from '../../lib/AppContext';
 import { useSpace } from '../../features/space/SpaceContext';
+import { profilesOf } from '../../features/space/profiles';
 /**
  * V0-set-disconnect: an empty nav bar with the large heading, the consequences with warning marks, and 취소 under the red button.
  * Settings offers it only to a connected couple; opened alone (a deep link), it goes back to Settings. Read once at open, so the
@@ -18,7 +19,7 @@ export default function DisconnectRoute() {
   const { t } = useTranslation(); const color = useAppColor(); const { client, userId } = useApp(); const { state, reset, reload } = useSpace();
   const [checked, setChecked] = useState(false), [busy, setBusy] = useState(false), [error, setError] = useState(false);
   const [alone] = useState(() => !!state.snapshot && state.snapshot.space.memberCount < 2);
-  const name = state.snapshot?.members.find((m) => m.userId !== userId)?.displayName ?? t('home.pending.partner');
+  const name = state.snapshot ? profilesOf(state.snapshot, t).partner.name : t('home.pending.partner');
   const disconnect = async () => { setBusy(true); try { await leaveSpace({ close: client.disconnect, releaseSession: client.release, snapshot: state.snapshot, userId, resetSpace: reset, reload }); } catch { setError(true); } finally { setBusy(false); } };
   if (alone) return <Redirect href="/settings" />;
   return <Screen onBack={() => router.back()} footer={<><Button label={t('set.account.disconnect')} variant="danger" disabled={!checked || state.offline} loading={busy} onPress={() => void disconnect()} /><Button label={t('common.cancel')} variant="ghost" onPress={() => router.back()} /></>}>

@@ -19,3 +19,5 @@ export function useSpace(): SpaceValue {
   if (!value) throw new Error('SpaceProvider missing');
   return value;
 }
+/** For components that also render outside the provider (tests, previews): null instead of throwing. */
+export const useOptionalSpace = (): SpaceValue | null => useContext(SpaceContext);

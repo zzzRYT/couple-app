@@ -3,7 +3,7 @@ import { AppError, toResponse } from '../_shared/errors.ts';
 import { createHandler, json, route, uuidParam, type Deps } from '../_shared/http.ts';
 import { clientVerifier, rpcDb, serviceClient, tableIdempotencyStore } from '../_shared/db.ts';
 import { safeLogFields } from '../_shared/logging.ts';
-import { inspectCoverHeader, reencodeCover } from './image.ts';
+import { inspectCoverHeader, reencodeCover } from '../_shared/image.ts';
 
 const BUCKET = 'home-cover';
 const MAX_BYTES = 20 * 1024 * 1024;

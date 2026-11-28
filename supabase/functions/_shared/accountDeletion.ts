@@ -17,7 +17,10 @@ export interface AuthAdmin {
   deleteUser(userId: string): Promise<void>;
 }
 export type DeletionPorts = {
-  db: Db; storage: SpaceStorage; auth: AuthAdmin; apple: AppleClient; kakao: KakaoClient | null; box: CredentialBox;
+  db: Db; storage: SpaceStorage; auth: AuthAdmin;
+  /** The profile-photo bucket, whose objects sit under `<userId>/`, so removeSpaceObjects(userId) purges a person's photos. */
+  photos: SpaceStorage;
+  apple: AppleClient; kakao: KakaoClient | null; box: CredentialBox;
   now?: () => Date;
   /** Operational warning with a content-free code only; never a user id, token or message. */
   warn?: (code: string) => void;
@@ -64,6 +67,7 @@ async function step(state: DeletionState, userId: string, claimed: Claimed, port
       return await revokeProvider(userId, claimed, ports);
     case 'provider_revoked':
       await purgeSpaces(userId, ports);
+      await ports.photos.removeSpaceObjects(userId);
       await ports.db.rpc('finish_account_deletion', { actor: userId });
       await ports.auth.deleteUser(userId);
       return { next: 'auth_deleted' };

@@ -24,6 +24,7 @@ function deps(overrides: { apple?: AppleClient; kakao?: AccountDeps['ports']['ka
     db, verifier: { getUser: () => Promise.resolve({ user: { id: USER }, error: null }) }, idempotency: memoryStore(), now: () => NOW,
     ports: {
       db, now: () => NOW, storage: { removeSpaceObjects: () => Promise.resolve(), removeObjects: () => Promise.resolve() },
+      photos: { removeSpaceObjects: () => Promise.resolve(), removeObjects: () => Promise.resolve() },
       auth: { providerUserId: () => Promise.resolve('k1'), deleteUser: () => Promise.resolve() },
       apple: overrides.apple ?? { exchange: () => Promise.resolve({ token: 'refresh-secret', hint: 'refresh_token' }), revoke: () => Promise.resolve() },
       kakao: 'kakao' in overrides ? overrides.kakao! : null,

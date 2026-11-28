@@ -6,6 +6,7 @@ import { useApp } from '../lib/AppContext';
 import { cancelV0Notifications } from '../features/notifications/scheduler';
 import { clearV0LocalData } from '../features/space/v0LocalData';
 import { readV0Cache } from '../features/space/v0Cache';
+import { profilesOf } from '../features/space/profiles';
 import { AppText, Banner, Button, Screen } from '../ui/components';
 import { mascotPoses } from '../scene/catalog';
 export default function EndedRoute() {
@@ -17,8 +18,8 @@ export default function EndedRoute() {
     let active = true;
     void (async () => {
       const cached = await readV0Cache(userId);
-      const members = snapshot?.members ?? cached?.snapshotV0Part.members ?? [];
-      if (active && ended.kind !== 'account_deleted') setName(members.find((member) => member.userId !== userId)?.displayName ?? null);
+      const people = snapshot ?? cached?.snapshotV0Part;
+      if (active && people && ended.kind !== 'account_deleted') setName(profilesOf(people, t).partner.name);
       await clearV0LocalData(userId, snapshot?.space.spaceId ?? cached?.spaceId).catch(() => undefined);
       await cancelV0Notifications().catch(() => undefined);
     })();

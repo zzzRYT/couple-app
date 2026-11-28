@@ -12,6 +12,7 @@ import { useAppColor } from '../../theme/useAppColor';
 import { computeAnniversaries, type Occurrence } from '../../lib/anniversaries';
 import type { MilestoneCelebration } from '../../lib/client';
 import type { SpaceState } from '../space/types';
+import { profilesOf } from '../space/profiles';
 import { CelebrationCard, TodayCard } from './CelebrationCard';
 import { InvitePendingCard } from './InvitePendingCard';
 import { AnniversaryRow } from '../anniversaries/AnniversaryRow';
@@ -31,8 +32,7 @@ export function V0HomeScreen({ state, now, onAnniversaries, onRefresh, onOpenInv
   const lang = i18n.language;
   const partnerMember = snapshot.members.find((member) => member.userId !== snapshot.me.userId);
   const view = computeAnniversaries({ startDate: space.anniversaryDate, timeZone: space.timeZone, me: snapshot.me, partner: partnerMember ?? null, customs: snapshot.anniversaries }, now);
-  const partner = partnerMember?.displayName ?? t('home.pending.partner');
-  const name = snapshot.me.displayName ?? '';
+  const { me: { name }, partner: { name: partner } } = profilesOf(snapshot, t);
   const pending = space.memberCount < 2;
   const milestone = (item: Occurrence) => item.kind === 'days' || item.kind === 'years';
   const closedToday = view.celebrationCandidates.some((item) => item.date === view.today && (milestone(item) ? item.key === closedMilestoneKey : seenKeys.includes(item.key)));

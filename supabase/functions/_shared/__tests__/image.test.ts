@@ -1,6 +1,6 @@
 import { assertEquals, assertRejects } from 'jsr:@std/assert@1';
 import { Image } from 'https://deno.land/x/imagescript@1.3.0/mod.ts';
-import { inspectCoverHeader, reencodeCover } from '../image.ts';
+import { inspectCoverHeader, reencodeCover, reencodeProfilePhoto } from '../image.ts';
 
 Deno.test('PNG headers expose dimensions without decoding pixels', () => {
   const image = new Uint8Array(24);
@@ -32,4 +32,19 @@ Deno.test('a square image at the app upload size is re-encoded as a square JPEG'
   const processed = await reencodeCover(source, fullCrop);
   assertEquals([processed.width, processed.height], [1600, 1600]);
   assertEquals(inspectCoverHeader(processed.bytes)?.format, 'image/jpeg');
+});
+
+Deno.test('a profile photo becomes a 512x512 JPEG cut from the center', async () => {
+  const source = new Image(900, 600);
+  source.fill(0x000000ff);
+  source.drawBox(151, 1, 600, 600, 0xffffffff);
+  const output = await Image.decode(await reencodeProfilePhoto(await source.encodeJPEG(90)));
+  assertEquals([output.width, output.height], [512, 512]);
+  assertEquals([output.getRGBAAt(1, 1)[0] > 200, output.getRGBAAt(511, 511)[0] > 200], [true, true], 'the dark side bands are cropped away');
+});
+
+Deno.test('a profile photo must be a JPEG within the pixel limit', async () => {
+  await assertRejects(async () => reencodeProfilePhoto(await new Image(64, 64).encode()), Error, 'PHOTO_INVALID_IMAGE');
+  await assertRejects(() => reencodeProfilePhoto(jpegHeader(2001, 2001)), Error, 'PHOTO_INVALID_IMAGE');
+  await assertRejects(() => reencodeProfilePhoto(new Uint8Array([0xff, 0xd8, 0xff, 0xd9])), Error, 'PHOTO_INVALID_IMAGE');
 });

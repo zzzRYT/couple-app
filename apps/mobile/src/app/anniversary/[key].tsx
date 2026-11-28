@@ -8,6 +8,7 @@ import { notifyDefaultLabel } from '../../features/notifications/labels';
 import { getAnniversaryNotify, type NotifyPrefs } from '../../features/notifications/preferences';
 import { useNotifyPrefs } from '../../features/notifications/useNotifyPrefs';
 import { useSpace } from '../../features/space/SpaceContext';
+import { profilesOf } from '../../features/space/profiles';
 import { useApp } from '../../lib/AppContext';
 import { computeAnniversaries, type Occurrence } from '../../lib/anniversaries';
 import { useNow } from '../../lib/useNow';
@@ -27,7 +28,7 @@ export default function AnniversaryDetailRoute() {
   useEffect(() => { if (focused && snapshot && !item && !closing.current) router.dismissTo('/(tabs)/anniversaries'); }, [focused, snapshot, item]);
   useEffect(() => { if (snapshot && custom) void getAnniversaryNotify(snapshot.me.userId, custom.id).then(setNotify); }, [snapshot?.me.userId, custom?.id]);
   if (!snapshot || !item || !view) return null;
-  const name = partner?.displayName ?? t('home.pending.partner');
+  const name = profilesOf(snapshot, t).partner.name;
   const remove = () => Alert.alert(t('edit.delete.title'), partner ? t('edit.delete.body', { name }) : t('edit.delete.body.unpaired'), [ { text: t('common.cancel'), style: 'cancel' }, { text: t('common.delete'), style: 'destructive', onPress: () => {
     if (!custom) return;
     void client.deleteAnniversaryItem(snapshot.space.spaceId, custom.id, custom.version, randomUUID()).then(async () => {

@@ -4,7 +4,7 @@ import { appleClient, appleConfigFromEnv } from './providers/apple.ts';
 import { kakaoClientFromEnv } from './providers/kakao.ts';
 import { credentialBox } from './credentialBox.ts';
 import { safeLogFields } from './logging.ts';
-import { bucketStorage } from './spaceStorage.ts';
+import { bucketStorage, PROFILE_PHOTO_BUCKET } from './spaceStorage.ts';
 import { PROVIDERS, type Provider } from './reauth.ts';
 import type { AuthAdmin, DeletionPorts } from './accountDeletion.ts';
 
@@ -30,7 +30,7 @@ export async function defaultDeletionPorts(env: (name: string) => string | undef
   const client = serviceClient(env);
   const serviceKey = env('SUPABASE_SERVICE_ROLE_KEY')!;
   const ports: DeletionPorts = {
-    db: rpcDb(client), storage: bucketStorage(client), auth: authAdmin(client),
+    db: rpcDb(client), storage: bucketStorage(client), photos: bucketStorage(client, PROFILE_PHOTO_BUCKET), auth: authAdmin(client),
     apple: appleClient(appleConfigFromEnv(env)), kakao: kakaoClientFromEnv(env),
     box: await credentialBox(env('ACCOUNT_CREDENTIAL_KEY') ?? serviceKey),
     warn: (code) => console.warn(JSON.stringify(safeLogFields({ event: 'account-deletion-alert', code }))),

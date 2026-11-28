@@ -291,6 +291,10 @@ sections: 이 화면의 문구
 | `set.me.birthday.none` | 넣지 않음 | Not set | 未設定 | 신규 · EN·JA 초안 |
 | `set.me.birthday.clear` | 생일 지우기 | Remove birthday | 誕生日を削除 | 신규 · EN·JA 초안 (ND16) |
 | `set.me.birthday.partnerWait` | {name}님은 아직 생일을 넣지 않았어요. 둘 다 넣으면 서로 보여요. | {name} hasn't added a birthday yet. Once you both do, you'll see each other's. | {name}さんはまだ誕生日を入れていません。ふたりとも入れるとお互いに表示されます。 | 신규 · EN·JA 초안 |
+| `set.me.photo.choose` | 사진 고르기 | Choose photo | 写真を選ぶ | 신규 · EN·JA 초안 |
+| `set.me.photo.remove` | 사진 지우기 | Remove photo | 写真を削除 | 신규 · EN·JA 초안 |
+| `set.me.photo.failed` | 사진을 바꾸지 못했어요. 다시 해 주세요. | Couldn't change the photo. Please try again. | 写真を変更できませんでした。もう一度お試しください。 | 신규 · EN·JA 초안 |
+| `a11y.me.photo` | 프로필 사진 바꾸기 | Change profile photo | プロフィール写真を変更 | 신규 · EN·JA 초안 |
 | `set.section.us` | 우리 | Us | ふたり | 신규 · EN·JA 초안 |
 | `set.us.start` | 사귄 날 | Start date | 付き合った日 | 신규 · EN·JA 초안 |
 | `set.us.partner` | 상대 | Partner | 相手 | 신규 · EN·JA 초안 |
