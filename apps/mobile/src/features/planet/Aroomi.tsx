@@ -1,21 +1,19 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber/native';
-import { Vector3 } from 'three';
 import type { Group } from 'three';
-import { BODY, makeAroomiBody, swingArms } from './aroomiBody';
+import { bodyFront, makeAroomiBody, makeAroomiSash, swingArms } from './aroomiBody';
 
 // Seat a part on the front of the body, turned to face along the surface normal.
 function onBody(x: number, y: number, lift = 0): { position: [number, number, number]; rotation: [number, number, number, 'YXZ'] } {
-  const z = BODY[2] * Math.sqrt(1 - (x / BODY[0]) ** 2 - ((y - 0.5) / BODY[1]) ** 2);
-  const normal = new Vector3(x / BODY[0] ** 2, (y - 0.5) / BODY[1] ** 2, z / BODY[2] ** 2).normalize();
-  return { position: [x + normal.x * lift, y + normal.y * lift, z + normal.z * lift], rotation: [-Math.asin(normal.y), Math.atan2(normal.x, normal.z), 0, 'YXZ'] };
+  const { z, normal } = bodyFront(x, y);
+  return { position: [x + normal[0] * lift, y + normal[1] * lift, z + normal[2] * lift], rotation: [-Math.asin(normal[1]), Math.atan2(normal[0], normal[2]), 0, 'YXZ'] };
 }
 
 // Temporary generated model; replace this component when the owner's GLB is available.
 export function Aroomi({ reducedMotion }: { reducedMotion: boolean }) {
   const character = useRef<Group>(null);
-  const body = useMemo(makeAroomiBody, []);
-  useEffect(() => () => body.geometry.dispose(), [body]);
+  const body = useMemo(makeAroomiBody, []); const sash = useMemo(makeAroomiSash, []);
+  useEffect(() => () => { body.geometry.dispose(); sash.dispose(); }, [body, sash]);
   useFrame(({ clock }) => {
     if (reducedMotion) {
       if (character.current) { character.current.rotation.y = 0; character.current.position.set(0, 0, 0); }
@@ -28,7 +26,7 @@ export function Aroomi({ reducedMotion }: { reducedMotion: boolean }) {
       character.current.position.set(x, -0.5 * x * x, 0);
       character.current.rotation.y = Math.sin(t * 0.3) * 0.35;
     }
-    swingArms(body, Math.sin(t * 1.2) * 0.45);
+    swingArms(body, Math.sin(t * 1.2) * 0.25);
   });
   return <group ref={character} scale={0.38}>
     <mesh geometry={body.geometry}><meshStandardMaterial color="#F0CFA6" roughness={1} /></mesh>
@@ -40,10 +38,7 @@ export function Aroomi({ reducedMotion }: { reducedMotion: boolean }) {
     <group {...onBody(0, 0.63)}>
       <mesh position={[0, 0.054, 0]} rotation={[0, 0, -Math.PI / 2 - 0.76]} scale={[1, 1, 0.6]}><torusGeometry args={[0.054, 0.008, 6, 12, 1.52]} /><meshStandardMaterial color="#3A261C" roughness={1} /></mesh>
     </group>
-    {/* K01 sash: the band of the body shell from the left shoulder (y 0.56) round to the right waist (y 0.25). */}
-    <group position={[0, 0.5, 0]} scale={[BODY[0] * 1.03, BODY[1] * 1.03, BODY[2] * 1.03]}>
-      <mesh rotation={[0, 0, 0.322]}><sphereGeometry args={[1, 48, 1, 0, Math.PI * 2, 1.672, 0.2]} /><meshStandardMaterial color="#5263BD" roughness={1} /></mesh>
-    </group>
+    <mesh geometry={sash}><meshStandardMaterial color="#5263BD" roughness={1} /></mesh>
     <mesh {...onBody(-0.04, 0.38, 0.02)} scale={[0.055, 0.055, 0.02]}><sphereGeometry args={[1, 12, 8]} /><meshStandardMaterial color="#FCCF7B" roughness={1} /></mesh>
   </group>;
 }

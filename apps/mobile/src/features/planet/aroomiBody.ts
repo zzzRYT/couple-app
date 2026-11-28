@@ -1,9 +1,16 @@
-import { BufferGeometry, Float32BufferAttribute, MeshStandardMaterial } from 'three';
+import { BufferGeometry, CylinderGeometry, Float32BufferAttribute, MeshStandardMaterial } from 'three';
 import { MarchingCubes } from 'three/examples/jsm/objects/MarchingCubes.js';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
-// Body half extents from the K01 dimension table (height 1, soles at y 0).
-export const BODY = [0.42, 0.5, 0.38] as const;
+// Sizes are the K01 table with height 1 and the soles at y 0. Shape and pose are measured on the drawn Aroomi,
+// design/mascot/harmonized/mascot_wave_main.png.
+const WIDE = 0.42; const DEEP = 0.38;
+// The drawn outline is a superellipse: fullest at 45% of the height, rounder above (power 2.5) than below (power 3),
+// with the underside 0.05 above the soles.
+const MID = 0.45;
+const SHOULDER = [0.37, 0.44] as const;
+// The drawn resting arm reaches 0.16 past the body at a third of the height, which is this far below level.
+const ARM_REST = 0.65; const ARM = [Math.cos(ARM_REST), -Math.sin(ARM_REST)] as const;
 
 type Run = [end: number, cells: number];
 const lines = (start: number, runs: Run[]) => runs.reduce((out, [end, cells]) => {
@@ -12,27 +19,69 @@ const lines = (start: number, runs: Run[]) => runs.reduce((out, [end, cells]) =>
   return out;
 }, [start]);
 // Sampling planes per axis: fine cells around the arms and feet, coarse ones on the body.
-// MarchingCubes samples a cube, so every axis has 40 cells and the last run of y and z is padding.
-const half = lines(0, [[0.39, 11], [0.47, 3], [0.54, 1], [0.62, 3], [0.72, 2]]);
+// MarchingCubes samples a cube, so every axis has 42 cells and the last run of y and z is padding.
+const half = lines(0, [[0.39, 11], [0.59, 8], [0.65, 2]]);
 const AXES = [
   [...half.slice(1).reverse().map((x) => -x), ...half],
-  lines(-0.06, [[-0.015, 1], [0.125, 7], [0.35, 5], [0.53, 8], [1.01, 12], [1.1, 2], [1.3, 5]]),
-  lines(-0.47, [[-0.42, 1], [-0.1, 8], [0.1, 8], [0.22, 5], [0.4, 5], [0.48, 2], [1, 11]]),
+  lines(-0.06, [[-0.015, 1], [0.125, 7], [0.25, 3], [0.53, 11], [1.01, 11], [1.1, 2], [1.3, 7]]),
+  lines(-0.47, [[-0.42, 1], [-0.1, 8], [0.1, 8], [0.22, 5], [0.4, 5], [0.48, 2], [1, 13]]),
 ];
 const SIZE = AXES[0]!.length - 1;
 
-const ellipsoid = (x: number, y: number, z: number, rx: number, ry: number, rz: number) => {
-  const k0 = Math.hypot(x / rx, y / ry, z / rz); const k1 = Math.hypot(x / rx ** 2, y / ry ** 2, z / rz ** 2);
-  return k1 ? k0 * (k0 - 1) / k1 : -Math.min(rx, ry, rz);
-};
+const gradient = [0, 0, 0];
+// The body as a level set that is 1 on the surface. Leaves its gradient in `gradient`.
+function level(x: number, y: number, z: number) {
+  const up = y > MID; const n = up ? 2.5 : 3; const h = up ? 1 - MID : MID - 0.05;
+  const r = Math.hypot(x / WIDE, z / DEEP); const v = Math.abs(y - MID) / h;
+  const g = (r ** n + v ** n) ** (1 / n) || 1e-9; const k = g ** (1 - n);
+  gradient[0] = k * r ** (n - 2) * x / WIDE ** 2; gradient[1] = (up ? k : -k) * v ** (n - 1) / h; gradient[2] = k * r ** (n - 2) * z / DEEP ** 2;
+  return g;
+}
+const bodyDistance = (x: number, y: number, z: number) => (level(x, y, z) - 1) / (Math.hypot(gradient[0]!, gradient[1]!, gradient[2]!) || 1);
+// K01 arm: 0.14 thick and 0.24 long from the shoulder.
+function armDistance(x: number, y: number, z: number) {
+  const dx = x - SHOULDER[0]; const dy = y - SHOULDER[1];
+  const along = Math.min(Math.max(dx * ARM[0] + dy * ARM[1], 0), 0.17);
+  return Math.hypot(dx - along * ARM[0], dy - along * ARM[1], z) - 0.07;
+}
+// K01 foot: 0.17 x 0.10 x 0.20, 0.30 apart.
+function footDistance(x: number, y: number, z: number) {
+  const k0 = Math.hypot((x - 0.15) / 0.085, (y - 0.05) / 0.05, (z - 0.06) / 0.1); const k1 = Math.hypot((x - 0.15) / 0.085 ** 2, (y - 0.05) / 0.05 ** 2, (z - 0.06) / 0.1 ** 2);
+  return k1 ? k0 * (k0 - 1) / k1 : -0.05;
+}
 // Union that rounds the join over a band of width k instead of leaving a crease.
 const blend = (a: number, b: number, k: number) => Math.min(a, b) - Math.max(k - Math.abs(a - b), 0) ** 2 / (4 * k);
-// Signed distance to the body with K01 arms (0.14 thick, tips at 0.61) and feet (0.17 x 0.10 x 0.20, 0.30 apart).
 function distance(x: number, y: number, z: number) {
   const side = Math.abs(x);
-  const arm = Math.hypot(side - Math.min(Math.max(side, 0.3), 0.54), y - 0.44, z) - 0.07;
-  const foot = ellipsoid(side - 0.15, y - 0.05, z - 0.09, 0.085, 0.05, 0.1);
-  return blend(blend(ellipsoid(side, y - 0.5, z, ...BODY), arm, 0.06), foot, 0.035);
+  return blend(blend(bodyDistance(side, y, z), armDistance(side, y, z), 0.06), footDistance(side, y, z), 0.035);
+}
+
+// Where the front of the body is at (x, y) and which way it faces there.
+export function bodyFront(x: number, y: number) {
+  const up = y > MID; const n = up ? 2.5 : 3; const h = up ? 1 - MID : MID - 0.05;
+  const z = DEEP * Math.sqrt((1 - (Math.abs(y - MID) / h) ** n) ** (2 / n) - (x / WIDE) ** 2);
+  level(x, y, z);
+  const length = Math.hypot(gradient[0]!, gradient[1]!, gradient[2]!);
+  return { z, normal: [gradient[0]! / length, gradient[1]! / length, gradient[2]! / length] as const };
+}
+
+// K01 sash: the strip of the body shell, 0.10 wide, on the plane through the left shoulder (y 0.56) and the right waist (y 0.25).
+export function makeAroomiSash() {
+  const band = new CylinderGeometry(1, 1, 1, 48, 2, true);
+  const positions = band.getAttribute('position'); const normals = band.getAttribute('normal');
+  for (let i = 0; i < positions.count; i += 1) {
+    const x = positions.getX(i) * WIDE; const z = positions.getZ(i) * DEEP; const lift = 0.403 + positions.getY(i) * 0.107;
+    let inside = 0; let outside = 1.2;
+    for (let step = 0; step < 20; step += 1) {
+      const reach = (inside + outside) / 2;
+      if (level(x * reach, lift + 0.3735 * x * reach, z * reach) < 1) inside = reach; else outside = reach;
+    }
+    level(x * inside, lift + 0.3735 * x * inside, z * inside);
+    const length = Math.hypot(gradient[0]!, gradient[1]!, gradient[2]!);
+    normals.setXYZ(i, gradient[0]! / length, gradient[1]! / length, gradient[2]! / length);
+    positions.setXYZ(i, x * inside + normals.getX(i) * 0.012, lift + 0.3735 * x * inside + normals.getY(i) * 0.012, z * inside + normals.getZ(i) * 0.012);
+  }
+  return band;
 }
 
 // One closed skin for body, arms and feet. `follow` is how far each vertex goes with its arm, negative on -x.
@@ -53,14 +102,14 @@ export function makeAroomiBody() {
     positions.setXYZ(i, x, y, z);
     const e = 0.002; const n = [distance(x + e, y, z) - distance(x - e, y, z), distance(x, y + e, z) - distance(x, y - e, z), distance(x, y, z + e) - distance(x, y, z - e)]; const length = Math.hypot(...n) || 1;
     normals.set([n[0]! / length, n[1]! / length, n[2]! / length], i * 3);
-    // The shoulder fillet bends between the body and the arm.
-    follow[i] = Math.sign(x) * Math.max(0, Math.min(1, (Math.abs(x) - 0.4) / 0.06));
+    // Skin that is nearer the arm than the body goes with the arm, and the join between them bends.
+    follow[i] = Math.sign(x) * Math.max(0, Math.min(1, 0.5 + (bodyDistance(Math.abs(x), y, z) - armDistance(Math.abs(x), y, z)) / 0.06));
   }
   geometry.setAttribute('normal', new Float32BufferAttribute(normals, 3));
   return { geometry, follow, rest: { position: Float32Array.from(positions.array), normal: normals.slice() } };
 }
 
-// Turn the -x arm by `angle` around its shoulder pivot and mirror the +x arm.
+// Turn the -x arm by `angle` from its resting pose around the shoulder and mirror the +x arm.
 // The vertices move here, not in a skinned shader: that second shader program added about 1.5 s to the first draw on the simulator.
 export function swingArms({ geometry, follow, rest }: ReturnType<typeof makeAroomiBody>, angle: number) {
   const position = geometry.getAttribute('position'); const normal = geometry.getAttribute('normal');
@@ -70,7 +119,7 @@ export function swingArms({ geometry, follow, rest }: ReturnType<typeof makeAroo
     if (!weight) continue;
     const side = Math.sign(follow[i]!); const sin = -side * Math.sin(angle);
     const x = rest.position[i * 3]!; const y = rest.position[i * 3 + 1]!; const nx = rest.normal[i * 3]!; const ny = rest.normal[i * 3 + 1]!;
-    const dx = x - side * 0.37; const dy = y - 0.44;
+    const dx = x - side * SHOULDER[0]; const dy = y - SHOULDER[1];
     position.setXY(i, x + weight * (dx * cos - dy * sin), y + weight * (dx * sin + dy * cos));
     normal.setXY(i, nx + weight * (nx * cos - ny * sin), ny + weight * (nx * sin + ny * cos));
   }
