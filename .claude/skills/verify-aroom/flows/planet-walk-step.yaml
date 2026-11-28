@@ -1,0 +1,7 @@
+appId: com.jinjinstar.aroom.dev
+---
+- assertVisible: "별 전체 보기"
+- swipe:
+    start: 50%, 55%
+    end: 75%, 45%
+    duration: 12000

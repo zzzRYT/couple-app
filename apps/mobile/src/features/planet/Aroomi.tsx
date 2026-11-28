@@ -23,14 +23,14 @@ const FACE = [[-0.13, 0.68], [0.13, 0.68], [-0.2, 0.61], [0.2, 0.61], [0, 0.63]]
 const GAZE_REACH = 0.36;
 
 // Temporary generated model; replace this component when the owner's GLB is available.
-export function Aroomi({ reducedMotion, poke }: { reducedMotion: boolean; poke?: Poke }) {
+export function Aroomi({ reducedMotion, wander = 1, poke }: { reducedMotion: boolean; wander?: number; poke?: Poke }) {
   const character = useRef<Group>(null); const tails = useRef<Mesh>(null); const face = useRef<(Object3D | null)[]>([]);
   const body = useMemo(makeAroomiBody, []); const scarf = useMemo(makeAroomiScarf, []); const knot = useMemo(makeAroomiKnot, []);
   const life = useMemo(() => newLife(Math.random() * 2 ** 32), []); const pose = useMemo(newPose, []); const poked = useRef(poke?.n ?? 0);
   useEffect(() => () => { body.geometry.dispose(); scarf.dispose(); knot.geometry.dispose(); }, [body, scarf, knot]);
   useFrame(({ clock, camera, size }) => {
     const figure = character.current; if (!figure?.parent) return;
-    const t = clock.elapsedTime; const x = reducedMotion ? 0 : Math.sin(t * 0.18) * 0.14;
+    const t = clock.elapsedTime; const x = reducedMotion ? 0 : Math.sin(t * 0.18) * 0.14 * wander;
     if (reducedMotion) restPose(pose);
     else {
       let hit = false;
@@ -45,7 +45,7 @@ export function Aroomi({ reducedMotion, poke }: { reducedMotion: boolean; poke?:
     }
     const girth = SIZE / Math.sqrt(pose.stretch);
     figure.position.set(x, -0.5 * x * x + pose.lift * SIZE, 0);
-    figure.rotation.set(0, pose.turn, pose.lean);
+    figure.rotation.set(0, pose.turn * wander, pose.lean);
     figure.scale.set(girth, SIZE * pose.stretch, girth);
     for (let i = 0; i < FACE.length; i += 1) {
       const part = face.current[i]; if (!part) continue;

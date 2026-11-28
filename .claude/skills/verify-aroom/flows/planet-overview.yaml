@@ -1,0 +1,6 @@
+appId: com.jinjinstar.aroom.dev
+---
+- tapOn: "별 전체 보기"
+- extendedWaitUntil:
+    visible: "산책하기"
+    timeout: 10000
