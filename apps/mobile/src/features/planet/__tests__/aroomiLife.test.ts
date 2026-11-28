@@ -59,6 +59,15 @@ it('looks toward the viewer with the eyes first and the body after, and blinks w
   expect(Math.max(...frames.map((frame) => Math.abs(frame.gazePitch)))).toBeLessThanOrEqual(0.071);
 });
 
+it('looks ahead without twitching when the viewer is behind it, as in the walk view', () => {
+  const frames = run(3, 60, { viewer: (t) => (Math.round(t * FPS) % 2 ? 3.1 : -3.1) });
+  const snaps = frames.filter((frame, i) => i > 0 && Math.abs(frame.gazeYaw - frames[i - 1]!.gazeYaw) > 0.05).length;
+  expect(snaps).toBeLessThan(80);
+  expect(blinkStarts(frames).length).toBeLessThan(40);
+  const sides = frames.filter((frame) => frame.t > 5).map((frame) => frame.turn);
+  expect(Math.abs(sides.reduce((sum, turn) => sum + turn, 0) / sides.length)).toBeLessThan(0.25);
+});
+
 it('does a small habit now and then, after a pause, and is otherwise on the ground', () => {
   const frames = run(11, 240);
   const jumps = frames.filter((frame, i) => frame.lift > 0 && frames[i - 1]!.lift === 0);

@@ -96,6 +96,8 @@ function jump(p: number, height: number, pose: Pose) {
 export function stepLife(life: Life, pose: Pose, t: number, viewer: number, poked: boolean) {
   const dt = clamp(t - life.t, 0, 0.05); life.t = t;
   const { random } = life;
+  // It does not look at what is behind its back, as the camera is in the walk view: the pull fades out between 1.6 and 2.4 rad.
+  const seen = viewer * clamp((2.4 - Math.abs(viewer)) / 0.8, 0, 1);
 
   // Breathing, with the arms a fifth of a second behind the chest, and a slow shift of weight on two periods that never line up.
   const breath = Math.sin(2 * Math.PI * t / BREATH);
@@ -135,12 +137,12 @@ export function stepLife(life: Life, pose: Pose, t: number, viewer: number, poke
   if (life.act === 'idle' && t >= life.nextGlance) {
     life.nextGlance = t + 2.5 + 3.5 * random();
     if (random() < 0.45) life.lookAt = 'viewer';
-    else { life.lookAt = 'away'; life.look = clamp(viewer + (random() * 2 - 1) * 0.8, -1.2, 1.2); }
+    else { life.lookAt = 'away'; life.look = clamp(seen + (random() * 2 - 1) * 0.8, -1.2, 1.2); }
     life.lookPitch = (random() * 2 - 1) * 0.07;
   }
 
   // The eyes dart to the target in about three frames and the body turns after them.
-  const target = life.lookAt === 'viewer' ? clamp(viewer, -1.2, 1.2) : life.look;
+  const target = life.lookAt === 'viewer' ? clamp(seen, -1.2, 1.2) : life.look;
   life.turn += (target * 0.75 - life.turn) * toward(0.35, dt);
   const gaze = clamp(target - life.turn, -0.22, 0.22);
   const jumped = Math.abs(gaze - life.gazeYaw) > 0.15;
