@@ -10,7 +10,7 @@ export async function readPlanet(spaceId: string): Promise<PlanetData> {
   const saved = await SecureStore.getItemAsync(key(spaceId));
   if (!saved) return emptyPlanet;
   const data = JSON.parse(saved) as PlanetData;
-  if (!data || !Number.isInteger(data.maxLevel) || data.maxLevel < 1 || data.maxLevel > 4 || !Array.isArray(data.placements) || data.placements.some((item) => !item || typeof item.id !== 'string' || !item.id || ![item.latitude, item.longitude, item.heading, item.radius].every(Number.isFinite) || Math.abs(item.latitude) > 90 || Math.abs(item.longitude) > 180 || item.radius <= 0) || new Set(data.placements.map((item) => item.id)).size !== data.placements.length) throw new Error('Invalid planet data');
+  if (!data || !Number.isInteger(data.maxLevel) || data.maxLevel < 1 || data.maxLevel > 4 || !Array.isArray(data.placements) || data.placements.some((item) => !item || typeof item.id !== 'string' || !item.id || ![item.latitude, item.longitude, item.heading, item.radius].every(Number.isFinite) || Math.abs(item.latitude) > 90 || Math.abs(item.longitude) > 180 || item.radius <= 0 || (item.assetId !== undefined && typeof item.assetId !== 'string') || (item.scale !== undefined && !(Number.isFinite(item.scale) && item.scale > 0))) || new Set(data.placements.map((item) => item.id)).size !== data.placements.length) throw new Error('Invalid planet data');
   return data;
 }
 export async function writePlanet(spaceId: string, data: PlanetData): Promise<void> {

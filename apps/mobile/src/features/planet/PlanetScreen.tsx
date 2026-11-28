@@ -1,22 +1,28 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AccessibilityInfo, PanResponder, Pressable, Text, View } from 'react-native';
+import { AccessibilityInfo, Image, KeyboardAvoidingView, PanResponder, Platform, Pressable, Text, View } from 'react-native';
 import { Canvas as BackgroundCanvas, LinearGradient, Rect, vec } from '@shopify/react-native-skia';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useType } from '../../theme/typography';
 import { V1_FEATURES } from '../../config/features';
-import { useTabBarClearance } from '../../ui/components';
+import { Button, TextField, useTabBarClearance } from '../../ui/components';
 import { useLoopActive } from '../../ui/motion';
 import { dayCount } from '../../lib/dday';
 import { roomVariant } from '../settings/followTime';
-import { drag, inertia, initialCamera, pinch, themes, type Camera } from './model';
+import { drag, face, inertia, initialCamera, pinch, themes, type Camera } from './model';
 import { PlanetScene } from './PlanetScene';
-import { planetLevel } from './level';
-import { canPlace, type Placement } from './placement';
+import { fitObject, planetLevel } from './level';
+import { canPlace, spots, type Placement } from './placement';
 import { readPlanet, writePlanet, type PlanetData } from './planetStorage';
 import { demoAsset } from './demoAsset';
 import { disposePlanetAsset, loadPlanetAsset } from './planetAsset';
 import type { Object3D } from 'three';
+import { SampleObject } from './SampleObject';
+import { fakeGenerator, type GenerationInput, type GenerationJob } from './generator';
+import { pickRegion } from './photo';
+
+const generator = fakeGenerator();
+type Spot = Placement | 'planet.capacity' | 'planet.noSpace' | 'planet.failed';
 
 export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId: string; anniversary: string; timeZone: string; now: string }) {
   const { t } = useTranslation(); const { type } = useType(); const insets = useSafeAreaInsets(); const clearance = useTabBarClearance();
@@ -39,6 +45,13 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
     catch { setMessage('planet.storageError'); return false; }
     finally { saving.current = false; setBusy(false); }
   };
+  const [creating, setCreating] = useState(false); const [prompt, setPrompt] = useState(''); const [photo, setPhoto] = useState<string | null>(null);
+  const [job, setJob] = useState<GenerationJob | null>(null); const [panelHeight, setPanelHeight] = useState(0); const [pillBottom, setPillBottom] = useState(0);
+  useEffect(() => {
+    if (!job || (job.state !== 'queued' && job.state !== 'running')) return;
+    const timer = setTimeout(() => setJob((current) => current ? generator.poll(current) : current), 1000);
+    return () => clearTimeout(timer);
+  }, [job]);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [camera, setCamera] = useState(initialCamera); const cameraRef = useRef(camera);
   const [reducedMotion, setReducedMotion] = useState(false); const reduced = useRef(false); const frame = useRef(0);
@@ -77,31 +90,69 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
   const earned = planetLevel(count.ok ? Math.max(0, count.dayCount - 1) : 0, devEntitlement ? [4] : []);
   const growth = planetLevel(0, [earned.level, data?.maxLevel ?? 1]);
   useEffect(() => { if (data && !busy && message !== 'planet.storageError' && earned.level > data.maxLevel) void save({ ...data, maxLevel: earned.level }); }, [data, earned.level, busy, message]);
-  const rendered = useMemo(() => asset ? (data?.placements ?? []).map((item) => ({ ...item, content: <primitive object={asset.clone()} /> })) : [], [asset, data]);
-  const addObject = async () => {
-    if (!data || !asset) return;
-    const positions = [...Array.from({ length: 6 }, (_, i) => ({ latitude: 0, longitude: i * 60 - 180 })), ...Array.from({ length: 4 }, (_, i) => ({ latitude: -55, longitude: i * 90 - 180 }))];
-    if (data.placements.length >= growth.capacity) { setMessage('planet.capacity'); return; }
-    const id = `${Date.now()}-${data.placements.length}`;
-    const candidate = positions.map((position): Placement => ({ ...position, id, heading: 0, radius: 0.31 })).find((item) => canPlace(data.placements, item, growth.capacity, growth.scale) === 'ok');
-    if (!candidate) { setMessage('planet.noSpace'); return; }
-    if (await save({ maxLevel: growth.level, placements: [...data.placements, candidate] })) setMessage('');
+  const spotFor = (object: Pick<Placement, 'radius' | 'assetId' | 'scale'>, placements: readonly Placement[]): Spot => {
+    if (placements.length >= growth.capacity) return 'planet.capacity';
+    const id = `${Date.now()}-${placements.length}`;
+    return spots.map((position): Placement => ({ ...position, ...object, id, heading: 0 })).find((item) => canPlace(placements, item, growth.capacity, growth.scale) === 'ok') ?? 'planet.noSpace';
+  };
+  const preview = useMemo(() => {
+    if (!data || job?.state !== 'succeeded') return null;
+    const fit = fitObject(job.boundingRadius, growth.maxObject);
+    return fit ? spotFor({ ...fit, assetId: job.assetId }, data.placements) : 'planet.failed';
+  }, [data, job, growth.level]);
+  useEffect(() => { if (preview && typeof preview !== 'string') update(face(cameraRef.current, preview.latitude, preview.longitude)); }, [job]);
+  // shortcut: the fake generator only makes the sample tree; render inventory assets by id once they exist.
+  const rendered = useMemo(() => [...(data?.placements ?? []), ...(preview && typeof preview !== 'string' ? [preview] : [])].flatMap((item) => item.assetId === 'sample-tree' ? [{ ...item, content: <group scale={item.scale ?? 1}><SampleObject /></group> }] : asset ? [{ ...item, content: <primitive object={asset.clone()} /> }] : []), [asset, data, preview]);
+  const place = async (spot: Spot) => {
+    if (!data) return false;
+    if (typeof spot === 'string') { setMessage(spot); return false; }
+    const saved = await save({ maxLevel: growth.level, placements: [...data.placements, spot] });
+    if (saved) setMessage('');
+    return saved;
+  };
+  const closeCreate = () => { setCreating(false); setJob(null); setPhoto(null); setMessage(''); };
+  const submit = (input: GenerationInput) => { setMessage(''); setJob(generator.submit(input)); };
+  const choosePhoto = async (source: 'camera' | 'library') => {
+    try {
+      const picked = await pickRegion(source);
+      if (picked === 'denied') setMessage('planet.photoDenied');
+      else if (picked !== 'cancelled') { setPhoto(picked.uri); setMessage(''); }
+    } catch { setMessage('planet.photoError'); }
   };
   const backgroundColor = timeOfDay === 'day' ? themes.potato.sky[0] : '#1E1B3A';
   const sky = timeOfDay === 'day' ? themes.potato.sky : ['#1E1B3A', '#3A3260'];
   return <View style={{ flex: 1, backgroundColor }} onLayout={(event) => setSize(event.nativeEvent.layout)}>
     <BackgroundCanvas pointerEvents="none" style={{ position: 'absolute', inset: 0 }}><Rect x={0} y={0} width={size.width} height={size.height}><LinearGradient start={vec(0, 0)} end={vec(0, size.height)} colors={sky} /></Rect></BackgroundCanvas>
-    <View style={{ position: 'absolute', left: 20, top: insets.top + 16, zIndex: 1, borderRadius: 30, padding: 14, backgroundColor: timeOfDay === 'day' ? '#FFFAF2' : '#2E2942' }}>
+    <View onLayout={(event) => setPillBottom(event.nativeEvent.layout.y + event.nativeEvent.layout.height)} style={{ position: 'absolute', left: 20, top: insets.top + 16, zIndex: 1, borderRadius: 30, padding: 14, backgroundColor: timeOfDay === 'day' ? '#FFFAF2' : '#2E2942' }}>
       <Text style={{ ...type('title'), color: timeOfDay === 'day' ? '#3F2D22' : '#F7EBDD' }}>{t('planet.days', { n: count.ok ? count.dayCount : 0 })}</Text>
     </View>
-    <View style={{ flex: 1 }} accessible accessibilityLabel={t('planet.a11y', { n: data?.placements.length ?? 0 })} accessibilityActions={[{ name: 'increment', label: t('planet.right') }, { name: 'decrement', label: t('planet.left') }, { name: 'zoomIn', label: t('planet.zoomIn') }, { name: 'zoomOut', label: t('planet.zoomOut') }]} onAccessibilityAction={(event) => { const action = event.nativeEvent.actionName; if (action === 'increment' || action === 'decrement') update(drag(cameraRef.current, action === 'increment' ? 30 : -30, 0)); else if (action === 'zoomIn' || action === 'zoomOut') update(pinch(cameraRef.current, action === 'zoomIn' ? 1.2 : 1 / 1.2)); }} {...responder.panHandlers}>
+    {/* The create panel covers the lower screen, so the planet moves to the middle of the area left between it and the day count. */}
+    <View style={{ flex: 1, transform: [{ translateY: creating ? (pillBottom - panelHeight - clearance) / 2 : 0 }] }} accessible accessibilityLabel={t('planet.a11y', { n: data?.placements.length ?? 0 })} accessibilityActions={[{ name: 'increment', label: t('planet.right') }, { name: 'decrement', label: t('planet.left') }, { name: 'zoomIn', label: t('planet.zoomIn') }, { name: 'zoomOut', label: t('planet.zoomOut') }]} onAccessibilityAction={(event) => { const action = event.nativeEvent.actionName; if (action === 'increment' || action === 'decrement') update(drag(cameraRef.current, action === 'increment' ? 30 : -30, 0)); else if (action === 'zoomIn' || action === 'zoomOut') update(pinch(cameraRef.current, action === 'zoomIn' ? 1.2 : 1 / 1.2)); }} {...responder.panHandlers}>
       {active && <PlanetScene scene={{ theme: themes.potato, timeOfDay, camera }} reducedMotion={reducedMotion} scale={growth.scale} placements={rendered} />}
     </View>
     {V1_FEATURES.planet && <Pressable accessibilityRole="switch" accessibilityState={{ checked: devEntitlement }} onPress={() => setDevEntitlement((value) => !value)} style={{ position: 'absolute', right: 20, top: insets.top + 16, padding: 12, backgroundColor: '#FFFAF2', borderRadius: 20 }}><Text>{t('planet.devEntitlement', { level: growth.level })}</Text></Pressable>}
-    <View style={{ position: 'absolute', alignSelf: 'center', bottom: clearance + 42, alignItems: 'center' }}>
-      <Pressable accessibilityRole="button" disabled={!data || !asset || busy} onPress={() => void addObject()} style={{ padding: 12, borderRadius: 20, backgroundColor: '#FFFAF2' }}><Text>{t('planet.devPlace')}</Text></Pressable>
+    {!creating && <View style={{ position: 'absolute', alignSelf: 'center', bottom: clearance + 12, alignItems: 'center', gap: 8 }}>
+      <Pressable accessibilityRole="button" disabled={!data || !asset || busy} onPress={() => { if (data) void place(spotFor({ radius: 0.31 }, data.placements)); }} style={{ padding: 12, borderRadius: 20, backgroundColor: '#FFFAF2' }}><Text>{t('planet.devPlace')}</Text></Pressable>
+      <Button label={t('planet.create')} disabled={!data} onPress={() => { if (data && data.placements.length >= growth.capacity) { setMessage('planet.capacity'); return; } setMessage(''); setCreating(true); setJob(null); }} />
       {!!message && <Text accessibilityLiveRegion="polite" style={{ color: timeOfDay === 'day' ? '#3F2D22' : '#F7EBDD' }}>{t(message)}</Text>}
-    </View>
-    <Text style={{ position: 'absolute', alignSelf: 'center', bottom: clearance + 16, color: timeOfDay === 'day' ? '#3F2D22' : '#F7EBDD' }}>{t('planet.hint')}</Text>
+    </View>}
+    {creating && <KeyboardAvoidingView onLayout={(event) => setPanelHeight(event.nativeEvent.layout.height)} behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ position: 'absolute', bottom: clearance, left: 12, right: 12 }}>
+      <View style={{ backgroundColor: '#FFFAF2', borderRadius: 20, padding: 16, gap: 8 }}>
+        <Text>{t('planet.sampleNotice')}</Text>
+        {!job && <><TextField label={t('planet.createPrompt')} value={prompt} onChangeText={setPrompt} maxLength={300} multiline />
+          <Button label={t('planet.createSend')} disabled={!prompt.trim()} onPress={() => submit({ kind: 'text', prompt })} />
+          <View style={{ flexDirection: 'row', gap: 8 }}><Button compact variant="secondary" label={t('planet.photoTake')} onPress={() => void choosePhoto('camera')} /><Button compact variant="secondary" label={t('planet.photoPick')} onPress={() => void choosePhoto('library')} /></View>
+          {!!photo && <><Image accessibilityLabel={t('planet.photoRegion')} source={{ uri: photo }} style={{ width: 96, height: 96, borderRadius: 12, alignSelf: 'center' }} />
+            <Button label={t('planet.photoSend')} onPress={() => submit({ kind: 'photo', croppedRegionUri: photo })} /></>}</>}
+        {job && (job.state === 'queued' || job.state === 'running') && <><Text accessibilityLiveRegion="polite">{t(job.state === 'queued' ? 'planet.queued' : 'planet.running')}</Text><Button variant="secondary" label={t('common.cancel')} onPress={() => setJob(generator.cancel(job))} /></>}
+        {job?.state === 'succeeded' && preview && (typeof preview === 'string' ? <Text accessibilityLiveRegion="polite">{t(preview)}</Text> : <><Text>{t('planet.preview')}</Text>
+          <View style={{ flexDirection: 'row', gap: 8 }}><Button compact variant="secondary" label={t('planet.left')} onPress={() => update(drag(cameraRef.current, -30, 0))} /><Button compact variant="secondary" label={t('planet.right')} onPress={() => update(drag(cameraRef.current, 30, 0))} /></View>
+          <Button label={t('planet.place')} disabled={busy} onPress={() => void place(preview).then((saved) => { if (saved) { closeCreate(); setPrompt(''); } })} />
+          <Button variant="secondary" label={t('planet.regenerate')} onPress={() => setJob(null)} /></>)}
+        {job && ['failed', 'rejected', 'cancelled'].includes(job.state) && <><Text accessibilityLiveRegion="polite">{t(job.state === 'failed' ? 'planet.failed' : job.state === 'rejected' ? 'planet.rejected' : 'planet.cancelled')}</Text><Button label={t('common.retry')} onPress={() => setJob(null)} /></>}
+        {!!message && <Text accessibilityLiveRegion="polite">{t(message)}</Text>}
+        <Button variant="ghost" label={t('common.close')} onPress={closeCreate} />
+      </View>
+    </KeyboardAvoidingView>}
   </View>;
 }

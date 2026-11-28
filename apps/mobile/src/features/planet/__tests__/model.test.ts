@@ -1,4 +1,4 @@
-import { drag, inertia, initialCamera, pinch, surfacePosition, themes } from '../model';
+import { drag, face, inertia, initialCamera, pinch, surfacePosition, themes } from '../model';
 import { v1Features } from '../../../config/features';
 import { roomVariant } from '../../settings/followTime';
 
@@ -32,4 +32,18 @@ it('places surface anchors on the potato at the pole and equator', () => {
 it('V1-NF-01 enables the planet only in development builds', () => {
   expect(v1Features('development').planet).toBe(true);
   for (const variant of ['production', 'preview', undefined]) expect(v1Features(variant).planet).toBe(false);
+});
+it('turns the planet so a surface point faces the camera, within the pitch limit', () => {
+  const seen = (latitude: number, longitude: number) => {
+    const { yaw, pitch } = face(initialCamera, latitude, longitude); const [x, y, z] = surfacePosition(latitude, longitude);
+    const turned = -x * Math.sin(yaw) + z * Math.cos(yaw);
+    return [x * Math.cos(yaw) + z * Math.sin(yaw), y * Math.cos(pitch) - turned * Math.sin(pitch), y * Math.sin(pitch) + turned * Math.cos(pitch)];
+  };
+  for (const [latitude, longitude] of [[0, -180], [0, 60], [-55, 90]] as const) {
+    const [x, , z] = seen(latitude, longitude);
+    expect(x).toBeCloseTo(0, 1);
+    expect(z).toBeGreaterThan(0.8);
+  }
+  expect(seen(0, -180)[1]).toBeGreaterThan(0.3);
+  expect(face(initialCamera, -55, 90).pitch).toBe(-0.7);
 });
