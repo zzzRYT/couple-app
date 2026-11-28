@@ -1,0 +1,7 @@
+appId: com.jinjinstar.aroom.dev
+---
+# Continues from the cropped photo part and stops at the preview of the created object.
+- tapOn: "이 부분으로 만들기"
+- extendedWaitUntil:
+    visible: "별에 놓기"
+    timeout: 20000

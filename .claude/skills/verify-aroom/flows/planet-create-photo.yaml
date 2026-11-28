@@ -1,0 +1,14 @@
+appId: com.jinjinstar.aroom.dev
+---
+# Starts on the planet tab and stops in the system crop editor with the first library photo.
+- tapOn: "오브젝트 만들기"
+- tapOn: "사진 고르기"
+- extendedWaitUntil:
+    visible: "사진, .*"
+    timeout: 20000
+- tapOn:
+    text: "사진, .*"
+    index: 0
+- extendedWaitUntil:
+    visible: "선택|Choose"
+    timeout: 20000
