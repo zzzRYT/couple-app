@@ -16,10 +16,12 @@ export type AnniversaryFields = Pick<CustomAnniversary, 'title' | 'memo' | 'date
 export type EventAlert = 'none' | 'at' | '5m' | '15m' | '30m' | '1h' | '1d';
 export type CalendarEvent = { id: string; title: string; date: string; time: string | null; endTime: string | null; alert: EventAlert; /** Whose plan it is; null = 함께. */ ownerId: string | null; createdBy: string | null; createdAt: string; updatedBy: string | null; updatedAt: string; version: number };
 export type EventFields = Pick<CalendarEvent, 'title' | 'date' | 'time' | 'endTime' | 'alert' | 'ownerId'>;
+/** One flat thread per event; `createdBy` is null once the writer's account is gone. */
+export type EventComment = { id: string; eventId: string; body: string; createdBy: string | null; createdAt: string };
 export type Snapshot = {
   space: { spaceId: string; status: 'active'; anniversaryDate: string; timeZone: string; memberCount: number; updatedAt: string; invitation: { status: string; expiresAt: string } | null; anniversaryChangedBy: string | null; anniversaryChangedAt: string | null };
   features: { generation: boolean; generatedRender: boolean }; versionNumber: number; sceneDocument: SceneDocument; roomPresentation: RoomPresentation; roomThemeDocument: RoomThemeDocument;
-  promptSession: PromptSession | null; catalogVersion: number | string; serverTime: string; members: { userId: string; aiConsentState: 'not_given' | 'granted' | 'revoked'; displayName: string | null; birthday: Birthday | null; hasBirthday: boolean }[]; me: { userId: string; displayName: string | null; birthday: (Birthday & { year: number | null }) | null }; anniversaries: CustomAnniversary[]; events: CalendarEvent[];
+  promptSession: PromptSession | null; catalogVersion: number | string; serverTime: string; members: { userId: string; aiConsentState: 'not_given' | 'granted' | 'revoked'; displayName: string | null; birthday: Birthday | null; hasBirthday: boolean }[]; me: { userId: string; displayName: string | null; birthday: (Birthday & { year: number | null }) | null }; anniversaries: CustomAnniversary[]; events: CalendarEvent[]; eventComments: EventComment[];
 };
 export type HomeCover = { status: 'none' | 'ready'; version: number; signedUrl?: string; signedUrlExpiresAt?: string; crop?: { x: number; y: number; width: number; height: number }; uploadedBy: string | null; updatedAt: string | null };
 export type MySpace = { active: { spaceId: string } | null; ended: { kind: 'ended' | 'disconnect' | 'account_deleted'; by: 'me' | 'partner'; at: string } | null };
@@ -38,8 +40,8 @@ export function createClient(api: Api) {
   return {
     createSpace: (anniversaryDate: string, timeZone: string) => api.json<{ spaceId: string; memberCount: number }>(routes.createSpace(), { method: 'POST', body: { anniversaryDate, timeZone } }),
     mySpace: () => api.json<MySpace>(routes.mySpace()),
-    // A server without the calendar migration sends no events.
-    snapshot: async (spaceId: string) => { const snapshot = await api.json<Snapshot>(routes.snapshot(spaceId)); return { ...snapshot, events: snapshot.events ?? [] }; },
+    // A server without the calendar (or comment) migration sends no events (or comments).
+    snapshot: async (spaceId: string) => { const snapshot = await api.json<Snapshot>(routes.snapshot(spaceId)); return { ...snapshot, events: snapshot.events ?? [], eventComments: snapshot.eventComments ?? [] }; },
     endSpace: (spaceId: string) => api.json<{ status: 'ended' }>(routes.endSpace(spaceId), { method: 'POST', body: { confirm: true } }),
     /** The screen says "disconnect"; the contract endpoint is still `block`. */
     disconnect: (spaceId: string) => api.json<{ status: 'ended' }>(routes.disconnect(spaceId), { method: 'POST', body: { confirm: true } }),
@@ -51,6 +53,8 @@ export function createClient(api: Api) {
     createEvent: (spaceId: string, fields: EventFields, idempotencyKey: string) => api.json<CalendarEvent>(routes.events(spaceId), { method: 'POST', body: fields, keyInBody: true, idempotencyKey }),
     updateEvent: (spaceId: string, id: string, fields: EventFields, expectedVersion: number, idempotencyKey: string) => api.json<CalendarEvent>(routes.eventItem(spaceId, id), { method: 'PATCH', body: { ...fields, expectedVersion }, keyInBody: true, idempotencyKey }),
     deleteEvent: (spaceId: string, id: string, expectedVersion: number, idempotencyKey: string) => api.json<void>(routes.eventItem(spaceId, id), { method: 'DELETE', body: { expectedVersion }, keyInBody: true, idempotencyKey }),
+    createEventComment: (spaceId: string, eventId: string, body: string, idempotencyKey: string) => api.json<EventComment>(routes.eventComments(spaceId, eventId), { method: 'POST', body: { body }, keyInBody: true, idempotencyKey }),
+    deleteEventComment: (spaceId: string, eventId: string, commentId: string, idempotencyKey: string) => api.json<void>(routes.eventComment(spaceId, eventId, commentId), { method: 'DELETE', body: {}, keyInBody: true, idempotencyKey }),
     deleteAnniversaryItem: (spaceId: string, id: string, expectedVersion: number, idempotencyKey: string) => api.json<void>(routes.anniversaryItem(spaceId, id), { method: 'DELETE', body: { expectedVersion }, keyInBody: true, idempotencyKey }),
     updateRoomMode: (spaceId: string, mode: RoomThemeDocument['mode'], timeZone: string, expectedCurrentVersion: number) => api.json<{ versionNumber: number; mode: RoomThemeDocument['mode']; timeZone: string }>(routes.roomMode(spaceId), { method: 'PATCH', body: { mode, timeZone, expectedCurrentVersion }, keyInBody: true }),
     createInvitation: (spaceId: string) => api.json<{ invitationId: string; code: string; expiresAt: string }>(routes.createInvitation(spaceId), { method: 'POST', body: { expiresInSeconds: 86400 } }),

@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
 import { fireEvent, waitFor, within } from '@testing-library/react-native';
 import { ApiError } from '../../../lib/errors';
-import { eventFixture, ME, PARTNER } from '../../../test/fixtures';
+import { commentFixture, eventFixture, ME, PARTNER } from '../../../test/fixtures';
 import { renderWithI18n } from '../../../test/render';
 import { notificationPermission, requestNotificationPermission } from '../../notifications/permissions';
 import { CalendarScreen } from '../CalendarScreen';
@@ -14,7 +14,7 @@ const events = [
   eventFixture({ id: 'gym', title: '헬스장 등록', time: '08:00', ownerId: PARTNER, createdBy: PARTNER, updatedBy: PARTNER }),
 ];
 const anniversaries = { startDate: '2026-06-01', timeZone: 'Asia/Seoul', me: { birthday: null }, partner: null, customs: [] };
-const screenProps = { events, anniversaries, me: ME, meName: '나리', partner: '도담', today: '2026-11-25', offline: false, onAdd: jest.fn(), onEvent: jest.fn() };
+const screenProps = { events, anniversaries, eventComments: [], me: ME, meName: '나리', partner: '도담', today: '2026-11-25', offline: false, onAdd: jest.fn(), onEvent: jest.fn() };
 
 describe('CalendarScreen', () => {
   it('V0-F19-AC-01 V0-F03-AC-05 shows the month, today with its events, and moves between months', async () => {
@@ -89,9 +89,16 @@ describe('CalendarScreen', () => {
     await fireEvent.press(screen.getByText(screen.t('cal.add')));
     expect(onAdd).not.toHaveBeenCalled();
   });
+  it('V0-F19-AC-09 adds the comment count to the day row of an event that has comments', async () => {
+    const screen = await renderWithI18n(<CalendarScreen {...screenProps} eventComments={[commentFixture({ id: 'c1', eventId: 'ikea' }), commentFixture({ id: 'c2', eventId: 'ikea', createdBy: ME })]} />);
+    const count = screen.t('cal.comment.count', { n: 2 });
+    const ikea = screen.getByLabelText(`${screen.t('cal.a11y.event', { time: screen.t('cal.allDay'), title: '이케아 장보기', owner: screen.t('cal.owner.together.long'), name: `${screen.t('cal.added', { name: '도담' })}, ${screen.t('cal.edited.me')}` })}, ${count}`);
+    expect(within(ikea).getByText(`${screen.t('cal.allDay')} · 도담님이 추가 · 내가 수정 · ${count}`)).toBeTruthy();
+    expect(screen.queryAllByText(new RegExp(count))).toHaveLength(1);
+  });
 });
 
-const sheetProps = { date: '2026-11-25', me: ME, meName: '나리', partner: '도담', partnerId: PARTNER, timeZone: 'Asia/Seoul', offline: false, remove: jest.fn(), reload: jest.fn(), onClose: jest.fn(), onGone: jest.fn(), onSaved: jest.fn() };
+const sheetProps = { date: '2026-11-25', me: ME, meName: '나리', partner: '도담', partnerId: PARTNER, timeZone: 'Asia/Seoul', offline: false, comments: [], addComment: jest.fn(), removeComment: jest.fn(), remove: jest.fn(), reload: jest.fn(), onClose: jest.fn(), onGone: jest.fn(), onSaved: jest.fn() };
 const saveButton = (screen: Awaited<ReturnType<typeof renderWithI18n>>) => screen.getByRole('button', { name: screen.t('common.save') });
 describe('EventEdit', () => {
   it('V0-F19-AC-03 keeps save off without a title or with an end before the start, and sends a timed event', async () => {
@@ -194,5 +201,67 @@ describe('EventEdit', () => {
     const screen = await renderWithI18n(<EventEdit {...sheetProps} offline initial={eventFixture({})} save={save} />);
     expect(saveButton(screen).props.accessibilityState.disabled).toBe(true);
     expect(screen.getByRole('button', { name: screen.t('cal.delete') }).props.accessibilityState.disabled).toBe(true);
+  });
+});
+
+describe('EventEdit comments', () => {
+  const thread = [commentFixture({ id: 'theirs', body: '좋아!', createdBy: PARTNER }), commentFixture({ id: 'mine', body: '7시에 보자', createdBy: ME, createdAt: '2026-11-21T11:30:00Z' })];
+  it('V0-F19-AC-09 lists the thread with who wrote each comment and when, and sends a trimmed comment', async () => {
+    const addComment = jest.fn(async () => undefined);
+    const screen = await renderWithI18n(<EventEdit {...sheetProps} initial={eventFixture({})} comments={thread} addComment={addComment} save={jest.fn()} />);
+    expect(screen.getByText(screen.t('cal.comment.title', { n: 2 }))).toBeTruthy();
+    expect(screen.getByLabelText(screen.t('cal.comment.a11y', { name: '도담', time: '11월 21일 오후 7:05', body: '좋아!' }))).toBeTruthy();
+    expect(screen.getByLabelText(screen.t('cal.comment.a11y', { name: '나리', time: '11월 21일 오후 8:30', body: '7시에 보자' }))).toBeTruthy();
+    const send = screen.getByRole('button', { name: screen.t('cal.comment.send') });
+    expect(send.props.accessibilityState.disabled).toBe(true);
+    await fireEvent.changeText(screen.getByLabelText(screen.t('cal.comment.ph')), 'x'.repeat(201));
+    expect(screen.getByText(screen.t('cal.comment.err.long'))).toBeTruthy();
+    expect(screen.getByRole('button', { name: screen.t('cal.comment.send') }).props.accessibilityState.disabled).toBe(true);
+    await fireEvent.changeText(screen.getByLabelText(screen.t('cal.comment.ph')), '  나도 좋아  ');
+    await fireEvent.press(screen.getByRole('button', { name: screen.t('cal.comment.send') }));
+    await waitFor(() => expect(screen.getByLabelText(screen.t('cal.comment.ph')).props.value).toBe(''));
+    expect((addComment.mock.calls[0] as unknown[])[0]).toBe('나도 좋아');
+    await fireEvent.press(screen.getByText(screen.t('common.cancel')));
+    expect(sheetProps.onClose).toHaveBeenCalled();
+  });
+  it('V0-F19-AC-09 shows an empty thread, keeps sending off offline, and only on an existing event', async () => {
+    const empty = await renderWithI18n(<EventEdit {...sheetProps} initial={eventFixture({})} save={jest.fn()} />);
+    expect(empty.getByText(empty.t('cal.comment.empty'))).toBeTruthy();
+    const offline = await renderWithI18n(<EventEdit {...sheetProps} offline initial={eventFixture({})} comments={thread} save={jest.fn()} />);
+    await fireEvent.changeText(offline.getByLabelText(offline.t('cal.comment.ph')), '보내줘');
+    expect(offline.getByRole('button', { name: offline.t('cal.comment.send') }).props.accessibilityState.disabled).toBe(true);
+    expect(offline.getByRole('button', { name: offline.t('cal.comment.delete') }).props.accessibilityState.disabled).toBe(true);
+    const created = await renderWithI18n(<EventEdit {...sheetProps} save={jest.fn()} />);
+    expect(created.queryByText(created.t('cal.comment.empty'))).toBeNull();
+  });
+  it('V0-F19-AC-09 keeps the draft and says so when sending fails, and leaves when the event is gone', async () => {
+    const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
+    const failed = await renderWithI18n(<EventEdit {...sheetProps} initial={eventFixture({})} addComment={jest.fn().mockRejectedValue(new TypeError('network'))} save={jest.fn()} />);
+    await fireEvent.changeText(failed.getByLabelText(failed.t('cal.comment.ph')), '좋아');
+    await fireEvent.press(failed.getByRole('button', { name: failed.t('cal.comment.send') }));
+    await waitFor(() => expect(failed.getByText(failed.t('cal.comment.err'))).toBeTruthy());
+    expect(failed.getByLabelText(failed.t('cal.comment.ph')).props.value).toBe('좋아');
+    const gone = await renderWithI18n(<EventEdit {...sheetProps} initial={eventFixture({})} addComment={jest.fn().mockRejectedValue(new ApiError(404, 'NOT_FOUND', { gone: true }))} save={jest.fn()} />);
+    await fireEvent.changeText(gone.getByLabelText(gone.t('cal.comment.ph')), '좋아');
+    await fireEvent.press(gone.getByRole('button', { name: gone.t('cal.comment.send') }));
+    await waitFor(() => expect(alert).toHaveBeenCalledWith(gone.t('cal.gone.title'), gone.t('cal.gone.body', { name: '도담' }), [expect.objectContaining({ text: gone.t('common.ok') })]));
+    alert.mockRestore();
+  });
+  it('V0-F19-AC-10 lets me delete only my own comment after a confirm, and treats an already deleted one as done', async () => {
+    const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
+    const confirm = () => (alert.mock.calls.at(-1)![2] as { style?: string; onPress?: () => void }[]).find((button) => button.style === 'destructive')!.onPress!();
+    const removeComment = jest.fn().mockRejectedValueOnce(new ApiError(404, 'NOT_FOUND')).mockRejectedValueOnce(new ApiError(500, 'INTERNAL'));
+    const screen = await renderWithI18n(<EventEdit {...sheetProps} initial={eventFixture({})} comments={thread} removeComment={removeComment} save={jest.fn()} />);
+    expect(screen.getAllByRole('button', { name: screen.t('cal.comment.delete') })).toHaveLength(1);
+    await fireEvent.press(screen.getByRole('button', { name: screen.t('cal.comment.delete') }));
+    expect(alert.mock.calls.at(-1)![0]).toBe(screen.t('cal.comment.delete.title'));
+    confirm();
+    await waitFor(() => expect(removeComment).toHaveBeenCalledTimes(1));
+    expect((removeComment.mock.calls[0] as unknown[])[0]).toBe('mine');
+    expect(screen.queryByText(screen.t('edit.delete.err'))).toBeNull();
+    await fireEvent.press(screen.getByRole('button', { name: screen.t('cal.comment.delete') }));
+    confirm();
+    await waitFor(() => expect(screen.getByText(screen.t('edit.delete.err'))).toBeTruthy());
+    alert.mockRestore();
   });
 });

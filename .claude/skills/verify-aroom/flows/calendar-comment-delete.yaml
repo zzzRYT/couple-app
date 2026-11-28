@@ -1,0 +1,13 @@
+appId: com.jinjinstar.aroom.dev
+---
+# Continues from the sheet after my reply; only my comment has a delete button.
+- tapOn: "댓글 삭제"
+- extendedWaitUntil:
+    visible: "댓글을 삭제할까요\\?"
+    timeout: 5000
+- tapOn: "삭제"
+- extendedWaitUntil:
+    visible: "댓글 1"
+    timeout: 20000
+- assertNotVisible: "댓글 삭제"
+- assertVisible: "하루, .*같이 갈래\\? 저녁 7시쯤"

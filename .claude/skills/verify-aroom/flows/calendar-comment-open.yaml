@@ -1,0 +1,12 @@
+appId: com.jinjinstar.aroom.dev
+---
+# Continues from the day list the calendar-comment flow leaves open.
+- tapOn: ".*헬스장 등록.*"
+- extendedWaitUntil:
+    visible: "일정 편집"
+    timeout: 10000
+- scrollUntilVisible:
+    element: "댓글 남기기"
+    direction: DOWN
+- assertVisible: "댓글 1"
+- assertVisible: "하루, .*같이 갈래\\? 저녁 7시쯤"
