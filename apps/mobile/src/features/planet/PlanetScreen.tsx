@@ -54,6 +54,7 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
   }, [job]);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [camera, setCamera] = useState(initialCamera); const cameraRef = useRef(camera);
+  const [poke, setPoke] = useState({ x: 0, y: 0, n: 0 });
   const [reducedMotion, setReducedMotion] = useState(false); const reduced = useRef(false); const frame = useRef(0);
   const previous = useRef<{ x: number; y: number; distance: number; time: number; velocity: number } | null>(null);
   const update = (next: Camera) => { cameraRef.current = next; setCamera(next); };
@@ -78,7 +79,9 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
       }
       previous.current = { x: first.pageX, y: first.pageY, distance, time: nowMs, velocity };
     },
-    onPanResponderRelease: () => {
+    onPanResponderRelease: (event, gesture) => {
+      // A touch that did not move is a tap; Aroomi reacts when it lands on it.
+      if (Math.abs(gesture.dx) < 8 && Math.abs(gesture.dy) < 8) { const { locationX, locationY } = event.nativeEvent; setPoke((last) => ({ x: locationX, y: locationY, n: last.n + 1 })); }
       const start = Date.now(); const velocity = previous.current && start - previous.current.time < 100 ? previous.current.velocity : 0; let last = start;
       const animate = () => { const nowMs = Date.now(); const speed = inertia(velocity, nowMs - start, reduced.current); if (!speed) return; update(drag(cameraRef.current, speed * (nowMs - last), 0)); last = nowMs; frame.current = requestAnimationFrame(animate); };
       frame.current = requestAnimationFrame(animate); previous.current = null;
@@ -128,7 +131,7 @@ export function PlanetScreen({ spaceId, anniversary, timeZone, now }: { spaceId:
     </View>
     {/* The create panel covers the lower screen, so the planet moves to the middle of the area left between it and the day count. */}
     <View style={{ flex: 1, transform: [{ translateY: creating ? (pillBottom - panelHeight - clearance) / 2 : 0 }] }} accessible accessibilityLabel={t('planet.a11y', { n: data?.placements.length ?? 0 })} accessibilityActions={[{ name: 'increment', label: t('planet.right') }, { name: 'decrement', label: t('planet.left') }, { name: 'zoomIn', label: t('planet.zoomIn') }, { name: 'zoomOut', label: t('planet.zoomOut') }]} onAccessibilityAction={(event) => { const action = event.nativeEvent.actionName; if (action === 'increment' || action === 'decrement') update(drag(cameraRef.current, action === 'increment' ? 30 : -30, 0)); else if (action === 'zoomIn' || action === 'zoomOut') update(pinch(cameraRef.current, action === 'zoomIn' ? 1.2 : 1 / 1.2)); }} {...responder.panHandlers}>
-      {active && <PlanetScene scene={{ theme: themes.potato, timeOfDay, camera }} reducedMotion={reducedMotion} scale={growth.scale} placements={rendered} />}
+      {active && <PlanetScene scene={{ theme: themes.potato, timeOfDay, camera }} reducedMotion={reducedMotion} scale={growth.scale} placements={rendered} poke={poke} />}
     </View>
     {V1_FEATURES.planet && <Pressable accessibilityRole="switch" accessibilityState={{ checked: devEntitlement }} onPress={() => setDevEntitlement((value) => !value)} style={{ position: 'absolute', right: 20, top: insets.top + 16, padding: 12, backgroundColor: '#FFFAF2', borderRadius: 20 }}><Text>{t('planet.devEntitlement', { level: growth.level })}</Text></Pressable>}
     {!creating && <View style={{ position: 'absolute', alignSelf: 'center', bottom: clearance + 12, alignItems: 'center', gap: 8 }}>

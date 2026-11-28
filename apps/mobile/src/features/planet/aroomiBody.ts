@@ -56,13 +56,15 @@ function distance(x: number, y: number, z: number) {
   return blend(blend(bodyDistance(side, y, z), armDistance(side, y, z), 0.06), footDistance(side, y, z), 0.035);
 }
 
-// Where the front of the body is at (x, y) and which way it faces there.
+const front = { z: 0, normal: [0, 0, 1] as [number, number, number] };
+/** Where the front of the body is at (x, y) and which way it faces there. Returns one shared object, so read it before the next call. */
 export function bodyFront(x: number, y: number) {
   const up = y > MID; const n = up ? 2.5 : 3; const h = up ? 1 - MID : MID - 0.05;
-  const z = DEEP * Math.sqrt((1 - (Math.abs(y - MID) / h) ** n) ** (2 / n) - (x / WIDE) ** 2);
-  level(x, y, z);
+  front.z = DEEP * Math.sqrt((1 - (Math.abs(y - MID) / h) ** n) ** (2 / n) - (x / WIDE) ** 2);
+  level(x, y, front.z);
   const length = Math.hypot(gradient[0]!, gradient[1]!, gradient[2]!);
-  return { z, normal: [gradient[0]! / length, gradient[1]! / length, gradient[2]! / length] as const };
+  front.normal[0] = gradient[0]! / length; front.normal[1] = gradient[1]! / length; front.normal[2] = gradient[2]! / length;
+  return front;
 }
 
 // The scarf: a strip of the body shell, 0.10 wide, on the drawn slant from 0.55 of the height on the left side to 0.36 on the right.
@@ -86,13 +88,12 @@ export function makeAroomiScarf() {
 
 // The scarf's knot and its two leaf-shaped tails, shaped as on design/mascot/harmonized/mascot_back.png: the knot sits 0.38 from
 // the middle and the tails reach about 0.24 outward and down. K01 puts them on the right waist, where the scarf is lowest.
-// They sit behind the arm so the arm never crosses them.
+// They sit behind the arm so the arm never crosses them. The geometry is centred on the knot, at `at`, so the tails can swing around it.
 export function makeAroomiKnot() {
   const x = -0.38; const y = 0.455 + 0.226 * x; const { z, normal } = bodyFront(x, y);
-  const at = [x + normal[0] * 0.03, y + normal[1] * 0.03, -z - normal[2] * 0.03] as const;
   const tails = [0.26, 0.87].map((droop, i) => new SphereGeometry(1, 12, 8).scale(0.12, 0.055, 0.015).rotateZ(Math.PI + droop)
-    .translate(at[0] - Math.cos(droop) * 0.11, at[1] - Math.sin(droop) * 0.11, at[2] - 0.01 - i * 0.02));
-  return mergeGeometries([new SphereGeometry(0.045, 12, 8).translate(...at), ...tails]);
+    .translate(-Math.cos(droop) * 0.11, -Math.sin(droop) * 0.11, -0.01 - i * 0.02));
+  return { geometry: mergeGeometries([new SphereGeometry(0.045, 12, 8), ...tails]), at: [x + normal[0] * 0.03, y + normal[1] * 0.03, -z - normal[2] * 0.03] as [number, number, number] };
 }
 
 // One closed skin for body, arms and feet. `follow` is how far each vertex goes with its arm, negative on -x.

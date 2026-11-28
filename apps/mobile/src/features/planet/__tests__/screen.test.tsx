@@ -14,11 +14,12 @@ let mockActive = true;
 const mockSceneUnmounted = jest.fn();
 const mockCamera = jest.fn();
 const mockPlacements = jest.fn();
+const mockPoke = jest.fn();
 jest.mock('../../../config/features', () => ({ V1_FEATURES: { planet: true } }));
 jest.mock('../../../ui/motion', () => ({ useLoopActive: () => mockActive }));
 jest.mock('../SurfaceAnchor', () => ({ SurfaceAnchor: () => null }));
-jest.mock('../PlanetScene', () => ({ PlanetScene: ({ scene, placements }: { scene: { camera: unknown }; placements: unknown }) => {
-  mockCamera(scene.camera); mockPlacements(placements);
+jest.mock('../PlanetScene', () => ({ PlanetScene: ({ scene, placements, poke }: { scene: { camera: unknown }; placements: unknown; poke: unknown }) => {
+  mockCamera(scene.camera); mockPlacements(placements); mockPoke(poke);
   jest.requireActual<typeof import('react')>('react').useEffect(() => () => mockSceneUnmounted(), []);
   return null;
 } }));
@@ -40,6 +41,17 @@ it('updates the scene camera from drag and pinch touches', async () => {
   expect(mockCamera.mock.lastCall?.[0]).toMatchObject({ yaw: 0.6, pitch: 0.2, zoom: 1 });
   await act(() => { move([{ pageX: 100, pageY: 200 }, { pageX: 200, pageY: 200 }]); move([{ pageX: 100, pageY: 200 }, { pageX: 250, pageY: 200 }]); });
   expect(mockCamera.mock.lastCall?.[0]).toMatchObject({ yaw: 0.6, pitch: 0.2, zoom: 1.5 });
+  responder.mockRestore();
+});
+
+it('passes a tap to the scene so Aroomi can react, and not a drag', async () => {
+  const responder = jest.spyOn(PanResponder, 'create');
+  await renderWithI18n(<PlanetScreen spaceId="space-1" anniversary="2026-11-25" timeZone="Asia/Seoul" now="2026-11-26T00:00:00Z" />);
+  const release = (dx: number) => responder.mock.calls.at(-1)![0].onPanResponderRelease?.({ nativeEvent: { locationX: 120, locationY: 300 } } as never, { dx, dy: 0 } as never);
+  await act(() => { release(40); });
+  expect(mockPoke.mock.lastCall?.[0]).toMatchObject({ n: 0 });
+  await act(() => { release(2); });
+  expect(mockPoke.mock.lastCall?.[0]).toEqual({ x: 120, y: 300, n: 1 });
   responder.mockRestore();
 });
 

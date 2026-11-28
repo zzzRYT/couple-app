@@ -50,7 +50,7 @@ test('the scarf follows the drawn slant and its knot and tails sit behind the ri
   for (let i = 0; i < scarf.count; i += 1) if (Math.abs(scarf.getX(i)) > 0.4) sides[scarf.getX(i) > 0 ? 'left' : 'right'].push(scarf.getY(i));
   const middle = (heights) => (Math.min(...heights) + Math.max(...heights)) / 2;
   assert.ok(Math.abs(middle(sides.left) - 0.55) < 0.02 && Math.abs(middle(sides.right) - 0.36) < 0.02, `scarf at ${middle(sides.left)} and ${middle(sides.right)}`);
-  const knot = makeAroomiKnot(); knot.computeBoundingBox(); const { min, max } = knot.boundingBox;
-  assert.ok(max.x < -0.36 && min.x > -0.66 && min.x < -0.6, `knot and tails span x ${min.x} to ${max.x}`);
-  assert.ok(max.z < -0.1, `knot and tails come forward to z ${max.z}, the arm reaches back to -0.1`);
+  const { geometry: knot, at } = makeAroomiKnot(); knot.computeBoundingBox(); const { min, max } = knot.boundingBox;
+  assert.ok(at[0] + max.x < -0.36 && at[0] + min.x > -0.66 && at[0] + min.x < -0.6, `knot and tails span x ${at[0] + min.x} to ${at[0] + max.x}`);
+  assert.ok(at[2] + max.z < -0.1, `knot and tails come forward to z ${at[2] + max.z}, the arm reaches back to -0.1`);
 });
